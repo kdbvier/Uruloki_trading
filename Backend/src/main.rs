@@ -1,78 +1,104 @@
+use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use serde_json::Value;
-use reqwest::header::{HeaderMap, HeaderValue};
-use reqwest::StatusCode;
+use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 struct BitqueryResponse {
-    data: Option<Value>,
-    status: Option<i32>,
-    error: Option<String>,
+    data: OHLCData,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct OHLCData {
+    trades: Vec<OHLC>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct OHLC {
+    time: TIMEINTERVALData,
+    volume: f64,
+    high: f64,
+    low: f64,
+    open: String,
+    close: String,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct TIMEINTERVALData {
+    minute: String
 }
 
 
-async fn get_ohlc_data() -> Result<Vec<BitqueryResponse>, reqwest::Error> {
-    let url = "https://graphql.bitquery.io";
+async fn fetch_ohlc_data() -> Result<(), Error> {
+    let url = "https://graphql.bitquery.io/";
+    let api_key = "BQYXORRJLNLsav7kdhyIMBeUUH3DlgwH";
     let query = r#"
-        {
+        query ($network: String!,$from: ISO8601DateTime!, $to: ISO8601DateTime!, $exchangeAddress: String!,$baseCurrency: String!,$quoteCurrency: String!,$tradeAmountUsd:u64!,$count:u64! ) {
             ethereum(network: bsc) {
                 dexTrades(
-                    options: {desc: "timeInterval.minute"}
-                    date: {since: "2022-01-01"}
-                    baseCurrency: {is: "0x55d398326f99059ff775485246999027b3197955"}
-                    quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}
-                ) {
-                    timeInterval {
-                        minute(count: 1)
-                    }
-                    baseCurrency {
-                        symbol
-                    }
-                    quoteCurrency {
-                        symbol
-                    }
-                    openPrice: open
-                    highPrice: high
-                    lowPrice: low
-                    closePrice: close
-                    trades: count
-                    quoteAmount
-                    quotePrice
+                  options: {asc: "timeInterval.minute"}
+                  date: {since: "2021-06-20T07:23:21.000Z", till: "2021-06-23T15:23:21.000Z"}
+                  exchangeAddress: {is: "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"}
+                  baseCurrency: {is: "0x2170ed0880ac9a755fd29b2688956bd959f933f8"},
+                  quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"},
+                  tradeAmountUsd: {gt: 10}
+                ) 
+                {
+                  timeInterval {
+                    minute(count: 15, format: "%Y-%m-%dT%H:%M:%SZ")  
+                  }
+                  volume: quoteAmount
+                  high: quotePrice(calculate: maximum)
+                  low: quotePrice(calculate: minimum)
+                  open: minimum(of: block, get: quote_price)
+                  close: maximum(of: block, get: quote_price) 
                 }
             }
         }
     "#;
-    let mut headers = HeaderMap::new();
-    headers.insert("X-API-KEY", HeaderValue::from_static("BQYXORRJLNLsav7kdhyIMBeUUH3DlgwH"));
-    let client = reqwest::Client::builder().default_headers(headers).build()?;
-    let response = client.post(url).json(&json!({ "query": query })).send().await?;
-    let status = response.status();
-    let body = response.text().await?;
-    let result: BitqueryResponse = serde_json::from_str(&body)?;
-    if status != StatusCode::OK {
-        Err(reqwest::Error::from(response))
-    } else if result.status != Some(200) || result.error.is_some() {
-        Err(reqwest::Error::from(format!(
-            "Bitquery error: {:?}",
-            result.error.unwrap_or_else(|| "".to_string())
-        )))
-    } else {
-        let data = result
-            .data
-            .ok_or_else(|| reqwest::Error::from("No data in response"))?;
-        let trades = data["ethereum"]["dexTrades"].as_array().unwrap_or_default();
-        let ohlc_data = trades
-            .iter()
-            .map(|trade| serde_json::from_value(trade.clone()))
-            .collect::<Result<Vec<BitqueryResponse>, serde_json::Error>>()?;
-        Ok(ohlc_data)
-    }
+
+    let client = Client::new();
+    let response = client
+        .post(url)
+        .header("X-API-KEY", api_key)
+        .json(&json!({
+            "query": query,
+            "variables": {
+                "network":"bsc",
+                "from": "2022-01-01T00:00:00Z",
+                "to": "2022-01-02T00:00:00Z",
+                "exchangeAddress": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
+                "baseCurrency": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+                "quoteCurrency": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+                "tradeAmountUsd": 10,
+                "count": 15,
+            }
+        }))
+        .send().await?;
+
+
+    let response_json: Value = response.json().await?;
+    let dex_trades = &response_json["data"]["ethereum"]["dexTrades"];
+
+
+    println!("dex trades -> {}",dex_trades);
+    
+
+    // let ohlc_data = response.data.trades;
+    // for trade in ohlc_data {
+    //     println!("volume: {}", trade.volume);
+    //     println!("high: {}", trade.high);
+    //     println!("low: {}", trade.low);
+    //     println!("open: {}",trade.open);
+    //     println!("close: {}", trade.close);
+    //     println!("Timestamp: {}", trade.time.minute);
+    // }
+
+    Ok(())
 }
 
-
-fn main() {
-    match tokio::runtime::Runtime::new().unwrap().block_on(get_ohlc_data()) {
-        Ok(data) => println!("{:#?}", data),
-        Err(e) => eprintln!("Error: {}", e),
-    }
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    fetch_ohlc_data().await
 }
