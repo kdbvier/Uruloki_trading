@@ -79,6 +79,7 @@ async fn fetch_ohlc_data() -> Result<(), Error> {
 
 
     let response_json: Value = response.json().await?;
+    println!("{:#?}", response_json);
     let dex_trades = &response_json["data"]["ethereum"]["dexTrades"];
 
 
