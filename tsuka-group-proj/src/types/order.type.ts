@@ -1,4 +1,9 @@
 
+export type ApiResponse<T> = {
+    payload:Array<T> | undefined;
+    message:string;
+}
+
 export type Orders = {
     order_id: number
     pair_address: string | null
