@@ -39,11 +39,11 @@ model orders {
   order_id     Int                @id @unique(map: "order_id") @default(autoincrement())
   pair_address String?            @db.VarChar(1000)
   status       String?            @db.VarChar(100)
-  token_price  Decimal?           @db.Decimal(18, 2)
-  single_price Decimal?           @db.Decimal(18, 2)
-  from_price   Decimal?           @db.Decimal(18, 2)
-  to_price     Decimal?           @db.Decimal(18, 2)
-  budget       Decimal?           @db.Decimal(18, 2)
+  token_price  BigInt?
+  single_price BigInt?
+  from_price   BigInt?
+  to_price     BigInt?
+  budget       BigInt?
   order_type   orders_order_type?
   price_type   orders_price_type?
   user_id      Int
@@ -56,10 +56,10 @@ model token_cache {
   name           String?   @db.VarChar(1000)
   chain          String?   @db.VarChar(1000)
   address        String?   @db.VarChar(1000)
-  price          Decimal?  @db.Decimal(18, 2)
-  hr_change      Decimal?  @map("24hr_change") @db.Decimal(18, 2)
-  volume         Decimal?  @db.Decimal(18, 2)
-  market_cap     Decimal?  @db.Decimal(18, 2)
+  price          BigInt?
+  hr_change      BigInt?   @map("24hr_change")
+  volume         BigInt?
+  market_cap     BigInt?
   last_updated   DateTime? @db.Date
 }
 

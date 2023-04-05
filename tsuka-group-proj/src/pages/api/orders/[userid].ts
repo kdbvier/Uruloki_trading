@@ -17,8 +17,7 @@ export default async function orderHandler(
           user_id: Number(userid),
         },
       });
-      const response = orders.map(order =>({...order,token_price:order.token_price?.toNumber(),single_price:order.single_price?.toNumber(),from_price:order.from_price?.toNumber(),to_price:order.to_price?.toNumber(),budget:order.budget?.toNumber()} as Orders))
-      res.status(200).json(response)
+      res.status(200).json(orders)
       break;
     default:
       res.setHeader("Allow", "GET");
