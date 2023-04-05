@@ -1,3 +1,4 @@
+import { ApiResponse } from "@/types";
 import { PrismaClient, orders } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -5,7 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function orderHandler(
   req: NextApiRequest,
-  res: NextApiResponse<orders[]>
+  res: NextApiResponse<ApiResponse<orders>>
 ) {
   const { query, method } = req;
   const { userid } = query;
@@ -16,7 +17,7 @@ export default async function orderHandler(
             user_id:Number(userid)
         }
       });
-      res.status(200).json(orders);
+      res.status(200).json({data: orders,statusCode:"200"});
       break;
     default:
       res.setHeader("Allow", "GET");
