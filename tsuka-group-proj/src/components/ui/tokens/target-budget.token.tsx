@@ -22,7 +22,7 @@ export const TargetBudgetToken: React.FC<TargetBudgetTokenProps> = ({
         >
           Target Price
         </p>
-        <td className="flex mt-4">
+        <div className="flex mt-4">
           <div
             className={`${
               positive ? "from-green-400/10" : "from-red-400/10"
@@ -37,7 +37,7 @@ export const TargetBudgetToken: React.FC<TargetBudgetTokenProps> = ({
               }}
             />
           </div>
-        </td>
+        </div>
       </div>
     </div>
   );

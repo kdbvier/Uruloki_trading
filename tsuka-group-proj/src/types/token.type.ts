@@ -5,11 +5,16 @@ export type Token = {
     icon: string;
     name: string;
     code: string;
+    address?: string;
+  };
+  pair?: {
+    address: string;
   };
   price: {
     value: string;
     operator: "+" | "-";
     variationValue: number;
+    variationValueDiference?: number;
   };
   volume: {
     value: string;

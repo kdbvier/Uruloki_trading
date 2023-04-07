@@ -3,11 +3,12 @@ import { HeaderNotificationButton } from "@/components/ui/buttons/header-notific
 import { HeaderWalletButton } from "@/components/ui/buttons/header-wallet.button";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { HeaderLinkButton } from "../ui/buttons/header-link.button";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
+  const [showNav, setShowNav] = useState(false);
 
   const navLinks = [
     {
@@ -65,7 +66,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
               </div>
               <div className="absolute inset-y-0 right-0 flex flex-row-reverse md:flex-row items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <HeaderMenuButton
-                  callback={() => console.log("notification click")}
+                  callback={() => setShowNav((prev) => !prev)}
                 />
                 <HeaderNotificationButton
                   callback={() => console.log("notification click")}
@@ -78,7 +79,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
-          <div className="sm:hidden" id="mobile-menu">
+          <div className={`${!showNav && "hidden"} sm:hidden`} id="mobile-menu">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navLinks?.map(({ path, title }) => (
                 <HeaderLinkButton
@@ -86,6 +87,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   path={path}
                   title={title}
                   active={path === router.pathname}
+                  callback={() => setShowNav(false)}
                 />
               ))}
             </div>
