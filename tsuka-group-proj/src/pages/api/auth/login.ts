@@ -31,14 +31,14 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     if(!userexist){
-      return res.status(404).json({
+      return res.status(401).json({
         payload: undefined,
         message: 'Authentication Failed',
       });
     }
     const isValid = await argon2.verify(userexist.password, value.password)
     if(!isValid)
-      return res.status(404).json({
+      return res.status(401).json({
         payload: undefined,
         message: 'Authentication Failed',
       });
