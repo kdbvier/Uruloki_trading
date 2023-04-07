@@ -1,5 +1,5 @@
-import { ApiResponse, Order } from "@/types";
-import { PrismaClient } from "@prisma/client";
+import type  { ApiResponse, Order } from "@/types";
+import { PrismaClient} from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();

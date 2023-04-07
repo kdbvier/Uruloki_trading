@@ -1,4 +1,4 @@
-import { ApiResponse, Order } from "@/types";
+import type  { ApiResponse, Order } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
@@ -13,7 +13,7 @@ const reqBodySchema = Joi.object({
   budget: Joi.number().optional(),
   order_type: Joi.string().valid('buy','sell').optional(),
   price_type: Joi.string().valid('range','single').optional(),
-}).length(1);
+}).max(9).min(1);
 
 const prisma = new PrismaClient();
 
@@ -26,9 +26,9 @@ export default async function orderHandler(
   switch (method) {
     case "PATCH":
       try {
-        const validatedBody = reqBodySchema.validate(body);
-        if(validatedBody.error){
-          res.status(404).json({payload: undefined,message: `Validation Error: ${validatedBody.error.message}`});
+        const {value,error} = reqBodySchema.validate(body);
+        if(error){
+          res.status(404).json({payload: undefined,message: `Validation Error: ${error.message}`});
           break;
         }
         const orderExist = await prisma.orders.findFirst({
@@ -51,7 +51,6 @@ export default async function orderHandler(
         res
           .status(400).json({payload: undefined,message: `Something went wrong! Please read the error message '${err}'`});
       }
-      res.status(200).end(`Method  Not Allowed`);
       break;
     case "DELETE":
       try {

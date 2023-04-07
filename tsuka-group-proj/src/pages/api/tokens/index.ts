@@ -1,4 +1,4 @@
-import { ApiResponse, TokenCache } from "@/types";
+import type { ApiResponse, TokenCache } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 

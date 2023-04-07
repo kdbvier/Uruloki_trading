@@ -1,4 +1,4 @@
-import { ApiResponse, Notification } from "@/types";
+import type  { ApiResponse, Notification } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 

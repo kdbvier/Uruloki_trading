@@ -39,11 +39,11 @@ model orders {
   order_id     Int                @id @unique(map: "order_id") @default(autoincrement())
   pair_address String?            @db.VarChar(1000)
   status       String?            @db.VarChar(100)
-  token_price  BigInt?
-  single_price BigInt?
-  from_price   BigInt?
-  to_price     BigInt?
-  budget       BigInt?
+  token_price  Int?
+  single_price Int?
+  from_price   Int?
+  to_price     Int?
+  budget       Int?
   order_type   orders_order_type?
   price_type   orders_price_type?
   user_id      Int
@@ -56,10 +56,10 @@ model token_cache {
   name           String?   @db.VarChar(1000)
   chain          String?   @db.VarChar(1000)
   address        String?   @db.VarChar(1000)
-  price          BigInt?
-  hr_change      BigInt?   @map("24hr_change")
-  volume         BigInt?
-  market_cap     BigInt?
+  price          Int?
+  hr_change      Int?      @map("24hr_change")
+  volume         Int?
+  market_cap     Int?
   last_updated   DateTime? @db.Date
 }
 
@@ -85,7 +85,7 @@ model users {
   user_id  Int    @id @unique(map: "user_id") @default(autoincrement())
   username String @unique(map: "username") @db.VarChar(50)
   email    String @unique(map: "email") @db.VarChar(50)
-  password String @db.VarChar(60)
+  password String @db.VarChar(1000)
 }
 
 enum orders_order_type {
