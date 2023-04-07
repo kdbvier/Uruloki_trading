@@ -36,6 +36,11 @@ export default async function UsersHandler(
             email:value.email,
             password:await argon2.hash(value.password)
           },
+          select:{
+            user_id:true,
+            email:true,
+            username:true,
+          }
         });
         res
           .status(200)
@@ -51,7 +56,13 @@ export default async function UsersHandler(
       break;
     case "GET":
       try {
-        const users = await prisma.users.findMany({});
+        const users = await prisma.users.findMany({
+          select:{
+            user_id:true,
+            email:true,
+            username:true,
+          }
+        });
         res
           .status(200)
           .json({ payload: users, message: `Successfully found users` });

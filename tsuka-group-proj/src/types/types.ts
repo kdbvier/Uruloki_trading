@@ -28,7 +28,7 @@ export type User ={
   user_id: number
   username: string
   email: string
-  password: string
+  password?: string
 }
 
 export type LoggedInUser = {
