@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.html,
+body {
+  --tw-bg-opacity: 1;
+  background-color: rgb(19 21 31 / var(--tw-bg-opacity));
+}
+
 ::-webkit-scrollbar {
   width: 0;
 }
