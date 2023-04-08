@@ -1,12 +1,21 @@
 import { DashboardLayout } from "@/components/layouts/dashboard.layout";
-import Coin from "@/pages/coin";
+import Pair from "@/pages/pair/[pair_id]";
 import { store } from "@/store";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
 export default {
-  title: "Pages/Coin",
-  component: Coin,
+  title: "Pages/Pair/ID",
+  component: Pair,
+  parameters: {
+    nextRouter: {
+      path: "/pair/[pair_id]",
+      asPath: "/pair/1",
+      query: {
+        pair_id: "1",
+      },
+    },
+  },
   decorators: [
     (Story) => {
       return (
@@ -18,4 +27,4 @@ export default {
   ],
 } as Meta;
 
-export const CoinPage: StoryObj = {};
+export const PairPage: StoryObj = {};
