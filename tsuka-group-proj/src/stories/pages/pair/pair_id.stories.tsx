@@ -25,6 +25,9 @@ export default {
       );
     },
   ],
+  args: {
+    id: "1",
+  },
 } as Meta;
 
 export const PairPage: StoryObj = {};

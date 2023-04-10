@@ -6,12 +6,12 @@ import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { useRouter } from "next/router";
 
-export default function Pair() {
+export default function Pair({ id }: { id: string }) {
   const router = useRouter();
-  const { pair_id = "" } = router.query;
+  const { pair_id = id || "" } = router.query;
   const inputToken = tokensData
     .map((token) => {
-      return { id: token.id, token: token.chain.code, icon: token.chain.icon };
+      return { id: token.id, token: token.chain.code };
     })
     .find((item) => item.id === pair_id)!;
 

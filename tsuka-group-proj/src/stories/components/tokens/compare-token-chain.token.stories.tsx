@@ -13,7 +13,6 @@ export default {
     token: {
       id: "1",
       token: "ETH",
-      icon: "/tokens/btc-icon.svg",
     },
     networks: ["ETH", "BSC", "POLYGON"],
   },
