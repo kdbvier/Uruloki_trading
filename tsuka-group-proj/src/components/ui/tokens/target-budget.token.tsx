@@ -3,12 +3,16 @@ import { useMemo } from "react";
 
 export const TargetBudgetToken: React.FC<ChartBound> = ({
   buy = false,
-  values: { value, min, max },
+  value,
+  values,
 }) => {
   const percent = useMemo(() => {
+    const max = Math.max(...values);
+    const min = Math.min(...values);
     const range = max - min;
-    return ((value - min) / range) * 90 + 5;
-  }, [value, min, max]);
+    const percent = ((value - min) / range) * 90 + 5;
+    return percent;
+  }, [value, values]);
 
   return (
     <div className="mb-4">

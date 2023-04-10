@@ -7,11 +7,8 @@ export default {
   component: TargetBudgetToken,
   args: {
     buy: true,
-    values: {
-      value: 6345,
-      min: 231,
-      max: 7345,
-    },
+    value: 2531,
+    values: [7345, 153, 4363, 3533, 234],
   },
 } as Meta<ChartBound>;
 
