@@ -4,7 +4,6 @@ export interface LiveGraphTokenProps {
   token: {
     id: string;
     token: string;
-    icon: string;
   };
 }
 

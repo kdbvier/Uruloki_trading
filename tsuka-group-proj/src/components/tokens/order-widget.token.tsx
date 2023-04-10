@@ -8,7 +8,6 @@ export interface OrderWidgetTokenProps {
   token: {
     id: string;
     token: string;
-    icon: string;
   };
 }
 

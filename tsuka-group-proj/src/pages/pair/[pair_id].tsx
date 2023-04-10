@@ -11,7 +11,7 @@ export default function Pair() {
   const { pair_id = "" } = router.query;
   const inputToken = tokensData
     .map((token) => {
-      return { id: token.id, token: token.chain.code, icon: token.chain.icon };
+      return { id: token.id, token: token.chain.code };
     })
     .find((item) => item.id === pair_id)!;
 

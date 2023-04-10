@@ -7,7 +7,6 @@ export interface CompareTokenChainTokenProps {
   token: {
     id: string;
     token: string;
-    icon: string;
   };
   networks: Array<string>;
 }

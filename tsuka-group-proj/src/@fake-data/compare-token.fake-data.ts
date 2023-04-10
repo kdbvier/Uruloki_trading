@@ -3,12 +3,10 @@ import { Compare } from "@/types/compare.type";
 export const compareTokenData: Array<Compare> = [
   {
     inputToken: {
-      icon: "/tokens/btc-icon.svg",
       name: "Bitcoin",
       code: "BTC",
     },
     outputToken: {
-      icon: "/tokens/eth-icon.svg",
       name: "Ethereum",
       code: "ETH",
     },
@@ -21,12 +19,10 @@ export const compareTokenData: Array<Compare> = [
   },
   {
     inputToken: {
-      icon: "/tokens/eth-icon.svg",
       name: "Ethereum",
       code: "ETH",
     },
     outputToken: {
-      icon: "/tokens/btc-icon.svg",
       name: "Bitcoin",
       code: "BTC",
     },

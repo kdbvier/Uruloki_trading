@@ -4,7 +4,6 @@ export const tokenData: Token = {
   id: "1",
   token: "Ethereum",
   chain: {
-    icon: "/tokens/eth-icon.svg",
     name: "Ethereum",
     code: "ETH",
     address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
@@ -12,7 +11,6 @@ export const tokenData: Token = {
   pair: {
     code: "BTC",
     name: "Bitcoin",
-    icon: "/tokens/btc-icon.svg",
     address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
   },
   price: {
@@ -44,7 +42,6 @@ export const tokensData: Array<Token> = [
     id: "1",
     token: "Ethereum",
     chain: {
-      icon: "/tokens/eth-icon.svg",
       name: "Ethereum",
       code: "ETH",
       address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
@@ -52,7 +49,6 @@ export const tokensData: Array<Token> = [
     pair: {
       code: "BTC",
       name: "Bitcoin",
-      icon: "/tokens/btc-icon.svg",
       address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
     },
     price: {
@@ -82,14 +78,12 @@ export const tokensData: Array<Token> = [
     id: "2",
     token: "Bitcoin",
     chain: {
-      icon: "/tokens/btc-icon.svg",
       name: "Bitcoin",
       code: "BTC",
     },
     pair: {
       code: "ETH",
       name: "Ethereum",
-      icon: "/tokens/eth-icon.svg",
       address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
     },
     price: {

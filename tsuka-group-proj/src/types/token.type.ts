@@ -2,7 +2,6 @@ export type Token = {
   id: string;
   token: string;
   chain: {
-    icon: string;
     name: string;
     code: string;
     address?: string;
@@ -10,7 +9,6 @@ export type Token = {
   pair?: {
     name: string;
     code: string;
-    icon: string;
     address: string;
   };
   price: {
