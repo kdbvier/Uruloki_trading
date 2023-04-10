@@ -10,9 +10,31 @@ export default {
   title: "Components/Tokens/OrderWidgetToken",
   component: OrderWidgetToken,
   args: {
-    token: {
+    inputToken: {
       id: "1",
-      token: "ETH",
+      name: "Ethereum",
+      code: "ETH",
+      boundData: {
+        buy: true,
+        values: {
+          value: 5347.94,
+          min: 3214,
+          max: 9873.43,
+        },
+      },
+    },
+    outputToken: {
+      id: "2",
+      code: "BTC",
+      name: "Bitcoin",
+      boundData: {
+        buy: true,
+        values: {
+          value: 8234.94,
+          min: 1243,
+          max: 9873.43,
+        },
+      },
     },
   },
   decorators: [
