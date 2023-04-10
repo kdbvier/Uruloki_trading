@@ -38,7 +38,7 @@ export const OrderWidgetToken: React.FC<OrderWidgetTokenProps> = ({
 
       {status === "loading" && "Loading..."}
       {status === "ok" && value && currentToken && (
-        <div>
+        <div className="overflow-auto">
           {value.pairs?.map((item) => (
             <>
               <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-6">
