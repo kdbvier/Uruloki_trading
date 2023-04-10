@@ -11,6 +11,7 @@ export const tokenData: Token = {
   },
   pair: {
     code: "BTC",
+    name: "Bitcoin",
     icon: "/tokens/btc-icon.svg",
     address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
   },
@@ -50,6 +51,7 @@ export const tokensData: Array<Token> = [
     },
     pair: {
       code: "BTC",
+      name: "Bitcoin",
       icon: "/tokens/btc-icon.svg",
       address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
     },
@@ -86,6 +88,7 @@ export const tokensData: Array<Token> = [
     },
     pair: {
       code: "ETH",
+      name: "Ethereum",
       icon: "/tokens/eth-icon.svg",
       address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
     },

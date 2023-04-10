@@ -48,8 +48,8 @@ export const CompareTokenChainToken: React.FC<CompareTokenChainTokenProps> = ({
               className="flex flex-row items-center mb-4"
             >
               <HorizontalIconsToken
-                inputIconPath={item.inputToken.icon}
-                outputIconPath={item.outputToken.icon}
+                inputToken={item.inputToken}
+                outputToken={item.outputToken}
               />
               <div className="px-2 flex-1 flex-col">
                 <p className="text-sm">

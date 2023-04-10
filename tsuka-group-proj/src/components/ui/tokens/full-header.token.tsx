@@ -1,6 +1,7 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
 import { getToken } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Link from "next/link";
 import { useEffect } from "react";
 import { MdArrowBack } from "react-icons/md";
 import { HorizontalIconsToken } from "./horizontal-icons.token";
@@ -22,16 +23,16 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
 
   return (
     <div className="w-full text-tsuka-300 flex items-start py-2 mb-4 flex-col md:items-center md:flex-row">
-      <a href="/" className="text-xl p-2 rounded-full cursor-pointer">
+      <Link href="/" className="text-xl p-2 rounded-full cursor-pointer">
         <MdArrowBack />
-      </a>
+      </Link>
       {status === "loading" && "Loading..."}
       {status === "ok" && value && (
         <>
           <div className="flex w-full items-center justify-center">
             <HorizontalIconsToken
-              inputIconPath={value.chain?.icon}
-              outputIconPath={value.pair?.icon as string}
+              inputToken={value.chain}
+              outputToken={value.pair as any}
               large={true}
             />
             <div className="px-2 flex-1 flex-col">

@@ -30,8 +30,8 @@ export const OrderWidgetToken: React.FC<OrderWidgetTokenProps> = ({
           <div>
             <div className="flex flex-row items-center mb-4">
               <HorizontalIconsToken
-                inputIconPath={currentToken.chain.icon}
-                outputIconPath={compareToken.chain.icon}
+                inputToken={currentToken.chain}
+                outputToken={compareToken.chain}
               />
               <div className="px-2 flex-1 flex-col">
                 <p className="text-sm">

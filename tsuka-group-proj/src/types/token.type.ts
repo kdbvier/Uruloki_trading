@@ -8,6 +8,7 @@ export type Token = {
     address?: string;
   };
   pair?: {
+    name: string;
     code: string;
     icon: string;
     address: string;
