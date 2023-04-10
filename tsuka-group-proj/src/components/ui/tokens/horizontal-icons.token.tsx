@@ -1,4 +1,5 @@
 import { coinMirrorUrl } from "@/services/coin-mirror.service";
+import { useState } from "react";
 
 export interface HorizontalIconsTokenProps {
   inputToken: { code: string; name: string };
@@ -11,6 +12,17 @@ export const HorizontalIconsToken: React.FC<HorizontalIconsTokenProps> = ({
   outputToken,
   large = false,
 }) => {
+  const [hasInputError, setHasInputError] = useState(false);
+  const [hasOutputError, setHasOutputError] = useState(false);
+
+  function handleImageInputError() {
+    setHasInputError(true);
+  }
+
+  function handleImageOutputError() {
+    setHasOutputError(true);
+  }
+
   const inputIcon = `${coinMirrorUrl}/img/${inputToken?.code.toLowerCase()}-${inputToken?.name.toLowerCase()}.png`;
   const outputIcon = `${coinMirrorUrl}/img/${outputToken?.code.toLowerCase()}-${outputToken?.name.toLowerCase()}.png`;
 
@@ -20,13 +32,15 @@ export const HorizontalIconsToken: React.FC<HorizontalIconsTokenProps> = ({
     >
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mb-auto rounded-full`}
-        src={inputIcon}
+        src={hasInputError ? "/imgs/empty-img.png" : inputIcon}
         alt={inputToken?.name}
+        onError={handleImageInputError}
       />
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mt-auto rounded-full`}
-        src={outputIcon}
+        src={hasOutputError ? "/imgs/empty-img.png" : outputIcon}
         alt={outputToken?.name}
+        onError={handleImageOutputError}
       />
     </div>
   );

@@ -43,16 +43,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                     <p className="text-xl font-extrabold text-tsuka-100 ">
                       Logo
                     </p>
-                    {/* <img
-                    className="block h-8 w-auto lg:hidden"
-                    src=""
-                    alt="Logo"
-                  />
-                  <img
-                    className="hidden h-8 w-auto lg:block"
-                    src=""
-                    alt="Logo"
-                  /> */}
                   </div>
                   <div className="hidden sm:ml-6 sm:block">
                     <div className="flex px-10 space-x-4">
