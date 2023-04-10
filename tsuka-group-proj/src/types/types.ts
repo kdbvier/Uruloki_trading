@@ -1,3 +1,4 @@
+
 export type ApiResponse<T> = {
   payload: Array<T> | T | undefined;
   message: string;
@@ -36,6 +37,41 @@ export type LoggedInUser = {
   username: string;
   email: string;
 };
+
+export type TopGainer = {
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+}
+
+export type TopMover = {
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+}
+export type MostBuyOrder = {
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+}
+
+export type MostSellOrder = {
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+}
+
+export type Token = {
+TokenCache: TokenCache;
+TopGanier: TopGainer[];
+TopMover: TopMover[];
+MostBuyOrders: MostBuyOrder[];
+MostSellOrders: MostSellOrder[];
+}
 
 export type TokenCache = {
   token_cache_id: number;
