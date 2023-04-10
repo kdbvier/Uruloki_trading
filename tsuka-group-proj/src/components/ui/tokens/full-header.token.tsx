@@ -3,6 +3,7 @@ import { getToken } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 import { MdArrowBack } from "react-icons/md";
+import { HorizontalIconsToken } from "./horizontal-icons.token";
 import { InfoSpanToken } from "./info-span.token";
 export interface FullHeaderTokenProps {
   token: {
@@ -28,17 +29,17 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
       {status === "ok" && value && (
         <>
           <div className="flex w-full items-center justify-center">
-            <img
-              className="w-10 h-10 mx-4 rounded-full"
-              src={value.chain?.icon}
-              alt={value.chain?.code}
+            <HorizontalIconsToken
+              inputIconPath={value.chain?.icon}
+              outputIconPath={value.pair?.icon as string}
+              large={true}
             />
             <div className="px-2 flex-1 flex-col">
               <p className="text-base">
                 <label className="text-tsuka-50 text-2xl font-semibold">
                   {value.chain?.code}
                 </label>
-                /{value.chain?.code}
+                /{value.pair?.code}
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">
