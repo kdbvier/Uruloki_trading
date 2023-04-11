@@ -1,18 +1,25 @@
 import { ChartBound } from "@/types/chart-bound.type";
 import { useMemo } from "react";
 
-export const OrderWidgetGraph: React.FC<ChartBound> = ({
+export interface OrderWidgetGraphProp {
+  buy: boolean;
+  value1: number;
+  value2?: number;
+  bound: ChartBound;
+}
+
+export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   buy,
-  budgets,
-  min,
-  max,
+  value1,
+  value2,
+  bound: { min, max },
 }) => {
   const percents = useMemo(() => {
     const range = max - min;
-    return budgets.map((value) => {
-      return ((value - min) / range) * 90 + 10;
-    });
-  }, [budgets, min, max]);
+    const percent1 = ((value1 - min) / range) * 90 + 10;
+    const percent2 = value2 ? ((value2 - min) / range) * 90 + 10 : undefined;
+    return [percent1, percent2];
+  }, [value1, value2, min, max]);
 
   return (
     <div className="mb-4">
@@ -33,17 +40,20 @@ export const OrderWidgetGraph: React.FC<ChartBound> = ({
               buy ? "from-green-400/10" : "from-red-400/10"
             } w-full h-10 bg-gradient-to-t to-transparent relative`}
           >
-            {percents.map((percent, index) => (
-              <div
-                key={index}
-                className={`${
-                  buy ? "border-green-400" : "border-red-400"
-                } border-r-4 h-10 absolute ${!index && ""}`}
-                style={{
-                  width: `${percent}%`,
-                }}
-              />
-            ))}
+            {percents.map(
+              (percent, index) =>
+                percent && (
+                  <div
+                    key={index}
+                    className={`${
+                      buy ? "border-green-400" : "border-red-400"
+                    } border-r-4 h-10 absolute ${!index && ""}`}
+                    style={{
+                      width: `${percent}%`,
+                    }}
+                  />
+                )
+            )}
           </div>
         </div>
       </div>

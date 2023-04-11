@@ -1,5 +1,7 @@
-import { OrderWidgetGraph } from "@/components/ui/tokens/order-widget-graph.token";
-import { ChartBound } from "@/types/chart-bound.type";
+import {
+  OrderWidgetGraph,
+  OrderWidgetGraphProp,
+} from "@/components/ui/tokens/order-widget-graph.token";
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
@@ -7,10 +9,10 @@ export default {
   component: OrderWidgetGraph,
   args: {
     buy: true,
-    budgets: [2531],
+    value1: 2531,
     min: 153,
     max: 7345,
   },
-} as Meta<ChartBound>;
+} as Meta<OrderWidgetGraphProp>;
 
-export const FiltersButton: StoryObj<ChartBound> = {};
+export const FiltersButton: StoryObj<OrderWidgetGraphProp> = {};

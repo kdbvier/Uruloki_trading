@@ -65,15 +65,28 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
             </div>
           </div>
         </div>
-        {orders?.map((order) => (
-          <OrderWidgetGraph
-            key={order.id}
-            buy={order.order_type === "buy"}
-            budgets={isSingle(order) ? [order.price] : order.prices}
-            min={min}
-            max={max}
-          />
-        ))}
+        {orders?.map((order) => {
+          if (isSingle(order)) {
+            return (
+              <OrderWidgetGraph
+                key={order.id}
+                buy={order.order_type === "buy"}
+                value1={order.price}
+                bound={{ min, max }}
+              />
+            );
+          } else {
+            return (
+              <OrderWidgetGraph
+                key={order.id}
+                buy={order.order_type === "buy"}
+                value1={order.prices[0]}
+                value2={order.prices[1]}
+                bound={{ min, max }}
+              />
+            );
+          }
+        })}
       </div>
 
       <DefaultButton
