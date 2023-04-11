@@ -1,14 +1,15 @@
-import { TargetBudgetToken } from "@/components/ui/tokens/target-budget.token";
+import { OrderWidgetGraph } from "@/components/ui/tokens/order-widget-graph.token";
 import { ChartBound } from "@/types/chart-bound.type";
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Components/UI/Tokens/TargetBudgetToken",
-  component: TargetBudgetToken,
+  title: "Components/UI/Tokens/OrderWidgetGraph",
+  component: OrderWidgetGraph,
   args: {
     buy: true,
     budgets: [2531],
-    values: [7345, 153, 4363, 3533, 234],
+    min: 153,
+    max: 7345,
   },
 } as Meta<ChartBound>;
 

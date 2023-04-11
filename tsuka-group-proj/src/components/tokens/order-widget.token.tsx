@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { DefaultButton } from "../ui/buttons/default.button";
 import { HorizontalIconsToken } from "../ui/tokens/horizontal-icons.token";
-import { TargetBudgetToken } from "../ui/tokens/target-budget.token";
+import { OrderWidgetGraph } from "../ui/tokens/order-widget-graph.token";
 
 export const OrderWidgetToken: React.FC<TokenOrder> = ({
   name1,
@@ -16,7 +16,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return "price" in object;
   }
 
-  const values = useMemo(() => {
+  const [min, max] = useMemo(() => {
     let values: Array<number> = [];
 
     orders?.map((item) => {
@@ -27,7 +27,10 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
         item.prices.map((i) => values.push(i));
       }
     });
-    return values;
+
+    const max = Math.max(...values) * 1.1;
+    const min = Math.min(...values) * 0.9;
+    return [min, max];
   }, [orders]);
 
   return (
@@ -63,11 +66,12 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           </div>
         </div>
         {orders?.map((order) => (
-          <TargetBudgetToken
+          <OrderWidgetGraph
             key={order.id}
             buy={order.order_type === "buy"}
             budgets={isSingle(order) ? [order.price] : order.prices}
-            values={values}
+            min={min}
+            max={max}
           />
         ))}
       </div>

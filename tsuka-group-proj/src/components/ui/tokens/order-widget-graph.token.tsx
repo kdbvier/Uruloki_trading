@@ -1,19 +1,18 @@
 import { ChartBound } from "@/types/chart-bound.type";
 import { useMemo } from "react";
 
-export const TargetBudgetToken: React.FC<ChartBound> = ({
+export const OrderWidgetGraph: React.FC<ChartBound> = ({
   buy,
   budgets,
-  values,
+  min,
+  max,
 }) => {
   const percents = useMemo(() => {
-    const max = Math.max(...values);
-    const min = Math.min(...values);
     const range = max - min;
     return budgets.map((value) => {
-      return ((value - min) / range) * 90 + 5;
+      return ((value - min) / range) * 90 + 10;
     });
-  }, [budgets, values]);
+  }, [budgets, min, max]);
 
   return (
     <div className="mb-4">
