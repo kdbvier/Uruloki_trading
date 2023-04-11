@@ -12,14 +12,16 @@ model most_buy_orders {
   id             Int     @id @unique(map: "id") @default(autoincrement())
   rank           String? @db.VarChar(1000)
   address        String? @db.VarChar(1000)
-  token_cache token_cache[]
+  token_cache_id Int
+  @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
 
 model most_sell_orders {
   id             Int     @id @unique(map: "id") @default(autoincrement())
   rank           String? @db.VarChar(1000)
   address        String? @db.VarChar(1000)
-  token_cache token_cache[]
+  token_cache_id Int
+  @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
 
 model notifications {
@@ -27,7 +29,6 @@ model notifications {
   text            String?   @db.Text
   date            DateTime? @db.Date
   user_id         Int
-
   @@index([user_id], map: "fk_user_id_idx")
 }
 
@@ -43,7 +44,6 @@ model orders {
   order_type   orders_order_type?
   price_type   orders_price_type?
   user_id      Int
-
   @@index([user_id], map: "fk_user_id_idx")
 }
 
@@ -57,35 +57,22 @@ model token_cache {
   volume         Int?
   market_cap     Int?
   last_updated   DateTime? @db.Date
-  top_gainers_id Int @unique
-  top_movers_id Int @unique
-  most_buy_orders_id Int @unique
-  most_sell_orders_id Int @unique
-
-  top_gainers top_gainers @relation(fields: [top_gainers_id], references: [id])
-  top_movers top_movers @relation(fields: [top_movers_id], references: [id])
-  most_buy_orders most_buy_orders @relation(fields: [most_buy_orders_id], references: [id])
-  most_sell_orders most_sell_orders @relation(fields: [most_sell_orders_id], references: [id])
-
-  @@index([top_gainers_id], map: "fk_top_gainers_id")
-  @@index([top_movers_id], map: "fk_top_movers_id")
-  @@index([most_buy_orders_id], map: "fk_most_buy_orders_id")
-  @@index([most_sell_orders_id], map: "fk_most_sell_orders_id")
 }
 
 model top_gainers {
   id             Int     @id @unique(map: "id") @default(autoincrement())
   rank           String? @db.VarChar(1000)
   address        String? @db.VarChar(1000)
-  token_cache token_cache[]
-
+  token_cache_id Int
+  @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
 
 model top_movers {
   id             Int     @id @unique(map: "id") @default(autoincrement())
   rank           String? @db.VarChar(1000)
   address        String? @db.VarChar(1000)
-  token_cache token_cache[]
+  token_cache_id Int
+  @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
 
 model users {

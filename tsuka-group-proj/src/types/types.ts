@@ -1,5 +1,3 @@
-import { token_cache } from "@prisma/client";
-
 export type ApiResponse<T> = {
   payload: Array<T> | T | undefined;
   message: string;
@@ -12,9 +10,9 @@ export type Order = {
   status: string | null;
   token_price: number | null;
   single_price: number | null;
-  from_price:  number | null;
-  to_price:  number | null;
-  budget:  number | null;
+  from_price: number | null;
+  to_price: number | null;
+  budget: number | null;
   order_type: "buy" | "sell" | null;
   price_type: "single" | "range" | null;
 };
@@ -26,12 +24,12 @@ export type Notification = {
   date: Date | null;
 };
 
-export type User ={
-  user_id: number
-  username: string
-  email: string
-  password?: string
-}
+export type User = {
+  user_id: number;
+  username: string;
+  email: string;
+  password?: string;
+};
 
 export type LoggedInUser = {
   isLoggedIn: boolean;
@@ -40,39 +38,43 @@ export type LoggedInUser = {
 };
 
 export type TopGainer = {
-  id: number;
-  rank: string | null;
-  address: string | null;
-  token_cache:TokenCache[]
-} 
+  id?: number | undefined;
+  rank?: string | null | undefined;
+  address?: string | null | undefined;
+  token_cache_id?: number | undefined;
+  token_cache: TokenCache;
+};
 
 export type TopMover = {
-  id: number;
-  rank: string | null;
-  address: string | null;
-  token_cache:TokenCache[]
-}
+  id?: number | undefined;
+  rank?: string | null | undefined;
+  address?: string | null | undefined;
+  token_cache_id?: number | undefined;
+  token_cache: TokenCache;
+};
+
 export type MostBuyOrder = {
-  id: number;
-  rank: string | null;
-  address: string | null;
-  token_cache:TokenCache[]
-}
+  id?: number | undefined;
+  rank?: string | null | undefined;
+  address?: string | null | undefined;
+  token_cache_id?: number | undefined;
+  token_cache: TokenCache;
+};
 
 export type MostSellOrder = {
-  id: number;
-  rank: string | null;
-  address: string | null;
-  token_cache:TokenCache[]
-}
+  id?: number | undefined;
+  rank?: string | null | undefined;
+  address?: string | null | undefined;
+  token_cache_id?: number | undefined;
+  token_cache: TokenCache;
+};
 
 export type Token = {
-  TopGainer: TopGainer[];
-  TopMover: TopMover[];
-  MostBuyOrders: MostBuyOrder[];
-  MostSellOrders: MostSellOrder[];
-}
-
+  TopGainer: TopGainer;
+  TopMover: TopMover;
+  MostBuyOrders: MostBuyOrder;
+  MostSellOrders: MostSellOrder;
+};
 export type TokenCache = {
   token_cache_id: number;
   name: string | null;

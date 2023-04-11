@@ -6,39 +6,43 @@ const prisma = new PrismaClient();
 
 export default async function TokenCacheHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<any>>
+  res: NextApiResponse<ApiResponse<Token>>
 ) {
   const { method } = req;
   switch (method) {
     case "GET":
       try {
-        const topMover = await prisma.top_movers.findMany({
-          include: {
-            token_cache: true,
-          },
-        });
-        const mostBuy = await prisma.most_buy_orders.findMany({
-          include: {
-            token_cache: true,
-          },
-        });
-        const mostSell = await prisma.most_sell_orders.findMany({
-          include: {
-            token_cache: true,
-          },
-        });
-        const topGainer = await prisma.top_gainers.findMany({
-          include: {
-            token_cache: true,
-          },
-        });
-        const data = {
-          TopGainer: topGainer,
-          TopMover: topMover,
-          MostBuyOrders: mostBuy,
-          MostSellOrders: mostSell,
-        };
-
+        const tokens = await prisma.token_cache.findMany();
+        const data = await Promise.all(
+          tokens.map(async (token) => {
+            const topGainer = await prisma.top_gainers.findFirst({
+              where: {
+                token_cache_id: token.token_cache_id,
+              },
+            });
+            const topMover = await prisma.top_movers.findFirst({
+              where: {
+                token_cache_id: token.token_cache_id,
+              },
+            });
+            const mostBuy = await prisma.most_buy_orders.findFirst({
+              where: {
+                token_cache_id: token.token_cache_id,
+              },
+            });
+            const mostSell = await prisma.most_sell_orders.findFirst({
+              where: {
+                token_cache_id: token.token_cache_id,
+              },
+            });
+            return {
+              TopGainer: { ...topGainer, token_cache: token },
+              TopMover: { ...topMover, token_cache: token },
+              MostBuyOrders: { ...mostBuy, token_cache: token },
+              MostSellOrders: { ...mostSell, token_cache: token },
+            };
+          })
+        );
         res
           .status(200)
           .json({ payload: data, message: `Successfully found Tokens` });
