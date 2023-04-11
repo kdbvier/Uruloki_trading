@@ -5,8 +5,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { PropsWithChildren } from "react";
 import { HeaderLinkButton } from "../ui/buttons/header-link.button";
+import { useState } from "react";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
+  const [menuCollapsed, setMenuCollapsed] = useState(true);
+
   const router = useRouter();
 
   const navLinks = [
@@ -64,9 +67,11 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex flex-row-reverse md:flex-row items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <HeaderMenuButton
-                  callback={() => console.log("notification click")}
-                />
+                <div onClick={() => { setMenuCollapsed(!menuCollapsed) }}>
+                  <HeaderMenuButton
+                    callback={() => console.log("notification click")}
+                  />
+                </div>
                 <HeaderNotificationButton
                   callback={() => console.log("notification click")}
                 />
@@ -78,18 +83,23 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
-          <div className="sm:hidden" id="mobile-menu">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navLinks?.map(({ path, title }) => (
-                <HeaderLinkButton
-                  key={path}
-                  path={path}
-                  title={title}
-                  active={path === router.pathname}
-                />
-              ))}
+          {
+            !menuCollapsed &&
+            <div className="sm:hidden" id="mobile-menu">
+              <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700">
+                {navLinks?.map(({ path, title }, idx) => (
+                  <div className={`flex justify-center${idx > 0 ? " border-t border-t-tsuka-400" : ""}`} key={idx}>
+                    <HeaderLinkButton
+                      key={path}
+                      path={path}
+                      title={title}
+                      active={path === router.pathname}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          }
         </nav>
         <div className="">{children}</div>
       </main>

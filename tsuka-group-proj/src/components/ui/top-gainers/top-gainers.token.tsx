@@ -36,108 +36,36 @@ export const TopGainers: React.FC<TopGainersProps> = ({
         </thead>
         <tbody>
           {
-            tokens[0] ?
-              <tr className="border-t border-t-tsuka-400">
-                <td className="py-2 md:py-5">
-                  <Image src="/icons/medal1.png" width={24} height={24} alt="medal1" />
-                </td>
-                <td className="py-2 md:py-5 flex items-center">
-                  <Image src={tokens[0].token.imgUrl} width={24} height={24} alt="medal1" />
-                  <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                    <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{tokens[0].token.name}</p>
-                    <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{tokens[0].token.shortName}</p>
-                  </div>
-                </td>
-                <td className="py-2 md:py-5">
-                  <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                    <span className="text-tsuka-200">{`$${tokens[0].price}`}</span>
-                    <div className="ml-2 flex text-[#6FCF97]">
-                      <FiArrowUpRight className="mt-0.5" />
-                      <span>{`${tokens[0].risingPercent}%`}</span>
+            tokens.map((token, idx) => {
+              return (
+                <tr className="border-t border-t-tsuka-400" key={idx}>
+                  <td className="py-2 md:py-5">
+                    {
+                      idx >= 0 && idx < 3 ?
+                        <Image src={`/icons/medal${idx + 1}.png`} width={24} height={24} alt={"medal" + (idx + 1)} />
+                      :
+                        <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-normal">#{idx + 1}</span>
+                    }
+                  </td>
+                  <td className="py-2 md:py-5 flex items-center">
+                    <Image src={token.token.imgUrl} width={24} height={24} alt="medal1" />
+                    <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
+                      <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.token.name}</p>
+                      <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{token.token.shortName}</p>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            :
-              <tr className="h-16 border-t border-t-tsuka-400"></tr>
-          }
-          {
-            tokens[1] ?
-              <tr className="border-t border-t-tsuka-400">
-                <td className="py-2 md:py-5">
-                  <Image src="/icons/medal2.png" width={24} height={24} alt="medal1" />
-                </td>
-                <td className="py-2 md:py-5 flex items-center">
-                  <Image src={tokens[1].token.imgUrl} width={24} height={24} alt="medal1" />
-                  <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                    <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{tokens[1].token.name}</p>
-                    <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{tokens[1].token.shortName}</p>
-                  </div>
-                </td>
-                <td className="py-2 md:py-5">
-                  <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                    <span className="text-tsuka-200">{`$${tokens[1].price}`}</span>
-                    <div className="ml-2 flex text-[#6FCF97]">
-                      <FiArrowUpRight className="mt-0.5" />
-                      <span>{`${tokens[1].risingPercent}%`}</span>
+                  </td>
+                  <td className="py-2 md:py-5">
+                    <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
+                      <span className="text-tsuka-200">{`$${token.price}`}</span>
+                      <div className="ml-2 flex text-[#6FCF97]">
+                        <FiArrowUpRight className="mt-0.5" />
+                        <span>{`${token.risingPercent}%`}</span>
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            :
-              <tr className="h-16 border-t border-t-tsuka-400"></tr>
-          }
-          {
-            tokens[2] ?
-              <tr className="border-t border-t-tsuka-400">
-                <td className="py-2 md:py-5">
-                  <Image src="/icons/medal3.png" width={24} height={24} alt="medal1" />
-                </td>
-                <td className="py-2 md:py-5 flex items-center">
-                  <Image src={tokens[2].token.imgUrl} width={24} height={24} alt="medal1" />
-                  <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                    <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{tokens[2].token.name}</p>
-                    <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{tokens[2].token.shortName}</p>
-                  </div>
-                </td>
-                <td className="py-2 md:py-5">
-                  <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                    <span className="text-tsuka-200">{`$${tokens[2].price}`}</span>
-                    <div className="ml-2 flex text-[#6FCF97]">
-                      <FiArrowUpRight className="mt-0.5" />
-                      <span>{`${tokens[2].risingPercent}%`}</span>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            :
-              <tr className="h-16 border-t border-t-tsuka-400"></tr>
-          }
-          {
-            tokens[3] ?
-              <tr className="border-t border-t-tsuka-400">
-                <td className="py-2 md:py-5">
-                  <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-normal">#4</span>
-                </td>
-                <td className="py-2 md:py-5 flex items-center">
-                  <Image src={tokens[3].token.imgUrl} width={24} height={24} alt="medal1" />
-                  <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                    <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{tokens[3].token.name}</p>
-                    <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{tokens[3].token.shortName}</p>
-                  </div>
-                </td>
-                <td className="py-2 md:py-5">
-                  <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                    <span className="text-tsuka-200">{`$${tokens[3].price}`}</span>
-                    <div className="ml-2 flex text-[#6FCF97]">
-                      <FiArrowUpRight className="mt-0.5" />
-                      <span>{`${tokens[3].risingPercent}%`}</span>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            :
-              <tr className="h-16 border-t border-t-tsuka-400"></tr>
+                  </td>
+                </tr>
+              )
+            })
           }
         </tbody>
       </table>
