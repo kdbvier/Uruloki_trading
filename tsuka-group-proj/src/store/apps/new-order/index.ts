@@ -1,17 +1,17 @@
-import { TokenBoundData, newOrderData } from "@/@fake-data/new-order.fake-data";
+import { TokenOrderData, newOrderData } from "@/@fake-data/new-order.fake-data";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export interface TokenBoundDataState {
-  value: TokenBoundData;
+export interface TokenOrderDataState {
+  value: TokenOrderData;
   status: "ok" | "loading" | "failed";
 }
 
-const initialState: TokenBoundDataState = {
-  value: {} as TokenBoundData,
+const initialState: TokenOrderDataState = {
+  value: {} as TokenOrderData,
   status: "ok",
 };
 
-export const getTokenBoundData = createAsyncThunk(
+export const getTokenOrderData = createAsyncThunk(
   "tokenBoundData/get",
   async (id: string) => {
     const data = newOrderData.find((item) => item.id === id)!;
@@ -25,14 +25,14 @@ export const tokenBoundDataSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getTokenBoundData.pending, (state) => {
+      .addCase(getTokenOrderData.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getTokenBoundData.fulfilled, (state, action) => {
+      .addCase(getTokenOrderData.fulfilled, (state, action) => {
         state.status = "ok";
         state.value = action.payload;
       })
-      .addCase(getTokenBoundData.rejected, (state) => {
+      .addCase(getTokenOrderData.rejected, (state) => {
         state.status = "failed";
       });
   },

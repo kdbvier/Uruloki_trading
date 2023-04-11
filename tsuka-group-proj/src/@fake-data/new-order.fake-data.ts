@@ -1,73 +1,47 @@
-import { ChartBound } from "@/types/chart-bound.type";
+import {
+  OrderTypeEnum,
+  PriceTypeEnum,
+  RangeOrder,
+  SingleOrder,
+} from "@/types/token-order.type";
 
-export interface TokenBoundData {
+export interface TokenOrderData {
   id: string;
-  token: string;
-  code: string;
-  bound: ChartBound;
-  pairs: Array<
-    ChartBound & {
-      name: string;
-      code: string;
-    }
-  >;
+  orders: Array<SingleOrder | RangeOrder>;
 }
 
-export const newOrderData: Array<TokenBoundData> = [
+export const newOrderData: Array<TokenOrderData> = [
   {
     id: "1",
-    token: "Ethereum",
-    code: "ETH",
-    bound: {
-      buy: true,
-      values: {
-        value: 5347.94,
-        min: 3214,
-        max: 9873.43,
-      },
-    },
-    pairs: [
+    orders: [
       {
-        code: "BTC",
-        name: "Bitcoin",
-        values: {
-          value: 8234.94,
-          min: 1243,
-          max: 9873.43,
-        },
+        id: 1,
+        order_type: OrderTypeEnum.BUY,
+        price_type: PriceTypeEnum.RANGE,
+        prices: [5347.94, 3214, 9873.43],
+      },
+      {
+        id: 2,
+        order_type: OrderTypeEnum.BUY,
+        price_type: PriceTypeEnum.SINGLE,
+        price: 3214,
       },
     ],
   },
   {
     id: "2",
-    token: "Bitcoin",
-    code: "BTC",
-    bound: {
-      buy: true,
-      values: {
-        value: 5347.94,
-        min: 3214,
-        max: 9873.43,
-      },
-    },
-    pairs: [
+    orders: [
       {
-        code: "ETH",
-        name: "Ethereum",
-        values: {
-          value: 8234.94,
-          min: 1243,
-          max: 9873.43,
-        },
+        id: 3,
+        order_type: OrderTypeEnum.BUY,
+        price_type: PriceTypeEnum.SINGLE,
+        price: 3214,
       },
       {
-        code: "SOL",
-        name: "Solana",
-        values: {
-          value: 8234.94,
-          min: 1243,
-          max: 9873.43,
-        },
+        id: 4,
+        order_type: OrderTypeEnum.BUY,
+        price_type: PriceTypeEnum.RANGE,
+        prices: [5347.94, 3214, 9873.43],
       },
     ],
   },

@@ -19,7 +19,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   const values = useMemo(() => {
     let values: Array<number> = [];
 
-    orders.map((item) => {
+    orders?.map((item) => {
       if (isSingle(item)) {
         values.push(item.price);
         return;
@@ -62,7 +62,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
             </div>
           </div>
         </div>
-        {orders.map((order) => (
+        {orders?.map((order) => (
           <TargetBudgetToken
             key={order.id}
             buy={order.order_type === "buy"}

@@ -4,12 +4,12 @@ import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
-import { getTokenBoundData } from "@/store/apps/new-order";
+import { getTokenOrderData } from "@/store/apps/new-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { ChartBound } from "@/types/chart-bound.type";
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 interface InputToken {
   id: string;
   token: string;
@@ -28,8 +28,6 @@ export default function Pair({ id }: { id: string }) {
   const [inputToken, setInputToken] = useState<InputToken>();
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
-  const [inputBoundData, setInputBoundData] = useState<BoundData>();
-  const [outputBoundData, setOutputBoundData] = useState<BoundData>();
 
   useEffect(() => {
     const { pair_id = id || "" } = router.query;
@@ -47,37 +45,14 @@ export default function Pair({ id }: { id: string }) {
 
   useEffect(() => {
     if (currentToken) {
-      dispatch(getTokenBoundData(currentToken.id));
+      dispatch(getTokenOrderData(currentToken.id));
     }
   }, [dispatch, currentToken]);
 
-  useEffect(() => {
-    if (value && currentToken) {
-      setInputBoundData({
-        id: currentToken.id,
-        name: currentToken.chain.name,
-        code: currentToken.chain.code,
-        boundData: {
-          buy: value.bound?.buy,
-          values: value.bound?.values,
-        } as ChartBound,
-      });
-      const outputBoundData = value.pairs?.find(
-        (item) => item.code === compareToken?.chain.code
-      );
-      if (outputBoundData) {
-        setOutputBoundData({
-          id: compareToken?.id || "",
-          name: compareToken?.chain.name || "",
-          code: compareToken?.chain.code || "",
-          boundData: {
-            buy: outputBoundData.buy,
-            values: outputBoundData.values,
-          },
-        });
-      }
-    }
-  }, [value, currentToken, compareToken]);
+  const orders = useMemo(() => {
+    const { orders } = value;
+    return orders;
+  }, [value]);
 
   return (
     <div className="flex flex-col">
@@ -100,20 +75,26 @@ export default function Pair({ id }: { id: string }) {
               </div>
             </div>
             <div className="col-span-12 md:col-span-3">
-              {inputBoundData && outputBoundData && (
+              {currentToken && compareToken && (
                 <OrderWidgetToken
-                  inputToken={inputBoundData}
-                  outputToken={outputBoundData}
+                  name1={currentToken?.chain.name as string}
+                  code1={currentToken?.chain.code as string}
+                  name2={compareToken?.chain.name as string}
+                  code2={compareToken?.chain.code as string}
+                  orders={orders}
                 />
               )}
             </div>
           </div>
           <div className="block md:hidden">
             <LiveGraphToken token={inputToken} />
-            {inputBoundData && outputBoundData && (
+            {currentToken && compareToken && (
               <OrderWidgetToken
-                inputToken={inputBoundData}
-                outputToken={outputBoundData}
+                name1={currentToken?.chain.name as string}
+                code1={currentToken?.chain.code as string}
+                name2={compareToken?.chain.name as string}
+                code2={compareToken?.chain.code as string}
+                orders={orders}
               />
             )}
             <AllPositionsToken token={inputToken} />
