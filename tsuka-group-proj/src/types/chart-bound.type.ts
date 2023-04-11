@@ -1,5 +1,5 @@
 export interface ChartBound {
-  buy?: boolean;
+  buy: boolean;
   value: number;
   values: Array<number>;
 }

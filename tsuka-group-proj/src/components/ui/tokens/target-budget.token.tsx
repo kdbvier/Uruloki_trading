@@ -2,7 +2,7 @@ import { ChartBound } from "@/types/chart-bound.type";
 import { useMemo } from "react";
 
 export const TargetBudgetToken: React.FC<ChartBound> = ({
-  buy = false,
+  buy,
   value,
   values,
 }) => {
