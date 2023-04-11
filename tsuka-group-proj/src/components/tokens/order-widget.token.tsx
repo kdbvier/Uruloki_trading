@@ -16,7 +16,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return "price" in object;
   }
 
-  const [min, max] = useMemo(() => {
+  const chartBound = useMemo(() => {
     let values: Array<number> = [];
 
     orders?.map((item) => {
@@ -30,7 +30,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
 
     const max = Math.max(...values) * 1.1;
     const min = Math.min(...values) * 0.9;
-    return [min, max];
+    return { min, max };
   }, [orders]);
 
   return (
@@ -72,7 +72,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 key={order.id}
                 buy={order.order_type === "buy"}
                 value1={order.price}
-                bound={{ min, max }}
+                bound={chartBound}
               />
             );
           } else {
@@ -82,7 +82,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 buy={order.order_type === "buy"}
                 value1={order.prices[0]}
                 value2={order.prices[1]}
-                bound={{ min, max }}
+                bound={chartBound}
               />
             );
           }
