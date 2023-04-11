@@ -6,7 +6,6 @@ import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { getTokenOrderData } from "@/store/apps/new-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { ChartBound } from "@/types/chart-bound.type";
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -15,12 +14,6 @@ interface InputToken {
   token: string;
 }
 
-interface BoundData {
-  id: string;
-  name: string;
-  code: string;
-  boundData: ChartBound;
-}
 export default function Pair({ id }: { id: string }) {
   const dispatch = useAppDispatch();
   const { value } = useAppSelector((state) => state.tokenBound);
