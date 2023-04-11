@@ -66,7 +66,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           <TargetBudgetToken
             key={order.id}
             buy={order.order_type === "buy"}
-            value={isSingle(order) ? order.price : order.prices[0]}
+            budgets={isSingle(order) ? [order.price] : order.prices}
             values={values}
           />
         ))}

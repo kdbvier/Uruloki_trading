@@ -3,16 +3,17 @@ import { useMemo } from "react";
 
 export const TargetBudgetToken: React.FC<ChartBound> = ({
   buy,
-  value,
+  budgets,
   values,
 }) => {
-  const percent = useMemo(() => {
+  const percents = useMemo(() => {
     const max = Math.max(...values);
     const min = Math.min(...values);
     const range = max - min;
-    const percent = ((value - min) / range) * 90 + 5;
-    return percent;
-  }, [value, values]);
+    return budgets.map((value) => {
+      return ((value - min) / range) * 90 + 5;
+    });
+  }, [budgets, values]);
 
   return (
     <div className="mb-4">
@@ -31,16 +32,19 @@ export const TargetBudgetToken: React.FC<ChartBound> = ({
           <div
             className={`${
               buy ? "from-green-400/10" : "from-red-400/10"
-            } w-full h-10 bg-gradient-to-t to-transparent`}
+            } w-full h-10 bg-gradient-to-t to-transparent relative`}
           >
-            <div
-              className={`${
-                buy ? "border-green-400" : "border-red-400"
-              } border-r-4 h-10`}
-              style={{
-                width: `${percent}%`,
-              }}
-            />
+            {percents.map((percent, index) => (
+              <div
+                key={index}
+                className={`${
+                  buy ? "border-green-400" : "border-red-400"
+                } border-r-4 h-10 absolute ${!index && ""}`}
+                style={{
+                  width: `${percent}%`,
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
