@@ -1,3 +1,4 @@
+import { token_cache } from "@prisma/client";
 
 export type ApiResponse<T> = {
   payload: Array<T> | T | undefined;
@@ -42,35 +43,34 @@ export type TopGainer = {
   id: number;
   rank: string | null;
   address: string | null;
-  token_cache_id: number;
-}
+  token_cache:TokenCache[]
+} 
 
 export type TopMover = {
   id: number;
   rank: string | null;
   address: string | null;
-  token_cache_id: number;
+  token_cache:TokenCache[]
 }
 export type MostBuyOrder = {
   id: number;
   rank: string | null;
   address: string | null;
-  token_cache_id: number;
+  token_cache:TokenCache[]
 }
 
 export type MostSellOrder = {
   id: number;
   rank: string | null;
   address: string | null;
-  token_cache_id: number;
+  token_cache:TokenCache[]
 }
 
 export type Token = {
-TokenCache: TokenCache;
-TopGanier: TopGainer[];
-TopMover: TopMover[];
-MostBuyOrders: MostBuyOrder[];
-MostSellOrders: MostSellOrder[];
+  TopGainer: TopGainer[];
+  TopMover: TopMover[];
+  MostBuyOrders: MostBuyOrder[];
+  MostSellOrders: MostSellOrder[];
 }
 
 export type TokenCache = {

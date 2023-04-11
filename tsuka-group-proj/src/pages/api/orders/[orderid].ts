@@ -44,7 +44,7 @@ export default async function orderHandler(
           where: {
             order_id: Number(orderid),
           },
-          data:body
+          data:value
         });
         res.status(200).json({payload:order,message: `Successfully updated order id ${orderid}`});
       } catch (err) {
