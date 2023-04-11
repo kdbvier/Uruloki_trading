@@ -1,3 +1,4 @@
+import { ChartBound } from "@/types/chart-bound.type";
 import { SingleOrder, TokenOrder } from "@/types/token-order.type";
 import { useMemo } from "react";
 import { FiPlusCircle } from "react-icons/fi";
@@ -16,7 +17,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return "price" in object;
   }
 
-  const chartBound = useMemo(() => {
+  const chartBound = useMemo((): ChartBound => {
     let values: Array<number> = [];
 
     orders?.map((item) => {
