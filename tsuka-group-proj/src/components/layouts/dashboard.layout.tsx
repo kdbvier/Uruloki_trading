@@ -91,7 +91,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
             </div>
           </div>
         </nav>
-        <div className="p-4 md:p-8">{children}</div>
+        <div className="">{children}</div>
       </main>
     </>
   );
