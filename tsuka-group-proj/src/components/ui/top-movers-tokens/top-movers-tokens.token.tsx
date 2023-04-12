@@ -150,7 +150,7 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
                     </tr>
                     {
                       !collapeds[idx] &&
-                      <tr className="md:hidden" key={idx * -1}>
+                      <tr className="md:hidden" key={100 - idx}>
                         <td colSpan={4}>
                           <div className="w-full bg-tsuka-400 rounded-lg p-3 mb-2">
                             <div className="w-full flex justify-between">

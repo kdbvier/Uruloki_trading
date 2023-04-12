@@ -11,7 +11,6 @@ export const OrderSplitBar: React.FC<OrderSplitBarProps> = ({
 }) => {
     const percentPositive = calculatePercentIncrease(buyOrderCount, sellOrderCount);
     const percentNegative = 100 - percentPositive;
-    console.log(percentPositive + "%, " + percentNegative + "%");
 
 
   return (
