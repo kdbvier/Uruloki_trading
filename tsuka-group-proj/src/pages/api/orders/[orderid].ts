@@ -76,7 +76,7 @@ export default async function orderHandler(
         res
           .status(200)
           .json({
-            payload: undefined,
+            payload: orders,
             message: `Successfully deleted order id ${orderid}`,
           });
       } catch (err) {

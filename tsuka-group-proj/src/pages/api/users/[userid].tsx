@@ -64,7 +64,7 @@ export default async function UsersHandler(
         res
           .status(200)
           .json({
-            payload: undefined,
+            payload: user,
             message: `Successfully deleted user id ${userid}`,
           });
       } catch (err) {
