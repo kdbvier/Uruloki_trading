@@ -3,19 +3,7 @@ export type ApiResponse<T> = {
   message: string;
 };
 
-export type Order = {
-  order_id: number;
-  user_id: number;
-  pair_address: string | null;
-  status: string | null;
-  token_price: number | null;
-  single_price: number | null;
-  from_price: number | null;
-  to_price: number | null;
-  budget: number | null;
-  order_type: "buy" | "sell" | null;
-  price_type: "single" | "range" | null;
-};
+
 
 export type Notification = {
   notification_id: number;
@@ -24,56 +12,45 @@ export type Notification = {
   date: Date | null;
 };
 
-export type User = {
-  user_id: number;
-  username: string;
-  email: string;
-  password?: string;
-};
 
-export type LoggedInUser = {
-  isLoggedIn: boolean;
-  username: string;
-  email: string;
-};
 
 export type TopGainer = {
-  id?: number | undefined;
-  rank?: string | null | undefined;
-  address?: string | null | undefined;
-  token_cache_id?: number | undefined;
-  token_cache: TokenCache;
-};
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+  token_cache: TokenCache | null;
+}
 
 export type TopMover = {
-  id?: number | undefined;
-  rank?: string | null | undefined;
-  address?: string | null | undefined;
-  token_cache_id?: number | undefined;
-  token_cache: TokenCache;
-};
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+  token_cache: TokenCache | null;
+}
 
 export type MostBuyOrder = {
-  id?: number | undefined;
-  rank?: string | null | undefined;
-  address?: string | null | undefined;
-  token_cache_id?: number | undefined;
-  token_cache: TokenCache;
-};
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+  token_cache: TokenCache | null;
+}
 
 export type MostSellOrder = {
-  id?: number | undefined;
-  rank?: string | null | undefined;
-  address?: string | null | undefined;
-  token_cache_id?: number | undefined;
-  token_cache: TokenCache;
-};
+  id: number;
+  rank: string | null;
+  address: string | null;
+  token_cache_id: number;
+  token_cache: TokenCache | null;
+}
 
 export type Token = {
-  TopGainer: TopGainer;
-  TopMover: TopMover;
-  MostBuyOrders: MostBuyOrder;
-  MostSellOrders: MostSellOrder;
+  TopGainer: TopGainer[];
+  TopMover: TopMover[];
+  MostBuyOrders: MostBuyOrder[];
+  MostSellOrders: MostSellOrder[];
 };
 export type TokenCache = {
   token_cache_id: number;

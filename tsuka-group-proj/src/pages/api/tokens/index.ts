@@ -12,37 +12,57 @@ export default async function TokenCacheHandler(
   switch (method) {
     case "GET":
       try {
-        const tokens = await prisma.token_cache.findMany();
-        const data = await Promise.all(
-          tokens.map(async (token) => {
-            const topGainer = await prisma.top_gainers.findFirst({
+        const topGainers = await prisma.top_gainers.findMany({});
+        const topMovers = await prisma.top_movers.findMany({});
+        const mostBuy = await prisma.most_buy_orders.findMany({});
+        const mostSell = await prisma.most_sell_orders.findMany({});
+        const topGainerData = await Promise.all(
+          topGainers.map(async (tg) => {
+            const token = await prisma.token_cache.findUnique({
               where: {
-                token_cache_id: token.token_cache_id,
+                token_cache_id: tg.token_cache_id,
               },
             });
-            const topMover = await prisma.top_movers.findFirst({
-              where: {
-                token_cache_id: token.token_cache_id,
-              },
-            });
-            const mostBuy = await prisma.most_buy_orders.findFirst({
-              where: {
-                token_cache_id: token.token_cache_id,
-              },
-            });
-            const mostSell = await prisma.most_sell_orders.findFirst({
-              where: {
-                token_cache_id: token.token_cache_id,
-              },
-            });
-            return {
-              TopGainer: { ...topGainer, token_cache: token },
-              TopMover: { ...topMover, token_cache: token },
-              MostBuyOrders: { ...mostBuy, token_cache: token },
-              MostSellOrders: { ...mostSell, token_cache: token },
-            };
+            return { ...tg, token_cache: token };
           })
         );
+        const topMoverData = await Promise.all(
+          topMovers.map(async (tm) => {
+            const token = await prisma.token_cache.findUnique({
+              where: {
+                token_cache_id: tm.token_cache_id,
+              },
+            });
+            return { ...tm, token_cache: token };
+          })
+        );
+        const mostSellData = await Promise.all(
+          mostSell.map(async (ms) => {
+            const token = await prisma.token_cache.findUnique({
+              where: {
+                token_cache_id: ms.token_cache_id,
+              },
+            });
+            return { ...ms, token_cache: token };
+          })
+        );
+        const mostBuyData = await Promise.all(
+          mostBuy.map(async (mb) => {
+            const token = await prisma.token_cache.findUnique({
+              where: {
+                token_cache_id: mb.token_cache_id,
+              },
+            });
+            return { ...mb, token_cache: token };
+          })
+        );
+        const data = {
+          TopGainer: topGainerData,
+          TopMover: topMoverData,
+          MostBuyOrders: mostBuyData,
+          MostSellOrders: mostSellData,
+        };
+
         res
           .status(200)
           .json({ payload: data, message: `Successfully found Tokens` });
