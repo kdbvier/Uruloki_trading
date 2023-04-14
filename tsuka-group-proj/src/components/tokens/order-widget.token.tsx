@@ -1,5 +1,9 @@
 import { ChartBound } from "@/types/chart-bound.type";
-import { SingleOrder, TokenOrder } from "@/types/token-order.type";
+import {
+  OrderStatusEnum,
+  SingleOrder,
+  TokenOrder,
+} from "@/types/token-order.type";
 import { useMemo } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { DefaultButton } from "../ui/buttons/default.button";
@@ -11,6 +15,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   code1,
   name2,
   code2,
+  status,
   orders,
 }) => {
   function isSingle(object: any): object is SingleOrder {
@@ -33,6 +38,22 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     const min = Math.min(...values) * 0.9;
     return { min, max };
   }, [orders]);
+
+  const statusColor = useMemo((): string => {
+    switch (status) {
+      case OrderStatusEnum.ACTIVE:
+        return "text-green-400";
+
+      case OrderStatusEnum.CANCELLED:
+        return "text-red-400";
+
+      case OrderStatusEnum.EXECUTED:
+        return "text-[#56CCF2]";
+
+      default:
+        return "text-[#56CCF2]";
+    }
+  }, [status]);
 
   return (
     <div>
@@ -61,8 +82,8 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           </div>
           <div className="text-sm text-end">
             <div className="text-tsuka-200 text-xs">Status</div>
-            <div className={`${true ? "text-green-400" : "text-red-400"}`}>
-              <li>Active</li>
+            <div className={`${statusColor}`}>
+              <li>{status}</li>
             </div>
           </div>
         </div>

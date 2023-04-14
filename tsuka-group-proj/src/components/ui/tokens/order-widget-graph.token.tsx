@@ -47,10 +47,22 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
                     key={index}
                     className={`${
                       buy ? "border-green-400" : "border-red-400"
-                    } border-r-4 h-10 absolute ${!index && ""}`}
-                    style={{
-                      width: `${percent}%`,
-                    }}
+                    } border-r-4 h-10 absolute ${
+                      index === 0
+                        ? `${
+                            buy
+                              ? "from-green-400/30 bg-gradient-to-t"
+                              : "from-red-400/30 bg-gradient-to-t"
+                          }`
+                        : `bg-tsuka-500 ${
+                            buy ? "from-green-400/10" : "from-red-400/10"
+                          } bg-gradient-to-t`
+                    }`}
+                    style={
+                      !percents[1]
+                        ? { marginLeft: `${percent}%` }
+                        : { width: `${percent}%` }
+                    }
                   />
                 )
             )}

@@ -6,6 +6,7 @@ import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { getTokenOrderData } from "@/store/apps/new-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { OrderStatusEnum } from "@/types/token-order.type";
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -21,6 +22,7 @@ export default function Pair({ id }: { id: string }) {
   const [inputToken, setInputToken] = useState<InputToken>();
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
+  const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
 
   useEffect(() => {
     const { pair_id = id || "" } = router.query;
@@ -74,6 +76,7 @@ export default function Pair({ id }: { id: string }) {
                   code1={currentToken?.chain.code as string}
                   name2={compareToken?.chain.name as string}
                   code2={compareToken?.chain.code as string}
+                  status={statusOrder}
                   orders={orders}
                 />
               )}
@@ -87,6 +90,7 @@ export default function Pair({ id }: { id: string }) {
                 code1={currentToken?.chain.code as string}
                 name2={compareToken?.chain.name as string}
                 code2={compareToken?.chain.code as string}
+                status={statusOrder}
                 orders={orders}
               />
             )}
