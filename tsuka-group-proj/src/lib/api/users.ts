@@ -1,24 +1,24 @@
-import { ApiResponse, PostUser, User } from "@/types";
+import {  PostUser, User } from "@/types";
 import { httpRequest } from "./http";
 
 
 export default class Users {
 
-  static getUsers = async (): Promise<ApiResponse<User>> => {
+  static getUsers = async (): Promise<User> => {
     return await httpRequest.get("/users");
   };
   
   static getUserbyUserId = async (
     userId: string
-  ): Promise<ApiResponse<User>> => {
+  ): Promise<User> => {
     return await httpRequest.get(`/users/${userId}`);
   };
 
-  static createUser = async (data:PostUser): Promise<ApiResponse<User>> => {
+  static createUser = async (data:PostUser): Promise<User> => {
     return await httpRequest.post('/users', data);
   };
 
-  static deleteUser = async (userId: string): Promise<ApiResponse<User>> => {
+  static deleteUser = async (userId: string): Promise<User> => {
     return await httpRequest.delete(`/users/${userId}`);
   };
 }

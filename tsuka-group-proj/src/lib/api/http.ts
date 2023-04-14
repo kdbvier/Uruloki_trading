@@ -20,7 +20,9 @@ httpRequest.interceptors.response.use(
             ...response.headers,
           };
     }
-    return response.data;
+    if(response.data['payload'])
+    return response.data['payload'];
+    return response.data
   },
   (error: AxiosError) => {
     const errorMessage = {
