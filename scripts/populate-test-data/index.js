@@ -2,9 +2,9 @@ const { PrismaClient } = require("@prisma/client");
 
 async function run() {
     const prisma = new PrismaClient();
-    //await populate_token_cache(prisma)
+    await populate_token_cache(prisma)
     await populate_top_gainers(prisma)
-    
+    await populate_top_movers(prisma)
 }
 
 async function populate_token_cache(prisma) {
@@ -21,7 +21,20 @@ async function populate_top_gainers(prisma) {
         await prisma.top_gainers.create({
             data: {
                 rank: i,
-                token_cache_id: i
+                token_cache_id: Math.floor(Math.random() * 100)
+            }
+        })
+        i++
+    }
+}
+
+async function populate_top_movers(prisma) {
+    let i = 1
+    while (i < 100) {
+        await prisma.top_movers.create({
+            data: {
+                rank: i,
+                token_cache_id: Math.floor(Math.random() * 100)
             }
         })
         i++
