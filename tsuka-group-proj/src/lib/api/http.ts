@@ -5,7 +5,7 @@ import axios, {
 
 export const httpRequest = axios.create({
   withCredentials: true,
-  baseURL: "http://localhost:3000/api",
+  baseURL: "/api",
 });
 httpRequest.interceptors.request.use( (config)=> {
     return config;
