@@ -13,11 +13,11 @@ export default async function orderHandler(
   switch (method) {
     case "GET":
       const orders = await prisma.orders.findMany({
-        where:{
-            user_id:Number(userid)
-        }
+        where: {
+          user_id: Number(userid),
+        },
       });
-      res.status(200).json({data: orders,statusCode:"200"});
+      res.status(200).json({ data: orders, statusCode: "200" });
       break;
     default:
       res.setHeader("Allow", "GET");

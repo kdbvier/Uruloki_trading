@@ -12,10 +12,13 @@ const initialState: TokenState = {
   status: "ok",
 };
 
-export const getToken = createAsyncThunk("token/get", async (id: string) => {
-  const data = tokensData.find((item) => item.id === id)!;
-  return data;
-});
+export const getToken = createAsyncThunk(
+  "token/get",
+  async (id: string): Promise<Token> => {
+    const data = tokensData.find((item) => item.id === id)!;
+    return data;
+  }
+);
 
 export const tokenSlice = createSlice({
   name: "token",

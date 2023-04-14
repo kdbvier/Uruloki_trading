@@ -4,12 +4,18 @@ import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
-import { getTokenOrderData } from "@/store/apps/new-order";
+import { getToken } from "@/store/apps/token";
+import { getUserOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { OrderStatusEnum } from "@/types/token-order.type";
+import {
+  OrderStatusEnum,
+  RangeOrder,
+  SingleOrder,
+} from "@/types/token-order.type";
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
+
 interface InputToken {
   id: string;
   token: string;
@@ -17,55 +23,51 @@ interface InputToken {
 
 export default function Pair({ id }: { id: string }) {
   const dispatch = useAppDispatch();
-  const { value } = useAppSelector((state) => state.tokenBound);
+  const {
+    token: { value: token },
+    userOrder: { value: userOrder },
+  } = useAppSelector((state) => state);
   const router = useRouter();
-  const [inputToken, setInputToken] = useState<InputToken>();
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
+  const { pair_id = id || "" } = router.query;
 
   useEffect(() => {
-    const { pair_id = id || "" } = router.query;
-    const inputToken = tokensData
-      .map((token) => {
-        return { id: token.id, token: token.chain.code };
-      })
-      .find((item) => item.id === pair_id)!;
+    dispatch(getToken(pair_id as string));
+  }, [dispatch, pair_id]);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUserOrder(token.id));
+    }
     const currentToken = tokensData.find((item) => item.id === pair_id)!;
     const compareToken = tokensData.find((item) => item.id !== pair_id)!;
-    setInputToken(inputToken);
     setCurrentToken(currentToken);
     setCompareToken(compareToken);
-  }, [id, router.query]);
+  }, [dispatch, pair_id, token]);
 
-  useEffect(() => {
-    if (currentToken) {
-      dispatch(getTokenOrderData(currentToken.id));
-    }
-  }, [dispatch, currentToken]);
-
-  const orders = useMemo(() => {
-    const { orders } = value;
-    return orders;
-  }, [value]);
+  const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
+    return userOrder?.orders;
+  }, [userOrder]);
 
   return (
     <div className="flex flex-col">
-      {inputToken && (
+      {token && (
         <>
-          <FullHeaderToken token={inputToken} />
+          <FullHeaderToken token={token} />
           <div className="hidden md:grid grid-cols-11 gap-4">
             {/* <div className="col-span-12 md:col-span-3">
-              <CompareTokenChainToken token={inputToken} networks={networks} />
+              <CompareTokenChainToken token={token} networks={networks} />
             </div> */}
             <div className="col-span-12 md:col-span-8">
-              <LiveGraphToken token={inputToken} />
+              <LiveGraphToken token={token.chain?.code} />
               <div className="hidden md:grid grid-cols-8 gap-4">
                 <div className="col-span-12 md:col-span-3">
-                  <PoolInfoToken token={inputToken} />
+                  <PoolInfoToken token={token} />
                 </div>
                 <div className="col-span-12 md:col-span-5">
-                  <AllPositionsToken token={inputToken} />
+                  <AllPositionsToken token={token} />
                 </div>
               </div>
             </div>
@@ -83,8 +85,8 @@ export default function Pair({ id }: { id: string }) {
             </div>
           </div>
           <div className="block md:hidden">
-            <LiveGraphToken token={inputToken} />
-            {currentToken && compareToken && (
+            <LiveGraphToken token={token.chain?.code} />
+            {currentToken && compareToken && orders && (
               <OrderWidgetToken
                 name1={currentToken?.chain.name as string}
                 code1={currentToken?.chain.code as string}
@@ -94,8 +96,8 @@ export default function Pair({ id }: { id: string }) {
                 orders={orders}
               />
             )}
-            <AllPositionsToken token={inputToken} />
-            <PoolInfoToken token={inputToken} />
+            <AllPositionsToken token={token} />
+            <PoolInfoToken token={token} />
           </div>
         </>
       )}

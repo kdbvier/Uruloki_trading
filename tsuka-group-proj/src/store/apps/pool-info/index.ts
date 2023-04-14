@@ -14,7 +14,7 @@ const initialState: PoolState = {
 
 export const getPoolInfo = createAsyncThunk(
   "poolInfo/get",
-  async (id: string) => {
+  async (id: string): Promise<Pool> => {
     const data = poolInfoData.find((item) => item.id === id)!;
     return data;
   }

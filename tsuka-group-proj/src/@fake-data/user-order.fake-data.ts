@@ -5,12 +5,12 @@ import {
   SingleOrder,
 } from "@/types/token-order.type";
 
-export interface TokenOrderData {
+export interface UserOrder {
   id: string;
   orders: Array<SingleOrder | RangeOrder>;
 }
 
-export const newOrderData: Array<TokenOrderData> = [
+export const userOrder: Array<UserOrder> = [
   {
     id: "1",
     orders: [

@@ -14,7 +14,7 @@ const initialState: TokenPositionState = {
 
 export const getTokenPosition = createAsyncThunk(
   "tokenPosition/get",
-  async (id: string) => {
+  async (id: string): Promise<TokenPositions> => {
     const data = tokenPositionsData.find((item) => item.id === id)!;
     return data;
   }

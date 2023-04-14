@@ -10,10 +10,7 @@ export default {
   title: "Components/Tokens/LiveGraphToken",
   component: LiveGraphToken,
   args: {
-    token: {
-      id: "1",
-      token: "ETH",
-    },
+    token: "ETH",
   },
   decorators: [
     (Story) => {
