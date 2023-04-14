@@ -22,9 +22,9 @@ export const commafy = (num: number) => {
   }
   let result = str.join('.');
   if (billion)
-    result += " Billions";
+    result += " Billion";
   else if (million)
-    result += " Millions";
+    result += " Million";
   return result;
 }
 

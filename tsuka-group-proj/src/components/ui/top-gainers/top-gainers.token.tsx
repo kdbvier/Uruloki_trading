@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
+import { commafy, commafy2 } from "@/helpers/calc.helper";
 
 interface IToken {
   token: {
@@ -57,7 +58,7 @@ export const TopGainers: React.FC<TopGainersProps> = ({
                     </td>
                     <td className="py-2 md:py-5">
                       <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                        <span className="text-tsuka-200">{`$${token.price}`}</span>
+                        <span className="text-tsuka-200">${commafy(token.price)}</span>
                         <div className="ml-2 flex text-[#6FCF97]">
                           <FiArrowUpRight className="mt-0.5" />
                           <span>{`${token.risingPercent}%`}</span>

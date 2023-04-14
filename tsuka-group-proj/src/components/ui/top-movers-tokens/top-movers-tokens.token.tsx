@@ -36,7 +36,6 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
   tokens
 }) => {
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
-  const [showAll, setShowAll] = useState<boolean>(false);
 
   useEffect(() => {
     let tempArray: boolean[] = [];
@@ -93,7 +92,6 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
           <tbody>
             {
               tokens.map((token, idx) => {
-                if (!showAll && idx > 4) return
                 return (
                   <>
                     <tr className="border-t border-t-tsuka-400" key={idx}>
@@ -193,32 +191,6 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
             }
           </tbody>
         </table>
-        {
-          !showAll &&
-          <div className="relative w-full h-16 md:h-28 -mt-12 md:-mt-24 bg-gradient-to-t from-[#1F2333FF] to-[#1F233300]">
-            <div className="w-full h-full flex justify-center items-end text-[#AF71FF]">
-              <button
-                className="border border-tsuka-400 rounded-md px-3 py-2 flex items-center gap-1 bg-tsuka-500"
-                onClick={() => setShowAll(true)}
-              >
-                <FiArrowDown /><span>Show more</span>
-              </button>
-            </div>
-          </div>
-        }
-        {
-          // !showAll &&
-          // <div className="w-full h-28 -mt-28 bg-gradient-to-t from-[#1F2333FF] to-[#1F233300]">
-          //   <div className="w-full h-full flex justify-center items-end text-[#AF71FF]">
-          //     <button
-          //       className="border border-tsuka-400 rounded-md px-3 py-2 flex items-center gap-1 bg-tsuka-500"
-          //       onClick={() => setShowAll(true)}
-          //     >
-          //       <FiArrowDown /><span>Show more</span>
-          //     </button>
-          //   </div>
-          // </div>
-        }
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
+import { commafy } from "@/helpers/calc.helper";
 
 interface IToken {
   token: {
@@ -31,7 +32,7 @@ export const MostSellOrders: React.FC<MostSellOrdersProps> = ({
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
               <th className="py-2">Tokens</th>
-              <th className="py-2 text-right md:text-left">Sell Orders(USD)</th>
+              <th className="py-2 text-right md:text-left">Sell Orders</th>
             </tr>
           </thead>
           <tbody>
@@ -55,7 +56,7 @@ export const MostSellOrders: React.FC<MostSellOrdersProps> = ({
                       </div>
                     </td>
                     <td className="py-2 md:py-5 text-right md:text-left">
-                      <span className="text-tsuka-200">{token.sellOrders}</span>
+                      <span className="text-tsuka-200">{commafy(token.sellOrders)}</span>
                     </td>
                   </tr>
                 )
