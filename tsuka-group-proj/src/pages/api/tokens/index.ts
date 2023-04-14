@@ -1,4 +1,4 @@
-import type { ApiResponse, Token } from "@/types";
+import type { ApiResponse, Tokens } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function TokenCacheHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Token>>
+  res: NextApiResponse<ApiResponse<Tokens>>
 ) {
   const { method } = req;
   switch (method) {
@@ -57,10 +57,10 @@ export default async function TokenCacheHandler(
           })
         );
         const data = {
-          TopGainer: topGainerData,
-          TopMover: topMoverData,
-          MostBuyOrders: mostBuyData,
-          MostSellOrders: mostSellData,
+          topGainers: topGainerData,
+          topMovers: topMoverData,
+          mostBuyOrders: mostBuyData,
+          mostSellOrders: mostSellData,
         };
 
         res

@@ -1,8 +1,8 @@
-import { ApiResponse, Token } from '@/types';
+import {  Tokens } from '@/types';
 import { httpRequest } from './http';
 
-export default class Tokens {
-    static getTokens = async (): Promise<ApiResponse<Token>> =>  { 
+export default class HomePageTokens {
+    static getTokens = async (): Promise<Tokens> =>  { 
         return await httpRequest.get('/tokens');
     };
 }

@@ -10,16 +10,14 @@ datasource db {
 
 model most_buy_orders {
   id             Int     @id @unique(map: "id") @default(autoincrement())
-  rank           String? @db.VarChar(1000)
-  address        String? @db.VarChar(1000)
+  rank           Int? 
   token_cache_id Int
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
 
 model most_sell_orders {
   id             Int     @id @unique(map: "id") @default(autoincrement())
-  rank           String? @db.VarChar(1000)
-  address        String? @db.VarChar(1000)
+  rank           Int?
   token_cache_id Int
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
@@ -36,11 +34,11 @@ model orders {
   order_id     Int                @id @unique(map: "order_id") @default(autoincrement())
   pair_address String?            @db.VarChar(1000)
   status       String?            @db.VarChar(100)
-  token_price  Int?
-  single_price Int?
-  from_price   Int?
-  to_price     Int?
-  budget       Int?
+  token_price  Float?
+  single_price Float?
+  from_price   Float?
+  to_price     Float?
+  budget       Float?
   order_type   orders_order_type?
   price_type   orders_price_type?
   user_id      Int
@@ -52,25 +50,26 @@ model token_cache {
   name           String?   @db.VarChar(1000)
   chain          String?   @db.VarChar(1000)
   address        String?   @db.VarChar(1000)
-  price          Int?
-  hr_change      Int?      @map("24hr_change")
+  price          Float?
+  change_24hr    Float?     
   volume         Int?
   market_cap     Int?
+  total_orders   Int?
+  buy_orders     Int?
+  sell_orders    Int?
   last_updated   DateTime? @db.Date
 }
 
 model top_gainers {
   id             Int     @id @unique(map: "id") @default(autoincrement())
-  rank           String? @db.VarChar(1000)
-  address        String? @db.VarChar(1000)
+  rank           Int?
   token_cache_id Int
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
 
 model top_movers {
   id             Int     @id @unique(map: "id") @default(autoincrement())
-  rank           String? @db.VarChar(1000)
-  address        String? @db.VarChar(1000)
+  rank           Int?
   token_cache_id Int
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
