@@ -4,6 +4,12 @@ import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.t
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
 import { useState, useEffect, useRef } from "react";
+import {
+  ITopGainer,
+  IMostBuyOrder,
+  IMostSellOrder,
+  ITopMover,
+} from "@/global";
 
 let currentTranslateX: number = 0;
 
@@ -55,7 +61,7 @@ export default function Home() {
     moveTo(toIdx);
   }
 
-  const tokens = [
+  const topGainers: ITopGainer[] = [
     {
       token: {
         id: "bitcoin",
@@ -65,8 +71,6 @@ export default function Home() {
       },
       price: 12503.83,
       risingPercent: 3.95,
-      buyOrders: 100800,
-      sellOrders: 125083,
     }, {
       token: {
         id: "polkadot",
@@ -76,8 +80,6 @@ export default function Home() {
       },
       price: 39402.77,
       risingPercent: 3.57,
-      buyOrders: 39000,
-      sellOrders: 40200,
     }, {
       token: {
         id: "anchor protocol",
@@ -87,7 +89,95 @@ export default function Home() {
       },
       price: 15590.74,
       risingPercent: 3.21,
+    }, {
+      token: {
+        id: "ethereum",
+        name: "Ethereum",
+        shortName: "ETH",
+        imgUrl: "/tokens/ethereum.png",
+      },
+      price: 3496.56,
+      risingPercent: 3.11,
+    }, {
+      token: {
+        id: "ethereum",
+        name: "Ethereum",
+        shortName: "ETH",
+        imgUrl: "/tokens/ethereum.png",
+      },
+      price: 3496.56,
+      risingPercent: 3.11,
+    },
+  ];
+
+  const mostBuyOrders: IMostBuyOrder[] = [
+    {
+      token: {
+        id: "bitcoin",
+        name: "Bitcoin",
+        shortName: "BTC",
+        imgUrl: "/tokens/bitcoin.png",
+      },
+      buyOrders: 100800,
+    }, {
+      token: {
+        id: "polkadot",
+        name: "Polkadot",
+        shortName: "DOT",
+        imgUrl: "/tokens/polkadot.png",
+      },
+      buyOrders: 39000,
+    }, {
+      token: {
+        id: "anchor protocol",
+        name: "Anchor",
+        shortName: "ANC",
+        imgUrl: "/tokens/anchor.png",
+      },
       buyOrders: 15230,
+    }, {
+      token: {
+        id: "ethereum",
+        name: "Ethereum",
+        shortName: "ETH",
+        imgUrl: "/tokens/ethereum.png",
+      },
+      buyOrders: 3800,
+    }, {
+      token: {
+        id: "ethereum",
+        name: "Ethereum",
+        shortName: "ETH",
+        imgUrl: "/tokens/ethereum.png",
+      },
+      buyOrders: 3800,
+    },
+  ];
+
+  const mostSellOrders: IMostSellOrder[] = [
+    {
+      token: {
+        id: "bitcoin",
+        name: "Bitcoin",
+        shortName: "BTC",
+        imgUrl: "/tokens/bitcoin.png",
+      },
+      sellOrders: 125083,
+    }, {
+      token: {
+        id: "polkadot",
+        name: "Polkadot",
+        shortName: "DOT",
+        imgUrl: "/tokens/polkadot.png",
+      },
+      sellOrders: 40200,
+    }, {
+      token: {
+        id: "anchor protocol",
+        name: "Anchor",
+        shortName: "ANC",
+        imgUrl: "/tokens/anchor.png",
+      },
       sellOrders: 15590,
     }, {
       token: {
@@ -96,9 +186,6 @@ export default function Home() {
         shortName: "ETH",
         imgUrl: "/tokens/ethereum.png",
       },
-      price: 3496.56,
-      risingPercent: 3.11,
-      buyOrders: 3800,
       sellOrders: 3496,
     }, {
       token: {
@@ -107,13 +194,11 @@ export default function Home() {
         shortName: "ETH",
         imgUrl: "/tokens/ethereum.png",
       },
-      price: 3496.56,
-      risingPercent: 3.11,
-      buyOrders: 3800,
       sellOrders: 3496,
     },
   ];
-  const topMoversTokens = [
+
+  const topMoversTokens: ITopMover[] = [
     {
       id: 743,
       token: "SingleEarth",
@@ -224,50 +309,30 @@ export default function Home() {
     <div className="px-4 md:px-10 pt-6 pb-8">
       <ContentHeader title="Homepage" className="w-full mb-6"/>
       <div className="hidden md:flex md:gap-5">
-        <TopGainers tokens={tokens} />
-        <MostBuyOrders tokens={tokens} />
-        <MostSellOrders tokens={tokens} />
+        <TopGainers topGainers={topGainers} />
+        <MostBuyOrders mostBuyOrders={mostBuyOrders} />
+        <MostSellOrders mostSellOrders={mostSellOrders} />
       </div>
       <div className="swipable-container w-screen -ml-4 overflow-hidden">
         <div ref={content} className="md:hidden w-[300%] -ml-[0px] flex">
           <div className="w-1/3 px-4">
-            <TopGainers tokens={tokens} />
+            <TopGainers topGainers={topGainers} />
           </div>
           <div className="w-1/3 px-4">
-            <MostBuyOrders tokens={tokens} />
+            <MostBuyOrders mostBuyOrders={mostBuyOrders} />
           </div>
           <div className="w-1/3 px-4">
-            <MostSellOrders tokens={tokens} />
+            <MostSellOrders mostSellOrders={mostSellOrders} />
           </div>
         </div>
       </div>
-      {/* <div className="swipable-container md:hidden">
-        {
-          currentBoard === 0 &&
-          <div onMouseDown={(e) => onMouseDownHanddle(e, currentBoard)} onMouseUp={(e) => onMouseUpHanddle(e, currentBoard)}>
-            <TopGainers tokens={tokens} />
-          </div>
-        }
-        {
-          currentBoard === 1 &&
-          <div onMouseDown={(e) => onMouseDownHanddle(e, currentBoard)} onMouseUp={(e) => onMouseUpHanddle(e, currentBoard)}>
-            <MostBuyOrders tokens={tokens} />
-          </div>
-        }
-        {
-          currentBoard === 2 &&
-          <div onMouseDown={(e) => onMouseDownHanddle(e, currentBoard)} onMouseUp={(e) => onMouseUpHanddle(e, currentBoard)}>
-            <MostSellOrders tokens={tokens} />
-          </div>
-        }
-      </div> */}
       <div className="md:hidden mt-3 w-full h-[3px] flex gap-2">
         <div className={`h-full w-1/3 ${currentIdx == 0 ? "bg-[#AF71FF]" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(0)}}></div>
         <div className={`h-full w-1/3 ${currentIdx == 1 ? "bg-[#AF71FF]" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(1)}}></div>
         <div className={`h-full w-1/3 ${currentIdx == 2 ? "bg-[#AF71FF]" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(2)}}></div>
       </div>
       <div className="mt-4">
-        <TopMoversTokens tokens={topMoversTokens} />
+        <TopMoversTokens topMovers={topMoversTokens} />
       </div>
     </div>
   );

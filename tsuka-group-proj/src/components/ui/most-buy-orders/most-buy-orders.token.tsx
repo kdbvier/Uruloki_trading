@@ -3,28 +3,16 @@ import Link from "next/link";
 import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { IMostBuyOrdersTokenProps } from "@/global";
 
-interface IToken {
-  token: {
-    id: string;
-    name: string;
-    shortName: string;
-    imgUrl: string;
-  };
-  buyOrders: number;
-}
-export interface MostBuyOrdersProps {
-  tokens: IToken[]
-}
-
-export const MostBuyOrders: React.FC<MostBuyOrdersProps> = ({
-  tokens
+export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
+  mostBuyOrders
 }) => {
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
         <span className="text-tsuka-50 text-[18px] font-medium">Most Buy Orders</span>
-        <Link className="flex items-center text-xs text-[#AF71FF]" href="#"><FiRefreshCcw />Auto-Refreshed in 5 sec.</Link>
+        <Link className="flex items-center text-xs text-[#AF71FF]" href="#"><FiRefreshCcw className="mr-1" />Auto-Refreshed in 5 sec.</Link>
       </div>
 
       <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-hidden mt-5">
@@ -38,7 +26,7 @@ export const MostBuyOrders: React.FC<MostBuyOrdersProps> = ({
           </thead>
           <tbody>
             {
-              tokens.map((token, idx) => {
+              mostBuyOrders.map((mostBuyOrder, idx) => {
                 return (
                   <tr className="border-t border-t-tsuka-400" key={idx}>
                     <td className="py-2 md:py-5">
@@ -50,14 +38,14 @@ export const MostBuyOrders: React.FC<MostBuyOrdersProps> = ({
                       }
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <TokenIconsToken name={token.token.id} shortName={token.token.shortName} />
+                      <TokenIconsToken name={mostBuyOrder.token.id} shortName={mostBuyOrder.token.shortName} />
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                        <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.token.name}</p>
-                        <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{token.token.shortName}</p>
+                        <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{mostBuyOrder.token.name}</p>
+                        <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{mostBuyOrder.token.shortName}</p>
                       </div>
                     </td>
                     <td className="py-2 md:py-5 text-right md:text-left">
-                      <span className="text-tsuka-200">{commafy(token.buyOrders)}</span>
+                      <span className="text-tsuka-200">{commafy(mostBuyOrder.buyOrders)}</span>
                     </td>
                   </tr>
                 )

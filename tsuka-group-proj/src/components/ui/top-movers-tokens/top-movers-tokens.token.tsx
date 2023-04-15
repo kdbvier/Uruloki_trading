@@ -12,36 +12,16 @@ import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar
 import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { useState, useEffect } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { ITopMoversTokenProps } from "@/global";
 
-interface IToken {
-  id: number;
-  token: string;
-  chain: {
-    id: string;
-    name: string;
-    shortName: string;
-    imgUrl: string;
-  };
-  price: number;
-  risingPercent: number;
-  volume: number;
-  marketCap: number;
-  orderCount: number;
-  buyOrderCount: number;
-  sellOrderCount: number;
-}
-export interface TopMoversTokensProps {
-  tokens: IToken[]
-}
-
-export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
-  tokens
+export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
+  topMovers
 }) => {
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
 
   useEffect(() => {
     let tempArray: boolean[] = [];
-    for (let i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < topMovers.length; i++) {
       tempArray[i] = true;
     }
     setCollapeds(tempArray);
@@ -93,7 +73,7 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
           </thead>
           <tbody>
             {
-              tokens.map((token, idx) => {
+              topMovers.map((topMover, idx) => {
                 return (
                   <>
                     <tr className="border-t border-t-tsuka-400" key={idx}>
@@ -101,46 +81,46 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
                         <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">#{idx + 1}</span>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
-                        <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.id}</span>
+                        <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">{topMover.id}</span>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
-                        <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.token}</span>
+                        <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">{topMover.token}</span>
                       </td>
                       <td className="py-2 md:py-8 flex items-center">
-                        <TokenIconsToken name={token.chain.id} shortName={token.chain.shortName} />
+                        <TokenIconsToken name={topMover.chain.id} shortName={topMover.chain.shortName} />
                         <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                          <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.chain.name}</p>
-                          <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{token.chain.shortName}</p>
+                          <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{topMover.chain.name}</p>
+                          <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{topMover.chain.shortName}</p>
                         </div>
                       </td>
                       <td className="py-2 md:py-8 text-right md:text-left">
                         <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                          <span className="text-tsuka-200">{`$${commafy(token.price)}`}</span>
+                          <span className="text-tsuka-200">{`$${commafy(topMover.price)}`}</span>
                           {
-                            token.risingPercent > 0 ?
+                            topMover.risingPercent > 0 ?
                               <div className="ml-2 flex text-[#6FCF97]">
                                 <FiArrowUpRight className="mt-0.5" />
-                                <span>{`${token.risingPercent}%`}</span>
+                                <span>{`${topMover.risingPercent}%`}</span>
                               </div>
                             :
                               <div className="ml-2 flex text-[#EB5757]">
                                 <FiArrowDownRight className="mt-0.5" />
-                                <span>{`${0 - token.risingPercent}%`}</span>
+                                <span>{`${0 - topMover.risingPercent}%`}</span>
                               </div>
                           }
                         </div>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
-                        <span className="text-tsuka-200">{`$${commafy(token.volume)}`}</span>
+                        <span className="text-tsuka-200">{`$${commafy(topMover.volume)}`}</span>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
-                        <span className="text-tsuka-200">{`$${commafy(token.marketCap)}`}</span>
+                        <span className="text-tsuka-200">{`$${commafy(topMover.marketCap)}`}</span>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
-                        <span className="text-tsuka-200">{`${commafy(token.orderCount)}`}</span>
+                        <span className="text-tsuka-200">{`${commafy(topMover.orderCount)}`}</span>
                       </td>
                       <td className="hidden md:table-cell">
-                        <OrderSplitBar buyOrderCount={token.buyOrderCount} sellOrderCount={token.sellOrderCount} />
+                        <OrderSplitBar buyOrderCount={topMover.buyOrderCount} sellOrderCount={topMover.sellOrderCount} />
                       </td>
                       <td className="md:hidden pl-2" onClick={() => toggle(idx)}>
                         {
@@ -156,33 +136,33 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
                             <div className="w-full flex justify-between">
                               <span className="text-[14px] leading-[18px] text-tsuka-100">Chain</span>
                               <span className="text-[14px] leading-[18px] text-tsuka-100">
-                                <span className="text-tsuka-50 mr-1">{token.chain.name}</span>
-                                <span>{token.chain.shortName}</span>
+                                <span className="text-tsuka-50 mr-1">{topMover.chain.name}</span>
+                                <span>{topMover.chain.shortName}</span>
                               </span>
                             </div>
                             <hr className="border-tsuka-300 my-2" />
                             <div className="w-full flex justify-between">
                               <span className="text-[14px] leading-[18px] text-tsuka-100">Volume</span>
                               <span className="text-[14px] leading-[18px] text-tsuka-50">
-                                {`$${commafy2(token.volume)}`}
+                                {`$${commafy2(topMover.volume)}`}
                               </span>
                             </div>
                             <hr className="border-tsuka-300 my-2" />
                             <div className="w-full flex justify-between">
                               <span className="text-[14px] leading-[18px] text-tsuka-100">Market Cap</span>
                               <span className="text-[14px] leading-[18px] text-tsuka-50">
-                                {`$${commafy2(token.marketCap)}`}
+                                {`$${commafy2(topMover.marketCap)}`}
                               </span>
                             </div>
                             <hr className="border-tsuka-300 my-2" />
                             <div className="w-full flex justify-between">
                               <span className="text-[14px] leading-[18px] text-tsuka-100">Total Num. of Orders</span>
                               <span className="text-[14px] leading-[18px] text-tsuka-50">
-                                {`${commafy2(token.orderCount)}`}
+                                {`${commafy2(topMover.orderCount)}`}
                               </span>
                             </div>
                             <div className="w-full mt-[11px]"></div>
-                            <OrderSplitBar buyOrderCount={token.buyOrderCount} sellOrderCount={token.sellOrderCount} />
+                            <OrderSplitBar buyOrderCount={topMover.buyOrderCount} sellOrderCount={topMover.sellOrderCount} />
                           </div>
                         </td>
                       </tr>
