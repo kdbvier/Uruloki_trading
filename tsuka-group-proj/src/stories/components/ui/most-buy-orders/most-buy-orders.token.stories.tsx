@@ -21,7 +21,7 @@ export default {
         token: {
           id: "polkadot",
           name: "Polkadot",
-          shortName: "PKDT",
+          shortName: "DOT",
           imgUrl: "/tokens/palkodot.png",
         },
         buyOrders: 39000,

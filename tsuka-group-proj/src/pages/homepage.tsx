@@ -71,7 +71,7 @@ export default function Home() {
       token: {
         id: "polkadot",
         name: "Polkadot",
-        shortName: "PKDT",
+        shortName: "DOT",
         imgUrl: "/tokens/polkadot.png",
       },
       price: 39402.77,
