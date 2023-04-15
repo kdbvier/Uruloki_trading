@@ -80,7 +80,7 @@ export default function Home() {
       sellOrders: 40200,
     }, {
       token: {
-        id: "anchor",
+        id: "anchor protocol",
         name: "Anchor",
         shortName: "ANC",
         imgUrl: "/tokens/anchor.png",
@@ -118,6 +118,7 @@ export default function Home() {
       id: 743,
       token: "SingleEarth",
       chain: {
+        id: "BitCoin",
         name: "BitCoin",
         shortName: "BTC",
         imgUrl: "/tokens/bitcoin.png",
@@ -133,6 +134,7 @@ export default function Home() {
       id: 456,
       token: "DogeCoins",
       chain: {
+        id: "BitCoin",
         name: "BitCoin",
         shortName: "BTC",
         imgUrl: "/tokens/bitcoin.png",
@@ -148,6 +150,7 @@ export default function Home() {
       id: 645,
       token: "USDTTether",
       chain: {
+        id: "Ethereum",
         name: "Ethereum",
         shortName: "ETH",
         imgUrl: "/tokens/ethereum.png",
@@ -163,6 +166,7 @@ export default function Home() {
       id: 563,
       token: "Shiba Inu",
       chain: {
+        id: "Ethereum",
         name: "Ethereum",
         shortName: "ETH",
         imgUrl: "/tokens/ethereum.png",
@@ -178,6 +182,7 @@ export default function Home() {
       id: 656,
       token: "SingleEarth",
       chain: {
+        id: "BitCoin",
         name: "BitCoin",
         shortName: "BTC",
         imgUrl: "/tokens/bitcoin.png",
@@ -193,6 +198,7 @@ export default function Home() {
       id: 729,
       token: "DogeCoins",
       chain: {
+        id: "BitCoin",
         name: "BitCoin",
         shortName: "BTC",
         imgUrl: "/tokens/bitcoin.png",

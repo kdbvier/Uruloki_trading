@@ -29,7 +29,7 @@ export default {
         risingPercent: 3.57,
       }, {
         token: {
-          id: "anchor",
+          id: "anchor protocol",
           name: "Anchor",
           shortName: "ANC",
           imgUrl: "/tokens/anchor.png",

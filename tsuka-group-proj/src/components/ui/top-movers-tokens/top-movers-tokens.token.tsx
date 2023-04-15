@@ -11,11 +11,13 @@ import {
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { useState, useEffect } from "react";
+import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 
 interface IToken {
   id: number;
   token: string;
   chain: {
+    id: string;
     name: string;
     shortName: string;
     imgUrl: string;
@@ -105,7 +107,7 @@ export const TopMoversTokens: React.FC<TopMoversTokensProps> = ({
                         <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.token}</span>
                       </td>
                       <td className="py-2 md:py-8 flex items-center">
-                        <Image src={token.chain.imgUrl} width={24} height={24} alt="medal1" />
+                        <TokenIconsToken name={token.chain.id} shortName={token.chain.shortName} />
                         <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                           <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.chain.name}</p>
                           <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{token.chain.shortName}</p>

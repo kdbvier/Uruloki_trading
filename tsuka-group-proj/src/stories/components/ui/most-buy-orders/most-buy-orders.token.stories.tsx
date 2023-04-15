@@ -27,7 +27,7 @@ export default {
         buyOrders: 39000,
       }, {
         token: {
-          id: "anchor",
+          id: "anchor protocol",
           name: "Anchor",
           shortName: "ANC",
           imgUrl: "/tokens/anchor.png",

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
 import { commafy } from "@/helpers/calc.helper";
+import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 
 interface IToken {
   token: {
@@ -49,7 +50,7 @@ export const MostSellOrders: React.FC<MostSellOrdersProps> = ({
                       }
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <Image src={token.token.imgUrl} width={24} height={24} alt="medal1" />
+                      <TokenIconsToken name={token.token.id} shortName={token.token.shortName} />
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                         <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.token.name}</p>
                         <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">{token.token.shortName}</p>

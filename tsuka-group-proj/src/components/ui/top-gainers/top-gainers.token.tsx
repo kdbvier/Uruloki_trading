@@ -51,7 +51,7 @@ export const TopGainers: React.FC<TopGainersProps> = ({
                       }
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <TokenIconsToken name={token.token.name} shortName={token.token.shortName} />
+                      <TokenIconsToken name={token.token.id} shortName={token.token.shortName} />
                       {/* <Image src={token.token.imgUrl} width={24} height={24} alt="medal1" /> */}
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                         <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">{token.token.name}</p>

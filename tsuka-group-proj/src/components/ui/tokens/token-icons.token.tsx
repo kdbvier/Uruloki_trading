@@ -17,9 +17,9 @@ export const TokenIconsToken: React.FC<TokenIconsTokenProps> = ({
     setHasError(true);
   }
 
-  const img = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name.toLowerCase()}.png`;
+  const img = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name.replace(" ", "-").toLowerCase()}.png`;
 
   return (
-    <Image src={hasError ? "/imgs/empty-img.png" : img} width={24} height={24} alt="token" />
+    <img src={hasError ? "/imgs/empty-img.png" : img} width={24} height={24} alt="token" onError={handleImageInputError}/>
   );
 };
