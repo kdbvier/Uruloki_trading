@@ -63,6 +63,7 @@ export default function Home() {
 
   const topGainers: ITopGainer[] = [
     {
+      rank: 1,
       token: {
         id: "bitcoin",
         name: "Bitcoin",
@@ -72,6 +73,7 @@ export default function Home() {
       price: 12503.83,
       risingPercent: 3.95,
     }, {
+      rank: 2,
       token: {
         id: "polkadot",
         name: "Polkadot",
@@ -81,6 +83,7 @@ export default function Home() {
       price: 39402.77,
       risingPercent: 3.57,
     }, {
+      rank: 3,
       token: {
         id: "anchor protocol",
         name: "Anchor",
@@ -90,6 +93,7 @@ export default function Home() {
       price: 15590.74,
       risingPercent: 3.21,
     }, {
+      rank: 4,
       token: {
         id: "ethereum",
         name: "Ethereum",
@@ -99,6 +103,7 @@ export default function Home() {
       price: 3496.56,
       risingPercent: 3.11,
     }, {
+      rank: 5,
       token: {
         id: "ethereum",
         name: "Ethereum",
@@ -112,6 +117,7 @@ export default function Home() {
 
   const mostBuyOrders: IMostBuyOrder[] = [
     {
+      rank: 1,
       token: {
         id: "bitcoin",
         name: "Bitcoin",
@@ -120,6 +126,7 @@ export default function Home() {
       },
       buyOrders: 100800,
     }, {
+      rank: 2,
       token: {
         id: "polkadot",
         name: "Polkadot",
@@ -128,6 +135,7 @@ export default function Home() {
       },
       buyOrders: 39000,
     }, {
+      rank: 3,
       token: {
         id: "anchor protocol",
         name: "Anchor",
@@ -136,6 +144,7 @@ export default function Home() {
       },
       buyOrders: 15230,
     }, {
+      rank: 4,
       token: {
         id: "ethereum",
         name: "Ethereum",
@@ -144,6 +153,7 @@ export default function Home() {
       },
       buyOrders: 3800,
     }, {
+      rank: 5,
       token: {
         id: "ethereum",
         name: "Ethereum",
@@ -156,6 +166,7 @@ export default function Home() {
 
   const mostSellOrders: IMostSellOrder[] = [
     {
+      rank: 1,
       token: {
         id: "bitcoin",
         name: "Bitcoin",
@@ -164,6 +175,7 @@ export default function Home() {
       },
       sellOrders: 125083,
     }, {
+      rank: 2,
       token: {
         id: "polkadot",
         name: "Polkadot",
@@ -172,6 +184,7 @@ export default function Home() {
       },
       sellOrders: 40200,
     }, {
+      rank: 3,
       token: {
         id: "anchor protocol",
         name: "Anchor",
@@ -180,6 +193,7 @@ export default function Home() {
       },
       sellOrders: 15590,
     }, {
+      rank: 4,
       token: {
         id: "ethereum",
         name: "Ethereum",
@@ -188,6 +202,7 @@ export default function Home() {
       },
       sellOrders: 3496,
     }, {
+      rank: 5,
       token: {
         id: "ethereum",
         name: "Ethereum",

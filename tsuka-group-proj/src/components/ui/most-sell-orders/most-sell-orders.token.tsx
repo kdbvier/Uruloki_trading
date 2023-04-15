@@ -31,10 +31,10 @@ export const MostSellOrders: React.FC<IMostSellOrdersTokenProps> = ({
                   <tr className="border-t border-t-tsuka-400" key={idx}>
                     <td className="py-2 md:py-5">
                       {
-                        idx >= 0 && idx < 3 ?
-                          <Image src={`/icons/medal${idx + 1}.png`} width={24} height={24} alt={"medal" + (idx + 1)} />
+                        mostSellOrder.rank >= 1 && mostSellOrder.rank <= 3 ?
+                          <Image src={`/icons/medal${mostSellOrder.rank}.png`} width={24} height={24} alt={"medal" + (mostSellOrder.rank)} />
                         :
-                          <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">#{idx + 1}</span>
+                          <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">#{mostSellOrder.rank}</span>
                       }
                     </td>
                     <td className="py-2 md:py-5 flex items-center">

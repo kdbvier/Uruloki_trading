@@ -15,6 +15,7 @@ export interface ITopMoversTokenProps {
 }
 
 export interface ITopGainer {
+  rank: number;
   token: {
     id: string;
     name: string;
@@ -26,6 +27,7 @@ export interface ITopGainer {
 }
 
 export interface IMostBuyOrder {
+  rank: number;
   token: {
     id: string;
     name: string;
@@ -36,6 +38,7 @@ export interface IMostBuyOrder {
 }
 
 export interface IMostSellOrder {
+  rank: number;
   token: {
     id: string;
     name: string;
