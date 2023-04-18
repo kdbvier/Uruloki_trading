@@ -38,13 +38,3 @@ export default class ContentService {
   }
 }
 
-export async function getBenifitItemsEntries() {
-  const a = (
-    // await ContentService.instance.getEntriesByType<IBenifitsItemFields>("benifitsItem")
-    await ContentService.instance.getEntriesByType<IBenifitsFields>("benifits")
-  ).map((entry) => {
-    return entry.fields;
-  });
-  console.log("log", a);
-}
-

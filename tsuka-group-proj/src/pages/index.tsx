@@ -1,30 +1,38 @@
 import { formItensData } from "@/@fake-data/form.fake-data";
 import { tokensData } from "@/@fake-data/token.fake-data";
-import { IBenifitsItemFields } from "@/@types/generated/contentful.types";
+import { IBenifitsItemFields, ILandingPage, INavbarFields } from "@/@types/generated/contentful.types";
 import { AllPositionsToken } from "@/components/tokens/all-positions.token";
 import { CompareTokenChainToken } from "@/components/tokens/compare-token-chain.token";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
-import ContentService, {getBenifitItemsEntries} from "@/lib/content-service";
-// import { getEntries } from "@/lib/contentful_1";
+import ContentService from "@/lib/content-service";
 
 import { useEffect } from "react";
-
-export default function Home() {
+type newProps = {
+  landingPages: ILandingPage[];
+}
+export default function Home({landingPages}: newProps){
   const titles = formItensData;
   const data = tokensData;
   const [inputToken, outputToken] = data.map((token) => {
     return { id: token.id, token: token.chain.code, icon: token.chain.icon };
   });
 
-  useEffect(() => {
-    // getEntries().then((items)=> console.error("items:::", items));
-    // const entries = (await (ContentService.instance.getEntriesByType<IBenifitsItemFields>("article"))).map((entry: { fields: any; })=>entry.fields);
-    // console.log(entries);
-    getBenifitItemsEntries();
-  }, [])
+  // useEffect(() => {
+  //   ContentService.instance.getEntriesByType<IBenifitsItemFields>("benifitsItem").then(results=>{
+  //     results.map(entry=>{
+  //       console.log("benifitsItem", entry.fields);
+  //     })
+  //   });
+  //   ContentService.instance.getEntriesByType<INavbarFields>("navbar").then(results=>{
+  //     results.map(entry=>{
+  //       console.log("navbar", entry.fields);
+  //     })
+  //   });
+  // }, [])
 
+  console.log(landingPages);
   const networks = ["ETH", "BSC", "POLYGON"];
   
 
@@ -51,4 +59,14 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export const getServerSideProps =async () => {
+  const landingPageContents = await ContentService.instance.getEntriesByType<ILandingPage>("landingPage");
+  const landingPages = landingPageContents.map(entry=>{
+    return entry.fields;
+  });
+
+  console.log("Inside ServerSideProps", landingPages);
+  return {props: {landingPages}}
 }
