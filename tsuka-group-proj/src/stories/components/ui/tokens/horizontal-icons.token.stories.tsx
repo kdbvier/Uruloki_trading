@@ -8,8 +8,14 @@ export default {
   title: "Components/UI/Tokens/HorizontalIconsToken",
   component: HorizontalIconsToken,
   args: {
-    inputIconPath: "/tokens/btc-icon.svg",
-    outputIconPath: "/tokens/eth-icon.svg",
+    inputToken: {
+      name: "Ethereum",
+      code: "ETH",
+    },
+    outputToken: {
+      name: "Bitcoin",
+      code: "BTC",
+    },
   },
 } as Meta<HorizontalIconsTokenProps>;
 
