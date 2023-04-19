@@ -1,4 +1,5 @@
-pandas
+pandas==2.0.0
 python-dotenv
 Requests
 SQLAlchemy
+pymysql

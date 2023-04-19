@@ -44,14 +44,14 @@ SCHEDULE = os.getenv("SCHEDULE")
 
 try:
     sqlUrl = sqlalchemy.engine.url.URL(
-        drivername="mysql+pymysql",
-        username=os.getenv("USERNAME"),
-        password=os.getenv("PASSWORD"),
-        host=os.getenv("HOST"),
-        port=3306,
-        database=os.getenv("DATABASE"),
-        query={"ssl_ca": "/etc/ssl/certs/ca-certificates.crt" },
-    )
+            drivername="mysql+pymysql",
+            username=os.getenv("USERNAME"),
+            password=os.getenv("PASSWORD"),
+            host=os.getenv("HOST"),
+            port=3306,
+            database=os.getenv("DATABASE"),
+            query={"ssl_ca": "/etc/ssl/certs/ca-certificates.crt" },
+        )
 
     connengine = sqlalchemy.create_engine(sqlUrl)
     logging.info("Connection to database succesffull")
@@ -65,7 +65,7 @@ except:
 STABLECOINS = ["WETH", "USDC", "USDT", "-", "WBTC", "DAI"]
 
 
-def convert_prices_to_usdt(currencies: list[str]):
+def convert_prices_to_usdt(currencies):
     pass
 
     params = {
