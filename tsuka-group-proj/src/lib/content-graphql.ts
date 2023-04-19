@@ -9,7 +9,7 @@ const client = new GraphQLClient(endpoint, {
 export default async function getEntriesLanding() {
   const query = gql`
     query LandingPageContent {
-      landingPage(id: ${process.env.CONTENTFUL_LANDINGPAGE_ID}) {
+      landingPage(id: "${process.env.CONTENTFUL_LANDINGPAGE_ID}") {
         footer {
           mainText
           afterMainText
@@ -83,12 +83,10 @@ export default async function getEntriesLanding() {
   `;
   const response = await client.request(query);
 
-
   return { response };
 }
 
-
-// temp 
+// temp
 async function getHowItworks() {
   const query = gql`
     query HowItworksContent {
