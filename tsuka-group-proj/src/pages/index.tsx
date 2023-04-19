@@ -6,9 +6,9 @@ import { CompareTokenChainToken } from "@/components/tokens/compare-token-chain.
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
+import getLandingPage from "@/lib/content-graphql";
 import ContentService from "@/lib/content-service";
 
-import { useEffect } from "react";
 type newProps = {
   landingPages: ILandingPage[];
 }
@@ -18,19 +18,6 @@ export default function Home({landingPages}: newProps){
   const [inputToken, outputToken] = data.map((token) => {
     return { id: token.id, token: token.chain.code, icon: token.chain.icon };
   });
-
-  // useEffect(() => {
-  //   ContentService.instance.getEntriesByType<IBenifitsItemFields>("benifitsItem").then(results=>{
-  //     results.map(entry=>{
-  //       console.log("benifitsItem", entry.fields);
-  //     })
-  //   });
-  //   ContentService.instance.getEntriesByType<INavbarFields>("navbar").then(results=>{
-  //     results.map(entry=>{
-  //       console.log("navbar", entry.fields);
-  //     })
-  //   });
-  // }, [])
 
   console.log(landingPages);
   const networks = ["ETH", "BSC", "POLYGON"];
@@ -67,6 +54,7 @@ export const getServerSideProps =async () => {
     return entry.fields;
   });
 
+  getLandingPage().then(response=> console.log("response GraphQL:: ", response));
   console.log("Inside ServerSideProps", landingPages);
   return {props: {landingPages}}
 }

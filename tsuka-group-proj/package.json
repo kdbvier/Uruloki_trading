@@ -26,6 +26,7 @@
     "eslint-config-next": "13.2.4",
     "fs": "^0.0.1-security",
     "generate": "^0.14.0",
+    "graphql-request": "^6.0.0",
     "i": "^0.3.7",
     "iron-session": "^6.3.1",
     "joi": "^17.9.1",
