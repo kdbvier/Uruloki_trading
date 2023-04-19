@@ -1,10 +1,7 @@
-
 export type ApiResponse<T> = {
   payload: Array<T> | T | undefined;
   message: string;
 };
-
-
 
 export type Notification = {
   notification_id: number;
@@ -13,35 +10,52 @@ export type Notification = {
   date: Date | null;
 };
 
-
-
 export type TopGainerItem = {
-  id: number;
-  rank: number | null
   token_cache_id: number;
-  token_cache: TokenCache | null;
-}
+  rank: number | null;
+  token_cache: {
+    name: string | null;
+    price: number | null;
+    chain: string | null;
+    change_24hr: number | null;
+} | null;
+};
 
 export type TopMoverItem = {
-  id: number;
-  rank: number | null
   token_cache_id: number;
-  token_cache: TokenCache | null;
-}
+  rank: number | null;
+  token_cache: {
+    name: string | null;
+    price: number | null;
+    chain: string | null;
+    change_24hr: number | null;
+    volume: number | null;
+    market_cap: number | null;
+    total_orders: number | null;
+    buy_split: number | null;
+    sell_split: number | null;
+} | null;
+};
 
 export type MostBuyOrder = {
-  id: number;
-  rank: number | null
   token_cache_id: number;
-  token_cache: TokenCache | null;
-}
+  rank: number | null;
+  token_cache: {
+    name: string | null;
+    chain: string | null;
+    buy_orders: number | null;
+} | null;
+};
 
 export type MostSellOrder = {
-  id: number;
-  rank: number | null
   token_cache_id: number;
-  token_cache: TokenCache | null;
-}
+  rank: number | null;
+  token_cache: {
+    name: string | null;
+    chain: string | null;
+    sell_orders: number | null;
+} | null;
+};
 
 export type Tokens = {
   topGainers: TopGainerItem[];
@@ -49,17 +63,3 @@ export type Tokens = {
   mostBuyOrders: MostBuyOrder[];
   mostSellOrders: MostSellOrder[];
 };
-export type TokenCache = {
-  token_cache_id: number
-  name: string | null
-  chain: string | null
-  address: string | null
-  price: number | null
-  change_24hr: number | null
-  volume: number | null
-  market_cap: number | null
-  total_orders: number | null
-  buy_orders: number | null
-  sell_orders: number | null
-  last_updated: Date | null
-}

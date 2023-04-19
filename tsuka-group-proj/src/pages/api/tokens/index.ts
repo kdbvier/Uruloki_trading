@@ -12,15 +12,41 @@ export default async function TokenCacheHandler(
   switch (method) {
     case "GET":
       try {
-        const topGainers = await prisma.top_gainers.findMany({});
-        const topMovers = await prisma.top_movers.findMany({});
-        const mostBuy = await prisma.most_buy_orders.findMany({});
-        const mostSell = await prisma.most_sell_orders.findMany({});
+        const topGainers = await prisma.top_gainers.findMany({
+          select: {
+            token_cache_id: true,
+            rank: true,
+          },
+        });
+        const topMovers = await prisma.top_movers.findMany({
+          select: {
+            token_cache_id: true,
+            rank: true,
+          },
+        });
+        const mostBuy = await prisma.most_buy_orders.findMany({
+          select: {
+            token_cache_id: true,
+            rank: true,
+          },
+        });
+        const mostSell = await prisma.most_sell_orders.findMany({
+          select: {
+            token_cache_id: true,
+            rank: true,
+          },
+        });
         const topGainerData = await Promise.all(
           topGainers.map(async (tg) => {
             const token = await prisma.token_cache.findUnique({
               where: {
                 token_cache_id: tg.token_cache_id,
+              },
+              select: {
+                name: true,
+                price: true,
+                chain: true,
+                change_24hr: true,
               },
             });
             return { ...tg, token_cache: token };
@@ -32,6 +58,18 @@ export default async function TokenCacheHandler(
               where: {
                 token_cache_id: tm.token_cache_id,
               },
+              select: {
+                name: true,
+                chain:true,
+                price: true,
+                change_24hr: true,
+                market_cap:true,
+                volume:true,
+                total_orders:true,
+                buy_split:true,
+                sell_split:true
+  
+              },
             });
             return { ...tm, token_cache: token };
           })
@@ -42,6 +80,11 @@ export default async function TokenCacheHandler(
               where: {
                 token_cache_id: ms.token_cache_id,
               },
+              select: {
+                name: true,
+                sell_orders:true,
+                chain: true,
+              },
             });
             return { ...ms, token_cache: token };
           })
@@ -51,6 +94,11 @@ export default async function TokenCacheHandler(
             const token = await prisma.token_cache.findUnique({
               where: {
                 token_cache_id: mb.token_cache_id,
+              },
+              select: {
+                name: true,
+                buy_orders:true,
+                chain: true,
               },
             });
             return { ...mb, token_cache: token };
