@@ -1,0 +1,218 @@
+import time
+import sqlalchemy
+from sqlalchemy.types import String, FLOAT, INT
+import requests
+import json
+import pandas
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
+
+import logging
+
+
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+logging.info('Script Started')
+
+load_dotenv()
+
+
+df_schema = {
+    "pair": String(64),
+    "name": String(64),
+    "symbol": String(64),
+    "address": String(64),
+    "pair_name": String(64),
+    "pair_address": String(64),
+    "price": FLOAT,
+    "volume": FLOAT,
+    "change_24hr": FLOAT,
+    "market_cap": FLOAT,
+    "buy_orders": INT,
+    "sell_orders": INT,
+    "total_orders": INT
+}
+
+
+# Set Env Variable
+TIMERANGE = os.getenv("TOP_GAINERS_TIME_RANGE")
+URL = "https://graphql.bitquery.io"
+API_KEY = os.getenv("BITQUERY_APIKEY")
+TXCOUNTLIMIT = os.getenv("MINTXCOUNT")
+SCHEDULE = os.getenv("SCHEDULE")
+
+
+try:
+    sqlUrl = sqlalchemy.engine.url.URL(
+            drivername="mysql+pymysql",
+            username=os.getenv("USERNAME"),
+            password=os.getenv("PASSWORD"),
+            host=os.getenv("HOST"),
+            port=3306,
+            database=os.getenv("DATABASE"),
+            query={"ssl_ca": "/etc/ssl/certs/ca-certificates.crt" },
+        )
+
+    connengine = sqlalchemy.create_engine(sqlUrl)
+    logging.info("Connection to database succesffull")
+    pass
+except:
+    pass
+    logging.error("unable to connect with database")
+    logging.error("shutting down")
+    exit(0)
+
+STABLECOINS = ["WETH", "USDC", "USDT", "-", "WBTC", "DAI"]
+
+
+def convert_prices_to_usdt(currencies):
+    pass
+
+    params = {
+        "network": "ethereum",
+        "currencies": currencies,
+        "date": datetime.utcnow().strftime("%Y-%m-%d")
+    }
+
+    payload = json.dumps({
+        "query": "query ($network: EthereumNetwork!, $currencies: [String!], $date: ISO8601DateTime) {\n  ethereum(network: $network) {\n    dexTrades(\n      exchangeName: {is: \"Uniswap\"}\n      buyCurrency: {in: $currencies}\n      sellCurrency: {is: \"0xdac17f958d2ee523a2206206994597c13d831ec7\"}\n      date: {till: $date}\n    ) {\n      buyCurrency {\n        symbol\n        address\n      }\n      last_price: maximum(of: block, get: price)\n    }\n  }\n}\n",
+        "variables": params
+    })
+
+    headers = {
+        'Content-Type': 'application/json',
+        'X-API-KEY': API_KEY
+    }
+
+    try:
+        response = requests.request("POST", URL, headers=headers, data=payload)
+        res = json.loads(response.text)
+
+        # prices in usdt
+        return pandas.json_normalize(res['data']['ethereum'], 'dexTrades')
+    except:
+        logging.error("unable to fetch prices from bitquery")
+
+    return None
+
+
+# configure request time range
+def get_top_gainers():
+
+    B = datetime.utcnow()
+    A = B - timedelta(hours=float(TIMERANGE))
+    From = A.strftime("%Y-%m-%dT%H:%M:%S")
+    Till = B.strftime("%Y-%m-%dT%H:%M:%S")
+    network = "ethereum"
+    params = {
+        "limit": 10000,
+        "offset": 0,
+        "network": network,
+        "from": From,
+        "till": Till,
+        "dateFormat": "%Y-%m-%dT%H:%M:%S"
+    }
+
+    payload = json.dumps({
+        "query": "query ($network: EthereumNetwork!, $limit: Int!, $offset: Int!, $from: ISO8601DateTime, $till: ISO8601DateTime) {\n  ethereum(network: $network) {\n    dexTrades(\n      options: {desc: \"count\", limit: $limit, offset: $offset}\n      date: {since: $from, till: $till}\n    ) {\n      sellCurrency {\n        symbol\n        name\n        address\n      }\n      buyCurrency {\n        symbol\n        name\n        address\n      }\n      count\n      latest_price: maximum(of: block, get: price)\n      earliest_price: minimum(of: block, get: price)\n      volumeUSD: tradeAmount(in: USD)\n    }\n  }\n}\n",
+        "variables": params
+    })
+    headers = {
+        'Content-Type': 'application/json',
+        'X-API-KEY': API_KEY
+    }
+
+    try:
+        response = requests.request("POST", URL, headers=headers, data=payload)
+        res = json.loads(response.text)
+
+        main_data_frame = pandas.json_normalize(
+            res['data']['ethereum'], 'dexTrades')
+        main_data_frame['latest_price'] = pandas.to_numeric(
+            main_data_frame['latest_price'])
+        main_data_frame['earliest_price'] = pandas.to_numeric(
+            main_data_frame['earliest_price'])
+
+        data_frame = main_data_frame.query(
+            'count > {}'.format(TXCOUNTLIMIT)).copy()
+        data_frame = data_frame[data_frame["sellCurrency.symbol"].isin(
+            STABLECOINS)]
+
+        data_frame['price_movement'] = data_frame['latest_price'] - \
+            data_frame['earliest_price']
+
+        # convert price to USDT
+        uniqueTokens = data_frame["sellCurrency.address"].unique().tolist()
+        df_usdt_prices = convert_prices_to_usdt(uniqueTokens)
+
+        if type(df_usdt_prices) == type(None):
+            return None
+
+        # sort based on price and return
+        mergedPD = pandas.merge_ordered(data_frame, df_usdt_prices, how="left",
+                                        left_on="sellCurrency.address", right_on="buyCurrency.address")
+
+        mergedPD['last_price'] = pandas.to_numeric(mergedPD['last_price'])
+        mergedPD["price_movement_USD"] = mergedPD["price_movement"] * \
+            mergedPD["last_price"]
+
+        # latest price has units (token A ). last_price has units (USD for token B)
+        mergedPD["token_price_USD"] = mergedPD["latest_price"] * \
+            mergedPD["last_price"]
+
+        mergedPD = mergedPD.sort_values("price_movement_USD", ascending=False)
+
+        mergedPD.rename(columns={
+            "buyCurrency.name": "name",
+            "buyCurrency.symbol_x": "symbol",
+            "buyCurrency.address_x": "address",
+            "buyCurrency.symbol_y": "pair_name",
+            "buyCurrency.address_y": "pair_address",
+            "token_price_USD": "price",
+            "volumeUSD": "volume",
+            "price_movement_USD": "change_24hr"
+        }, inplace=True)
+
+        dbdf = mergedPD[["name", "symbol", "address", "pair_name",
+                        "pair_address", "price", "volume", "change_24hr"]]
+
+        # to remove WETH WETH
+        dbdf = dbdf[dbdf['symbol'] != dbdf['pair_name']]
+
+        dbdf["pair"] = dbdf["symbol"].astype(
+            str)+"/"+dbdf["pair_name"].astype(str)
+
+        return dbdf
+    except Exception as e:
+        print(e)
+        logging.error("unable to fetch data from bitquery")
+        logging.debug(e)
+        return None
+
+
+def update():
+    while True:
+        logging.info("Attempting to update database")
+        try:
+            dbdf = get_top_gainers()
+
+            if type(dbdf) != type(None):
+                try:
+                    dbdf.to_sql(con=connengine, name='token_cache',
+                                if_exists='replace', dtype=df_schema)
+                    logging.info("Successfully updated database")
+                except Exception as e:
+                    print(e)
+                    logging.error("Unable to write results to database")
+                    fileName = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+                    logging.error(
+                        "local copy of results has been saved in {}.csv".format(fileName))
+                    dbdf.to_csv("{}.csv".format(fileName))
+        except:
+            logging.error("something went wrong while updating results")
+
+        logging.info("sleep zzzzzzzzzzzzzz...")
+        time.sleep(int(SCHEDULE))
+
+
+update()
