@@ -9,51 +9,71 @@ const client = new GraphQLClient(endpoint, {
 export default async function getEntriesLanding() {
   const query = gql`
     query LandingPageContent {
-      landingPageCollection {
-        items {
-          footer {
-            mainText
-            afterMainText
+      landingPage(id: ${process.env.CONTENTFUL_LANDINGPAGE_ID}) {
+        footer {
+          mainText
+          afterMainText
+        }
+        navbar {
+          icon {
+            title
+            url
+            width
+            height
           }
-          navbar {
-            icon {
+        }
+        benifits {
+          afterMainText
+          mainText
+          beforeMainText
+          benefitItemsCollection {
+            items {
               title
-              url
-              width
-              height
+              description
             }
           }
-          benifits {
-            afterMainText
-            mainText
-            beforeMainText
-            benefitItemsCollection {
-              items {
+        }
+        hero {
+          title
+          beforeHeroText
+          afterHeroText
+          image {
+            url
+            width
+            height
+          }
+        }
+        howItWorks {
+          beforeMainText
+          mainText
+          afterMainText
+          gettingStartedSectionsCollection {
+            items {
+              description
+              descriptionHeader
+              features
+              orientation
+              image {
                 title
+                fileName
+                url
                 description
+                width
+                height
+                size
               }
             }
           }
-          hero {
-            title
-            beforeHeroText
-            afterHeroText
-            image {
-              url
-              width
-              height
-            }
-          }
-          keyFeatures {
-            featuresCollection {
-              items {
-                title
-                description
-                icon {
-                  url
-                  width
-                  height
-                }
+        }
+        keyFeatures {
+          featuresCollection {
+            items {
+              title
+              description
+              icon {
+                url
+                width
+                height
               }
             }
           }
@@ -63,11 +83,12 @@ export default async function getEntriesLanding() {
   `;
   const response = await client.request(query);
 
-  const { howItWorks } = await getHowItworks();
 
-  return { response, howItWorks };
+  return { response };
 }
 
+
+// temp 
 async function getHowItworks() {
   const query = gql`
     query HowItworksContent {
