@@ -54,7 +54,7 @@ export const getServerSideProps =async () => {
     return entry.fields;
   });
 
-  getLandingPage().then(response=> console.log("response GraphQL:: ", response));
-  console.log("Inside ServerSideProps", landingPages);
+  // getLandingPage().then(response=> console.log("response GraphQL:: ", response));
+  // console.log("Inside ServerSideProps", landingPages);
   return {props: {landingPages}}
 }

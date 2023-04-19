@@ -10,7 +10,7 @@ type SsrProps = {
 };
 
 const Ssr = ({ responsData }: SsrProps) => {
-  console.log("in rendering", responsData);
+  // console.log("in rendering", responsData);
   return (
     <>
       <p>Temporary </p>
@@ -21,10 +21,10 @@ const Ssr = ({ responsData }: SsrProps) => {
 export async function getServerSideProps() {
   const responsData = await getEntriesLanding();
 
-  console.log(
-    "responsData::::In getServerSideProps",
-    JSON.stringify(responsData)
-  );
+  // console.log(
+  //   "responsData::::In getServerSideProps",
+  //   JSON.stringify(responsData)
+  // );
 
   return { props: { responsData } };
 }
