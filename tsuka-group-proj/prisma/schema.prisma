@@ -55,6 +55,8 @@ model token_cache {
   volume         Int?
   market_cap     Int?
   total_orders   Int?
+  buy_split      Float?
+  sell_split     Float?
   buy_orders     Int?
   sell_orders    Int?
   last_updated   DateTime? @db.Date

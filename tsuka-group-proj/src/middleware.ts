@@ -6,12 +6,12 @@ import { sessionOptions } from './lib/session';
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
-  const session = await getIronSession(request, response,sessionOptions);
-    if(!session.user)
-    return new NextResponse(
-      JSON.stringify({error:"Protected route can't access",message:"Please provide a valid authenticated session"}),
-      { status: 401 }
-    )
+  // const session = await getIronSession(request, response,sessionOptions);
+    // if(!session.user)
+    // return new NextResponse(
+    //   JSON.stringify({error:"Protected route can't access",message:"Please provide a valid authenticated session"}),
+    //   { status: 401 }
+    // )
     return NextResponse.next();
 }
 
