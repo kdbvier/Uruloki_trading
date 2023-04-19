@@ -1,5 +1,6 @@
 import time
 import sqlalchemy
+from sqlalchemy.sql import text
 from sqlalchemy.types import String, FLOAT, INT
 import requests
 import json
@@ -10,29 +11,10 @@ import os
 
 import logging
 
-
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 logging.info('Script Started')
 
 load_dotenv()
-
-
-df_schema = {
-    "pair": String(64),
-    "name": String(64),
-    "symbol": String(64),
-    "address": String(64),
-    "pair_name": String(64),
-    "pair_address": String(64),
-    "price": FLOAT,
-    "volume": FLOAT,
-    "change_24hr": FLOAT,
-    "market_cap": FLOAT,
-    "buy_orders": INT,
-    "sell_orders": INT,
-    "total_orders": INT
-}
-
 
 # Set Env Variable
 TIMERANGE = os.getenv("TOP_GAINERS_TIME_RANGE")
@@ -44,20 +26,23 @@ SCHEDULE = os.getenv("SCHEDULE")
 
 try:
     sqlUrl = sqlalchemy.engine.url.URL(
-            drivername="mysql+pymysql",
-            username=os.getenv("USERNAME"),
-            password=os.getenv("PASSWORD"),
-            host=os.getenv("HOST"),
-            port=3306,
-            database=os.getenv("DATABASE"),
-            query={"ssl_ca": "/etc/ssl/certs/ca-certificates.crt" },
-        )
+        drivername="mysql+pymysql",
+        username=os.getenv("USERNAME"),
+        password=os.getenv("PASSWORD"),
+        host=os.getenv("HOST"),
+        port=3306,
+        database=os.getenv("DATABASE"),
+        query={"ssl_ca": "/etc/ssl/certs/ca-certificates.crt"},
+    )
 
     connengine = sqlalchemy.create_engine(sqlUrl)
+    metadata = sqlalchemy.MetaData() 
+    table=sqlalchemy.Table('token_cache', metadata, autoload_with=connengine)
     logging.info("Connection to database succesffull")
     pass
-except:
+except Exception as e:
     pass
+    print(e)
     logging.error("unable to connect with database")
     logging.error("shutting down")
     exit(0)
@@ -90,14 +75,14 @@ def convert_prices_to_usdt(currencies):
 
         # prices in usdt
         return pandas.json_normalize(res['data']['ethereum'], 'dexTrades')
-    except:
+    except :
         logging.error("unable to fetch prices from bitquery")
 
     return None
 
 
 # configure request time range
-def get_top_gainers():
+def get_top_gainers() -> pandas.DataFrame | None:
 
     B = datetime.utcnow()
     A = B - timedelta(hours=float(TIMERANGE))
@@ -166,8 +151,8 @@ def get_top_gainers():
             "buyCurrency.name": "name",
             "buyCurrency.symbol_x": "symbol",
             "buyCurrency.address_x": "address",
-            "buyCurrency.symbol_y": "pair_name",
-            "buyCurrency.address_y": "pair_address",
+            "buyCurrency.symbol_y": "paired_with",
+            "buyCurrency.address_y": "pair_with_address",
             "token_price_USD": "price",
             "volumeUSD": "volume",
             "price_movement_USD": "change_24hr"
@@ -189,17 +174,21 @@ def get_top_gainers():
         logging.debug(e)
         return None
 
-
 def update():
     while True:
         logging.info("Attempting to update database")
         try:
             dbdf = get_top_gainers()
-
+            
             if type(dbdf) != type(None):
                 try:
-                    dbdf.to_sql(con=connengine, name='token_cache',
-                                if_exists='replace', dtype=df_schema)
+                    # dbdf.to_sql(con=connengine, name='token_cache',
+                    #             if_exists='replace', dtype=df_schema)
+                    dbdf = dbdf.dropna()
+                    dbdf['chain'] = "ethereum"
+                    data_dict = dbdf.to_dict("records")
+                    connengine.connect().execute(table.insert(),data_dict)
+
                     logging.info("Successfully updated database")
                 except Exception as e:
                     print(e)
@@ -214,5 +203,13 @@ def update():
         logging.info("sleep zzzzzzzzzzzzzz...")
         time.sleep(int(SCHEDULE))
 
-
 update()
+
+# "name",
+# "symbol",
+# "address",
+# "pair_name",
+# "pair_address",
+# "price",
+# "volume",
+# "change_24hr"
