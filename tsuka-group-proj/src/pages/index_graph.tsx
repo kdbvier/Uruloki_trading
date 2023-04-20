@@ -13,7 +13,7 @@ const Ssr = ({ responsData }: SsrProps) => {
   // console.log("in rendering", responsData);
   return (
     <>
-      <p>Temporary </p>
+      
     </>
   );
 };
