@@ -25,24 +25,10 @@ export default function Home({landingPage}: newProps){
 
   return (
     <div className="flex flex-col">
-      <div className="hidden md:grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-3">
-          <CompareTokenChainToken token={inputToken} networks={networks} />
-          <PoolInfoToken token={inputToken} />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <LiveGraphToken token={inputToken} />
-          <AllPositionsToken token={inputToken} />
-        </div>
-        <div className="col-span-12 md:col-span-3">
-          <OrderWidgetToken token={inputToken} />
-        </div>
-      </div>
-      <div className="block md:hidden">
-        <LiveGraphToken token={inputToken} />
-        <OrderWidgetToken token={inputToken} />
-        <AllPositionsToken token={inputToken} />
-        <PoolInfoToken token={inputToken} />
+      <div className="flex items-center">
+        <p className="hidden md:block mx-4 text-3xl font-medium text-tsuka-50 ">
+          Homepage
+        </p>
       </div>
     </div>
   );

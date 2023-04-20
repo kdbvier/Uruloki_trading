@@ -14,7 +14,7 @@ const initialState: TokenCompareState = {
 
 export const getTokenCompare = createAsyncThunk(
   "tokenCompare/get",
-  async (code: string) => {
+  async (code: string): Promise<Array<Compare>> => {
     const data = compareTokenData.filter(
       (item) => item.inputToken.code === code
     );

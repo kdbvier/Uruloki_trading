@@ -2,14 +2,20 @@ export type Token = {
   id: string;
   token: string;
   chain: {
-    icon: string;
     name: string;
     code: string;
+    address?: string;
+  };
+  pair?: {
+    name: string;
+    code: string;
+    address: string;
   };
   price: {
     value: string;
     operator: "+" | "-";
     variationValue: number;
+    variationValueDiference?: number;
   };
   volume: {
     value: string;

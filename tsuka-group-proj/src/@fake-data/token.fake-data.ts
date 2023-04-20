@@ -1,33 +1,39 @@
 import { Token } from "@/types/token.type";
 
 export const tokenData: Token = {
-  id: "123",
-  token: "ABC",
+  id: "1",
+  token: "Ethereum",
   chain: {
-    icon: "https://example.com/chain-icon.png",
-    name: "Example Chain",
-    code: "EXC",
+    name: "Ethereum",
+    code: "ETH",
+    address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
+  },
+  pair: {
+    code: "BTC",
+    name: "Bitcoin",
+    address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
   },
   price: {
-    value: "1.23",
+    value: "4,095.98",
     operator: "+",
-    variationValue: 0.45,
+    variationValue: 0.76,
+    variationValueDiference: 0.00523,
   },
   volume: {
-    value: "4.56",
+    value: "32,987,497,674",
     currencyLabel: "Billions",
   },
   marketCap: {
-    value: "7.89",
+    value: "476,892,747,054",
     currencyLabel: "Billions",
   },
   nOrders: {
-    value: "10",
-    currencyLabel: "Billions",
+    value: "103,912",
+    currencyLabel: "Millions",
   },
   orderSplit: {
-    buy: 5,
-    sell: 5,
+    buy: 3782,
+    sell: 3154,
   },
 };
 
@@ -36,17 +42,23 @@ export const tokensData: Array<Token> = [
     id: "1",
     token: "Ethereum",
     chain: {
-      icon: "/tokens/eth-icon.svg",
       name: "Ethereum",
       code: "ETH",
+      address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
+    },
+    pair: {
+      code: "BTC",
+      name: "Bitcoin",
+      address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
     },
     price: {
       value: "4,095.98",
       operator: "+",
       variationValue: 0.76,
+      variationValueDiference: 0.00523,
     },
     volume: {
-      value: "32,987,497,674",
+      value: "32,987.54",
       currencyLabel: "Billions",
     },
     marketCap: {
@@ -66,9 +78,13 @@ export const tokensData: Array<Token> = [
     id: "2",
     token: "Bitcoin",
     chain: {
-      icon: "/tokens/btc-icon.svg",
       name: "Bitcoin",
       code: "BTC",
+    },
+    pair: {
+      code: "ETH",
+      name: "Ethereum",
+      address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
     },
     price: {
       value: "59,521.23",
