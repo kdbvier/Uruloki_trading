@@ -65,10 +65,7 @@ export default async function TokenCacheHandler(
                 change_24hr: true,
                 market_cap:true,
                 volume:true,
-                total_orders:true,
-                buy_split:true,
-                sell_split:true
-  
+                total_orders:true
               },
             });
             return { ...tm, token_cache: token };
@@ -113,7 +110,7 @@ export default async function TokenCacheHandler(
 
         res
           .status(200)
-          .json({ payload: data, message: `Successfully found Tokens` });
+          //.json({ payload: data, message: `Successfully found Tokens` });
       } catch (err) {
         res.status(400).json({
           payload: undefined,

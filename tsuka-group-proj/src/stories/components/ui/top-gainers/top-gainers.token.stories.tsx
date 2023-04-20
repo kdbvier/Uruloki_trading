@@ -1,8 +1,8 @@
 import {
-  TopGainers as TopGainersComponent,
-  TopGainersProps,
+  TopGainers as TopGainersComponent
 } from "@/components/ui/top-gainers/top-gainers.token";
 import { Meta, StoryObj } from "@storybook/react";
+import { ITopGainersTokenProps } from "@/global"
 
 export default {
   title: "Components/UI/TopGainers/TopGainers",
@@ -48,6 +48,6 @@ export default {
       },
     ],
   },
-} as Meta<TopGainersProps>;
+} as Meta<ITopGainersTokenProps>;
 
-export const TopGainers: StoryObj<TopGainersProps> = {};
+export const TopGainers: StoryObj<ITopGainersTokenProps> = {};

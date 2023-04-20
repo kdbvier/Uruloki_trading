@@ -16,7 +16,7 @@ export default function Home({landingPage}: newProps){
   const titles = formItensData;
   const data = tokensData;
   const [inputToken, outputToken] = data.map((token) => {
-    return { id: token.id, token: token.chain.code, icon: token.chain.icon };
+    return { id: token.id, token: token.chain.code, icon: "" };
   });
 
   console.log(landingPage);
