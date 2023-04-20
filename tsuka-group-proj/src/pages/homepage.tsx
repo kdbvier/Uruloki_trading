@@ -4,6 +4,7 @@ import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.t
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
 import { useState, useEffect, useRef } from "react";
+import HomePageTokens from "../lib/api/tokens"
 import {
   ITopGainer,
   IMostBuyOrder,
@@ -15,6 +16,15 @@ let currentTranslateX: number = 0;
 
 export default function Home() {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
+
+  useEffect(() => {
+    const temp = async () => {
+      let res = await HomePageTokens.getTokens();
+      console.log(res)
+    }
+
+    temp();
+  })
   
   let content: any = useRef();
   let x1: number = 0;
