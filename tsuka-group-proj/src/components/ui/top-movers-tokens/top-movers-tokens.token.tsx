@@ -10,7 +10,7 @@ import {
 } from "react-icons/fi";
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopMoversTokenProps } from "@/global";
 
@@ -75,8 +75,8 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
             {
               topMovers.map((topMover, idx) => {
                 return (
-                  <>
-                    <tr className="border-t border-t-tsuka-400" key={idx}>
+                  <Fragment key={idx}>
+                    <tr className="border-t border-t-tsuka-400">
                       <td className="py-2 md:py-8">
                         <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">#{idx + 1}</span>
                       </td>
@@ -130,7 +130,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                     </tr>
                     {
                       !collapeds[idx] &&
-                      <tr className="md:hidden" key={100 - idx}>
+                      <tr className="md:hidden">
                         <td colSpan={4}>
                           <div className="w-full bg-tsuka-400 rounded-lg p-3 mb-2">
                             <div className="w-full flex justify-between">
@@ -167,7 +167,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                         </td>
                       </tr>
                     }
-                  </>
+                  </Fragment>
                 )
               })
             }

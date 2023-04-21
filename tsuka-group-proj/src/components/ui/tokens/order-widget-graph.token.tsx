@@ -5,6 +5,7 @@ export interface OrderWidgetGraphProp {
   buy: boolean;
   value1: number;
   value2?: number;
+  budget: number;
   bound: ChartBound;
 }
 
@@ -12,6 +13,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   buy,
   value1,
   value2,
+  budget,
   bound: { min, max },
 }) => {
   const percents = useMemo(() => {
@@ -22,18 +24,23 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   }, [value1, value2, min, max]);
 
   return (
-    <div className="mb-4">
-      <div className="px-4 py-2 border border-tsuka-400 text-tsuka-50">
+    <div className="mb-2">
+      <div className="px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
       </div>
       <div className="border border-tsuka-400 text-tsuka-100">
-        <p
-          className={`${
-            buy ? "text-green-400" : "text-red-400"
-          } mx-4 my-2 text-xs`}
-        >
-          Target Price
-        </p>
+        <div className="py-2 px-4 text-sm text-tsuka-100">
+          <div className="mb-2 flex justify-between">
+            <span className={buy ? "text-green-400" : "text-red-400"}>
+              {value2 ? "Price range" : "Target price"}
+            </span>
+            <span>{`${value1}${value2 ? " - " + value2 : ""}`}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Budget</span>
+            <span>{budget}</span>
+          </div>
+        </div>
         <div className="flex mt-4">
           <div
             className={`${
