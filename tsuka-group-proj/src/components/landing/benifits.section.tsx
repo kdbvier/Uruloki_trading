@@ -44,6 +44,7 @@ export const BenifitsSection: React.FC<BenifitsSectionProps> = ({
         MainText={MainText}
         beforeMainText={beforeMainText}
         afterMainText={afterMainText}
+        beforeTextStyle={false}
       />
       <div className="flex flex-wrap gap-8 px-28 mt-24">
         {items.map((item, index) => {

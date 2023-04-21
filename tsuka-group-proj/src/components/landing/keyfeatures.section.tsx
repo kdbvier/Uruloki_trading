@@ -47,6 +47,7 @@ export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
         MainText={MainText}
         beforeMainText={beforeMainText}
         afterMainText={afterMainText}
+        beforeTextStyle={false}
       />
       <div className="flex gap-8 px-28 mt-24">
         {items.map((item, index) => {

@@ -24,6 +24,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({
         MainText={MainText}
         beforeMainText={beforeMainText}
         afterMainText={afterMainText}
+        beforeTextStyle={false}
       />
       <div className="flex flex-col mt-24">
         {items.map((item) => {

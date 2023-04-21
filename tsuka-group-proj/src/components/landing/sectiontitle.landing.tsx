@@ -5,17 +5,20 @@ export interface SectionTitleProps {
   MainText: string;
   beforeMainText: string;
   afterMainText: string;
+  beforeTextStyle: boolean;
 }
 
 export const SectionTitle: React.FC<SectionTitleProps> = ({
   MainText,
   beforeMainText,
   afterMainText,
+  beforeTextStyle=false,
 }) => {
+  let BeforeStyle = beforeTextStyle?"bg-gradient-to-r from-[#003525] to-[#31C699]":"bg-[#ffffff44]";
   return (
 
       <div className="px-28 justify-center text-center relative">
-        <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px]">
+        <div className={`inline-block ${BeforeStyle} rounded-full p-[1px]`}>
           <h1 className=" text-white bg-black text-xs leading-[150%] font-normal text-center rounded-full pl-[12px] py-[6px] pr-[18px]">
             {beforeMainText}
           </h1>

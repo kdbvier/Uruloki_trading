@@ -47,6 +47,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
         MainText={title}
         beforeMainText={beforeHeroText}
         afterMainText={afterHeroText}
+        beforeTextStyle={true}
       />
       <div className="text-tsuka-100 mb-4 md:mb-0 z-10">
         <div className="flex justify-center mt-10">
