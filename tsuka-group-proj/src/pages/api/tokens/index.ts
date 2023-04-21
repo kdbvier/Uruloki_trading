@@ -1,4 +1,4 @@
-import type { ApiResponse, Tokens } from "@/types";
+import type { ApiResponse, MostBuyOrder, MostSellOrder, Tokens, TopMoverItem } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function TokenCacheHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<any>>
+  res: NextApiResponse<ApiResponse<Tokens>>
 ) {
   const { method } = req;
   switch (method) {
@@ -28,73 +28,74 @@ export default async function TokenCacheHandler(
           include: {
             token_cache: {
               include:{
-                order:true
+                orders:true
               }
             },
           },
-        });
-        const topMovsers = await prisma.top_movers.aggregate({
-         where:{
-          token_cache:{
-            order:{
-              every:{
-                order_type:'sell'
-              }
-            }
-          }
-         }
-        });
-        const topMovserss = await prisma.top_movers.aggregate({
-          where:{
-           token_cache:{
-             order:{
-               every:{
-                 order_type:'buy'
-               }
-             }
-           }
-          }
-         });
-        let sellOrders=0
-        let buyOrders=0
-        let totalOrders = 0
+        });  
         const topMoversData =topMovers.map((tm)=>{
-          tm.token_cache.order.map((order)=>{
+        let sell_orders=0
+        let buy_orders=0
+        let total_orders = 0
+          tm.token_cache.orders.map((order)=>{
             if(order.order_type==='sell'){
-              sellOrders++;
+              sell_orders++;
             }
             if(order.order_type==='buy'){
-              buyOrders++;
+              buy_orders++;
             }
-            totalOrders++;
+            total_orders++;
           })
-
+           const topmoverItem = tm as any
+          return Object.assign({},delete topmoverItem['token_cache']['orders'],delete topmoverItem['token_cache']['last_updated'],topmoverItem,{buy_orders,sell_orders,total_orders}) as TopMoverItem
         })
         const mostBuy = await prisma.most_buy_orders.findMany({
         include:{
           token_cache:{
-            select: {
-              name: true,
-              chain: true,
-            },
+           include:{
+            orders:true
+           }
           }
         }
         });
+        const mostBuyData =mostBuy.map((mb)=>{
+          let buy_orders=0
+          let total_orders=0
+            mb.token_cache.orders.map((order)=>{
+              if(order.order_type==='buy'){
+                buy_orders++;
+              }
+              total_orders++;
+            })
+             
+            return Object.assign({},{id:mb.id,rank:mb.rank,token_cache:{name:mb.token_cache.name,chain:mb.token_cache.chain},buy_orders,total_orders}) as MostBuyOrder
+          })
+          
         const mostSell = await prisma.most_sell_orders.findMany({
           include:{
             token_cache:{
-              select: {
-                name: true,
-                chain: true,
-              },
+              include:{
+                orders:true
+              }
             }
           }
         });
-        const data = {
+        const mostSellData =mostSell.map((ms)=>{
+          let sell_orders=0
+          let total_orders=0
+            ms.token_cache.orders.map((order)=>{
+              if(order.order_type==='sell'){
+                sell_orders++;
+              }
+              total_orders++;
+            })
+            return Object.assign({},{id:ms.id,rank:ms.rank,token_cache:{name:ms.token_cache.name,chain:ms.token_cache.chain},sell_orders,total_orders}) as MostSellOrder
+          })
+        const data:Tokens = {
           topGainers: topGainers,
-          topMovers: topMovers,
-          mostBuyOrders: mostBuy,
-          mostSellOrders: mostSell,
+          topMovers: topMoversData,
+          mostBuyOrders: mostBuyData,
+          mostSellOrders: mostSellData,
         };
 
         res.status(200).json({ payload: data, message: `Successfully found Tokens` });
