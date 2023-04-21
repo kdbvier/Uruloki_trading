@@ -1,5 +1,6 @@
 import {
   BlurProps,
+  BlurCircleProps,
   BlurLanding as BlurLandingComponent,
 } from "@/components/landing/blur.landing";
 
@@ -9,11 +10,26 @@ export default {
   title: "Landing/Component",
   component: BlurLandingComponent,
   args: {
-    left: 94,
-    top: -86,
+    width: 889,
+    height: 629,
+    top: -251,
+    left: -401,
     radius: 300,
-    color: "#004B35",
-    blurSize: 200
+    blurSize: 200,
+    circles: [
+      {
+        radius: 629,
+        left:0,
+        top:0,
+        color: "#2DB38A"
+      },
+      {
+        radius: 393,
+        left:496,
+        top:166,
+        color: "#004B35"
+      }
+    ]
   },
 } as Meta<BlurProps>;
 

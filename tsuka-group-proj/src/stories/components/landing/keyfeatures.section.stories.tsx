@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Setion",
+  title: "Landing/Section",
   component: KeyFeaturesSectionComponent,
   args: {
     beforeMainText:"Key Features",

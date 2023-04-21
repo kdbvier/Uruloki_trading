@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CoinTypeLanding } from "./cointype.landing";
 import { SectionTitle, SectionTitleProps } from "./sectiontitle.landing";
+import { BlurLanding } from "./blur.landing";
 
 export interface HeroProps {
   title: string;
@@ -20,7 +21,28 @@ export const HeroLanding: React.FC<HeroProps> = ({
   image,
 }) => {
   return (
-    <div className="w-[1440px] bg-tsuka-700 py-4 overflow-hidden">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden relative">
+      <BlurLanding
+        width={889}
+        height={629}
+        left={-401}
+        top={-251}
+        blurSize={200}
+        circles={[
+          {
+            radius: 629,
+            left: 0,
+            top: 0,
+            color: "#2DB28A",
+          },
+          {
+            radius: 300,
+            left: 495,
+            top: 166,
+            color: "#00261B",
+          },
+        ]}
+      />
       <SectionTitle
         MainText={title}
         beforeMainText={beforeHeroText}

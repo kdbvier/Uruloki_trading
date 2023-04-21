@@ -1,37 +1,55 @@
 export interface BlurProps {
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  blurSize: number;
+  circles: BlurCircleProps[];
+}
+
+export interface BlurCircleProps {
   radius: number;
   left: number;
   top: number;
   color: string;
-  blurSize: number;
 }
 
 export const BlurLanding: React.FC<BlurProps> = ({
-  radius,
+  width,
+  height,
   left,
   top,
-  color,
-  blurSize
+  blurSize,
+  circles,
 }) => {
-  // w-[${radius}px] h-[${radius}px] bg-[${color}] blur-[${blurSize}px] left-[${left}px] top-[${top}px]
-  // const  divStyle = { width: `${radius}px`};
-  const  divStyle = { width: `${radius}px`, height: `${radius}px`, backgroundColor: `${color}`, left: `${left}px`, top: `${top}px`, };
-  const blurClass = `absolute inset-0 flex justify-center items-center  rounded-full  filter blur-[200px]  h-[393px] text-white bg-[#004B35] left-[94px] top-[-84px]` as string;
-  console.log("blurClass: ", blurClass)
+  const divStyle = {
+    width: `${width}px`,
+    height: `${height}px`,
+    left: `${left}px`,
+    top: `${top}px`,
+    filter: `blur(${blurSize}px)`,
+  };
   return (
-    <div className="w-[1440px] bg-tsuka-700 py-4 overflow-hidden h-screen">
-      <div className="px-28 justify-center text-center relative">
-        {/* <div className={`${blurClass}` + `w-[${radius}px]`}> */}
-        <div className={`${blurClass}`} style = {divStyle} >
-        {/* <div className="absolute inset-0 flex justify-center items-center w-[393px] h-[393px] rounded-full bg-[#004B35] filter blur-[200px] left-[94px] top-[-84px]"> */}
-          {blurClass}
-        </div>    
-        <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px]">
-          <h1 className=" text-white bg-tsuka-500 text-xs font-normal text-center rounded-full pl-[12px] py-[6px] pr-[18px]">
-            {"Should be displayed"}
-          </h1>
-        </div>   
-      </div>
+    // <div className="absolute inset-0 flex justify-center items-center">
+    //   <div className="rounded-full"  style={divStyle}></div>
+    //   <div className="rounded-full"  style={divStyle}></div>
+    // </div>
+    <div
+      className="w-[889px] h-[629px] left-[-401px] top-[-25px] filter blur-[200px] absolute"
+      style={divStyle}
+    >
+      {circles.map((circleProp) => {
+        let circleStyle = {
+          width: `${circleProp.radius}px`,
+          height: `${circleProp.radius}px`,
+          left: `${circleProp.left}px`,
+          top: `${circleProp.top}px`,
+          backgroundColor: `${circleProp.color}`,
+        };
+        return <div key={circleProp.color} className="rounded-full absolute" style={circleStyle}></div>;
+      })}
+      {/* <div className="rounded-full w-[629px] h-[629px] left-0 top-0 bg-[#2DB38A] text-[#2DB28A] absolute"></div>
+      <div className="rounded-full w-[393px] h-[393px] right-0 top-[166px] bg-[#2DB38A] text-[#2DB28A] absolute"></div> */}
     </div>
   );
 };
