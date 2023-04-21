@@ -48,24 +48,26 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   const statusColor = useMemo((): string => {
     switch (status) {
       case OrderStatusEnum.ACTIVE:
-        return "green-400";
+        return "green";
 
       case OrderStatusEnum.CANCELLED:
-        return "red-400";
+        return "red";
 
       case OrderStatusEnum.EXECUTED:
-        return "[#56CCF2]";
+        return "blue";
 
       default:
-        return "[#56CCF2]";
+        return "blue";
     }
   }, [status]);
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
 
   useEffect(() => {
     if (showPopupBg == false)
       setShowPopup(false);
+      setShowConfirmDlg(false);
   }, [showPopupBg]);
 
   const manageHandler = (event: any) => {
@@ -117,7 +119,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
         }
       })}
       <div className="relative flex justify-center">
-        <button className="text-[#AF71FF] font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
+        <button className="text-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
         {
           showPopup &&
           <div className="absolute z-40 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]">
@@ -130,11 +132,30 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
             </div>
             <hr className="my-3 border-tsuka-400" />
             <div
-              className="flex justify-between items-center text-[#EB5757] text-lg cursor-pointer"
-              onClick={() => {setShowPopupBg(false); setShowDeletedAlert(true)}}
+              className="flex justify-between items-center text-red text-lg cursor-pointer"
+              onClick={() => {setShowConfirmDlg(true);}}
             >
               <span>Delete</span>
               <FiTrash />
+            </div>
+          </div>
+        }
+        {
+          showConfirmDlg &&
+          <div className="absolute z-40 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]">
+            <p className="text-center text-tsuka-50 text-lg font-medium">Are you sure?</p>
+            <hr className="my-3 border-tsuka-400" />
+            <div
+              className="py-[11px] text-primary text-lg text-center bg-tsuka-400 rounded-md cursor-pointer"
+              onClick={() => {setShowPopupBg(false); setShowConfirmDlg(false);}}
+            >
+              No, Cancel
+            </div>
+            <div
+              className="mt-2 py-[11px] text-red text-lg text-center bg-tsuka-400 rounded-md cursor-pointer"
+              onClick={() => {setShowPopupBg(false); setShowConfirmDlg(false); setShowDeletedAlert(true)}}
+            >
+              Yes, Delete
             </div>
           </div>
         }

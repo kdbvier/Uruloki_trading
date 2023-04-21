@@ -98,12 +98,12 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                           <span className="text-tsuka-200">{`$${commafy(topMover.price)}`}</span>
                           {
                             topMover.risingPercent > 0 ?
-                              <div className="ml-2 flex text-[#6FCF97]">
+                              <div className="ml-2 flex text-green">
                                 <FiArrowUpRight className="mt-0.5" />
                                 <span>{`${topMover.risingPercent}%`}</span>
                               </div>
                             :
-                              <div className="ml-2 flex text-[#EB5757]">
+                              <div className="ml-2 flex text-red">
                                 <FiArrowDownRight className="mt-0.5" />
                                 <span>{`${0 - topMover.risingPercent}%`}</span>
                               </div>

@@ -1,4 +1,4 @@
-import { FiFilter, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
+import { FiFilter, FiSearch, FiX, FiChevronDown, FiArrowDown } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { UserOrder, userOrder } from "@/@fake-data/user-order.fake-data";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
@@ -16,6 +16,7 @@ export default function Home() {
   const [showEditOrderModal, setShowEditOrderModal] = useState(false);
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [isBuy, setIsBuy] = useState(true);
+  const [showAll, setShowAll] = useState(false);
   const [targetPrice, setTargetPrice] = useState("25000");
   const [amount, setAmount] = useState("40000");
   const [showDeletedAlert, setShowDeletedAlert] = useState(false);
@@ -39,13 +40,13 @@ export default function Home() {
         <div className="w-full md:w-auto flex flex-wrap">
           <div className="w-full md:w-auto flex gap-1">
             <button
-              className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${openMode ? "bg-tsuka-500 text-[#AF71FF]" : "text-tsuka-300"} rounded-md text-sm`}
+              className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${openMode ? "bg-tsuka-500 text-primary" : "text-tsuka-300"} rounded-md text-sm`}
               onClick={() => setOpenMode(true)}
             >
               Open Orders
             </button>
             <button
-              className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${!openMode ? "bg-tsuka-500 text-[#AF71FF]" : "text-tsuka-300"} rounded-md text-sm`}
+              className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${!openMode ? "bg-tsuka-500 text-primary" : "text-tsuka-300"} rounded-md text-sm`}
               onClick={() => setOpenMode(false)}
             >
               Closed Orders
@@ -75,6 +76,23 @@ export default function Home() {
       <div className="grid grid-cols-12 gap-x-5">
         {
           userOrder.map((order, idx) => {
+            if (idx > 2)
+              return (
+                <div className={`${showAll ? "" : "hidden md:block"} col-span-12 md:col-span-6 lg:col-span-4`} key={idx}>
+                  <OrderWidgetToken
+                    name1={"ethereum"}
+                    code1={"ETH"}
+                    name2={"bitcoin"}
+                    code2={"BTC"}
+                    status={OrderStatusEnum.ACTIVE}
+                    orders={order.orders}
+                    showPopupBg={showPopupBg}
+                    setShowPopupBg={setShowPopupBg}
+                    setShowEditOrderModal={setShowEditOrderModal}
+                    setShowDeletedAlert={setShowDeletedAlert}
+                  />
+                </div>
+              )
             return (
               <div className="col-span-12 md:col-span-6 lg:col-span-4" key={idx}>
                 <OrderWidgetToken
@@ -94,6 +112,17 @@ export default function Home() {
           })
         }
       </div>
+      {
+        !showAll &&
+        <div className="mt-4 flex justify-center">
+          <button
+            className="md:hidden flex items-center text-primary font-medium py-2 px-3 bg-tsuka-500 rounded-md"
+            onClick={() => setShowAll(true)}  
+          >
+            <FiArrowDown className="text-lg mr-1" />Show more
+          </button>
+        </div>
+      }
       {
         showPopupBg &&
         <div
@@ -117,7 +146,7 @@ export default function Home() {
                 />
               </div>
               <div
-                className="w-full mt-4 flex justify-between items-center border rounded-md border-tsuka-400 bg-tsuka-500 py-[8px] px-3 cursor-pointer"
+                className="w-full mt-4 flex justify-between items-center border rounded-md border-tsuka-400 bg-tsuka-500 hover:bg-tsuka-400 py-[8px] px-3 cursor-pointer"
                 onClick={() => setSeletCollaped(!seletCollaped)}
               >
                 <div className="flex items-center">
@@ -136,7 +165,7 @@ export default function Home() {
                 {
                   !seletCollaped &&
                   <div className="absolute z-50 w-full shadow-gray-900 shadow-lg">
-                    <div className="w-full flex items-center px-4 py-1 border-b border-tsuka-300 bg-tsuka-500">
+                    <div className="w-full flex items-center px-4 py-1 border-b border-tsuka-300 bg-tsuka-500 hover:bg-tsuka-400">
                       <TokenIconsToken name={name1} shortName={code1} width={24} height={24} />
                       <TokenIconsToken className="-ml-1" name={name2} shortName={code2} width={24} height={24} />
                       <div className="px-2 flex flex-col">
@@ -146,7 +175,7 @@ export default function Home() {
                         <label className="text-sm text-tsuka-300">ID: {name1}/{name2}</label>
                       </div>
                     </div>
-                    <div className="w-full flex items-center px-4 py-1 border-b border-tsuka-300 bg-tsuka-500">
+                    <div className="w-full flex items-center px-4 py-1 border-b border-tsuka-300 bg-tsuka-500 hover:bg-tsuka-400">
                       <TokenIconsToken name={name1} shortName={code1} width={24} height={24} />
                       <TokenIconsToken className="-ml-1" name={name2} shortName={code2} width={24} height={24} />
                       <div className="px-2 flex flex-col">
@@ -156,7 +185,7 @@ export default function Home() {
                         <label className="text-sm text-tsuka-300">ID: {name1}/{name2}</label>
                       </div>
                     </div>
-                    <div className="w-full flex items-center px-4 py-1 border-b border-tsuka-300 bg-tsuka-500">
+                    <div className="w-full flex items-center px-4 py-1 border-b border-tsuka-300 bg-tsuka-500 hover:bg-tsuka-400">
                       <TokenIconsToken name={name1} shortName={code1} width={24} height={24} />
                       <TokenIconsToken className="-ml-1" name={name2} shortName={code2} width={24} height={24} />
                       <div className="px-2 flex flex-col">
@@ -171,13 +200,13 @@ export default function Home() {
               </div>
               <div className="w-full mt-4 flex">
                 <button
-                  className={`${isBuy ? "text-[#AF71FF] border-[#AF71FF]" : "text-tsuka-300 border-tsuka-300"} w-1/2 border-b text-center py-[11px]`}
+                  className={`${isBuy ? "text-primary border-primary" : "text-tsuka-300 border-tsuka-300"} w-1/2 border-b text-center py-[11px]`}
                   onClick={() => setIsBuy(true)}
                 >
                   BUY
                 </button>
                 <button
-                  className={`${!isBuy ? "text-[#AF71FF] border-[#AF71FF]" : "text-tsuka-300 border-tsuka-300"} w-1/2 border-b text-center py-[11px]`}
+                  className={`${!isBuy ? "text-primary border-primary" : "text-tsuka-300 border-tsuka-300"} w-1/2 border-b text-center py-[11px]`}
                   onClick={() => setIsBuy(false)}
                 >
                   SELL
@@ -186,7 +215,7 @@ export default function Home() {
               <select
                 id="price-type"
                 name="price-type"
-                className="w-full mt-4 py-2 px-3 border border-tsuka-400 rounded-md text-tsuka-50 text-sm bg-tsuka-500"
+                className="w-full mt-4 py-2 px-3 border border-tsuka-400 rounded-md text-tsuka-50 text-sm bg-tsuka-500 hover:bg-tsuka-400"
               >
                 <option value="Limit Price">Limit Price</option>
                 <option value="Limit Price">Limit Price</option>
@@ -216,10 +245,10 @@ export default function Home() {
               </div>
               <div className="flex justify-between text-sm mt-1">
                 <span className="text-tsuka-200">Price for an tokens</span>
-                <span className="text-[#6FCF97]">{0.003059680}</span>
+                <span className="text-green">{0.003059680}</span>
               </div>
               <button
-                className="w-full rounded-[10px] bg-[#AF71FF] py-2 mt-3 text-white"
+                className="w-full rounded-[10px] bg-primary py-2 mt-3 text-white"
                 onClick={() => {setShowEditOrderModal(false)}}
               >
                 Apply Changes
@@ -235,7 +264,7 @@ export default function Home() {
           onClick={() => setShowPopupBg(false)}
         >
           <div
-            className="relative bg-tsuka-500 rounded-2xl p-5 pr-7 flex items-center mx-4"
+            className="relative bg-tsuka-500 rounded-2xl p-5 pr-7 flex items-center mx-6"
           >
             <Image src="/icons/alert.png" alt="alter" width={40} height={40} />
             <div className="ml-3">
@@ -243,10 +272,10 @@ export default function Home() {
                 You just delete order <span className="text-tsuka-50">{"ANCH"} with {"PLKD"}</span>.
               </p>
               <p className="text-sm text-tsuka-200">
-                Clicked by mistake? <span className="text-[#AF71FF] cursor-pointer" onClick={() => setShowDeletedAlert(false)}>undo</span>
+                Clicked by mistake? <span className="text-primary cursor-pointer" onClick={() => setShowDeletedAlert(false)}>undo</span>
               </p>
             </div>
-            <FiX className="absolute top-3 right-3 text-tsuka-300 font-medium cursor-pointer" onClick={() => setShowDeletedAlert(false)} />
+            <FiX className="static md:absolute top-3 right-3 ml-2 md:ml-0 text-2xl md:text-base text-tsuka-300 font-medium cursor-pointer" onClick={() => setShowDeletedAlert(false)} />
           </div>
         </div>
       }

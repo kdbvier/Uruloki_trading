@@ -61,33 +61,33 @@ export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
                   <tr
                     key={index}
                     className={`${
-                      item.type === "Buy" ? "text-green-400" : "text-red-400"
+                      item.type === "Buy" ? "text-green" : "text-red"
                     } border-b border-tsuka-400 text-tsuka-200 text-xs`}
                   >
                     <th
                       className={`${
-                        item.type === "Buy" ? "text-green-400" : "text-red-400"
+                        item.type === "Buy" ? "text-green" : "text-red"
                       } p-4`}
                     >
                       {item.type}
                     </th>
                     <th
                       className={`${
-                        item.type === "Buy" ? "text-green-400" : "text-red-400"
+                        item.type === "Buy" ? "text-green" : "text-red"
                       } p-4`}
                     >
                       {item.priceUsd}
                     </th>
                     <th
                       className={`${
-                        item.type === "Buy" ? "text-green-400" : "text-red-400"
+                        item.type === "Buy" ? "text-green" : "text-red"
                       } p-4`}
                     >
                       {item.amountBlur}
                     </th>
                     <th
                       className={`${
-                        item.type === "Buy" ? "text-green-400" : "text-red-400"
+                        item.type === "Buy" ? "text-green" : "text-red"
                       } p-4`}
                     >
                       ${item.executionValue}

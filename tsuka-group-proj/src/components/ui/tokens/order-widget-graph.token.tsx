@@ -31,7 +31,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
       <div className="border border-tsuka-400 text-tsuka-100">
         <div className="py-2 px-4 text-sm text-tsuka-100">
           <div className="mb-2 flex justify-between">
-            <span className={buy ? "text-green-400" : "text-red-400"}>
+            <span className={buy ? "text-green" : "text-red"}>
               {value2 ? "Price range" : "Target price"}
             </span>
             <span>{`${value1}${value2 ? " - " + value2 : ""}`}</span>
@@ -44,7 +44,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
         <div className="flex mt-4">
           <div
             className={`${
-              buy ? "from-green-400/10" : "from-red-400/10"
+              buy ? "from-green/10" : "from-red/10"
             } w-full h-10 bg-gradient-to-t to-transparent relative`}
           >
             {percents.map(
@@ -53,16 +53,16 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
                   <div
                     key={index}
                     className={`${
-                      buy ? "border-green-400" : "border-red-400"
+                      buy ? "border-green" : "border-red"
                     } border-r-4 h-10 absolute ${
                       index === 0
                         ? `${
                             buy
-                              ? "from-green-400/30 bg-gradient-to-t"
-                              : "from-red-400/30 bg-gradient-to-t"
+                              ? "from-green/30 bg-gradient-to-t"
+                              : "from-red/30 bg-gradient-to-t"
                           }`
                         : `bg-tsuka-500 ${
-                            buy ? "from-green-400/10" : "from-red-400/10"
+                            buy ? "from-green/10" : "from-red/10"
                           } bg-gradient-to-t`
                     }`}
                     style={

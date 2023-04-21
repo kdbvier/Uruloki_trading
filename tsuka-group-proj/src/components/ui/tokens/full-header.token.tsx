@@ -48,8 +48,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
                   <label
                     className={`${
                       value.price?.operator === "+"
-                        ? "text-green-400"
-                        : "text-red-400"
+                        ? "text-green"
+                        : "text-red"
                     } text-xs`}
                   >
                     {splitAddress(value.chain?.address as string)}
@@ -86,8 +86,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
                 <div
                   className={`${
                     value.price?.operator === "+"
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? "text-green"
+                      : "text-red"
                   }`}
                 >
                   {value.price?.variationValue}%
@@ -100,8 +100,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
                 <div
                   className={`${
                     !(value.price?.operator === "+")
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? "text-green"
+                      : "text-red"
                   }`}
                 >
                   {value.price?.variationValueDiference}
