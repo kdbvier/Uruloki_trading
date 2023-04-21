@@ -5,7 +5,8 @@ import {
   TokenOrder,
 } from "@/types/token-order.type";
 import { useMemo } from "react";
-import { DefaultButton } from "../ui/buttons/default.button";
+import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
+import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
 import { HorizontalIconsToken } from "../ui/tokens/horizontal-icons.token";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderWidgetGraph } from "../ui/tokens/order-widget-graph.token";
@@ -122,42 +123,11 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
         <button className="text-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
         {
           showPopup &&
-          <div className="absolute z-40 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]">
-            <div
-              className="flex justify-between items-center text-tsuka-50 text-lg cursor-pointer"
-              onClick={() => {setShowPopupBg(false); setShowEditOrderModal(true);}}
-            >
-              <span>Edit</span>
-              <FiEdit2 className="text-tsuka-300" />
-            </div>
-            <hr className="my-3 border-tsuka-400" />
-            <div
-              className="flex justify-between items-center text-red text-lg cursor-pointer"
-              onClick={() => {setShowConfirmDlg(true);}}
-            >
-              <span>Delete</span>
-              <FiTrash />
-            </div>
-          </div>
+          <EditOrDeleteToken setShowPopupBg={setShowPopupBg} setShowEditOrderModal={setShowEditOrderModal} setShowConfirmDlg={setShowConfirmDlg} />
         }
         {
           showConfirmDlg &&
-          <div className="absolute z-40 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]">
-            <p className="text-center text-tsuka-50 text-lg font-medium">Are you sure?</p>
-            <hr className="my-3 border-tsuka-400" />
-            <div
-              className="py-[11px] text-primary text-lg text-center bg-tsuka-400 rounded-md cursor-pointer"
-              onClick={() => {setShowPopupBg(false); setShowConfirmDlg(false);}}
-            >
-              No, Cancel
-            </div>
-            <div
-              className="mt-2 py-[11px] text-red text-lg text-center bg-tsuka-400 rounded-md cursor-pointer"
-              onClick={() => {setShowPopupBg(false); setShowConfirmDlg(false); setShowDeletedAlert(true)}}
-            >
-              Yes, Delete
-            </div>
-          </div>
+          <DeleteConfirmToken setShowPopupBg={setShowPopupBg} setShowConfirmDlg={setShowConfirmDlg} setShowDeletedAlert={setShowDeletedAlert} />
         }
       </div>
     </div>
