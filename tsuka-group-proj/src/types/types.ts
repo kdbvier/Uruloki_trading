@@ -1,3 +1,5 @@
+import { orders } from "@prisma/client";
+
 export type ApiResponse<T> = {
   payload: Array<T> | T | undefined;
   message: string;
@@ -11,55 +13,59 @@ export type Notification = {
 };
 
 export type TopGainerItem = {
-  token_cache_id: number;
-  rank: number | null;
+  id: number
+  rank: number | null
+  token_cache_id: number
   token_cache: {
     name: string | null;
     price: number | null;
     chain: string | null;
     change_24hr: number | null;
-} | null;
+} ;
 };
 
 export type TopMoverItem = {
-  token_cache_id: number;
-  rank: number | null;
-  token_cache: {
-    name: string | null;
-    price: number | null;
-    chain: string | null;
-    change_24hr: number | null;
-    volume: number | null;
-    market_cap: number | null;
-    total_orders: number | null;
-    buy_split: number | null;
-    sell_split: number | null;
-} | null;
+  id: number
+  rank: number | null
+  token_cache_id: number
+  token_cache: TokenCache & orders;
 };
 
+export type TokenCache = {
+  id: number
+  name: string | null
+  chain: string | null
+  pair_address: string
+  price: number | null
+  change_24hr: number | null
+  volume: number | null
+  market_cap: number | null
+  last_updated: Date | null
+}
+
 export type MostBuyOrder = {
-  token_cache_id: number;
-  rank: number | null;
+  id: number
+  rank: number | null
+  token_cache_id: number
   token_cache: {
     name: string | null;
     chain: string | null;
-    buy_orders: number | null;
-} | null;
+} ;
 };
 
 export type MostSellOrder = {
-  token_cache_id: number;
-  rank: number | null;
+  id: number
+  rank: number | null
+  token_cache_id: number
   token_cache: {
     name: string | null;
     chain: string | null;
-    sell_orders: number | null;
-} | null;
+} ;
 };
 
 export type Tokens = {
   topGainers: TopGainerItem[];
-  topMovers: TopMoverItem[];
+  // topMovers: TopMoverItem[];
   mostBuyOrders: MostBuyOrder[];
   mostSellOrders: MostSellOrder[];
 };
