@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { FiArrowUpRight } from "react-icons/fi";
 import * as coinhelper from "../../helpers/coin.helper";
+import Marquee from "react-fast-marquee";
 
 export interface CoinTypeProps {
   coins: CoinType[];
@@ -17,33 +18,38 @@ interface CoinType {
 export const CoinTypeLanding: React.FC<CoinTypeProps> = ({ coins }) => {
   return (
     <div className="w-[1440px] bg-tsuka-700 py-4 overflow-hidden">
-      <div className="w-full flex items-center gap-20">
-        {coins.map((cointype) => {
-          return (
-            <div key={cointype.name} className="flex text-white items-center ">
-              <Image
-                src={cointype.url}
-                alt="cointype__image"
-                width={20}
-                height={20}
-              ></Image>
-              <h1 className="text-base font-normal text-[#828AA0]">
-                {cointype.name}
-              </h1>
-              <h2 className="text-sm font-normal text-[#676F84] uppercase px-1">
-                {cointype.abbr}
-              </h2>
-              <h3 className="pl-10 text-sm font-normal text-[#828AA0]">
-                {coinhelper.formatCurrencyFixed2(cointype.price)}
-              </h3>
-              <h4 className="text-[#6FCF97] flex text-sm items-center">
-                <FiArrowUpRight fontSize={20} />
-                {coinhelper.formatSignedPercent(cointype.rate)}
-              </h4>
-            </div>
-          );
-        })}
-      </div>
+      <Marquee gradient={false}>
+        <div className="w-full flex items-center">
+          {coins.map((cointype) => {
+            return (
+              <div
+                key={cointype.name}
+                className="flex text-white items-center "
+              >
+                <Image
+                  src={cointype.url}
+                  alt="cointype__image"
+                  width={24}
+                  height={24}
+                ></Image>
+                <h1 className="text-base font-normal text-[#828AA0] pl-2">
+                  {cointype.name}
+                </h1>
+                <h2 className="text-sm leading-6 font-normal text-[#676F84] uppercase pl-1">
+                  {cointype.abbr}
+                </h2>
+                <h3 className="pl-14 text-sm font-normal text-[#828AA0]">
+                  {coinhelper.formatCurrencyFixed2(cointype.price)}
+                </h3>
+                <h4 className="text-[#6FCF97] flex text-sm items-center pl-1 pr-20">
+                  <FiArrowUpRight fontSize={20} />
+                  {coinhelper.formatSignedPercent(cointype.rate)}
+                </h4>
+              </div>
+            );
+          })}
+        </div>
+      </Marquee>
     </div>
   );
 };
