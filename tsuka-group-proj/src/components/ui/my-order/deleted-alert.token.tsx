@@ -22,7 +22,7 @@ export const DeletedAlertToken: React.FC<DeletedAlertTokenProp> = ({
         <Image src="/icons/alert.png" alt="alter" width={40} height={40} />
         <div className="ml-3">
           <p className="text-tsuka-100 text-lg">
-            You just delete order <span className="text-tsuka-50">{"ANCH"} with {"PLKD"}</span>.
+            You just deleted order <span className="text-tsuka-50">{"ANCH"} with {"PLKD"}</span>.
           </p>
           <p className="text-sm text-tsuka-200">
             Clicked by mistake? <span className="text-primary cursor-pointer" onClick={() => setShowDeletedAlert(false)}>undo</span>
