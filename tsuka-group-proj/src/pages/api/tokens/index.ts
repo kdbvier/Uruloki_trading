@@ -37,7 +37,7 @@ export default async function TokenCacheHandler(
           },
         });
         const topGainerData = await Promise.all(
-          topGainers.map(async (tg) => {
+          topGainers.map(async (tg: any) => {
             const token = await prisma.token_cache.findUnique({
               where: {
                 token_cache_id: tg.token_cache_id,
@@ -53,33 +53,33 @@ export default async function TokenCacheHandler(
           })
         );
         const topMoverData = await Promise.all(
-          topMovers.map(async (tm) => {
+          topMovers.map(async (tm: any) => {
             const token = await prisma.token_cache.findUnique({
               where: {
                 token_cache_id: tm.token_cache_id,
               },
               select: {
                 name: true,
-                chain:true,
+                chain: true,
                 price: true,
                 change_24hr: true,
-                market_cap:true,
-                volume:true,
-                total_orders:true
+                market_cap: true,
+                volume: true,
+                total_orders: true,
               },
             });
             return { ...tm, token_cache: token };
           })
         );
         const mostSellData = await Promise.all(
-          mostSell.map(async (ms) => {
+          mostSell.map(async (ms: any) => {
             const token = await prisma.token_cache.findUnique({
               where: {
                 token_cache_id: ms.token_cache_id,
               },
               select: {
                 name: true,
-                sell_orders:true,
+                sell_orders: true,
                 chain: true,
               },
             });
@@ -87,14 +87,14 @@ export default async function TokenCacheHandler(
           })
         );
         const mostBuyData = await Promise.all(
-          mostBuy.map(async (mb) => {
+          mostBuy.map(async (mb: any) => {
             const token = await prisma.token_cache.findUnique({
               where: {
                 token_cache_id: mb.token_cache_id,
               },
               select: {
                 name: true,
-                buy_orders:true,
+                buy_orders: true,
                 chain: true,
               },
             });
@@ -108,9 +108,8 @@ export default async function TokenCacheHandler(
           mostSellOrders: mostSellData,
         };
 
-        res
-          .status(200)
-          //.json({ payload: data, message: `Successfully found Tokens` });
+        res.status(200);
+        //.json({ payload: data, message: `Successfully found Tokens` });
       } catch (err) {
         res.status(400).json({
           payload: undefined,
