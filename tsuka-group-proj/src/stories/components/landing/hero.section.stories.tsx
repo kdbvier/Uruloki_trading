@@ -1,12 +1,12 @@
 import {
   HeroProps,
   HeroLanding as HeroLandingComponent,
-} from "@/components/landing/hero.landing";
+} from "@/components/landing/hero.section";
 
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/HeroLanding",
+  title: "Landing/Setion",
   component: HeroLandingComponent,
   args: {
     title: "All-in-one platform for decentralized asset trading and arbitrage",
@@ -21,4 +21,4 @@ export default {
   },
 } as Meta<HeroProps>;
 
-export const HeroLanding: StoryObj<HeroProps> = {};
+export const HeroSection: StoryObj<HeroProps> = {};

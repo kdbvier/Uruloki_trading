@@ -66,6 +66,9 @@ export default async function getEntriesLanding() {
           }
         }
         keyFeatures {
+          beforeMainText
+          mainText
+          afterMainText
           featuresCollection {
             items {
               title
