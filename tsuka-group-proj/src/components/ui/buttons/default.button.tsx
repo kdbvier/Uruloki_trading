@@ -19,8 +19,8 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
       onClick={callback}
       className={`${
         filled
-          ? "text-white bg-[#AF71FF] hover:bg-[#AF71FF]/90"
-          : "text-[#AF71FF] hover:text-[#AF71FF]/90"
+          ? "text-white bg-accent hover:bg-accent/90"
+          : "text-accent hover:text-accent/90"
       } w-full text-center focus:outline-none rounded-md text-sm px-5 py-2 inline-flex justify-center items-center mr-2`}
     >
       {Icon && (
