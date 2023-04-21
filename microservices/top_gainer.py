@@ -1,10 +1,11 @@
 import time
 import sqlalchemy
 from sqlalchemy.sql import text
-from sqlalchemy.types import String, FLOAT, INT
+from sqlalchemy import bindparam
 import requests
 import json
 import pandas
+import numpy
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
@@ -36,8 +37,14 @@ try:
     )
 
     connengine = sqlalchemy.create_engine(sqlUrl)
-    metadata = sqlalchemy.MetaData() 
-    table=sqlalchemy.Table('token_cache', metadata, autoload_with=connengine)
+    metadata = sqlalchemy.MetaData()
+    table_token_cache = sqlalchemy.Table(
+        'token_cache', metadata, autoload_with=connengine)
+    table_top_movers = sqlalchemy.Table(
+        'top_movers', metadata, autoload_with=connengine)
+    table_top_gainers = sqlalchemy.Table(
+        'top_gainers', metadata, autoload_with=connengine)
+
     logging.info("Connection to database succesffull")
     pass
 except Exception as e:
@@ -75,7 +82,7 @@ def convert_prices_to_usdt(currencies):
 
         # prices in usdt
         return pandas.json_normalize(res['data']['ethereum'], 'dexTrades')
-    except :
+    except:
         logging.error("unable to fetch prices from bitquery")
 
     return None
@@ -99,7 +106,7 @@ def get_top_gainers() -> pandas.DataFrame | None:
     }
 
     payload = json.dumps({
-        "query": "query ($network: EthereumNetwork!, $limit: Int!, $offset: Int!, $from: ISO8601DateTime, $till: ISO8601DateTime) {\n  ethereum(network: $network) {\n    dexTrades(\n      options: {desc: \"count\", limit: $limit, offset: $offset}\n      date: {since: $from, till: $till}\n    ) {\n      sellCurrency {\n        symbol\n        name\n        address\n      }\n      buyCurrency {\n        symbol\n        name\n        address\n      }\n      count\n      latest_price: maximum(of: block, get: price)\n      earliest_price: minimum(of: block, get: price)\n      volumeUSD: tradeAmount(in: USD)\n    }\n  }\n}\n",
+        "query": "query ($network: EthereumNetwork!, $limit: Int!, $offset: Int!, $from: ISO8601DateTime, $till: ISO8601DateTime) {\n  ethereum(network: $network) {\n    dexTrades(\n      options: {desc: \"count\", limit: $limit, offset: $offset}\n      date: {since: $from, till: $till}\n    ) {\n      sellCurrency {\n        symbol\n        name\n        address\n      }\n      buyCurrency {\n        symbol\n        name\n        address\n      }\n      count\n      latest_price: maximum(of: block, get: price)\n      earliest_price: minimum(of: block, get: price)\n      volumeUSD: tradeAmount(in: USD)\n      smartContract {\n        address {\n          address\n        }\n      }\n    }\n  }\n}\n",
         "variables": params
     })
     headers = {
@@ -145,27 +152,30 @@ def get_top_gainers() -> pandas.DataFrame | None:
         mergedPD["token_price_USD"] = mergedPD["latest_price"] * \
             mergedPD["last_price"]
 
-        mergedPD = mergedPD.sort_values("price_movement_USD", ascending=False)
+        # mergedPD = mergedPD.sort_values("price_movement_USD", ascending=False)
 
         mergedPD.rename(columns={
             "buyCurrency.name": "name",
             "buyCurrency.symbol_x": "symbol",
             "buyCurrency.address_x": "address",
-            "buyCurrency.symbol_y": "paired_with",
-            "buyCurrency.address_y": "pair_with_address",
+            "buyCurrency.symbol_y": "paired_with_token",
+            # "buyCurrency.address_y": "paired_with_token_address",
+            "smartContract.address.address": "pair_address",
             "token_price_USD": "price",
             "volumeUSD": "volume",
             "price_movement_USD": "change_24hr"
         }, inplace=True)
 
-        dbdf = mergedPD[["name", "symbol", "address", "pair_name",
-                        "pair_address", "price", "volume", "change_24hr"]]
+        dbdf = mergedPD[["name", "symbol", "address",
+                        "pair_address", "price", "volume", "change_24hr", "paired_with_token"]]
+        # "pair_name",
 
-        # to remove WETH WETH
-        dbdf = dbdf[dbdf['symbol'] != dbdf['pair_name']]
+        # to remove WETH/WETH
+        dbdf = dbdf[dbdf['symbol'] != dbdf['paired_with_token']]
 
-        dbdf["pair"] = dbdf["symbol"].astype(
-            str)+"/"+dbdf["pair_name"].astype(str)
+        # create pair name string
+        # dbdf["pair_name"] = dbdf["symbol"].astype(
+        #     str)+"/"+dbdf["paired_with_token"].astype(str)
 
         return dbdf
     except Exception as e:
@@ -174,42 +184,61 @@ def get_top_gainers() -> pandas.DataFrame | None:
         logging.debug(e)
         return None
 
-def update():
+
+def update_token_data():
     while True:
         logging.info("Attempting to update database")
         try:
             dbdf = get_top_gainers()
-            
+
             if type(dbdf) != type(None):
                 try:
-                    # dbdf.to_sql(con=connengine, name='token_cache',
-                    #             if_exists='replace', dtype=df_schema)
-                    dbdf = dbdf.dropna()
+                    dbdf = dbdf.drop_duplicates("pair_address", keep='first')
                     dbdf['chain'] = "ethereum"
+                    dbdf = dbdf.replace({numpy.NaN: None})
                     data_dict = dbdf.to_dict("records")
-                    connengine.connect().execute(table.insert(),data_dict)
-
+                    connection = connengine.connect()
+                    connection.execute(table_token_cache.delete())
+                    connection.execute(table_token_cache.insert(), data_dict)
                     logging.info("Successfully updated database")
+
+                    try:
+                        connection.execute(table_top_gainers.delete())
+                        connection.execute(table_top_movers.delete())
+                    except:
+                        logging.error(
+                            "unable to delete historical data in top_mover/top_gainers")
+
+                    try:
+                        connection.execute(text("INSERT INTO top_movers(token_cache_id,`rank`) SELECT id, rank() over(order by abs(change_24hr)) from token_cache limit 100;")
+                                           )
+                        logging.info("succcessfully updated top_movers table")
+                    except Exception as e:
+                        print(e)
+                        logging.error(
+                            "unable to to insert data in top_movers table")
+
+                    try:
+                        connection.execute(text(
+                            "INSERT INTO top_gainers(token_cache_id,`rank`) SELECT id, rank() over(order by change_24hr) from token_cache limit 100;"))
+                        logging.info("succcessfully updated top_movers table")
+                    except Exception as e:
+                        print(e)
+                        logging.error(
+                            "unable to to insert data in top_gainerstable")
+
                 except Exception as e:
                     print(e)
                     logging.error("Unable to write results to database")
-                    fileName = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
-                    logging.error(
-                        "local copy of results has been saved in {}.csv".format(fileName))
-                    dbdf.to_csv("{}.csv".format(fileName))
+                    # fileName = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+                    # logging.error(
+                    #     "local copy of results has been saved in {}.csv".format(fileName))
+                    # dbdf.to_csv("{}.csv".format(fileName))
         except:
             logging.error("something went wrong while updating results")
 
-        logging.info("sleep zzzzzzzzzzzzzz...")
+        logging.info("sleeping zzzzzzzzzzzzzz...")
         time.sleep(int(SCHEDULE))
 
-update()
 
-# "name",
-# "symbol",
-# "address",
-# "pair_name",
-# "pair_address",
-# "price",
-# "volume",
-# "change_24hr"
+update_token_data()
