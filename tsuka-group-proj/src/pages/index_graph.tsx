@@ -77,7 +77,7 @@ const Ssr = ({ responsData }: SsrProps) => {
     },
   ];
   return (
-    <div className="w-full flex flex-col items-center bg-black">
+    <div className="landing-container flex flex-col items-center bg-black">
       <HeroLanding {...responsData.response.landingPage.hero} navbar={responsData.response.landingPage.navbar}/>
       <CoinTypeLanding coins={coins}/>
       <KeyFeaturesSection {...responsData.response.landingPage.keyFeatures} />

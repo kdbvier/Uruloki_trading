@@ -20,7 +20,7 @@ export const BenifitsSection: React.FC<BenifitsSectionProps> = ({
 }) => {
   const { items } = benefitItemsCollection;
   return (
-    <div className="w-[1440px] bg-black py-4 relative pt-40 pb-44" id="benifits">
+    <div className="inner-container bg-black py-4 relative pt-40 pb-44" id="benifits">
       <BlurLanding
         width={799}
         height={574}

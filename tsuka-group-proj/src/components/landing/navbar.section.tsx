@@ -19,7 +19,7 @@ interface NavbarTitleProps {
 export const Navbar: React.FC<NavbarProps> = ({ icon, titlesCollection }) => {
   const { items } = titlesCollection;
   return (
-    <div className="flex px-28 w-full justify-between items-center mb-32 z-50">
+    <div className="flex inner-container justify-between items-center mb-32 z-50">
       <Image src={icon.url} alt="logo__image" width={160} height={23} style={{position: 'relative'}} />
       
       <div className="flex gap-8">

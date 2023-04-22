@@ -21,6 +21,27 @@
   background: #4D556A;
 }
 
+.landing-container{
+  max-width: 1440px;
+  margin: auto;
+}
+.inner-container {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+@media (min-width: 768px) {
+  .inner-container {
+    max-width: 1440px;
+    margin:auto;
+  }
+}
+@media (min-width: 1440px) {
+  .inner-container {
+    padding-left: 112px;
+    padding-right: 112px;
+  }
+}
 /* Import custom fonts */
 /* @import '../../tailwind.config.js'; */
 

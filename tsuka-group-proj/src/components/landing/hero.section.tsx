@@ -24,7 +24,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
   navbar,
 }) => {
   return (
-    <div className="px-4 xl:px-0 xl:w-[1440px] bg-black py-4 overflow-hidden relative" id="home">
+    <div className="inner-container bg-black py-4 overflow-hidden relative" id="home">
       <BlurLanding
         width={889}
         height={629}

@@ -6,7 +6,7 @@ export interface CopyRightProps {}
 
 export const CopyRight: React.FC<CopyRightProps> = () => {
   return (
-    <div className="w-[1440px]">
+    <div className="inner-container">
       <div className="flex w-full justify-between items-end pt-10 pb-5 border-t border-t-[#ADADAD66] bg-black">
         <h3 className="font-Inter-300 font-normal text-[#ADADAD] text-base">
           &copy; 2023 Uruloki Trading. All Rights Reserved

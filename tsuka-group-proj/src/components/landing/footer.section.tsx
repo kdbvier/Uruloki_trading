@@ -10,7 +10,7 @@ export const FooterLanding: React.FC<FooterProps> = ({
   afterMainText,
 }) => {
   return (
-    <div className="w-[1440px] h-[424px] py-4 overflow-hidden relative bg-black bg-cover bg-center bg-no-repeat bg-[url('/footer-background.png')]">
+    <div className="inner-container h-[424px] py-4 overflow-hidden relative bg-black bg-cover bg-center bg-no-repeat bg-[url('/footer-background.png')]">
       <div className="px-28 justify-center text-center relative mt-[103px]">
         <div className="px-14 mt-5 bg-transparent z-40">
           <span className="block m-auto text-3xl font-Gilroy-600 font-semibold text-center text-white z-50">
