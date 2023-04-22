@@ -32,16 +32,16 @@ export const CoinTypeLanding: React.FC<CoinTypeProps> = ({ coins }) => {
                   width={24}
                   height={24}
                 ></Image>
-                <h1 className="text-base font-normal text-[#828AA0] pl-2">
+                <h1 className="text-base font-normal font-Steradian-400 text-[#828AA0] pl-2">
                   {cointype.name}
                 </h1>
-                <h2 className="text-sm leading-6 font-normal text-[#676F84] uppercase pl-1">
+                <h2 className="text-sm leading-6 font-normal font-Steradian-400 text-[#676F84] uppercase pl-1">
                   {cointype.abbr}
                 </h2>
-                <h3 className="pl-14 text-sm font-normal text-[#828AA0]">
+                <h3 className="pl-14 text-sm font-normal font-Steradian-400 text-[#828AA0]">
                   {coinhelper.formatCurrencyFixed2(cointype.price)}
                 </h3>
-                <h4 className="text-[#6FCF97] flex text-sm items-center pl-1 pr-20">
+                <h4 className="text-[#6FCF97] flex text-sm font-Steradian-400 items-center pl-1 pr-20">
                   <FiArrowUpRight fontSize={20} />
                   {coinhelper.formatSignedPercent(cointype.rate)}
                 </h4>

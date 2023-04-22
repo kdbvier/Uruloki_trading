@@ -40,11 +40,11 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
       } w-[1440px] bg-black flex items-center gap-[111px]`}
     >
       <div className="w-[560px] pr-5">
-        <h1 className="text-white text-[40px] leading-[52px]">{descriptionHeader}</h1>
-        <h1 className="text-[#ADADAD] text-base leading-8 mt-4">{description}</h1>
+        <h1 className="text-white text-[40px] font-Gilroy-600 leading-[52px]">{descriptionHeader}</h1>
+        <h1 className="text-[#ADADAD] font-Inter-400 text-base leading-8 mt-4">{description}</h1>
         <ul className="pl-4 flex flex-col gap-4 mt-8">
           {features.map((feature) => {
-            return <li key={feature} className="text-[#ADADAD] text-base leading-[175%] pr-20 flex items-center gap-3"><CustomCheck />{feature}</li>;
+            return <li key={feature} className="text-[#ADADAD] text-base font-Inter-400 leading-[175%] pr-20 flex items-center gap-3"><CustomCheck />{feature}</li>;
           })}
         </ul>
       </div>

@@ -54,12 +54,12 @@ export const HeroLanding: React.FC<HeroProps> = ({
           <div className="bg-[#ffffff44] rounded-full p-[1px] mr-4 flex justify-center items-center">
             <input
               type={"email"}
-              className="h-full w-[312px] text-white bg-black text-base font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
+              className="h-full w-[312px] text-white font-Steradian-400 bg-black text-base font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
               placeholder="Enter Your Email"
             ></input>
           </div>
           <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center">
-            <button className="h-full text-white bg-black text-base font-normal text-center rounded-full pl-[38.5px] py-[17.5px] pr-[38.5px]">
+            <button className="h-full text-white bg-black text-base font-Inter-400 text-center rounded-full pl-[38.5px] py-[17.5px] pr-[38.5px]">
               Get Started
             </button>
           </div>

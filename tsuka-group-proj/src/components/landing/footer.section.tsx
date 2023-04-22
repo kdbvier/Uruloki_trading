@@ -13,11 +13,11 @@ export const FooterLanding: React.FC<FooterProps> = ({
     <div className="w-[1440px] h-[424px] py-4 overflow-hidden relative bg-black bg-cover bg-center bg-no-repeat bg-[url('/footer-background.png')]">
       <div className="px-28 justify-center text-center relative mt-[103px]">
         <div className="px-14 mt-5 bg-transparent z-40">
-          <span className="block m-auto text-3xl font-semibold text-center text-white z-50">
+          <span className="block m-auto text-3xl font-Gilroy-600 font-semibold text-center text-white z-50">
             {mainText}
           </span>
         </div>
-        <div className=" text-tsuka-100 text-base leading-[200%] px-[358px] mt-4 mb-10 md:mb-0">
+        <div className=" text-tsuka-100 text-base font-Inter-300 leading-[200%] px-[358px] mt-4 mb-10 md:mb-0">
           {afterMainText}
         </div>
       </div>
@@ -26,12 +26,12 @@ export const FooterLanding: React.FC<FooterProps> = ({
           <div className="inline-block bg-[#ffffff44] rounded-full p-[1px] mr-4">
             <input
               type={"email"}
-              className="h-full text-white bg-tsuka-500 text-base font-normal rounded-full pl-[12px] py-[6px] pr-[18px]"
+              className="h-full text-white bg-black text-base font-Steradian-400 font-normal rounded-full pl-[12px] py-[6px] pr-[18px]"
               placeholder="Enter Your Email"
             ></input>
           </div>
           <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center">
-            <button className="h-full text-white bg-tsuka-500 text-base font-normal text-center rounded-full pl-[12px] py-[6px] pr-[12px] flex justify-center items-center gap-3">
+            <button className="h-full text-white bg-black text-base font-Steradian-400 font-normal text-center rounded-full pl-[12px] py-[6px] pr-[12px] flex justify-center items-center gap-3">
               {"Get Started"}<FaArrowRight />
             </button>
           </div>

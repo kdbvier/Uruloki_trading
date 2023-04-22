@@ -20,3 +20,80 @@
 .scrollable::-webkit-scrollbar-thumb:hover {
   background: #4D556A;
 }
+
+/* Import custom fonts */
+/* @import '../../tailwind.config.js'; */
+
+/* Gilroy font */
+@font-face {
+  font-family: "Gilroy-Light";
+  src: url('../../public/fonts/gilroy/Gilroy-Light.ttf');
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url('../../public/fonts/gilroy/Gilroy-Regular.ttf');
+}
+@font-face {
+  font-family: "Gilroy-Medium";
+  src: url('../../public/fonts/gilroy/Gilroy-Medium.ttf');
+}
+@font-face {
+  font-family: "Gilroy-SemiBold";
+  src: url('../../public/fonts/gilroy/Gilroy-SemiBold.ttf');
+}
+@font-face {
+  font-family: "Gilroy-Bold";
+  src: url('../../public/fonts/gilroy/Gilroy-Bold.ttf');
+}
+@font-face {
+  font-family: "Gilroy-ExtraBold";
+  src: url('../../public/fonts/gilroy/Gilroy-ExtraBold.ttf');
+}
+
+/* Inter font */
+@font-face {
+  font-family: "Inter-Light";
+  src: url('../../public/fonts/inter/static/Inter-Light.ttf');
+}
+@font-face {
+  font-family: "Inter";
+  src: url('../../public/fonts/inter/static/Inter-Regular.ttf');
+}
+@font-face {
+  font-family: "Inter-Medium";
+  src: url('../../public/fonts/inter/static/Inter-Medium.ttf');
+}
+@font-face {
+  font-family: "Inter-SemiBold";
+  src: url('../../public/fonts/inter/static/Inter-SemiBold.ttf');
+}
+@font-face {
+  font-family: "Inter-Bold";
+  src: url('../../public/fonts/inter/static/Inter-Bold.ttf');
+}
+@font-face {
+  font-family: "Inter-ExtraBold";
+  src: url('../../public/fonts/inter/static/Inter-ExtraBold.ttf');
+}
+
+/* Steradian font */
+@font-face {
+  font-family: "Steradian";
+  src: url('../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Rg.otf');
+}
+@font-face {
+  font-family: "Steradian-Medium";
+  src: url('../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Md.otf');
+}
+@font-face {
+  font-family: "Steradian-Bold";
+  src: url('../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Bd.otf');
+}
+@font-face {
+  font-family: "Steradian-ExtraBold";
+  src: url('../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Blk.otf');
+}
+@font-face {
+  font-family: "Steradian-Light";
+  src: url('../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Lt.otf');
+}

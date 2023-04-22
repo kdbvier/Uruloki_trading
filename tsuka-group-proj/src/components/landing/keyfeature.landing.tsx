@@ -25,8 +25,8 @@ export const KeyFeatureCard: React.FC<KeyFeatureCardProps> = ({
       <div className={`w-[56px] h-[57px] ${selectedIconClass} backdrop-blur-[10px] flex justify-center items-center rounded-xl`}>
         <Image src={icon.url} alt="keyfeature__image" width={20} height={18}/>
       </div>
-      <h1 className="text-white text-xl leading-8 font-semibold mt-7 pr-12">{title}</h1>
-      <h4 className="text-[#ADADAD] mt-2 pr-12 text-[15px] leading-7">{description}</h4>
+      <h1 className="text-white text-xl font-Gilroy-600 leading-8 font-semibold mt-7 pr-12">{title}</h1>
+      <h4 className="text-[#ADADAD] font-Inter-300 mt-2 pr-12 text-[15px] leading-7">{description}</h4>
     </div>
   );
 };
