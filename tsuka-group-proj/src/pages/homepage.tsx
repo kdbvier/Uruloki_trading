@@ -1,16 +1,11 @@
 import { ContentHeader } from "@/components/ui/content-header/content-header.token";
-import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.token";
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
+import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
-import { useState, useEffect, useRef } from "react";
-import HomePageTokens from "../lib/api/tokens"
-import {
-  ITopGainer,
-  IMostBuyOrder,
-  IMostSellOrder,
-  ITopMover,
-} from "@/global";
+import { IMostBuyOrder, IMostSellOrder, ITopGainer, ITopMover } from "@/global";
+import { useEffect, useRef, useState } from "react";
+import HomePageTokens from "../lib/api/tokens";
 
 let currentTranslateX: number = 0;
 
@@ -20,19 +15,19 @@ export default function Home() {
   useEffect(() => {
     const temp = async () => {
       let res = await HomePageTokens.getTokens();
-      console.log(res)
-    }
+      console.log(res);
+    };
 
     temp();
-  })
-  
+  });
+
   let content: any = useRef();
   let x1: number = 0;
   let x2: number = 0;
 
   const delay = (delayInms: number) => {
-    return new Promise(resolve => setTimeout(resolve, delayInms));
-  }
+    return new Promise((resolve) => setTimeout(resolve, delayInms));
+  };
   const moveTo = async (idx: number) => {
     let to: number = -window.innerWidth * idx;
     let delta = currentTranslateX >= to ? -10 : 10;
@@ -44,32 +39,32 @@ export default function Home() {
     currentTranslateX = to;
     content.current.style.transform = `translateX(${to}px)`;
     setCurrentIdx(idx);
-  }
+  };
 
   const handleTouchStart = (event: any) => {
     x1 = event.touches[0].pageX;
-  }
+  };
   const handleTouchMove = async (event: any) => {
     x2 = event.touches[0].pageX;
     let str: string = content.current.style.transform;
     if (str) {
       currentTranslateX = Number(str.slice(11, -3));
-    } else
-      currentTranslateX = 0;
+    } else currentTranslateX = 0;
     currentTranslateX += Math.floor(x2 - x1);
     content.current.style.transform = `translateX(${currentTranslateX}px)`;
     x1 = x2;
-  }
+  };
   const handleTouchEnd = (event: any) => {
     let toIdx: number = 0;
-    if (currentTranslateX >= (window.innerWidth * (-0.5)))
-      toIdx = 0;
-    if (currentTranslateX >= (window.innerWidth * (-1.5)) && currentTranslateX < (window.innerWidth * (-0.5)))
+    if (currentTranslateX >= window.innerWidth * -0.5) toIdx = 0;
+    if (
+      currentTranslateX >= window.innerWidth * -1.5 &&
+      currentTranslateX < window.innerWidth * -0.5
+    )
       toIdx = 1;
-    if (currentTranslateX < (window.innerWidth * (-1.5)))
-      toIdx = 2;
+    if (currentTranslateX < window.innerWidth * -1.5) toIdx = 2;
     moveTo(toIdx);
-  }
+  };
 
   const topGainers: ITopGainer[] = [
     {
@@ -82,7 +77,8 @@ export default function Home() {
       },
       price: 12503.83,
       risingPercent: 3.95,
-    }, {
+    },
+    {
       rank: 2,
       token: {
         id: "polkadot",
@@ -92,7 +88,8 @@ export default function Home() {
       },
       price: 39402.77,
       risingPercent: 3.57,
-    }, {
+    },
+    {
       rank: 3,
       token: {
         id: "anchor protocol",
@@ -102,7 +99,8 @@ export default function Home() {
       },
       price: 15590.74,
       risingPercent: 3.21,
-    }, {
+    },
+    {
       rank: 4,
       token: {
         id: "ethereum",
@@ -112,7 +110,8 @@ export default function Home() {
       },
       price: 3496.56,
       risingPercent: 3.11,
-    }, {
+    },
+    {
       rank: 5,
       token: {
         id: "ethereum",
@@ -135,7 +134,8 @@ export default function Home() {
         imgUrl: "/tokens/bitcoin.png",
       },
       buyOrders: 100800,
-    }, {
+    },
+    {
       rank: 2,
       token: {
         id: "polkadot",
@@ -144,7 +144,8 @@ export default function Home() {
         imgUrl: "/tokens/polkadot.png",
       },
       buyOrders: 39000,
-    }, {
+    },
+    {
       rank: 3,
       token: {
         id: "anchor protocol",
@@ -153,7 +154,8 @@ export default function Home() {
         imgUrl: "/tokens/anchor.png",
       },
       buyOrders: 15230,
-    }, {
+    },
+    {
       rank: 4,
       token: {
         id: "ethereum",
@@ -162,7 +164,8 @@ export default function Home() {
         imgUrl: "/tokens/ethereum.png",
       },
       buyOrders: 3800,
-    }, {
+    },
+    {
       rank: 5,
       token: {
         id: "ethereum",
@@ -184,7 +187,8 @@ export default function Home() {
         imgUrl: "/tokens/bitcoin.png",
       },
       sellOrders: 125083,
-    }, {
+    },
+    {
       rank: 2,
       token: {
         id: "polkadot",
@@ -193,7 +197,8 @@ export default function Home() {
         imgUrl: "/tokens/polkadot.png",
       },
       sellOrders: 40200,
-    }, {
+    },
+    {
       rank: 3,
       token: {
         id: "anchor protocol",
@@ -202,7 +207,8 @@ export default function Home() {
         imgUrl: "/tokens/anchor.png",
       },
       sellOrders: 15590,
-    }, {
+    },
+    {
       rank: 4,
       token: {
         id: "ethereum",
@@ -211,7 +217,8 @@ export default function Home() {
         imgUrl: "/tokens/ethereum.png",
       },
       sellOrders: 3496,
-    }, {
+    },
+    {
       rank: 5,
       token: {
         id: "ethereum",
@@ -240,7 +247,8 @@ export default function Home() {
       orderCount: 3465000000,
       buyOrderCount: 2000,
       sellOrderCount: 150,
-    }, {
+    },
+    {
       id: 456,
       token: "DogeCoins",
       chain: {
@@ -256,7 +264,8 @@ export default function Home() {
       orderCount: 4465000000,
       buyOrderCount: 2000,
       sellOrderCount: 500,
-    }, {
+    },
+    {
       id: 645,
       token: "USDTTether",
       chain: {
@@ -272,7 +281,8 @@ export default function Home() {
       orderCount: 3536000000,
       buyOrderCount: 200,
       sellOrderCount: 1500,
-    }, {
+    },
+    {
       id: 563,
       token: "Shiba Inu",
       chain: {
@@ -288,7 +298,8 @@ export default function Home() {
       orderCount: 3526000000,
       buyOrderCount: 2000,
       sellOrderCount: 1500,
-    }, {
+    },
+    {
       id: 656,
       token: "SingleEarth",
       chain: {
@@ -304,7 +315,8 @@ export default function Home() {
       orderCount: 3663000000,
       buyOrderCount: 2000,
       sellOrderCount: 0,
-    }, {
+    },
+    {
       id: 729,
       token: "DogeCoins",
       chain: {
@@ -321,18 +333,18 @@ export default function Home() {
       buyOrderCount: 2000,
       sellOrderCount: 1500,
     },
-  ]
+  ];
 
   useEffect(() => {
     const container = document.getElementsByClassName("swipable-container")[0];
-    container.addEventListener('touchstart', handleTouchStart, false);
-    container.addEventListener('touchmove', handleTouchMove, false);
-    container.addEventListener('touchend', handleTouchEnd, false);
+    container.addEventListener("touchstart", handleTouchStart, false);
+    container.addEventListener("touchmove", handleTouchMove, false);
+    container.addEventListener("touchend", handleTouchEnd, false);
   }, []);
 
   return (
     <div className="px-4 md:px-10 pt-6 pb-8">
-      <ContentHeader title="Homepage" className="w-full mb-6"/>
+      <ContentHeader title="Homepage" className="w-full mb-6" />
       <div className="hidden md:flex md:gap-5">
         <TopGainers topGainers={topGainers} />
         <MostBuyOrders mostBuyOrders={mostBuyOrders} />
@@ -352,9 +364,30 @@ export default function Home() {
         </div>
       </div>
       <div className="md:hidden mt-3 w-full h-[3px] flex gap-2">
-        <div className={`h-full w-1/3 ${currentIdx == 0 ? "bg-[#AF71FF]" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(0)}}></div>
-        <div className={`h-full w-1/3 ${currentIdx == 1 ? "bg-[#AF71FF]" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(1)}}></div>
-        <div className={`h-full w-1/3 ${currentIdx == 2 ? "bg-[#AF71FF]" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(2)}}></div>
+        <div
+          className={`h-full w-1/3 ${
+            currentIdx == 0 ? "bg-accent" : "bg-tsuka-500"
+          } cursor-pointer`}
+          onClick={() => {
+            moveTo(0);
+          }}
+        ></div>
+        <div
+          className={`h-full w-1/3 ${
+            currentIdx == 1 ? "bg-accent" : "bg-tsuka-500"
+          } cursor-pointer`}
+          onClick={() => {
+            moveTo(1);
+          }}
+        ></div>
+        <div
+          className={`h-full w-1/3 ${
+            currentIdx == 2 ? "bg-accent" : "bg-tsuka-500"
+          } cursor-pointer`}
+          onClick={() => {
+            moveTo(2);
+          }}
+        ></div>
       </div>
       <div className="mt-4">
         <TopMoversTokens topMovers={topMoversTokens} />
