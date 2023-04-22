@@ -25,6 +25,7 @@ import { Navbar, NavbarProps } from "@/components/landing/navbar.section";
 
 import { BlurLanding } from "@/components/landing/blur.landing";
 import getEntriesLanding from "@/lib/content-graphql";
+import { CopyRight } from "@/components/landing/copyright.section";
 
 type SsrProps = {
   responsData: {
@@ -83,6 +84,7 @@ const Ssr = ({ responsData }: SsrProps) => {
       <HowItWorksSection {...responsData.response.landingPage.howItWorks} />
       <BenifitsSection {...responsData.response.landingPage.benifits} />
       <FooterLanding {...responsData.response.landingPage.footer} />
+      <CopyRight/>
     </div>
   );
 };
