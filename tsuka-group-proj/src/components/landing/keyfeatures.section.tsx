@@ -23,7 +23,7 @@ export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
   const { items } = featuresCollection;
   const [selectedIndex, setSelectedIndex] = useState(4);
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative mt-40">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden relative pt-40">
       <BlurLanding
         width={867}
         height={560}
