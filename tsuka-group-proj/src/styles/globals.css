@@ -30,11 +30,12 @@
   width: 100%;
   padding-left: 16px;
   padding-right: 16px;
+  margin:auto;
 }
 @media (min-width: 768px) {
   .inner-container {
-    max-width: 1440px;
-    margin:auto;
+    padding-left: 64px;
+    padding-right: 64px;
   }
 }
 @media (min-width: 1440px) {

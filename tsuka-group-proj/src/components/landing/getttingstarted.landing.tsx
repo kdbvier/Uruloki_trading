@@ -24,7 +24,7 @@ const CustomCheck = () => {
   );
 };
 const gapList = [
-  "gap-[111px]",
+  "gap-[0px]",
   "gap-[51px]",
   "gap-[1px]",
   "gap-[111px]",
@@ -41,30 +41,10 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
     // <div className={"w-[1440px] bg-slate-900 flex items-center gap-[111px]"}>
     <div
       className={`${
-        !orientation ? "pl-28 pr-16" : "pl-12 pr-20 flex-row-reverse"
-      } w-[1440px] bg-black flex items-center ${gapList[index]}`}
+        orientation ? "" : "flex-row-reverse"
+      } bg-black lg:flex items-center ${gapList[index]}`}
     >
-      <div className="pr-5  flex-1">
-        <h1 className="text-white text-[40px] font-Gilroy-600 leading-[52px]">
-          {descriptionHeader}
-        </h1>
-        <h1 className="text-[#ADADAD] font-Inter-400 text-base leading-8 mt-4">
-          {description}
-        </h1>
-        <ul className="pl-4 flex flex-col gap-4 mt-8">
-          {features.map((feature) => {
-            return (
-              <li
-                key={feature}
-                className="text-[#ADADAD] text-base font-Inter-400 leading-[175%] pr-20 flex items-center gap-3"
-              >
-                <CustomCheck />
-                <span className="flex-1">{feature}</span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      
       {index == 0 && (
         <div className="relative">
           <BlurLanding
@@ -209,6 +189,27 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
           />
         </div>
       )}
+      <div className="pr-5 flex-1">
+        <h1 className="text-white text-[40px] font-Gilroy-600 leading-[52px]">
+          {descriptionHeader}
+        </h1>
+        <h1 className="text-[#ADADAD] font-Inter-400 text-base leading-8 mt-4">
+          {description}
+        </h1>
+        <ul className="pl-4 flex flex-col gap-4 mt-8">
+          {features.map((feature) => {
+            return (
+              <li
+                key={feature}
+                className="text-[#ADADAD] text-base font-Inter-400 leading-[175%] sm:pr-20 flex items-center gap-3"
+              >
+                <CustomCheck />
+                <span className="flex-1">{feature}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };
