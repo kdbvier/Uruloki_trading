@@ -17,7 +17,7 @@ interface CoinType {
 
 export const CoinTypeLanding: React.FC<CoinTypeProps> = ({ coins }) => {
   return (
-    <div className="w-[1440px] bg-tsuka-700 py-4 overflow-hidden">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden">
       <Marquee gradient={false}>
         <div className="w-full flex items-center">
           {coins.map((cointype) => {

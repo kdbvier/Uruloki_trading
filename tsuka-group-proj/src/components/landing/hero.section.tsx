@@ -21,7 +21,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
   image,
 }) => {
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden relative pt-32">
       <BlurLanding
         width={889}
         height={629}
@@ -44,7 +44,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
         ]}
       />
       <SectionTitle
-        MainText={title}
+        mainText={title}
         beforeMainText={beforeHeroText}
         afterMainText={afterHeroText}
         beforeTextStyle={true}
@@ -86,33 +86,35 @@ export const HeroLanding: React.FC<HeroProps> = ({
               style={{
                 background:
                   "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
-                transform:"skewY(-7deg)"
+                transform: "skewY(-7deg)",
               }}
             ></div>
             <div
               className="absolute left-[-80px] top-[208.11px] w-[466.67px] h-[65.46px]"
               style={{
-                boxSizing: 'border-box',
-                borderTop: '1px solid',
-                borderTopColor: "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
-                transform:"skewY(-7deg)"
+                boxSizing: "border-box",
+                borderTop: "1px solid",
+                borderTopColor:
+                  "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
+                transform: "skewY(-7deg)",
               }}
             ></div>
             <div
               className="absolute left-[1017.78px] top-[50px] w-[466.67px] h-[65.46px]"
               style={{
                 background:
-                'linear-gradient(88.02deg, #31C699 0.85%, #003525 95.39%)',
-                transform:"skewY(-7deg)"
+                  "linear-gradient(88.02deg, #31C699 0.85%, #003525 95.39%)",
+                transform: "skewY(-7deg)",
               }}
             ></div>
             <div
               className="absolute left-[840px] top-[116.44px] w-[680px] h-[65.46px]"
               style={{
-                boxSizing: 'border-box',
-                borderBottom: '1px solid',
-                borderBottomColor: 'linear-gradient(88.02deg, #31C699 0.85%, #003525 95.39%)',
-                transform:"skewY(-7deg)"
+                boxSizing: "border-box",
+                borderBottom: "1px solid",
+                borderBottomColor:
+                  "linear-gradient(88.02deg, #31C699 0.85%, #003525 95.39%)",
+                transform: "skewY(-7deg)",
               }}
             ></div>
           </div>

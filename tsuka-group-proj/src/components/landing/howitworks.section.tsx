@@ -1,4 +1,3 @@
-
 import {
   GettingStartedItemProps,
   GettingStartedItem,
@@ -8,20 +7,23 @@ import { SectionTitle } from "./sectiontitle.landing";
 export interface HowItWorksSectionProps {
   beforeMainText: string;
   afterMainText: string;
-  MainText: string;
-  items: GettingStartedItemProps[];
+  mainText: string;
+  gettingStartedSectionsCollection: {
+    items: GettingStartedItemProps[];
+  };
 }
 
 export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({
   beforeMainText,
   afterMainText,
-  MainText,
-  items,
+  mainText,
+  gettingStartedSectionsCollection,
 }) => {
+  const { items } = gettingStartedSectionsCollection;
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden mt-56">
       <SectionTitle
-        MainText={MainText}
+        mainText={mainText}
         beforeMainText={beforeMainText}
         afterMainText={afterMainText}
         beforeTextStyle={false}

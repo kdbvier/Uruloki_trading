@@ -7,6 +7,7 @@ import {
   BenifitsSection,
   BenifitsSectionProps,
 } from "@/components/landing/benifits.section";
+import { CoinTypeLanding } from "@/components/landing/cointype.landing";
 import {
   FooterProps,
   FooterLanding,
@@ -29,9 +30,9 @@ type SsrProps = {
       landingPage:{
   
         hero: HeroProps;
-        howitworks: HowItWorksSectionProps;
+        howItWorks: HowItWorksSectionProps;
         benifits: BenifitsSectionProps;
-        keyfeatures: KeyFeaturesSectionProps;
+        keyFeatures: KeyFeaturesSectionProps;
         footer: FooterProps;
       }
     }
@@ -40,14 +41,45 @@ type SsrProps = {
 
 const Ssr = ({ responsData }: SsrProps) => {
   console.log("in rendering", responsData);
+  const coins =[
+    {
+      url: '/tokens/ethereum.png',
+      name:'Ethereum',
+      abbr: 'ETH',
+      rate: 5.53,
+      price: 12574.24
+    },
+    {
+      url: '/tokens/bitcoin.png',
+      name:'Bitcoin',
+      abbr: 'BTC',
+      rate: 6.95,
+      price: 12503.63
+    },
+    {
+      url: '/tokens/anchor.png',
+      name:'Anchor',
+      abbr: 'ANC',
+      rate: 3.21,
+      price: 15590.74
+    },
+    {
+      url: '/tokens/polkadot.png',
+      name:'Polkadot',
+      abbr: 'PKD',
+      rate: 5.53,
+      price: 12574.24
+    },
+  ];
   return (
-    <>
+    <div className="w-full flex flex-col items-center bg-black">
       <HeroLanding {...responsData.response.landingPage.hero} />
-      <HowItWorksSection {...responsData.response.landingPage.howitworks} />
+      <CoinTypeLanding coins={coins}/>
+      <KeyFeaturesSection {...responsData.response.landingPage.keyFeatures} />
+      <HowItWorksSection {...responsData.response.landingPage.howItWorks} />
       <BenifitsSection {...responsData.response.landingPage.benifits} />
-      <KeyFeaturesSection {...responsData.response.landingPage.keyfeatures} />
       <FooterLanding {...responsData.response.landingPage.footer} />
-    </>
+    </div>
   );
 };
 

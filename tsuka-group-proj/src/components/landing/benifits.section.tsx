@@ -6,24 +6,26 @@ import { BlurLanding } from "./blur.landing";
 export interface BenifitsSectionProps {
   beforeMainText: string;
   afterMainText: string;
-  MainText: string;
-  items: BenifitCardProps[];
+  mainText: string;
+  benefitItemsCollection: {
+    items: BenifitCardProps[];
+  };
 }
 
 export const BenifitsSection: React.FC<BenifitsSectionProps> = ({
   beforeMainText,
   afterMainText,
-  MainText,
-  items,
+  mainText,
+  benefitItemsCollection,
 }) => {
-
+  const { items } = benefitItemsCollection;
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden relative pt-40 pb-44">
       <BlurLanding
         width={799}
         height={574}
         left={225}
-        top={5}
+        top={55}
         blurSize={150}
         circles={[
           {
@@ -41,7 +43,7 @@ export const BenifitsSection: React.FC<BenifitsSectionProps> = ({
         ]}
       />
       <SectionTitle
-        MainText={MainText}
+        mainText={mainText}
         beforeMainText={beforeMainText}
         afterMainText={afterMainText}
         beforeTextStyle={false}

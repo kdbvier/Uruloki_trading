@@ -8,20 +8,22 @@ import { useState } from "react";
 export interface KeyFeaturesSectionProps {
   beforeMainText: string;
   afterMainText: string;
-  MainText: string;
-  items: KeyFeatureCardProps[];
+  mainText: string;
+  featuresCollection: {
+    items: KeyFeatureCardProps[];
+  };
 }
 
 export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
   beforeMainText,
   afterMainText,
-  MainText,
-  items,
+  mainText,
+  featuresCollection,
 }) => {
-
+  const { items } = featuresCollection;
   const [selectedIndex, setSelectedIndex] = useState(4);
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden relative mt-40">
       <BlurLanding
         width={867}
         height={560}
@@ -44,7 +46,7 @@ export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
         ]}
       />
       <SectionTitle
-        MainText={MainText}
+        mainText={mainText}
         beforeMainText={beforeMainText}
         afterMainText={afterMainText}
         beforeTextStyle={false}
@@ -57,8 +59,10 @@ export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
               title={item.title}
               description={item.description}
               icon={item.icon}
-              selected={selectedIndex==index}
-              clickHandler={()=>{setSelectedIndex(index)}}
+              selected={selectedIndex == index}
+              clickHandler={() => {
+                setSelectedIndex(index);
+              }}
             />
           );
         })}

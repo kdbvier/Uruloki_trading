@@ -38,7 +38,7 @@ export const BlurLanding: React.FC<BlurProps> = ({
       className="w-[889px] h-[629px] left-[-401px] top-[-25px] filter blur-[200px] absolute"
       style={divStyle}
     >
-      {circles.map((circleProp) => {
+      {circles.map((circleProp, i) => {
         let circleStyle = {
           width: `${circleProp.radius}px`,
           height: `${circleProp.radius}px`,
@@ -46,7 +46,7 @@ export const BlurLanding: React.FC<BlurProps> = ({
           top: `${circleProp.top}px`,
           backgroundColor: `${circleProp.color}`,
         };
-        return <div key={circleProp.color} className="rounded-full absolute" style={circleStyle}></div>;
+        return <div key={circleProp.color + i} className="rounded-full absolute" style={circleStyle}></div>;
       })}
       {/* <div className="rounded-full w-[629px] h-[629px] left-0 top-0 bg-[#2DB38A] text-[#2DB28A] absolute"></div>
       <div className="rounded-full w-[393px] h-[393px] right-0 top-[166px] bg-[#2DB38A] text-[#2DB28A] absolute"></div> */}
