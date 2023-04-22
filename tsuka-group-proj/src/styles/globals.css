@@ -23,6 +23,7 @@
 
 .landing-container{
   max-width: 1440px;
+  overflow:hidden;
   margin: auto;
 }
 .inner-container {

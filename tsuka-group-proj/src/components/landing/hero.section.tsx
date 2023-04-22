@@ -46,7 +46,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
           },
         ]}
       />
-      {/* <Navbar {...navbar}></Navbar> */}
+      <Navbar {...navbar}></Navbar>
       <SectionTitle
         mainText={title}
         beforeMainText={beforeHeroText}
