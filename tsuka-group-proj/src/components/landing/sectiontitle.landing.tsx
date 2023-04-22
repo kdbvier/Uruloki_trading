@@ -18,7 +18,7 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({
     ? "bg-gradient-to-r from-[#003525] to-[#31C699]"
     : "bg-[#ffffff44]";
   return (
-    <div className="px-4 sm:px-28 justify-center text-center relative ">
+    <div className="px-0 sm:px-28 justify-center text-center relative ">
       <div className={`inline-block ${BeforeStyle} rounded-full p-[1px]`}>
         <h1 className=" text-white bg-black font-Inter-400 text-xs sm:text-base leading-[150%] text-center rounded-full pl-3 py-1.5 pr-[18px]">
           {beforeMainText}
