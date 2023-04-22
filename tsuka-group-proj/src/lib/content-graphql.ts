@@ -15,6 +15,12 @@ export default async function getEntriesLanding() {
             title
             url
           }
+          titlesCollection{
+            items{
+              label
+              linkTo
+            }
+          }
         }
         hero {
           beforeHeroText

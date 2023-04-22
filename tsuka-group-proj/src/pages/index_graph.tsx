@@ -21,6 +21,9 @@ import {
   KeyFeaturesSection,
   KeyFeaturesSectionProps,
 } from "@/components/landing/keyfeatures.section";
+import { Navbar, NavbarProps } from "@/components/landing/navbar.section";
+
+import { BlurLanding } from "@/components/landing/blur.landing";
 import getEntriesLanding from "@/lib/content-graphql";
 
 type SsrProps = {
@@ -34,6 +37,7 @@ type SsrProps = {
         benifits: BenifitsSectionProps;
         keyFeatures: KeyFeaturesSectionProps;
         footer: FooterProps;
+        navbar: NavbarProps;
       }
     }
   };
@@ -73,7 +77,7 @@ const Ssr = ({ responsData }: SsrProps) => {
   ];
   return (
     <div className="w-full flex flex-col items-center bg-black">
-      <HeroLanding {...responsData.response.landingPage.hero} />
+      <HeroLanding {...responsData.response.landingPage.hero} navbar={responsData.response.landingPage.navbar}/>
       <CoinTypeLanding coins={coins}/>
       <KeyFeaturesSection {...responsData.response.landingPage.keyFeatures} />
       <HowItWorksSection {...responsData.response.landingPage.howItWorks} />

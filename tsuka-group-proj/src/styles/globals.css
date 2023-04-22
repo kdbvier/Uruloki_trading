@@ -97,3 +97,10 @@
   font-family: "Steradian-Light";
   src: url('../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Lt.otf');
 }
+
+/* Smooth Scrolling */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+}

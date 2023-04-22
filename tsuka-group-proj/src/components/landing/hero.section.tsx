@@ -2,6 +2,7 @@ import Image from "next/image";
 import { CoinTypeLanding } from "./cointype.landing";
 import { SectionTitle, SectionTitleProps } from "./sectiontitle.landing";
 import { BlurLanding } from "./blur.landing";
+import { Navbar, NavbarProps } from "./navbar.section";
 
 export interface HeroProps {
   title: string;
@@ -12,6 +13,7 @@ export interface HeroProps {
     width: number;
     height: number;
   };
+  navbar: NavbarProps;
 }
 
 export const HeroLanding: React.FC<HeroProps> = ({
@@ -19,9 +21,10 @@ export const HeroLanding: React.FC<HeroProps> = ({
   beforeHeroText,
   afterHeroText,
   image,
+  navbar,
 }) => {
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative pt-32">
+    <div className="w-[1440px] bg-black py-4 overflow-hidden relative" id="home">
       <BlurLanding
         width={889}
         height={629}
@@ -43,6 +46,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
           },
         ]}
       />
+      <Navbar {...navbar}></Navbar>
       <SectionTitle
         mainText={title}
         beforeMainText={beforeHeroText}
@@ -65,21 +69,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
           </div>
         </div>
         <div className="relative w-full flex justify-center">
-          <BlurLanding
-            width={519}
-            height={519}
-            left={752}
-            top={0}
-            blurSize={150}
-            circles={[
-              {
-                radius: 519,
-                left: 0,
-                top: 0,
-                color: "#013E2B",
-              },
-            ]}
-          />
+          
           <div className="absolute top-0 left-[-6px] w-full">
             <div
               className="absolute left-[-249px] top-[287px] w-[570px] h-[65.46px]"
