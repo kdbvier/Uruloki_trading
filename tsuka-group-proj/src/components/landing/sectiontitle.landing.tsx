@@ -18,18 +18,18 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({
     ? "bg-gradient-to-r from-[#003525] to-[#31C699]"
     : "bg-[#ffffff44]";
   return (
-    <div className="px-28 justify-center text-center relative">
+    <div className="px-4 sm:px-28 justify-center text-center relative ">
       <div className={`inline-block ${BeforeStyle} rounded-full p-[1px]`}>
-        <h1 className=" text-white bg-black font-Inter-400 leading-[150%] text-center rounded-full pl-[12px] py-[6px] pr-[18px]">
+        <h1 className=" text-white bg-black font-Inter-400 text-xs sm:text-base leading-[150%] text-center rounded-full pl-3 py-1.5 pr-[18px]">
           {beforeMainText}
         </h1>
       </div>
-      <div className="px-14 mt-5 bg-transparent z-40">
-        <span className="block m-auto text-6xl leading-[120%] font-Gilroy-600 text-center text-white z-50">
+      <div className="mt-5 bg-transparent z-40">
+        <span className="block m-auto text-[28px] sm:text-6xl leading-[120%] font-Gilroy-600 text-center text-white z-50">
           {mainText}
         </span>
       </div>
-      <div className=" text-[#ADADAD] text-base font-Inter-300 leading-[200%] px-72 mt-5 mb-8 md:mb-0">
+      <div className=" text-[#ADADAD] text-base font-Inter-300 leading-[188%] sm:leading-[200%] px-1 mt-4 sm:mt-5 mb-8 md:mb-0">
         {afterMainText}
       </div>
     </div>
