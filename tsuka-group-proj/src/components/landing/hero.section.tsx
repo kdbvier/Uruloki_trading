@@ -24,7 +24,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
   navbar,
 }) => {
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative" id="home">
+    <div className="px-4 xl:px-0 xl:w-[1440px] bg-black py-4 overflow-hidden relative" id="home">
       <BlurLanding
         width={889}
         height={629}
@@ -46,7 +46,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
           },
         ]}
       />
-      <Navbar {...navbar}></Navbar>
+      {/* <Navbar {...navbar}></Navbar> */}
       <SectionTitle
         mainText={title}
         beforeMainText={beforeHeroText}
@@ -54,59 +54,47 @@ export const HeroLanding: React.FC<HeroProps> = ({
         beforeTextStyle={true}
       />
       <div className="text-tsuka-100 mb-4 md:mb-0 z-10">
-        <div className="flex justify-center mt-10">
-          <div className="bg-[#ffffff44] rounded-full p-[1px] mr-4 flex justify-center items-center">
+        <div className="flex flex-col sm:flex-row justify-center mt-10 gap-4 pb-10 sm:pb-0">
+          <div className="bg-[#ffffff44] rounded-full p-[1px] flex justify-center items-center">
             <input
               type={"email"}
-              className="h-full w-[312px] text-white font-Steradian-400 bg-black text-base font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
+              className="h-full w-full sm:w-[312px] text-white font-Steradian-400 bg-black text-base font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
               placeholder="Enter Your Email"
             ></input>
           </div>
           <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center">
-            <button className="h-full text-white bg-black text-base font-Inter-400 text-center rounded-full pl-[38.5px] py-[17.5px] pr-[38.5px]">
+            <button className="h-full w-full text-white bg-black text-base font-Inter-400 text-center rounded-full pl-[38.5px] py-[17.5px] pr-[38.5px]">
               Get Started
             </button>
           </div>
         </div>
         <div className="relative w-full flex justify-center">
-          
-          <div className="absolute top-0 left-[-6px] w-full">
-            <div
-              className="absolute left-[-249px] top-[287px] w-[570px] h-[65.46px]"
-              style={{
+          <div className="absolute w-[200%] top-[20%]"  style={{transform: "skewY(-7deg)"}}>
+            <div className="flex w-full h-12 sm:h-16">
+              <div className="flex-1 h-full" style={{
                 background:
                   "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
-                transform: "skewY(-7deg)",
-              }}
-            ></div>
-            <div
-              className="absolute left-[-80px] top-[208.11px] w-[466.67px] h-[65.46px]"
-              style={{
+              }}></div>
+              <div className="flex-1 h-full" style={{
                 boxSizing: "border-box",
                 borderTop: "1px solid",
                 borderTopColor:
                   "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
-                transform: "skewY(-7deg)",
-              }}
-            ></div>
-            <div
-              className="absolute left-[1017.78px] top-[50px] w-[466.67px] h-[65.46px]"
-              style={{
-                background:
-                  "linear-gradient(88.02deg, #31C699 0.85%, #003525 95.39%)",
-                transform: "skewY(-7deg)",
-              }}
-            ></div>
-            <div
-              className="absolute left-[840px] top-[116.44px] w-[680px] h-[65.46px]"
-              style={{
+              }}></div>
+            </div>
+            <div className="flex w-full h-12 sm:h-16">
+              <div className="flex-1 h-full" style={{
                 boxSizing: "border-box",
                 borderBottom: "1px solid",
                 borderBottomColor:
-                  "linear-gradient(88.02deg, #31C699 0.85%, #003525 95.39%)",
-                transform: "skewY(-7deg)",
-              }}
-            ></div>
+                  "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
+              }}></div>
+              <div className="flex-1 h-full" style={{
+                background:
+                  "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
+              }}></div>
+            </div>
+
           </div>
           <Image
             src={image.url}
