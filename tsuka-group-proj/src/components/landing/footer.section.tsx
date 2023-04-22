@@ -26,12 +26,12 @@ export const FooterLanding: React.FC<FooterProps> = ({
           <div className="inline-block bg-[#ffffff44] rounded-full p-[1px] mr-4">
             <input
               type={"email"}
-              className="h-full text-white bg-black text-base font-Steradian-400 font-normal rounded-full pl-[12px] py-[6px] pr-[18px]"
+              className="h-full w-[339px] text-white bg-black text-base font-Steradian-400 font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
               placeholder="Enter Your Email"
             ></input>
           </div>
           <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center">
-            <button className="h-full text-white bg-black text-base font-Steradian-400 font-normal text-center rounded-full pl-[12px] py-[6px] pr-[12px] flex justify-center items-center gap-3">
+            <button className="h-full text-white bg-black text-base font-Steradian-400 font-normal text-center rounded-full pl-[21.5px] py-[17.5px] pr-[21.5px] flex justify-center items-center gap-3">
               {"Get Started"}<FaArrowRight />
             </button>
           </div>

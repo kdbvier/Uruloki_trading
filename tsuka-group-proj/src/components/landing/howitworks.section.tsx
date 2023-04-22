@@ -29,7 +29,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({
         beforeTextStyle={false}
       />
       <div className="flex flex-col mt-24">
-        {items.map((item) => {
+        {items.map((item, index) => {
           return (
             <GettingStartedItem
               key={item.descriptionHeader}
@@ -38,6 +38,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({
               image={item.image}
               features={item.features}
               orientation={item.orientation}
+              index={index}
             />
           );
         })}

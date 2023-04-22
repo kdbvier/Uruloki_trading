@@ -20,12 +20,12 @@ export const BenifitsSection: React.FC<BenifitsSectionProps> = ({
 }) => {
   const { items } = benefitItemsCollection;
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative pt-40 pb-44">
+    <div className="w-[1440px] bg-black py-4 relative pt-40 pb-44">
       <BlurLanding
         width={799}
         height={574}
         left={225}
-        top={55}
+        top={205}
         blurSize={150}
         circles={[
           {

@@ -23,25 +23,25 @@ export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
   const { items } = featuresCollection;
   const [selectedIndex, setSelectedIndex] = useState(4);
   return (
-    <div className="w-[1440px] bg-black py-4 overflow-hidden relative pt-40">
+    <div className="w-[1440px] bg-black py-4 relative pt-40">
       <BlurLanding
         width={867}
         height={560}
-        left={180}
-        top={45}
+        left={240}
+        top={185}
         blurSize={150}
         circles={[
           {
             radius: 519,
             left: 0,
             top: 0,
-            color: "#00261B",
+            color: "#013E2B",
           },
           {
             radius: 354,
             left: 513,
             top: 205,
-            color: "#00261B",
+            color: "#013E2B",
           },
         ]}
       />
