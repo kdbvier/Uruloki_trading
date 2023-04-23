@@ -104,6 +104,7 @@ export const HeroLanding: React.FC<HeroProps> = ({
             width={1024}
             height={1}
             style={{ position: "relative" }}
+            priority={true}
           />
         </div>
       </div>
