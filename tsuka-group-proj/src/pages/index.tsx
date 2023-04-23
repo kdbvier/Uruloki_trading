@@ -1,58 +1,103 @@
-import { formItensData } from "@/@fake-data/form.fake-data";
-import { tokensData } from "@/@fake-data/token.fake-data";
-import { IBenifitsItemFields, ILandingPage, INavbarFields } from "@/@types/generated/contentful.types";
-import { AllPositionsToken } from "@/components/tokens/all-positions.token";
-import { CompareTokenChainToken } from "@/components/tokens/compare-token-chain.token";
-import { LiveGraphToken } from "@/components/tokens/live-graph.token";
-import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
-import { PoolInfoToken } from "@/components/tokens/pool-info.token";
-import getLandingPage from "@/lib/content-graphql";
-import ContentService from "@/lib/content-service";
+import {
+  IBenifitsItemFields,
+  ILandingPage,
+  INavbarFields,
+} from "@/@types/generated/contentful.types";
+import {
+  BenifitsSection,
+  BenifitsSectionProps,
+} from "@/components/landing/benifits.section";
+import { CoinTypeLanding } from "@/components/landing/cointype.landing";
+import {
+  FooterProps,
+  FooterLanding,
+} from "@/components/landing/footer.section";
+import { HeroLanding, HeroProps } from "@/components/landing/hero.section";
+import {
+  HowItWorksSection,
+  HowItWorksSectionProps,
+} from "@/components/landing/howitworks.section";
+import {
+  KeyFeaturesSection,
+  KeyFeaturesSectionProps,
+} from "@/components/landing/keyfeatures.section";
+import { Navbar, NavbarProps } from "@/components/landing/navbar.section";
 
-type newProps = {
-  landingPage: ILandingPage;
-}
-export default function Home({landingPage}: newProps){
-  const titles = formItensData;
-  const data = tokensData;
-  const [inputToken, outputToken] = data.map((token) => {
-    return { id: token.id, token: token.chain.code, icon: token.chain.icon };
-  });
+import { BlurLanding } from "@/components/landing/blur.landing";
+import getEntriesLanding from "@/lib/content-graphql";
+import { CopyRight } from "@/components/landing/copyright.section";
 
-  console.log(landingPage);
-  const networks = ["ETH", "BSC", "POLYGON"];
+type SsrProps = {
+  responsData: {
+    response:{
+
+      landingPage:{
   
+        hero: HeroProps;
+        howItWorks: HowItWorksSectionProps;
+        benifits: BenifitsSectionProps;
+        keyFeatures: KeyFeaturesSectionProps;
+        footer: FooterProps;
+        navbar: NavbarProps;
+      }
+    }
+  };
+};
 
+const Ssr = ({ responsData }: SsrProps) => {
+  console.log("in rendering", responsData);
+  const coins =[
+    {
+      url: '/tokens/ethereum.png',
+      name:'Ethereum',
+      abbr: 'ETH',
+      rate: 5.53,
+      price: 12574.24
+    },
+    {
+      url: '/tokens/bitcoin.png',
+      name:'Bitcoin',
+      abbr: 'BTC',
+      rate: 6.95,
+      price: 12503.63
+    },
+    {
+      url: '/tokens/anchor.png',
+      name:'Anchor',
+      abbr: 'ANC',
+      rate: 3.21,
+      price: 15590.74
+    },
+    {
+      url: '/tokens/polkadot.png',
+      name:'Polkadot',
+      abbr: 'PKD',
+      rate: 5.53,
+      price: 12574.24
+    },
+  ];
   return (
-    <div className="flex flex-col">
-      <div className="hidden md:grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-3">
-          <CompareTokenChainToken token={inputToken} networks={networks} />
-          <PoolInfoToken token={inputToken} />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <LiveGraphToken token={inputToken} />
-          <AllPositionsToken token={inputToken} />
-        </div>
-        <div className="col-span-12 md:col-span-3">
-          <OrderWidgetToken token={inputToken} />
-        </div>
-      </div>
-      <div className="block md:hidden">
-        <LiveGraphToken token={inputToken} />
-        <OrderWidgetToken token={inputToken} />
-        <AllPositionsToken token={inputToken} />
-        <PoolInfoToken token={inputToken} />
-      </div>
+    <div className="landing-container flex flex-col items-center bg-black">
+      <HeroLanding {...responsData.response.landingPage.hero} navbar={responsData.response.landingPage.navbar}/>
+      <CoinTypeLanding coins={coins}/>
+      <KeyFeaturesSection {...responsData.response.landingPage.keyFeatures} />
+      <HowItWorksSection {...responsData.response.landingPage.howItWorks} />
+      <BenifitsSection {...responsData.response.landingPage.benifits} />
+      <FooterLanding {...responsData.response.landingPage.footer} />
+      <CopyRight/>
     </div>
   );
+};
+
+export async function getServerSideProps() {
+  const responsData = await getEntriesLanding();
+
+  // console.log(
+  //   "responsData::::In getServerSideProps",
+  //   JSON.stringify(responsData)
+  // );
+
+  return { props: { responsData } };
 }
 
-export const getServerSideProps =async () => {
-  const landingPageContents = (await ContentService.instance.getEntriesByType<ILandingPage>("landingPage"))[0];
-  const landingPage = landingPageContents.fields;
-
-  getLandingPage().then(response=> console.log("response GraphQL:: ", response));
-  console.log("Inside ServerSideProps", landingPage);
-  return {props: {landingPage}}
-}
+export default Ssr;
