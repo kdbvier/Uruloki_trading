@@ -10,7 +10,7 @@ import {
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 
-export default function Home() {
+export default function MyOrder() {
   const [openMode, setOpenMode] = useState(true);
   const [showPopupBg, setShowPopupBg] = useState(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState(false);

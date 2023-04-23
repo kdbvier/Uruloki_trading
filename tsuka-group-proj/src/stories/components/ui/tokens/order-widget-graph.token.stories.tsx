@@ -14,6 +14,7 @@ export default {
       min: 153,
       max: 7345,
     },
+    setShowEditOrderModal: (a: any) => {},
   },
 } as Meta<OrderWidgetGraphProp>;
 

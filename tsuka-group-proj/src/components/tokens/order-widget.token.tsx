@@ -104,6 +104,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
               value1={order.price}
               budget={order.budget}
               bound={chartBound}
+              setShowEditOrderModal={setShowEditOrderModal}
             />
           );
         } else {
@@ -115,11 +116,12 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
               value2={order.prices[1]}
               budget={order.budget}
               bound={chartBound}
+              setShowEditOrderModal={setShowEditOrderModal}
             />
           );
         }
       })}
-      <div className="relative flex justify-center">
+      {/* <div className="relative flex justify-center">
         <button className="text-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
         {
           showPopup &&
@@ -129,7 +131,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           showConfirmDlg &&
           <DeleteConfirmToken setShowPopupBg={setShowPopupBg} setShowConfirmDlg={setShowConfirmDlg} setShowDeletedAlert={setShowDeletedAlert} />
         }
-      </div>
+      </div> */}
     </div>
   );
 };

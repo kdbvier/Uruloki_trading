@@ -1,5 +1,6 @@
 import { ChartBound } from "@/types/chart-bound.type";
 import { useMemo } from "react";
+import { FiX, FiEdit, FiPlusCircle } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
   buy: boolean;
@@ -7,6 +8,7 @@ export interface OrderWidgetGraphProp {
   value2?: number;
   budget: number;
   bound: ChartBound;
+  setShowEditOrderModal: (a: any) => void;
 }
 
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
@@ -15,6 +17,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   value2,
   budget,
   bound: { min, max },
+  setShowEditOrderModal,
 }) => {
   const percents = useMemo(() => {
     const range = max - min;
@@ -25,8 +28,14 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
 
   return (
     <div className="mb-2">
-      <div className="px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
+      <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
+        <p
+          className="text-primary flex items-center gap-2 cursor-pointer"
+          onClick={() => setShowEditOrderModal(true)}
+        >
+          Edit <FiEdit />
+        </p>
       </div>
       <div className="border border-tsuka-400 text-tsuka-100">
         <div className="py-2 px-4 text-sm text-tsuka-100">

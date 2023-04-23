@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FiX, FiChevronDown, FiPlusCircle } from "react-icons/fi";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { commafy, commafy2 } from "@/helpers/calc.helper";
 
 export interface EditOrderTokenProp {
   setShowPopupBg: (a: any) => void;
@@ -22,10 +23,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
   const [isBuy, setIsBuy] = useState(true);
-  const [targetPrice, setTargetPrice] = useState("25000");
-  const [minPrice, setMinPrice] = useState("25000");
-  const [maxPrice, setMaxPrice] = useState("35000");
-  const [amount, setAmount] = useState("40000");
+  const [targetPrice, setTargetPrice] = useState("25,000");
+  const [minPrice, setMinPrice] = useState("25,000");
+  const [maxPrice, setMaxPrice] = useState("35,000");
+  const [amount, setAmount] = useState("40,000");
   const [isRange, setIsRange] = useState(false);
 
   const tokens = [
@@ -39,13 +40,30 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       code: "ETH",
       title: "Ethereum"
     }
-  ]
+  ];
 
-  const priceType = (event: any) => {
-    if (event.target.value === "1")
-      setIsRange(false);
-    else
-      setIsRange(true);
+  const handleNumberInputChange = (name: string,event: any) => {
+    const value = event.target.value;
+    if (value) {
+      const formattedValue = (Number(value.replace(/\D/g, '')) || '').toLocaleString();
+      switch (name) {
+        case "amount":
+          setAmount(formattedValue);
+          break;
+        case "target":
+          setTargetPrice(formattedValue);
+          break;
+        case "min":
+          setMinPrice(formattedValue);
+          break;
+        case "max":
+          setMaxPrice(formattedValue);
+          break;
+      
+        default:
+          break;
+      }
+    }
   }
 
   return (
@@ -77,7 +95,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               onClick={() => setIsBuy(false)}
             >
               <p className="font-medium">SELL</p>
-              <p className="text-xs">BLUR with WETH</p>
+              <p className="text-xs">BLUR for WETH</p>
             </button>
           </div>
           <div className="w-full mt-4 flex gap-2 text-sm">
@@ -99,12 +117,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           {
             !isRange &&
             <div className="relative mt-4">
-              <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Target</span>
+              <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Target ($)</span>
               <input
-                type="number"
+                type="text"
                 className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                 value={targetPrice}
-                onChange={(e) => setTargetPrice(e.target.value)}
+                onChange={(e) => handleNumberInputChange("target", e)}
               />
             </div>
           }
@@ -112,26 +130,27 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             isRange &&
             <>
               <div className="relative mt-4">
-                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Min price</span>
+                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Min price ($)</span>
                 <input
-                  type="number"
+                  type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
+                  onChange={(e) => handleNumberInputChange("min", e)}
                 />
               </div>
               <div className="relative mt-4">
-                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Max price</span>
+                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Max price ($)</span>
                 <input
-                  type="number"
+                  type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
+                  onChange={(e) => handleNumberInputChange("max", e)}
                 />
               </div>
             </>
           }
-          <div className="w-full mt-4 py-[11px] px-3 border border-tsuka-400 rounded-md">
+          <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">Amount</span>
+          <div className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md">
             <div className="w-full flex justify-between">
               <div
                 className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
@@ -146,45 +165,26 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   />
                   <span className="ml-1 text-sm text-tsuka-100 mr-2">{tokens[selectedToken].title}</span>
                 </div>
-                {/* <FiChevronDown className=" text-tsuka-300 text-2xl" />
-                {
-                  !seletCollaped &&
-                  <div className="absolute w-[90%] top-full left-[5%] right-[5%] shadow-gray-900 shadow-sm">
-                    {
-                      tokens.map((token, idx) => {
-                        return (
-                          <div
-                            className={`flex items-center px-4 py-1 border-t border-tsuka-500 bg-tsuka-400 hover:bg-tsuka-300 ${
-                              idx === tokens.length - 1 ? "rounded-b-md" : ""
-                            }`}
-                            key={idx}
-                            onClick={() => {setSelectedToken(idx); setSeletCollaped(false);}}
-                          >
-                            <TokenIconsToken
-                              className="shrink-0"
-                              name={tokens[idx].name}
-                              shortName={tokens[idx].code}
-                              width={16}
-                              height={16}
-                            />
-                            <span className="ml-1 text-sm text-tsuka-100 mr-2">{tokens[idx].title}</span>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
-                } */}
               </div>
               <input
-                type="number"
+                type="text"
                 className="grow min-w-[100px] bg-tsuka-500 outline-none text-right text-2xl font-medium"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => handleNumberInputChange("amount", e)}
               />
+              {/* <p className="relative grow min-w-[100px] text-tsuka-50 bg-tsuka-500 outline-none text-right text-2xl font-medium">
+                {commafy2(amount)}
+                <input
+                  type="number"
+                  className="absolute w-full h-full left-0 top-0 text-tsuka-50 bg-tsuka-500/0 outline-none text-right text-2xl font-medium"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </p> */}
             </div>
             <div className="w-full flex justify-between mt-1">
               <p className="text-sm">
-                <span className="text-tsuka-200">Amount : </span>
+                <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50">{3.000493} BTC</span>
                 <span className="text-primary text-xs"> MAX</span>
               </p>
