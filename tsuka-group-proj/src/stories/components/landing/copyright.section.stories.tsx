@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Section",
+  title: "Landing/Section/CopyRight",
   component: CopyRightComponent,
   args: {
     

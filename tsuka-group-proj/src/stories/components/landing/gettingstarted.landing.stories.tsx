@@ -26,6 +26,7 @@ export default {
       height: 2082,
       size: 693159,
     },
+    index: 0,
   },
 } as Meta<GettingStartedItemProps>;
 

@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Component",
+  title: "Landing/Component/BenifitCard",
   component: BenifitCardComponent,
   args: {
     title: "Save time & effort with automation",

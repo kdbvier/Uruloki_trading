@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Section",
+  title: "Landing/Section/HowItWorksSection",
   component: HowItWorksSectionComponent,
   args: {
     beforeMainText: "How it Works",

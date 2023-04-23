@@ -7,7 +7,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Component",
+  title: "Landing/Component/BlurLanding",
   component: BlurLandingComponent,
   args: {
     width: 889,

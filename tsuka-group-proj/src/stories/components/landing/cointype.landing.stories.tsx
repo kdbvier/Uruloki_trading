@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Component",
+  title: "Landing/Component/CoinTypeLanding",
   component: CoinTypeLandingComponent,
   args: {
     coins:[

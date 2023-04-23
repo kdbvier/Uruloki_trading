@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Section",
+  title: "Landing/Section/FooterSection",
   component: FooterLandingComponent,
   args:  {
     mainText: "Get Started with Uruloki Today",

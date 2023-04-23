@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Section",
+  title: "Landing/Section/HeroSection",
   component: HeroLandingComponent,
   args: {
     title: "All-in-one platform for decentralized asset trading and arbitrage",

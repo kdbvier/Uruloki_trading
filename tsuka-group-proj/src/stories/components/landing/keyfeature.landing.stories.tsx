@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "Landing/Component",
+  title: "Landing/Component/KeyFeatureCard",
   component: KeyFeatureCardComponent,
   args: {
     title: "Simplify Your Trading with our Order Book",
