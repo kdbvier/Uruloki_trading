@@ -60,9 +60,9 @@ export const Navbar: React.FC<NavbarProps> = ({ icon, titlesCollection }) => {
           </Link>
         ))}
         <div className="lg:inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center mt-4 lg:mt-0 lg:ml-24 xl:ml-40">
-          <button className="h-full text-white bg-black text-base font-Inter-400 font-normal text-center whitespace-nowrap rounded-full pl-[38px] py-[16px] pr-[38px] flex justify-center items-center gap-3">
+          <Link href={"/homepage"} className="h-full text-white bg-black text-base font-Inter-400 font-normal text-center whitespace-nowrap rounded-full pl-[38px] py-[16px] pr-[38px] flex justify-center items-center gap-3">
             {"Trade now"}
-          </button>
+          </Link>
         </div>
       </div>
     </div>

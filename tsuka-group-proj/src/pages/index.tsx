@@ -71,7 +71,7 @@ const Ssr = ({ responsData }: SsrProps) => {
     {
       url: '/tokens/polkadot.png',
       name:'Polkadot',
-      abbr: 'PKD',
+      abbr: 'DOT',
       rate: 5.53,
       price: 12574.24
     },

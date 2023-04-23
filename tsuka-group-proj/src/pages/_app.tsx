@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const isLandingPage = router.pathname === "/index_graph";
+  const isLandingPage = router.pathname === "/index" || router.pathname === "/";
   return (
     <Provider store={store}>
       {isLandingPage ? (
