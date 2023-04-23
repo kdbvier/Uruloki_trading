@@ -29,7 +29,7 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({
           {mainText}
         </span>
       </div>
-      <div className=" text-[#ADADAD] text-base font-Inter-300 leading-[188%] sm:leading-[200%] px-1 mt-4 sm:mt-5 mb-8 md:mb-0">
+      <div className=" text-[#ADADAD] text-base font-Inter-300 leading-[188%] sm:leading-[200%] mx-auto max-w-[589px] px-1 mt-4 sm:mt-5 mb-8 md:mb-0">
         {afterMainText}
       </div>
     </div>

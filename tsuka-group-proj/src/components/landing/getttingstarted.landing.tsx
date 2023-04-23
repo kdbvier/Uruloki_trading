@@ -40,8 +40,8 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
   return (
     // <div className={"w-[1440px] bg-slate-900 flex items-center gap-[111px]"}>
     <div
-      className={`px-4 ${
-        orientation ? "sm:pl-4 sm:pr-28" : "sm:pl-28 sm:pr-4 flex-row-reverse"
+      className={`px-4 sm:px-8 ${
+        orientation ? "lg:pl-4 lg:pr-28" : "lg:pl-28 lg:pr-4 flex-row-reverse"
       } bg-black lg:flex items-center ${gapList[index]}`}
     >
       

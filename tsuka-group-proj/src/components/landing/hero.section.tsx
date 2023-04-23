@@ -69,28 +69,30 @@ export const HeroLanding: React.FC<HeroProps> = ({
           </div>
         </div>
         <div className="relative w-full flex justify-center">
-          <div className="absolute w-[200%] top-[20%]"  style={{transform: "skewY(-7deg)"}}>
-            <div className="flex w-full h-12 sm:h-16">
-              <div className="flex-1 h-full" style={{
-                background:
-                  "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
-              }}></div>
+          <div className="absolute w-[200%] top-[10%] sm:top-[15%]"  style={{transform: "skewY(-7deg)"}}>
+            <div className="flex w-full h-12 sm:h-16 lg:h-24">
               <div className="flex-1 h-full" style={{
                 boxSizing: "border-box",
                 borderTop: "1px solid",
                 borderTopColor:
+                "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
+                transform: "translateY(80%)",
+              }}></div>
+              <div className="flex-1 h-full" style={{
+                background:
                   "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
               }}></div>
             </div>
-            <div className="flex w-full h-12 sm:h-16">
+            <div className="flex w-full h-12 sm:h-16 lg:h-24">
+              <div className="flex-1 h-full" style={{
+                background:
+                "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
+                transform: "translateY(80%)",
+              }}></div>
               <div className="flex-1 h-full" style={{
                 boxSizing: "border-box",
                 borderBottom: "1px solid",
                 borderBottomColor:
-                  "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
-              }}></div>
-              <div className="flex-1 h-full" style={{
-                background:
                   "linear-gradient(270deg, #31C699 -3.19%, #003525 95.62%)",
               }}></div>
             </div>
