@@ -24,9 +24,9 @@ const CustomCheck = () => {
   );
 };
 const gapList = [
-  "gap-[0px]",
+  "gap-[111px]",
   "gap-[51px]",
-  "gap-[1px]",
+  "gap-[51px]",
   "gap-[111px]",
 ]
 export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
@@ -40,8 +40,8 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
   return (
     // <div className={"w-[1440px] bg-slate-900 flex items-center gap-[111px]"}>
     <div
-      className={`${
-        orientation ? "" : "flex-row-reverse"
+      className={`px-4 ${
+        orientation ? "sm:pl-4 sm:pr-28" : "sm:pl-28 sm:pr-4 flex-row-reverse"
       } bg-black lg:flex items-center ${gapList[index]}`}
     >
       
@@ -154,7 +154,7 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
         </div>
       )}
       {index == 3 && (
-        <div className="relative flex-1">
+        <div className="relative">
           <BlurLanding
             width={513}
             height={513}
@@ -190,18 +190,18 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
         </div>
       )}
       <div className="pr-5 flex-1">
-        <h1 className="text-white text-[40px] font-Gilroy-600 leading-[52px]">
+        <h1 className="text-white text-[21px] sm:text-[40px] font-Gilroy-600 leading-[32px] sm:leading-[52px]">
           {descriptionHeader}
         </h1>
-        <h1 className="text-[#ADADAD] font-Inter-400 text-base leading-8 mt-4">
+        <h1 className="text-[#ADADAD] font-Inter-400 text-[15px] sm:text-base leading-7 sm:leading-8 mt-4">
           {description}
         </h1>
-        <ul className="pl-4 flex flex-col gap-4 mt-8">
+        <ul className="pl-2 sm:pl-4 flex flex-col gap-4 mt-8">
           {features.map((feature) => {
             return (
               <li
                 key={feature}
-                className="text-[#ADADAD] text-base font-Inter-400 leading-[175%] sm:pr-20 flex items-center gap-3"
+                className="text-[#ADADAD] text-[15px] sm:text-base font-Inter-400 leading-[187%] sm:leading-[175%] sm:pr-20 flex items-center gap-3"
               >
                 <CustomCheck />
                 <span className="flex-1">{feature}</span>

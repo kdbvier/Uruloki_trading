@@ -21,7 +21,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({
 }) => {
   const { items } = gettingStartedSectionsCollection;
   return (
-    <div className="inner-container bg-black py-4 overflow-hidden pt-56" id="howitworks">
+    <div className="bg-black py-4 overflow-hidden pt-56" id="howitworks">
       <SectionTitle
         mainText={mainText}
         beforeMainText={beforeMainText}
