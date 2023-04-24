@@ -42,11 +42,11 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
     <div
       className={`px-4 sm:px-8 ${
         orientation ? "lg:pl-4 lg:pr-28" : "lg:pl-28 lg:pr-4 flex-row-reverse"
-      } bg-black lg:flex items-center ${gapList[index]}`}
+      } bg-black lg:flex items-center justify-between `}
     >
       
       {index == 0 && (
-        <div className="relative">
+        <div className="relative lg:w-[48%]">
           <BlurLanding
             width={513}
             height={513}
@@ -71,9 +71,12 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
           <Image
             src={image.url}
             alt={"feature__image"}
-            width={625}
-            height={618}
+            width={0}
+            height={0}
+            sizes="100vw"
             style={{
+              width:'100%',
+              height: 'auto',
               backgroundColor: "transparent",
               zIndex: 2,
               position: "relative",
@@ -82,7 +85,7 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
         </div>
       )}
       {index == 1 && (
-        <div className="relative">
+        <div className="relative lg:w-[48%]">
           <BlurLanding
             width={513}
             height={513}
@@ -104,7 +107,7 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
               },
             ]}
           />
-          <Image
+          {/* <Image
             src={image.url}
             alt={"feature__image"}
             width={701}
@@ -114,11 +117,25 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
               zIndex: 2,
               position: "relative",
             }}
+          /> */}
+          <Image
+            src={image.url}
+            alt={"feature__image"}
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{
+              width:'100%',
+              height: 'auto',
+              backgroundColor: "transparent",
+              zIndex: 2,
+              position: "relative",
+            }}
           />
         </div>
       )}
       {index == 2 && (
-        <div className="relative">
+        <div className="relative lg:w-[48%]">
           <BlurLanding
             width={513}
             height={513}
@@ -140,7 +157,7 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
               },
             ]}
           />
-          <Image
+          {/* <Image
             src={image.url}
             alt={"feature__image"}
             width={701}
@@ -150,11 +167,25 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
               zIndex: 2,
               position: "relative",
             }}
+          /> */}
+          <Image
+            src={image.url}
+            alt={"feature__image"}
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{
+              width:'100%',
+              height: 'auto',
+              backgroundColor: "transparent",
+              zIndex: 2,
+              position: "relative",
+            }}
           />
         </div>
       )}
       {index == 3 && (
-        <div className="relative">
+        <div className="relative lg:w-[48%]">
           <BlurLanding
             width={513}
             height={513}
@@ -176,7 +207,7 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
               },
             ]}
           />
-          <Image
+          {/* <Image
             src={image.url}
             alt={"feature__image"}
             width={625}
@@ -186,10 +217,26 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
               zIndex: 2,
               position: "relative",
             }}
+          /> */}
+          <Image
+            src={image.url}
+            alt={"feature__image"}
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{
+              width:'100%',
+              marginLeft:'auto',
+              marginRight: 'auto',
+              height: 'auto',
+              backgroundColor: "transparent",
+              zIndex: 2,
+              position: "relative",
+            }}
           />
         </div>
       )}
-      <div className="pr-5 flex-1">
+      <div className="pr-5 lg:w-[48%]">
         <h1 className="text-white text-[21px] sm:text-[40px] font-Gilroy-600 leading-[32px] sm:leading-[52px]">
           {descriptionHeader}
         </h1>
@@ -201,7 +248,7 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
             return (
               <li
                 key={feature}
-                className="text-[#ADADAD] text-[15px] sm:text-base font-Inter-400 leading-[187%] sm:leading-[175%] sm:pr-20 flex items-center gap-3"
+                className="text-[#ADADAD] text-[15px] sm:text-base font-Inter-400 leading-[187%] sm:leading-[175%] sm:pr-20 flex items-center gap-3 z-50"
               >
                 <CustomCheck />
                 <span className="flex-1">{feature}</span>
