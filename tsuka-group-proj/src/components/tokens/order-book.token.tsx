@@ -3,22 +3,20 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
 
-export interface AllPositionsTokenProps {
+export interface OrderBookTokenProps {
   token: {
     id: string;
     token: string;
   };
 }
 
-export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
-  token,
-}) => {
+export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
 
   const options = [
     {
-      title: "All Positions",
+      title: "Order Book",
       active: true,
     },
     {
@@ -71,13 +69,13 @@ export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
                       }}
                     ></div>
                   </div>
-                  <span className="flex-1 py-2 px-4 font-normal">
+                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
                     $ {item.priceUsdt}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     {item.amountBlur}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     $ {value?.sell?.totalValue}
                   </span>
                 </div>
@@ -105,13 +103,13 @@ export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
                       }}
                     ></div>
                   </div>
-                  <span className="flex-1 py-2 px-4 font-normal">
+                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
                     $ {item.priceUsdt}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     {item.amountBlur}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     $ {value?.buy?.totalValue}
                   </span>
                 </div>
