@@ -88,7 +88,9 @@ def update_all_rows():
         logging.info("attempting to get token_data")
         connection = connengine.connect()
         stmt = select(table_token_cache.c.address, cast(
-            table_token_cache.c.price, sqlalchemy.Float)).select_from(table_token_cache).join(top_gainers, table_token_cache.c.id == top_gainers.c.token_cache_id)
+            table_token_cache.c.price, sqlalchemy.Float))
+        #incase join
+            # .select_from(table_token_cache).join(top_gainers, table_token_cache.c.id == top_gainers.c.token_cache_id)
         pair_addresses = [row for row in connection.execute(stmt)]
         logging.info("token data fetch successfully")
     except:
