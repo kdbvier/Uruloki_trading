@@ -1,7 +1,9 @@
 import { getTokenPosition } from "@/store/apps/token-positions";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
+import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
+import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 
 export interface OrderBookTokenProps {
   token: {
@@ -13,17 +15,21 @@ export interface OrderBookTokenProps {
 export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
+  const [selectedPath, setSelectedPath] = useState("order-book");
 
   const options = [
     {
       title: "Order Book",
-      active: true,
+      path: "order-book",
     },
     {
       title: "Activity",
-      active: false,
+      path: "order-book-history",
     },
   ];
+
+  const OrderComponent =
+    selectedPath === "order-book" ? OrderBookTokenUi : OrderHistoryBookTokenUi;
 
   useEffect(() => {
     dispatch(getTokenPosition(token.id));
@@ -32,12 +38,17 @@ export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100">
       <div className="w-full flex items-center justify-start border-b border-tsuka-400 px-4 pt-2">
-        {options.map(({ title, active }, index) => (
+        {options.map(({ title, path }, index) => (
           <span
             key={index}
+            onClick={() =>
+              setSelectedPath((prev) =>
+                prev === "order-book" ? "order-book-history" : "order-book"
+              )
+            }
             className={`${
-              active ? "border-b-2 border-accent" : ""
-            } p-4 text-center mx-2 text-lg font-semibold text-tsuka-50`}
+              path === selectedPath ? "border-b-2 border-accent" : ""
+            } p-4 text-center mx-2 text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
           </span>
@@ -46,78 +57,7 @@ export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
           <FiltersButton callback={() => console.log("filters button")} />
         </div>
       </div>
-      {status === "loading" && "Loading..."}
-      {status === "ok" && value && (
-        <div className="p-4 flex">
-          <div className="flex-1">
-            <div className="h-96 overflow-auto">
-              <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
-                <span className="flex-1 px-4 py-2">Price (USDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">SUM (USDT)</span>
-              </div>
-              {value?.sell?.positions?.map((item, index) => (
-                <div
-                  key={index}
-                  className="text-red-400 border-b border-tsuka-400 text-base relative w-full text-left flex flex-center"
-                >
-                  <div className="absolute w-full rounded-lg m-2 mr-4">
-                    <div
-                      className="bg-red-400/20 h-6 rounded text-start flex items-center px-2 ml-auto mr-4"
-                      style={{
-                        width: `${item.depth}%`,
-                      }}
-                    ></div>
-                  </div>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    $ {item.priceUsdt}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    {item.amountBlur}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    $ {value?.sell?.totalValue}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="w-2" />
-          <div className="flex-1">
-            <div className="h-96 overflow-auto">
-              <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
-                <span className="flex-1 px-4 py-2">Price (USDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">SUM (USDT)</span>
-              </div>
-              {value?.buy?.positions?.map((item, index) => (
-                <div
-                  key={index}
-                  className="text-green-400 border-b border-tsuka-400 text-base relative w-full text-left flex flex-center"
-                >
-                  <div className="absolute w-full rounded-lg m-2 mr-4">
-                    <div
-                      className="bg-green-400/20 h-6 rounded text-start flex items-center px-2 mr-auto"
-                      style={{
-                        width: `${item.depth}%`,
-                      }}
-                    ></div>
-                  </div>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    $ {item.priceUsdt}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    {item.amountBlur}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    $ {value?.buy?.totalValue}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {OrderComponent && <OrderComponent token={token} />}
     </div>
   );
 };

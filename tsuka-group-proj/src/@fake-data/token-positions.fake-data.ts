@@ -12,6 +12,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -19,6 +21,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -26,6 +30,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -33,6 +39,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -40,6 +48,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -47,6 +57,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -54,6 +66,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -61,6 +75,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -68,6 +84,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -75,6 +93,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Buy",
@@ -82,6 +102,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -89,6 +111,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -96,6 +120,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
       ],
     },
@@ -108,6 +134,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -115,6 +143,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -122,6 +152,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -129,6 +161,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -136,6 +170,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -143,6 +179,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -150,6 +188,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -157,6 +197,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -164,6 +206,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -171,6 +215,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -178,6 +224,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -185,6 +233,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -192,6 +242,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 345.32,
           amountBlur: 0.523481947312,
           executionValue: 345.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
       ],
     },
@@ -207,6 +259,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -214,6 +269,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -221,6 +279,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -228,6 +289,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -235,6 +299,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -242,6 +309,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -249,6 +319,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -256,6 +329,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -263,6 +339,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -270,6 +349,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -277,6 +359,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -284,6 +369,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Buy",
@@ -291,6 +378,8 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
       ],
     },
@@ -303,6 +392,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -310,6 +402,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -317,6 +412,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:53:38.972Z",
         },
         {
           type: "Sell",
@@ -324,6 +422,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -331,6 +432,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -338,6 +442,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -345,6 +452,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -352,6 +462,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -359,6 +472,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -366,6 +482,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -373,6 +492,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -380,6 +502,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
         {
           type: "Sell",
@@ -387,6 +512,9 @@ export const tokenPositionsData: Array<TokenPositions> = [
           priceUsdt: 45.32,
           amountBlur: 0.3891237218932,
           executionValue: 45.32,
+
+          address: "0x9w734n567w4857n24w05m25n7w24057mq344nq357dh",
+          timestamp: "2023-04-24T16:54:38.972Z",
         },
       ],
     },
