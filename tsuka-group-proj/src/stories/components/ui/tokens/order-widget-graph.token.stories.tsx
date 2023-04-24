@@ -14,7 +14,10 @@ export default {
       min: 153,
       max: 7345,
     },
+    showPopupBg: false,
+    setShowPopupBg: (a: any) => {},
     setShowEditOrderModal: (a: any) => {},
+    setShowDeletedAlert: (a: any) => {},
   },
 } as Meta<OrderWidgetGraphProp>;
 

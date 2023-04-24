@@ -6,19 +6,11 @@ import { commafy, commafy2 } from "@/helpers/calc.helper";
 export interface EditOrderTokenProp {
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
-  name1: string;
-  code1: string;
-  name2: string;
-  code2: string;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowPopupBg,
   setShowEditOrderModal,
-  name1,
-  code1,
-  name2,
-  code2,
 }) => {
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
@@ -41,6 +33,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       title: "Ethereum"
     }
   ];
+
+  useEffect(() => {setShowPopupBg(false)});
 
   const handleNumberInputChange = (name: string,event: any) => {
     const value = event.target.value;

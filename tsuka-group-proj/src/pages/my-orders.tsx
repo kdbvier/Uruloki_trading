@@ -11,11 +11,11 @@ import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 
 export default function MyOrder() {
-  const [openMode, setOpenMode] = useState(true);
-  const [showPopupBg, setShowPopupBg] = useState(false);
-  const [showEditOrderModal, setShowEditOrderModal] = useState(false);
-  const [showAll, setShowAll] = useState(false);
-  const [showDeletedAlert, setShowDeletedAlert] = useState(false);
+  const [openMode, setOpenMode] = useState<boolean>(true);
+  const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+  const [showAll, setShowAll] = useState<boolean>(false);
+  const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
 
   const name1 = "bitcoin";
   const code1 = "BTC";
@@ -125,10 +125,6 @@ export default function MyOrder() {
         <EditOrderToken
           setShowPopupBg={setShowPopupBg}
           setShowEditOrderModal={setShowEditOrderModal}
-          name1={name1}
-          code1={code1}
-          name2={name2}
-          code2={code2}
         />
       }
       {

@@ -9,10 +9,6 @@ export default {
   args: {
     setShowPopupBg: (a: any) => {},
     setShowEditOrderModal: (a: any) => {},
-    name1: "ethereum",
-    code1: "ETH",
-    name2: "bitcoin",
-    code2: "BTC",
   },
   decorators: [
     (Story) => {

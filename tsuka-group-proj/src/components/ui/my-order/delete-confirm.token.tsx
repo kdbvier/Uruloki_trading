@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 export interface DeleteConfirmTokenProp {
   setShowPopupBg: (a: any) => void;
   setShowConfirmDlg: (a: any) => void;

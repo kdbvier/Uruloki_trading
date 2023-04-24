@@ -1,6 +1,9 @@
 import { ChartBound } from "@/types/chart-bound.type";
 import { useMemo } from "react";
 import { FiX, FiEdit, FiPlusCircle } from "react-icons/fi";
+import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
+import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
+import { useState, useEffect } from 'react';
 
 export interface OrderWidgetGraphProp {
   buy: boolean;
@@ -8,7 +11,10 @@ export interface OrderWidgetGraphProp {
   value2?: number;
   budget: number;
   bound: ChartBound;
+  showPopupBg: boolean;
+  setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
+  setShowDeletedAlert: (a: any) => void;
 }
 
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
@@ -17,8 +23,25 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   value2,
   budget,
   bound: { min, max },
+  showPopupBg,
+  setShowPopupBg,
   setShowEditOrderModal,
+  setShowDeletedAlert,
 }) => {
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showPopupBg == false)
+      setShowPopup(false);
+      setShowConfirmDlg(false);
+  }, [showPopupBg]);
+  
+  useEffect(() => {
+    if (showConfirmDlg == false)
+      setShowPopupBg(false);
+  }, [showConfirmDlg]);
+
   const percents = useMemo(() => {
     const range = max - min;
     const percent1 = ((value1 - min) / range) * 90 + 10;
@@ -30,12 +53,20 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
     <div className="mb-2">
       <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
-        <p
-          className="text-primary flex items-center gap-2 cursor-pointer"
-          onClick={() => setShowEditOrderModal(true)}
+        <div
+          className="relative text-primary flex items-center gap-2 cursor-pointer"
+          onClick={() => { setShowPopup(true); setShowPopupBg(true); }}
         >
           Edit <FiEdit />
-        </p>
+          {
+            showPopup &&
+            <EditOrDeleteToken setShowPopupBg={setShowPopupBg} setShowEditOrderModal={setShowEditOrderModal} setShowConfirmDlg={setShowConfirmDlg} />
+          }
+          {
+            showConfirmDlg &&
+            <DeleteConfirmToken setShowPopupBg={setShowPopupBg} setShowConfirmDlg={setShowConfirmDlg} setShowDeletedAlert={setShowDeletedAlert} />
+          }
+        </div>
       </div>
       <div className="border border-tsuka-400 text-tsuka-100">
         <div className="py-2 px-4 text-sm text-tsuka-100">

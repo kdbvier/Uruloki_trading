@@ -4,14 +4,9 @@ import {
   SingleOrder,
   TokenOrder,
 } from "@/types/token-order.type";
-import { useMemo } from "react";
-import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
-import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
-import { HorizontalIconsToken } from "../ui/tokens/horizontal-icons.token";
+import { useMemo, useEffect } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderWidgetGraph } from "../ui/tokens/order-widget-graph.token";
-import { useState, useEffect } from "react";
-import { FiEdit2, FiTrash } from "react-icons/fi";
 
 export const OrderWidgetToken: React.FC<TokenOrder> = ({
   name1,
@@ -62,20 +57,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     }
   }, [status]);
 
-  const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (showPopupBg == false)
-      setShowPopup(false);
-      setShowConfirmDlg(false);
-  }, [showPopupBg]);
-
-  const manageHandler = (event: any) => {
-    setShowPopup(true);
-    setShowPopupBg(true);
-  }
-
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
       <div className="flex flex-row items-center mb-4">
@@ -104,7 +85,10 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
               value1={order.price}
               budget={order.budget}
               bound={chartBound}
+              showPopupBg={showPopupBg}
+              setShowPopupBg={setShowPopupBg}
               setShowEditOrderModal={setShowEditOrderModal}
+              setShowDeletedAlert={setShowDeletedAlert}
             />
           );
         } else {
@@ -116,7 +100,10 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
               value2={order.prices[1]}
               budget={order.budget}
               bound={chartBound}
+              showPopupBg={showPopupBg}
+              setShowPopupBg={setShowPopupBg}
               setShowEditOrderModal={setShowEditOrderModal}
+              setShowDeletedAlert={setShowDeletedAlert}
             />
           );
         }
