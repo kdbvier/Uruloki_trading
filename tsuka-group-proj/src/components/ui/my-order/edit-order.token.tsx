@@ -36,27 +36,67 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   useEffect(() => {setShowPopupBg(false)});
 
-  const handleNumberInputChange = (name: string,event: any) => {
-    const value = event.target.value;
-    if (value) {
-      const formattedValue = (Number(value.replace(/\D/g, '')) || '').toLocaleString();
-      switch (name) {
-        case "amount":
-          setAmount(formattedValue);
-          break;
-        case "target":
-          setTargetPrice(formattedValue);
-          break;
-        case "min":
-          setMinPrice(formattedValue);
-          break;
-        case "max":
-          setMaxPrice(formattedValue);
-          break;
-      
-        default:
-          break;
-      }
+  const handleNumberInputChange = (name: string, event: any) => {
+    const value = event.target.value.replace(/,/g, "");
+    const pattern = /^\d*\.?\d*$/;
+    if (!pattern.test(value))
+      return;
+    let newValue = "";
+    if (value.search("\\.") !== -1) {
+      let [integerPart, decimalPart] = value.split(".");
+      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
+      // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
+    } else {
+      newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    switch (name) {
+      case "amount":
+        setAmount(newValue);
+        break;
+      case "target":
+        setTargetPrice(newValue);
+        break;
+      case "min":
+        setMinPrice(newValue);
+        break;
+      case "max":
+        setMaxPrice(newValue);
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  const blurHandler = (name: string, event: any) => {
+    let value = event.target.value.replace(/,/g, "");
+    let newValue = "";
+    if (!/^\d*\.?\d*$/.test(value)) {
+      newValue = "0";
+      return;
+    } else {
+      value = (+value).toString();
+      let [integerPart, decimalPart] = value.split(".");
+      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}`;
+    }
+    switch (name) {
+      case "amount":
+        setAmount(newValue);
+        break;
+      case "target":
+        setTargetPrice(newValue);
+        break;
+      case "min":
+        setMinPrice(newValue);
+        break;
+      case "max":
+        setMaxPrice(newValue);
+        break;
+    
+      default:
+        break;
     }
   }
 
@@ -117,6 +157,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                 value={targetPrice}
                 onChange={(e) => handleNumberInputChange("target", e)}
+                onBlur={(e) => blurHandler("target", e)}
               />
             </div>
           }
@@ -130,6 +171,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={minPrice}
                   onChange={(e) => handleNumberInputChange("min", e)}
+                  onBlur={(e) => blurHandler("min", e)}
                 />
               </div>
               <div className="relative mt-4">
@@ -139,6 +181,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={maxPrice}
                   onChange={(e) => handleNumberInputChange("max", e)}
+                  onBlur={(e) => blurHandler("max", e)}
                 />
               </div>
             </>
@@ -165,6 +208,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 className="grow min-w-[100px] bg-tsuka-500 outline-none text-right text-2xl font-medium"
                 value={amount}
                 onChange={(e) => handleNumberInputChange("amount", e)}
+                onBlur={(e) => blurHandler("amount", e)}
               />
               {/* <p className="relative grow min-w-[100px] text-tsuka-50 bg-tsuka-500 outline-none text-right text-2xl font-medium">
                 {commafy2(amount)}
