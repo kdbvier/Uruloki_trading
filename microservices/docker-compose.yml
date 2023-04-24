@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  market_cap:
+    build:
+      dockerfile: market_data/Dockerfile
+  token_data:
+    build:
+      dockerfile: token_info/Dockerfile
+
+
+    
