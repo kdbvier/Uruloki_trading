@@ -1,3 +1,4 @@
+import { numberWithCommas } from "@/helpers/comma.helper";
 import { getTokenHistoryPosition } from "@/store/apps/token-history-positions";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
@@ -45,7 +46,7 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
                     {item.type}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    $ {item.priceUsdt}
+                    {numberWithCommas(item.priceUsdt)}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
                     {item.amountBlur}

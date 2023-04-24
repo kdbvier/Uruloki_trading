@@ -1,3 +1,4 @@
+import { numberWithCommas } from "@/helpers/comma.helper";
 import { getTokenPosition } from "@/store/apps/token-positions";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
@@ -43,13 +44,13 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
                     ></div>
                   </div>
                   <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    $ {item.priceUsdt}
+                    {numberWithCommas(item.priceUsdt)}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     {item.amountBlur}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    $ {value?.sell?.totalValue}
+                    {numberWithCommas(value?.sell?.totalValue)}
                   </span>
                 </div>
               ))}
@@ -77,13 +78,13 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
                     ></div>
                   </div>
                   <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    $ {item.priceUsdt}
+                    {numberWithCommas(item.priceUsdt)}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     {item.amountBlur}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    $ {value?.buy?.totalValue}
+                    {numberWithCommas(value?.buy?.totalValue)}
                   </span>
                 </div>
               ))}
