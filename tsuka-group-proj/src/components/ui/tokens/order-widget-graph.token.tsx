@@ -74,11 +74,11 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span className={buy ? "text-green" : "text-red"}>
               {value2 ? "Price range" : "Target price"}
             </span>
-            <span>{`${value1}${value2 ? " - " + value2 : ""}`}</span>
+            <span>{`$${value1}${value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""}`}</span>
           </div>
           <div className="flex justify-between">
             <span>Budget</span>
-            <span>{budget}</span>
+            <span>${budget.toLocaleString()}</span>
           </div>
         </div>
         <div className="flex mt-4">
