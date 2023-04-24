@@ -63,6 +63,12 @@ export const KeyFeaturesSection: React.FC<KeyFeaturesSectionProps> = ({
               clickHandler={() => {
                 setSelectedIndex(index);
               }}
+              hoverHandler={()=> {
+                setSelectedIndex(index);
+              }}
+              unhoverHandler={()=>{
+                setSelectedIndex(4);
+              }}
             />
           );
         })}
