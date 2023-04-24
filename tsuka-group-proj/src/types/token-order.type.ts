@@ -39,3 +39,8 @@ export interface TokenOrder {
   setShowEditOrderModal?: any;
   setShowDeletedAlert?: any;
 }
+
+export interface UserOrder {
+  id: string;
+  orders: Array<SingleOrder | RangeOrder>;
+}

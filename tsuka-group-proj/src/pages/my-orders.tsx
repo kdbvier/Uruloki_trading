@@ -1,11 +1,12 @@
 import { FiFilter, FiSearch, FiX, FiChevronDown, FiArrowDown } from "react-icons/fi";
 import { useState, useEffect } from "react";
-import { UserOrder, userOrder } from "@/@fake-data/user-order.fake-data";
+import { userOrder } from "@/@fake-data/user-order.fake-data";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import {
   OrderStatusEnum,
   RangeOrder,
   SingleOrder,
+  UserOrder,
 } from "@/types/token-order.type";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";

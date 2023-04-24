@@ -3,12 +3,8 @@ import {
   PriceTypeEnum,
   RangeOrder,
   SingleOrder,
+  UserOrder,
 } from "@/types/token-order.type";
-
-export interface UserOrder {
-  id: string;
-  orders: Array<SingleOrder | RangeOrder>;
-}
 
 export const userOrder: Array<UserOrder> = [
   {
