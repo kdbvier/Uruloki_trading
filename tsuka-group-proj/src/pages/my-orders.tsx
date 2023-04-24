@@ -17,11 +17,6 @@ export default function MyOrder() {
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
 
-  const name1 = "bitcoin";
-  const code1 = "BTC";
-  const name2 = "ethereum";
-  const code2 = "ETH";
-
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
