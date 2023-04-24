@@ -21,6 +21,7 @@ module.exports = {
         red: "#EB5757",
         green: "#6FCF97",
         blue: "#56CCF2",
+        accent: "#E88326",
       },
     },
   },

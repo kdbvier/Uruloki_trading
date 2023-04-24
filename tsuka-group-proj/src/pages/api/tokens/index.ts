@@ -1,4 +1,10 @@
-import type { ApiResponse, Tokens } from "@/types";
+import type {
+  ApiResponse,
+  MostBuyOrder,
+  MostSellOrder,
+  Tokens,
+  TopMoverItem,
+} from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -13,100 +19,117 @@ export default async function TokenCacheHandler(
     case "GET":
       try {
         const topGainers = await prisma.top_gainers.findMany({
-          select: {
-            token_cache_id: true,
-            rank: true,
+          include: {
+            token_cache: {
+              select: {
+                name: true,
+                price: true,
+                chain: true,
+                change_24hr: true,
+              },
+            },
           },
         });
         const topMovers = await prisma.top_movers.findMany({
-          select: {
-            token_cache_id: true,
-            rank: true,
+          include: {
+            token_cache: {
+              include: {
+                orders: true,
+              },
+            },
           },
+        });
+        const topMoversData = topMovers.map((tm: any) => {
+          let sell_orders = 0;
+          let buy_orders = 0;
+          let total_orders = 0;
+          tm.token_cache.orders.map((order: any) => {
+            if (order.order_type === "sell") {
+              sell_orders++;
+            }
+            if (order.order_type === "buy") {
+              buy_orders++;
+            }
+            total_orders++;
+          });
+          const topmoverItem = tm as any;
+          return Object.assign(
+            {},
+            delete topmoverItem["token_cache"]["orders"],
+            delete topmoverItem["token_cache"]["last_updated"],
+            topmoverItem,
+            { buy_orders, sell_orders, total_orders }
+          ) as TopMoverItem;
         });
         const mostBuy = await prisma.most_buy_orders.findMany({
-          select: {
-            token_cache_id: true,
-            rank: true,
+          include: {
+            token_cache: {
+              include: {
+                orders: true,
+              },
+            },
           },
         });
+        const mostBuyData = mostBuy.map((mb: any) => {
+          let buy_orders = 0;
+          let total_orders = 0;
+          mb.token_cache.orders.map((order: any) => {
+            if (order.order_type === "buy") {
+              buy_orders++;
+            }
+            total_orders++;
+          });
+
+          return Object.assign(
+            {},
+            {
+              id: mb.id,
+              rank: mb.rank,
+              token_cache: {
+                name: mb.token_cache.name,
+                chain: mb.token_cache.chain,
+              },
+              buy_orders,
+              total_orders,
+            }
+          ) as MostBuyOrder;
+        });
+
         const mostSell = await prisma.most_sell_orders.findMany({
-          select: {
-            token_cache_id: true,
-            rank: true,
+          include: {
+            token_cache: {
+              include: {
+                orders: true,
+              },
+            },
           },
         });
-        const topGainerData = await Promise.all(
-          topGainers.map(async (tg) => {
-            const token = await prisma.token_cache.findUnique({
-              where: {
-                token_cache_id: tg.token_cache_id,
+        const mostSellData = mostSell.map((ms: any) => {
+          let sell_orders = 0;
+          let total_orders = 0;
+          ms.token_cache.orders.map((order: any) => {
+            if (order.order_type === "sell") {
+              sell_orders++;
+            }
+            total_orders++;
+          });
+          return Object.assign(
+            {},
+            {
+              id: ms.id,
+              rank: ms.rank,
+              token_cache: {
+                name: ms.token_cache.name,
+                chain: ms.token_cache.chain,
               },
-              select: {
-                name: true,
-                price: true,
-                chain: true,
-                change_24hr: true,
-              },
-            });
-            return { ...tg, token_cache: token };
-          })
-        );
-        const topMoverData = await Promise.all(
-          topMovers.map(async (tm) => {
-            const token = await prisma.token_cache.findUnique({
-              where: {
-                token_cache_id: tm.token_cache_id,
-              },
-              select: {
-                name: true,
-                chain:true,
-                price: true,
-                change_24hr: true,
-                market_cap:true,
-                volume:true,
-                total_orders:true,
-                buy_split:true,
-                sell_split:true
-  
-              },
-            });
-            return { ...tm, token_cache: token };
-          })
-        );
-        const mostSellData = await Promise.all(
-          mostSell.map(async (ms) => {
-            const token = await prisma.token_cache.findUnique({
-              where: {
-                token_cache_id: ms.token_cache_id,
-              },
-              select: {
-                name: true,
-                sell_orders:true,
-                chain: true,
-              },
-            });
-            return { ...ms, token_cache: token };
-          })
-        );
-        const mostBuyData = await Promise.all(
-          mostBuy.map(async (mb) => {
-            const token = await prisma.token_cache.findUnique({
-              where: {
-                token_cache_id: mb.token_cache_id,
-              },
-              select: {
-                name: true,
-                buy_orders:true,
-                chain: true,
-              },
-            });
-            return { ...mb, token_cache: token };
-          })
-        );
-        const data = {
-          topGainers: topGainerData,
-          topMovers: topMoverData,
+              sell_orders,
+              total_orders,
+            }
+          ) as MostSellOrder;
+        });
+        const data: Tokens = {
+          topGainers: topGainers,
+          topMovers: topMoversData,
           mostBuyOrders: mostBuyData,
           mostSellOrders: mostSellData,
         };

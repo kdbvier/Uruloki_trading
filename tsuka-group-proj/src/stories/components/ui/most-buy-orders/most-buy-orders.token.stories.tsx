@@ -1,8 +1,8 @@
 import {
-  MostBuyOrders as MostBuyOrdersComponent,
-  MostBuyOrdersProps,
+  MostBuyOrders as MostBuyOrdersComponent
 } from "@/components/ui/most-buy-orders/most-buy-orders.token";
 import { Meta, StoryObj } from "@storybook/react";
+import { IMostBuyOrdersTokenProps } from "@/global";
 
 export default {
   title: "Components/UI/MostBuyOrders/MostBuyOrders",
@@ -44,6 +44,6 @@ export default {
       },
     ],
   },
-} as Meta<MostBuyOrdersProps>;
+} as Meta<IMostBuyOrdersTokenProps>;
 
-export const MostBuyOrders: StoryObj<MostBuyOrdersProps> = {};
+export const MostBuyOrders: StoryObj<IMostBuyOrdersTokenProps> = {};

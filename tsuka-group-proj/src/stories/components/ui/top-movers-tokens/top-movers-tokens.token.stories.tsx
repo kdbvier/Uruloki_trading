@@ -1,8 +1,8 @@
 import {
-  TopMoversTokens as TopMoversTokensComponent,
-  TopMoversTokensProps,
+  TopMoversTokens as TopMoversTokensComponent
 } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
 import { Meta, StoryObj } from "@storybook/react";
+import { ITopMoversTokenProps } from "@/global";
 
 export default {
   title: "Components/UI/TopMoversTokens/TopMoversTokens",
@@ -102,6 +102,6 @@ export default {
       },
     ],
   },
-} as Meta<TopMoversTokensProps>;
+} as Meta<ITopMoversTokenProps>;
 
-export const TopMoversTokens: StoryObj<TopMoversTokensProps> = {};
+export const TopMoversTokens: StoryObj<ITopMoversTokenProps> = {};

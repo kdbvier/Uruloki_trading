@@ -11,50 +11,57 @@ export type Notification = {
 };
 
 export type TopGainerItem = {
-  token_cache_id: number;
+  id: number;
   rank: number | null;
+  token_cache_id: number;
   token_cache: {
     name: string | null;
     price: number | null;
     chain: string | null;
     change_24hr: number | null;
-} | null;
+  };
 };
 
 export type TopMoverItem = {
-  token_cache_id: number;
+  id: number;
   rank: number | null;
+  token_cache_id: number;
   token_cache: {
+    id: number;
     name: string | null;
-    price: number | null;
     chain: string | null;
+    pair_address: string;
+    price: number | null;
     change_24hr: number | null;
     volume: number | null;
     market_cap: number | null;
-    total_orders: number | null;
-    buy_split: number | null;
-    sell_split: number | null;
-} | null;
-};
+  };
+} & OrderDetails;
 
 export type MostBuyOrder = {
-  token_cache_id: number;
+  id: number;
   rank: number | null;
+  token_cache_id: number;
   token_cache: {
     name: string | null;
     chain: string | null;
-    buy_orders: number | null;
-} | null;
-};
+  };
+} & OrderDetails;
 
 export type MostSellOrder = {
-  token_cache_id: number;
+  id: number;
   rank: number | null;
+  token_cache_id: number;
   token_cache: {
     name: string | null;
     chain: string | null;
-    sell_orders: number | null;
-} | null;
+  };
+} & OrderDetails;
+
+type OrderDetails = {
+  buy_orders: number;
+  sell_orders: number;
+  total_orders: number;
 };
 
 export type Tokens = {
