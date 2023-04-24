@@ -236,8 +236,8 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
           />
         </div>
       )}
-      <div className="pr-5 lg:w-[48%]">
-        <h1 className="text-white text-[21px] sm:text-[40px] font-Gilroy-600 leading-[32px] sm:leading-[52px]">
+      <div className="pr-5  lg:w-[48%] relative">
+        <h1 className="text-white text-[21px] sm:text-[40px] font-Gilroy-600 leading-[32px] sm:leading-[52px] ">
           {descriptionHeader}
         </h1>
         <h1 className="text-[#ADADAD] font-Inter-400 text-[15px] sm:text-base leading-7 sm:leading-8 mt-4">
@@ -248,10 +248,10 @@ export const GettingStartedItem: React.FC<GettingStartedItemProps> = ({
             return (
               <li
                 key={feature}
-                className="text-[#ADADAD] text-[15px] sm:text-base font-Inter-400 leading-[187%] sm:leading-[175%] sm:pr-20 flex items-center gap-3 z-50"
+                className="text-[#ADADAD] text-[15px] sm:text-base font-Inter-400 leading-[187%] sm:leading-[175%] sm:pr-20 flex items-center gap-3 "
               >
                 <CustomCheck />
-                <span className="flex-1">{feature}</span>
+                <span className="flex-1" >{feature}</span>
               </li>
             );
           })}
