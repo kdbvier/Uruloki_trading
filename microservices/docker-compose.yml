@@ -3,12 +3,12 @@ version: "3.9"
 services:
   market_cap:
     build:
-      dockerfile: market_data/Dockerfile
+      context: market_data
+
   token_data:
     build:
-      dockerfile: token_info/Dockerfile
+      context: token_info
+
   most_orders:
     build:
-      dockerfile: most_orders/Dockerfile
-
-    
+      context: most_orders
