@@ -31,7 +31,7 @@ export const CompareTokenChainToken: React.FC<CompareTokenChainTokenProps> = ({
             key={net}
             onClick={() => setFocusNetwork(net)}
             className={`px-6 pb-3 cursor-pointer ${
-              net === focusNetwork && "border-b border-accent text-accent"
+              net === focusNetwork && "border-b border-primary text-primary"
             }`}
           >
             {net}
@@ -64,8 +64,8 @@ export const CompareTokenChainToken: React.FC<CompareTokenChainTokenProps> = ({
                 <div
                   className={`${
                     item.diference.operator === "+"
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? "text-green"
+                      : "text-red"
                   }`}
                 >
                   {item.diference.operator}

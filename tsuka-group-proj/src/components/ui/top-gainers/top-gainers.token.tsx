@@ -11,13 +11,8 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
-        <span className="text-tsuka-50 text-[18px] font-medium">
-          Top Gainers
-        </span>
-        <Link className="flex items-center text-xs text-accent" href="#">
-          <FiRefreshCcw className="mr-1" />
-          Auto-Refreshed in 5 sec.
-        </Link>
+        <span className="text-tsuka-50 text-[18px] font-medium">Top Gainers</span>
+        <Link className="flex items-center text-xs text-primary" href="#"><FiRefreshCcw className="mr-1" />Auto-Refreshed in 5 sec.</Link>
       </div>
 
       <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-hidden mt-5">
@@ -70,11 +65,28 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                         <FiArrowUpRight className="mt-0.5" />
                         <span>{`${topGainer.risingPercent}%`}</span>
                       </div>
+<<<<<<< HEAD
+                    </td>
+                    <td className="py-2 md:py-5">
+                      <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
+                        <span className="text-tsuka-200">${commafy(topGainer.price)}</span>
+                        <div className="ml-2 flex text-green">
+                          <FiArrowUpRight className="mt-0.5" />
+                          <span>{`${topGainer.risingPercent}%`}</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })
+            }
+=======
                     </div>
                   </td>
                 </tr>
               );
             })}
+>>>>>>> c769cf2b66a16c0adfc8419acab1f9b2020e4ef9
           </tbody>
         </table>
       </div>

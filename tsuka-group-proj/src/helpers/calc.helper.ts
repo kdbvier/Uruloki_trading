@@ -52,3 +52,14 @@ export const commafy2 = (num: number) => {
     result += " M";
   return result;
 }
+
+export const commafy3 = (num: number) => {
+  let str = num.toString().split('.');
+  if (str[0].length >= 3) {
+      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  }
+  if (str[1] && str[1].length >= 3) {
+      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+  }
+  return str.join('.');
+}
