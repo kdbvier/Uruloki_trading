@@ -69,7 +69,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
                   key={index}
                   className="text-green-400 border-b border-tsuka-400 text-base relative w-full text-left flex flex-center"
                 >
-                  <div className="absolute w-full rounded-lg m-2 mr-4">
+                  <div className="text-green-400 absolute w-full rounded-lg m-2 mr-4">
                     <div
                       className="bg-green-400/20 h-6 rounded text-start flex items-center px-2 mr-auto"
                       style={{

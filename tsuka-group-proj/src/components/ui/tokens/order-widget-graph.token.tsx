@@ -1,9 +1,8 @@
-import { ChartBound } from "@/types/chart-bound.type";
-import { useMemo } from "react";
-import { FiX, FiEdit, FiPlusCircle } from "react-icons/fi";
 import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
 import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
-import { useState, useEffect } from 'react';
+import { ChartBound } from "@/types/chart-bound.type";
+import { useEffect, useMemo, useState } from "react";
+import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
   buy: boolean;
@@ -32,14 +31,12 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
 
   useEffect(() => {
-    if (showPopupBg == false)
-      setShowPopup(false);
-      setShowConfirmDlg(false);
+    if (showPopupBg == false) setShowPopup(false);
+    setShowConfirmDlg(false);
   }, [showPopupBg]);
-  
+
   useEffect(() => {
-    if (showConfirmDlg == false)
-      setShowPopupBg(false);
+    if (showConfirmDlg == false) setShowPopupBg(false);
   }, [showConfirmDlg]);
 
   const percents = useMemo(() => {
@@ -54,18 +51,27 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
       <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
         <div
-          className="relative text-primary flex items-center gap-2 cursor-pointer"
-          onClick={() => { setShowPopup(true); setShowPopupBg(true); }}
+          className="relative text-custom-primary flex items-center gap-2 cursor-pointer"
+          onClick={() => {
+            setShowPopup(true);
+            setShowPopupBg(true);
+          }}
         >
           Edit <FiEdit />
-          {
-            showPopup &&
-            <EditOrDeleteToken setShowPopupBg={setShowPopupBg} setShowEditOrderModal={setShowEditOrderModal} setShowConfirmDlg={setShowConfirmDlg} />
-          }
-          {
-            showConfirmDlg &&
-            <DeleteConfirmToken setShowPopupBg={setShowPopupBg} setShowConfirmDlg={setShowConfirmDlg} setShowDeletedAlert={setShowDeletedAlert} />
-          }
+          {showPopup && (
+            <EditOrDeleteToken
+              setShowPopupBg={setShowPopupBg}
+              setShowEditOrderModal={setShowEditOrderModal}
+              setShowConfirmDlg={setShowConfirmDlg}
+            />
+          )}
+          {showConfirmDlg && (
+            <DeleteConfirmToken
+              setShowPopupBg={setShowPopupBg}
+              setShowConfirmDlg={setShowConfirmDlg}
+              setShowDeletedAlert={setShowDeletedAlert}
+            />
+          )}
         </div>
       </div>
       <div className="border border-tsuka-400 text-tsuka-100">
@@ -74,7 +80,9 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span className={buy ? "text-green" : "text-red"}>
               {value2 ? "Price range" : "Target price"}
             </span>
-            <span>{`$${value1}${value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""}`}</span>
+            <span>{`$${value1}${
+              value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""
+            }`}</span>
           </div>
           <div className="flex justify-between">
             <span>Budget</span>
