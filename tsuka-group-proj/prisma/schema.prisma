@@ -11,8 +11,8 @@ datasource db {
 model most_buy_orders {
   id             Int         @id @unique(map: "id") @default(autoincrement())
   rank           Int?
-  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
   token_cache_id Int
+  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
 
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
@@ -20,8 +20,8 @@ model most_buy_orders {
 model most_sell_orders {
   id             Int         @id @unique(map: "id") @default(autoincrement())
   rank           Int?
-  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
   token_cache_id Int
+  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
 
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
@@ -39,7 +39,6 @@ model orders {
   order_id     Int                @id @unique(map: "order_id") @default(autoincrement())
   pair_address String             @db.VarChar(255)
   status       String?            @db.VarChar(100)
-  token_price  Float?
   single_price Float?
   from_price   Float?
   to_price     Float?
@@ -47,35 +46,36 @@ model orders {
   order_type   orders_order_type?
   price_type   orders_price_type?
   user_id      Int
-  token_cache  token_cache? @relation(fields: [pair_address], references: [pair_address])
+  token_cache  token_cache?       @relation(fields: [pair_address], references: [pair_address])
 
   @@index([user_id], map: "fk_user_id_idx")
   @@index([pair_address], map: "fk_pair_address_idx")
 }
 
 model token_cache {
-  id Int       @id @unique(map: "id") @default(autoincrement())
-  name           String?   @db.VarChar(1000)
-  chain          String?   @db.VarChar(1000)
-  pair_address   String    @db.VarChar(255) @unique(map: "pair_address")
-  price          Float?
-  change_24hr    Float?
-  volume         Int?
-  market_cap     Int?
-  last_updated   DateTime? @db.Date
-  orders           orders[]  
+  name             String?            @db.VarChar(1000)
+  chain            String?            @db.VarChar(1000)
+  pair_address     String             @unique(map: "pair_address") @db.VarChar(255)
+  price            Float?
+  change_24hr      Float?
+  volume           Int?
+  market_cap       Float?
+  last_updated     DateTime?          @db.Date
+  id               Int                @id @unique(map: "id") @default(autoincrement())
+  address          String?            @db.VarChar(1000)
+  short_name       String?            @db.VarChar(1000)
+  orders           orders[]
   most_buy_orders  most_buy_orders[]
   most_sell_orders most_sell_orders[]
   top_gainers      top_gainers[]
   top_movers       top_movers[]
- 
 }
 
 model top_gainers {
   id             Int         @id @unique(map: "id") @default(autoincrement())
   rank           Int?
-  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
   token_cache_id Int
+  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
 
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }
@@ -83,8 +83,8 @@ model top_gainers {
 model top_movers {
   id             Int         @id @unique(map: "id") @default(autoincrement())
   rank           Int?
-  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
   token_cache_id Int
+  token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
 
   @@index([token_cache_id], map: "fk_token_cache_id_idx")
 }

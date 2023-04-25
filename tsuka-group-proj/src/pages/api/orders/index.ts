@@ -6,7 +6,6 @@ import Joi from "joi";
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
   status: Joi.string().required(),
-  token_price: Joi.number().required(),
   single_price: Joi.number().optional(),
   from_price: Joi.number().optional(),
   to_price: Joi.number().optional(),
