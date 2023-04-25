@@ -47,7 +47,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
                     {numberWithCommas(item.priceUsdt)}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    {item.amountBlur}
+                    {item.amount}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     {numberWithCommas(value?.sell?.totalValue)}
@@ -81,7 +81,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
                     {numberWithCommas(item.priceUsdt)}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                    {item.amountBlur}
+                    {item.amount}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                     {numberWithCommas(value?.buy?.totalValue)}

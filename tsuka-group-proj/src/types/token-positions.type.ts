@@ -2,7 +2,7 @@ export type OrderBookPosition = {
   type: "Buy" | "Sell";
   depth: number;
   priceUsdt: number;
-  amountBlur: number;
+  amount: number;
   executionValue: number;
   address: string;
   timestamp: string;

@@ -49,7 +49,7 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
                     {numberWithCommas(item.priceUsdt)}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.amountBlur}
+                    {item.amount}
                   </span>
                   <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
                     {item.address}
