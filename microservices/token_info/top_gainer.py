@@ -156,7 +156,7 @@ def get_top_gainers() -> pandas.DataFrame | None:
 
         mergedPD.rename(columns={
             "buyCurrency.name": "name",
-            "buyCurrency.symbol_x": "symbol",
+            "buyCurrency.symbol_x": "short_name",
             "buyCurrency.address_x": "address",
             "buyCurrency.symbol_y": "paired_with_token",
             # "buyCurrency.address_y": "paired_with_token_address",
@@ -166,12 +166,12 @@ def get_top_gainers() -> pandas.DataFrame | None:
             "price_movement_USD": "change_24hr"
         }, inplace=True)
 
-        dbdf = mergedPD[["name", "symbol", "address",
+        dbdf = mergedPD[["name", "short_name", "address",
                         "pair_address", "price", "volume", "change_24hr", "paired_with_token"]]
         # "pair_name",
 
         # to remove WETH/WETH
-        dbdf = dbdf[dbdf['symbol'] != dbdf['paired_with_token']]
+        dbdf = dbdf[dbdf['short_name'] != dbdf['paired_with_token']]
 
         # create pair name string
         # dbdf["pair_name"] = dbdf["symbol"].astype(
