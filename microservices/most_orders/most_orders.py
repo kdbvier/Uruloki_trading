@@ -67,7 +67,7 @@ def update_sales():
     try:
         # most buys
         connection.execute(text(
-            "insert into most_buy_orders(token_cache_id,`rank`) select token_cache.id,rank() over(order by order_type) as _rank from orders inner join token_cache on orders.pair_address = token_cache.pair_address and order_type = 'buy' group by orders.pair_address limit 100;"))
+            "insert into most_buy_orders(token_cache_id,`rank`) select token_cache.id, rank() over (order by count(order_type) ) as _rank from orders inner join token_cache on orders.pair_address = token_cache.pair_address and order_type = 'buy' group by orders.pair_address limit 100;"))
         logging.info("successfully updated most_buy_orders table")
     except Exception as e:
         print(e)
@@ -77,7 +77,7 @@ def update_sales():
     try:
         # most sells
         connection.execute(text(
-            "insert into most_sell_orders(token_cache_id,`rank`) select token_cache.id,rank() over(order by order_type) as _rank from orders inner join token_cache on orders.pair_address = token_cache.pair_address and order_type = 'sell' group by orders.pair_address limit 100;"))
+            "insert into most_sell_orders(token_cache_id,`rank`) select token_cache.id, rank() over (order by count(order_type) ) as _rank from orders inner join token_cache on orders.pair_address = token_cache.pair_address and order_type = 'sell' group by orders.pair_address limit 100;"))
         logging.info("successfully updated most_sell_orders table")
     except Exception as e:
         print(e)
