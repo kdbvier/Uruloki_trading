@@ -2,7 +2,7 @@ import Image from "next/image";
 import {
   FiFilter,
   FiSearch,
-  FiArrowUpRight,
+  FiArrowUpRight, 
   FiArrowDownRight,
   FiChevronUp,
   FiChevronDown,
@@ -13,11 +13,13 @@ import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { useState, useEffect, Fragment } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopMoversTokenProps } from "@/global";
+import { useRouter } from "next/router";
 
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers
 }) => {
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
+  const router = useRouter()
 
   useEffect(() => {
     let tempArray: boolean[] = [];

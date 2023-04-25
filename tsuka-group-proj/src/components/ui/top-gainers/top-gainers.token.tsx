@@ -1,11 +1,13 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopGainersTokenProps } from "@/global";
-import { commafy } from "@/helpers/calc.helper";
+import { commafy } from "@/helpers/calc.helper"; 
 import Image from "next/image";
 import Link from "next/link";
 import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
+import { useRouter } from "next/router";
 
 export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
+  const router = useRouter()
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
@@ -25,7 +27,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
           <tbody>
             {topGainers.map((topGainer, idx) => {
               return (
-                <tr className="border-t border-t-tsuka-400" key={idx}>
+                <tr onClick={()=>{router.push("/pair/2")}}  className="cursor-pointer border-t border-t-tsuka-400" key={idx}>
                   <td className="py-2 md:py-5">
                     {topGainer.rank >= 1 && topGainer.rank <= 3 ? (
                       <Image

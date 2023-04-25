@@ -1,14 +1,14 @@
 import {
-  AllPositionsToken,
-  AllPositionsTokenProps,
-} from "@/components/tokens/all-positions.token";
+  OrderBookToken,
+  OrderBookTokenProps,
+} from "@/components/tokens/order-book.token";
 import { store } from "@/store";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
 export default {
-  title: "Components/Tokens/AllPositionsToken",
-  component: AllPositionsToken,
+  title: "Components/Tokens/OrderBookToken",
+  component: OrderBookToken,
   args: {
     token: {
       id: "1",
@@ -20,6 +20,6 @@ export default {
       return <Provider store={store}>{Story()}</Provider>;
     },
   ],
-} as Meta<AllPositionsTokenProps>;
+} as Meta<OrderBookTokenProps>;
 
-export const FiltersButton: StoryObj<AllPositionsTokenProps> = {};
+export const FiltersButton: StoryObj<OrderBookTokenProps> = {};
