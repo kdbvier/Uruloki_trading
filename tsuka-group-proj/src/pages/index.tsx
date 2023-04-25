@@ -26,6 +26,8 @@ import { Navbar, NavbarProps } from "@/components/landing/navbar.section";
 import { BlurLanding } from "@/components/landing/blur.landing";
 import getEntriesLanding from "@/lib/content-graphql";
 import { CopyRight } from "@/components/landing/copyright.section";
+import ContentService from "@/lib/content-service";
+
 
 type SsrProps = {
   responsData: {
@@ -89,16 +91,13 @@ const Ssr = ({ responsData }: SsrProps) => {
   );
 };
 
-export async function getServerSideProps() {
-  const responsData = await getEntriesLanding();
-
-export const getServerSideProps = async () => {
+export default async function getServerSideProps() {
   const landingPageContents = (
     await ContentService.instance.getEntriesByType<ILandingPage>("landingPage")
   )[0];
   const landingPage = landingPageContents.fields;
 
-  getLandingPage().then((response) =>
+  getEntriesLanding().then((response) =>
     console.log("response GraphQL:: ", response)
   );
   console.log("Inside ServerSideProps", landingPage);
