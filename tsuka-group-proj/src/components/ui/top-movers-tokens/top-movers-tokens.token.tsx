@@ -83,7 +83,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
             {topMovers.map((topMover, idx) => {
               return (
                 <Fragment key={idx}>
-                  <tr className="border-t border-t-tsuka-400">
+                  <tr onClick={() => {router.push("/pair/2")}} className="cursor-pointer border-t border-t-tsuka-400">
                     <td className="py-2 md:py-8">
                       <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">
                         #{idx + 1}
