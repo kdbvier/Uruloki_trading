@@ -33,7 +33,7 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
                 <span className="flex-1 px-4 py-2">Type</span>
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
                 <span className="flex-1 px-4 py-2">Amount BLUR</span>
-                <span className="flex-1 px-4 py-2">Wallet Address</span>
+                <span className="flex-1 px-4 py-2">Buyer Address</span>
               </div>
               {value.map((item, index) => (
                 <div
