@@ -56,13 +56,18 @@ except Exception as e:
 
 connection = connengine.connect()
 
-# empty table
-connection.execute(most_buy_orders.delete())
-# empty table
-connection.execute(most_sell_orders.delete())
-
 
 def update_sales():
+
+    # empty table
+    try:
+        connection.execute(most_buy_orders.delete())
+        # empty table
+        connection.execute(most_sell_orders.delete())
+    except:
+        logging.error(
+            "unable to to delete data in most_buy_orders or sell_orders")
+        return
 
     try:
         # most buys
@@ -84,6 +89,7 @@ def update_sales():
         logging.error(
             "unable to to insert data in most_sell_orders")
 
+    
 
 while True:
     logging.info("Attempting to update database")
