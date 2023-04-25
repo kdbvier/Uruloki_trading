@@ -16,7 +16,7 @@ export const BarBuySellToken: React.FC<BarBuySellTokenProps> = ({
     <div className="w-full">
       <div className="w-full rounded-md h-6 bg-custom-red text-end text-tsuka-700 font-medium flex items-center">
         <div
-          className="bg-green h-6 rounded-l-md text-start flex items-center px-2 border-r-4 border-tsuka-500"
+          className="bg-custom-green h-6 rounded-l-md text-start flex items-center px-2 border-r-4 border-tsuka-500"
           style={{
             width: `${percentPositive * 2}%`,
           }}

@@ -24,7 +24,7 @@ export default function MyOrder() {
           <div className="w-full md:w-auto flex gap-1">
             <button
               className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${
-                openMode ? "bg-tsuka-500 text-primary" : "text-tsuka-300"
+                openMode ? "bg-tsuka-500 text-custom-primary" : "text-tsuka-300"
               } rounded-md text-sm`}
               onClick={() => setOpenMode(true)}
             >
@@ -32,7 +32,9 @@ export default function MyOrder() {
             </button>
             <button
               className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${
-                !openMode ? "bg-tsuka-500 text-primary" : "text-tsuka-300"
+                !openMode
+                  ? "bg-tsuka-500 text-custom-primary"
+                  : "text-tsuka-300"
               } rounded-md text-sm`}
               onClick={() => setOpenMode(false)}
             >

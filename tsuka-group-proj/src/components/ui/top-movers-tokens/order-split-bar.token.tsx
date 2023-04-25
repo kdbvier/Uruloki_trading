@@ -19,7 +19,7 @@ export const OrderSplitBar: React.FC<OrderSplitBarProps> = ({
     <div className="w-full">
       <div className="w-full rounded-md h-1.5 bg-custom-red text-end text-tsuka-700 font-medium flex items-center">
         <div
-          className={`bg-green h-1.5 rounded-l-md`}
+          className={`bg-custom-green h-1.5 rounded-l-md`}
           style={{
             width: `${percentPositive}%`,
           }}
@@ -30,11 +30,11 @@ export const OrderSplitBar: React.FC<OrderSplitBarProps> = ({
       <div className="w-full mt-2 text-[12px] leading-4 flex items-stretch">
         <div className="w-full text-start">
           <span className="text-tsuka-100">Buy : </span>
-          <span className="text-green">{buyOrderCount}</span>
+          <span className="text-custom-green">{buyOrderCount}</span>
         </div>
         <div className="w-full text-end">
           <span className="text-tsuka-100">Sell : </span>
-          <span className="text-red">{sellOrderCount}</span>
+          <span className="text-custom-red">{sellOrderCount}</span>
         </div>
       </div>
     </div>

@@ -364,9 +364,30 @@ export default function Home() {
         </div>
       </div>
       <div className="md:hidden mt-3 w-full h-[3px] flex gap-2">
-        <div className={`h-full w-1/3 ${currentIdx == 0 ? "bg-primary" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(0)}}></div>
-        <div className={`h-full w-1/3 ${currentIdx == 1 ? "bg-primary" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(1)}}></div>
-        <div className={`h-full w-1/3 ${currentIdx == 2 ? "bg-primary" : "bg-tsuka-500"} cursor-pointer`} onClick={() => {moveTo(2)}}></div>
+        <div
+          className={`h-full w-1/3 ${
+            currentIdx == 0 ? "bg-custom-primary" : "bg-tsuka-500"
+          } cursor-pointer`}
+          onClick={() => {
+            moveTo(0);
+          }}
+        ></div>
+        <div
+          className={`h-full w-1/3 ${
+            currentIdx == 1 ? "bg-custom-primary" : "bg-tsuka-500"
+          } cursor-pointer`}
+          onClick={() => {
+            moveTo(1);
+          }}
+        ></div>
+        <div
+          className={`h-full w-1/3 ${
+            currentIdx == 2 ? "bg-custom-primary" : "bg-tsuka-500"
+          } cursor-pointer`}
+          onClick={() => {
+            moveTo(2);
+          }}
+        ></div>
       </div>
       <div className="mt-4">
         <TopMoversTokens topMovers={topMoversTokens} />
