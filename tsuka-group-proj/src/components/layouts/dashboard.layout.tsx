@@ -15,7 +15,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const navLinks = [
     {
       title: "Homepage",
-      path: "/",
+      path: "/homepage",
     },
     {
       title: "My Orders",
@@ -23,7 +23,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
     },
     {
       title: "Settings",
-      path: "/settings",
+      path: "/#",
     },
   ];
 

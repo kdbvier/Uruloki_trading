@@ -2,7 +2,7 @@ import Image from "next/image";
 import {
   FiFilter,
   FiSearch,
-  FiArrowUpRight,
+  FiArrowUpRight, 
   FiArrowDownRight,
   FiChevronUp,
   FiChevronDown,
@@ -13,11 +13,13 @@ import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { useState, useEffect } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopMoversTokenProps } from "@/global";
+import { useRouter } from "next/router";
 
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers
 }) => {
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
+  const router = useRouter()
 
   useEffect(() => {
     let tempArray: boolean[] = [];
@@ -76,7 +78,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               topMovers.map((topMover, idx) => {
                 return (
                   <>
-                    <tr className="border-t border-t-tsuka-400" key={idx}>
+                    <tr onClick={()=>{router.push("/pair/2")}}  className="cursor-pointer border-t border-t-tsuka-400" key={idx}>
                       <td className="py-2 md:py-8">
                         <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">#{idx + 1}</span>
                       </td>

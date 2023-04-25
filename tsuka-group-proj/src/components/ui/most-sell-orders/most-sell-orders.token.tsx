@@ -2,12 +2,14 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { IMostSellOrdersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "next/link"; 
 import { FiRefreshCcw } from "react-icons/fi";
+import {useRouter} from "next/router";
 
 export const MostSellOrders: React.FC<IMostSellOrdersTokenProps> = ({
   mostSellOrders,
 }) => {
+  const router = useRouter()
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
@@ -32,7 +34,7 @@ export const MostSellOrders: React.FC<IMostSellOrdersTokenProps> = ({
           <tbody>
             {mostSellOrders.map((mostSellOrder, idx) => {
               return (
-                <tr className="border-t border-t-tsuka-400" key={idx}>
+                <tr onClick={()=>{router.push("/pair/2")}}  className="cursor-pointer border-t border-t-tsuka-400" key={idx}>
                   <td className="py-2 md:py-5">
                     {mostSellOrder.rank >= 1 && mostSellOrder.rank <= 3 ? (
                       <Image
