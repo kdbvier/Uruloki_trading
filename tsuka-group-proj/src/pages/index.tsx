@@ -1,3 +1,51 @@
+import {
+  IBenifitsItemFields,
+  ILandingPage,
+  INavbarFields,
+} from "@/@types/generated/contentful.types";
+import {
+  BenifitsSection,
+  BenifitsSectionProps,
+} from "@/components/landing/benifits.section";
+import { CoinTypeLanding } from "@/components/landing/cointype.landing";
+import {
+  FooterProps,
+  FooterLanding,
+} from "@/components/landing/footer.section";
+import { HeroLanding, HeroProps } from "@/components/landing/hero.section";
+import {
+  HowItWorksSection,
+  HowItWorksSectionProps,
+} from "@/components/landing/howitworks.section";
+import {
+  KeyFeaturesSection,
+  KeyFeaturesSectionProps,
+} from "@/components/landing/keyfeatures.section";
+import { Navbar, NavbarProps } from "@/components/landing/navbar.section";
+
+import { BlurLanding } from "@/components/landing/blur.landing";
+import getEntriesLanding from "@/lib/content-graphql";
+import { CopyRight } from "@/components/landing/copyright.section";
+import ContentService from "@/lib/content-service";
+
+
+type SsrProps = {
+  responsData: {
+    response:{
+
+      landingPage:{
+  
+        hero: HeroProps;
+        howItWorks: HowItWorksSectionProps;
+        benifits: BenifitsSectionProps;
+        keyFeatures: KeyFeaturesSectionProps;
+        footer: FooterProps;
+        navbar: NavbarProps;
+      }
+    }
+  };
+};
+
 const Ssr = ({ responsData }: SsrProps) => {
   console.log("in rendering", responsData);
   const coins =[
