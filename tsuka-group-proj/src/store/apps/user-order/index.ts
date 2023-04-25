@@ -1,4 +1,5 @@
-import { UserOrder, userOrder } from "@/@fake-data/user-order.fake-data";
+import { userOrder } from "@/@fake-data/user-order.fake-data";
+import { UserOrder } from "@/types/token-order.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface UserOrderState {
