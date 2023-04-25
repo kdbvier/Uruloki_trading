@@ -1,13 +1,21 @@
-export type Position = {
+export type OrderBookPosition = {
   type: "Buy" | "Sell";
-  priceUsd: number;
-  amountBlur: number;
+  depth: number;
+  priceUsdt: number;
+  amount: number;
   executionValue: number;
+  address: string;
+  timestamp: string;
 };
 
 export type TokenPositions = {
   id: string;
-  totalBuyValue: number;
-  totalSellValue: number;
-  positions: Array<Position>;
+  buy: {
+    totalValue: number;
+    positions: Array<OrderBookPosition>;
+  };
+  sell: {
+    totalValue: number;
+    positions: Array<OrderBookPosition>;
+  };
 };

@@ -15,7 +15,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const navLinks = [
     {
       title: "Homepage",
-      path: "/",
+      path: "/homepage",
     },
     {
       title: "My Orders",
@@ -23,7 +23,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
     },
     {
       title: "Settings",
-      path: "/settings",
+      path: "/#",
     },
   ];
 
@@ -60,12 +60,10 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex flex-row-reverse md:flex-row items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <div onClick={() => { setMenuCollapsed(!menuCollapsed) }}>
-                  <HeaderMenuButton
-                    callback={() => console.log("notification click")}
-                  />
-                </div>
+              <div className="absolute inset-y-0 right-0 flex flex-row-reverse md:flex-row items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
+                <HeaderMenuButton
+                  callback={() => setMenuCollapsed(!menuCollapsed)}
+                />
                 <HeaderNotificationButton
                   callback={() => console.log("notification click")}
                 />
@@ -79,7 +77,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           {/* Mobile menu, show/hide based on menu state. */}
           {
             !menuCollapsed &&
-            <div className="sm:hidden" id="mobile-menu">
+            <div className="md:hidden" id="mobile-menu">
               <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700">
                 {navLinks?.map(({ path, title }, idx) => (
                   <div className={`flex justify-center${idx > 0 ? " border-t border-t-tsuka-400" : ""}`} key={idx}>

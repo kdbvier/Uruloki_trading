@@ -12,6 +12,7 @@ model most_buy_orders {
   id             Int         @id @unique(map: "id") @default(autoincrement())
   rank           Int?
   token_cache_id Int
+  token_cache_id Int
   token_cache    token_cache @relation(fields: [token_cache_id], references: [id])
 
   @@index([token_cache_id], map: "fk_token_cache_id_idx")

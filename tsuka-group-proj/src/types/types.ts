@@ -1,5 +1,3 @@
-import { orders, token_cache, top_movers } from "@prisma/client";
-
 export type ApiResponse<T> = {
   payload: Array<T> | T | undefined;
   message: string;
@@ -38,8 +36,7 @@ export type TopMoverItem = {
     volume: number | null;
     market_cap: number | null;
   };
-  
-}& OrderDetails;;
+} & OrderDetails;
 
 export type MostBuyOrder = {
   id: number;
@@ -49,8 +46,7 @@ export type MostBuyOrder = {
     name: string | null;
     chain: string | null;
   };
-  
-}& OrderDetails;;
+} & OrderDetails;
 
 export type MostSellOrder = {
   id: number;
@@ -66,7 +62,7 @@ type OrderDetails = {
   buy_orders: number;
   sell_orders: number;
   total_orders: number;
-}
+};
 
 export type Tokens = {
   topGainers: TopGainerItem[];

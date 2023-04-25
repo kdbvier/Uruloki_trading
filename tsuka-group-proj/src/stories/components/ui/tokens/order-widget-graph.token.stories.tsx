@@ -10,8 +10,14 @@ export default {
   args: {
     buy: true,
     value1: 2531,
-    min: 153,
-    max: 7345,
+    bound: {
+      min: 153,
+      max: 7345,
+    },
+    showPopupBg: false,
+    setShowPopupBg: (a: any) => {},
+    setShowEditOrderModal: (a: any) => {},
+    setShowDeletedAlert: (a: any) => {},
   },
 } as Meta<OrderWidgetGraphProp>;
 

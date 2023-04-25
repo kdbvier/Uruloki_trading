@@ -10,32 +10,21 @@ export default async function getEntriesLanding() {
   const query = gql`
     query LandingPageContent {
       landingPage(id: "${process.env.CONTENTFUL_LANDINGPAGE_ID}") {
-        footer {
-          mainText
-          afterMainText
-        }
         navbar {
           icon {
             title
             url
-            width
-            height
           }
-        }
-        benifits {
-          afterMainText
-          mainText
-          beforeMainText
-          benefitItemsCollection {
-            items {
-              title
-              description
+          titlesCollection{
+            items{
+              label
+              linkTo
             }
           }
         }
         hero {
-          title
           beforeHeroText
+          title
           afterHeroText
           image {
             url
@@ -43,29 +32,10 @@ export default async function getEntriesLanding() {
             height
           }
         }
-        howItWorks {
+        keyFeatures {
           beforeMainText
           mainText
           afterMainText
-          gettingStartedSectionsCollection {
-            items {
-              description
-              descriptionHeader
-              features
-              orientation
-              image {
-                title
-                fileName
-                url
-                description
-                width
-                height
-                size
-              }
-            }
-          }
-        }
-        keyFeatures {
           featuresCollection {
             items {
               title
@@ -77,6 +47,38 @@ export default async function getEntriesLanding() {
               }
             }
           }
+        }
+        howItWorks {
+          beforeMainText
+          mainText
+          afterMainText
+          gettingStartedSectionsCollection {
+            items {
+              descriptionHeader
+              description
+              features
+              orientation
+              image {
+                description
+                url
+              }
+            }
+          }
+        }
+        benifits {
+          beforeMainText
+          mainText
+          afterMainText
+          benefitItemsCollection {
+            items {
+              title
+              description
+            }
+          }
+        }
+        footer {
+          mainText
+          afterMainText
         }
       }
     }

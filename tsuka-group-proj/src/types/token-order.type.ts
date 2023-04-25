@@ -14,6 +14,7 @@ export enum OrderStatusEnum {
 
 export interface Order {
   id: number;
+  budget: number;
   price_type: PriceTypeEnum;
   order_type: OrderTypeEnum;
 }
@@ -32,5 +33,14 @@ export interface TokenOrder {
   name2: string;
   code2: string;
   status: OrderStatusEnum;
+  orders: Array<SingleOrder | RangeOrder>;
+  showPopupBg?: boolean;
+  setShowPopupBg?: any;
+  setShowEditOrderModal?: any;
+  setShowDeletedAlert?: any;
+}
+
+export interface UserOrder {
+  id: string;
   orders: Array<SingleOrder | RangeOrder>;
 }

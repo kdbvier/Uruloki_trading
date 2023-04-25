@@ -1,19 +1,44 @@
+import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
+import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
 import { ChartBound } from "@/types/chart-bound.type";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
   buy: boolean;
   value1: number;
   value2?: number;
+  budget: number;
   bound: ChartBound;
+  showPopupBg: boolean;
+  setShowPopupBg: (a: any) => void;
+  setShowEditOrderModal: (a: any) => void;
+  setShowDeletedAlert: (a: any) => void;
 }
 
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   buy,
   value1,
   value2,
+  budget,
   bound: { min, max },
+  showPopupBg,
+  setShowPopupBg,
+  setShowEditOrderModal,
+  setShowDeletedAlert,
 }) => {
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showPopupBg == false) setShowPopup(false);
+    setShowConfirmDlg(false);
+  }, [showPopupBg]);
+
+  useEffect(() => {
+    if (showConfirmDlg == false) setShowPopupBg(false);
+  }, [showConfirmDlg]);
+
   const percents = useMemo(() => {
     const range = max - min;
     const percent1 = ((value1 - min) / range) * 90 + 10;
@@ -22,22 +47,52 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   }, [value1, value2, min, max]);
 
   return (
-    <div className="mb-4">
-      <div className="px-4 py-2 border border-tsuka-400 text-tsuka-50">
+    <div className="mb-2">
+      <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
+        <div
+          className="relative text-custom-primary flex items-center gap-2 cursor-pointer"
+          onClick={() => {
+            setShowPopup(true);
+            setShowPopupBg(true);
+          }}
+        >
+          Edit <FiEdit />
+          {showPopup && (
+            <EditOrDeleteToken
+              setShowPopupBg={setShowPopupBg}
+              setShowEditOrderModal={setShowEditOrderModal}
+              setShowConfirmDlg={setShowConfirmDlg}
+            />
+          )}
+          {showConfirmDlg && (
+            <DeleteConfirmToken
+              setShowPopupBg={setShowPopupBg}
+              setShowConfirmDlg={setShowConfirmDlg}
+              setShowDeletedAlert={setShowDeletedAlert}
+            />
+          )}
+        </div>
       </div>
       <div className="border border-tsuka-400 text-tsuka-100">
-        <p
-          className={`${
-            buy ? "text-green-400" : "text-red-400"
-          } mx-4 my-2 text-xs`}
-        >
-          Target Price
-        </p>
+        <div className="py-2 px-4 text-sm text-tsuka-100">
+          <div className="mb-2 flex justify-between">
+            <span className={buy ? "text-green" : "text-red"}>
+              {value2 ? "Price range" : "Target price"}
+            </span>
+            <span>{`$${value1}${
+              value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""
+            }`}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Budget</span>
+            <span>${budget.toLocaleString()}</span>
+          </div>
+        </div>
         <div className="flex mt-4">
           <div
             className={`${
-              buy ? "from-green-400/10" : "from-red-400/10"
+              buy ? "from-green/10" : "from-red/10"
             } w-full h-10 bg-gradient-to-t to-transparent relative`}
           >
             {percents.map(
@@ -46,16 +101,16 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
                   <div
                     key={index}
                     className={`${
-                      buy ? "border-green-400" : "border-red-400"
+                      buy ? "border-green" : "border-red"
                     } border-r-4 h-10 absolute ${
                       index === 0
                         ? `${
                             buy
-                              ? "from-green-400/30 bg-gradient-to-t"
-                              : "from-red-400/30 bg-gradient-to-t"
+                              ? "from-green/30 bg-gradient-to-t"
+                              : "from-red/30 bg-gradient-to-t"
                           }`
                         : `bg-tsuka-500 ${
-                            buy ? "from-green-400/10" : "from-red-400/10"
+                            buy ? "from-green/10" : "from-red/10"
                           } bg-gradient-to-t`
                     }`}
                     style={
