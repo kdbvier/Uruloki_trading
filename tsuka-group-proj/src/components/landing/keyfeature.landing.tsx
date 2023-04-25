@@ -28,7 +28,7 @@ export const KeyFeatureCard: React.FC<KeyFeatureCardProps> = ({
     : "bg-white bg-opacity-5";
   return (
     <div
-      className={`w-full bg-white bg-opacity-[0.03] border border-white border-opacity-[0.12] backdrop-blur-[15px] rounded-3xl px-5 py-5 pb-6 sm:pl-[38px] sm:pr-[24px] sm:pt-[51px] sm:pb-[42px]`}
+      className={`w-full bg-white bg-opacity-[0.03] border border-white border-opacity-[0.12] backdrop-blur-[15px] rounded-3xl px-5 py-5 pb-6 sm:pl-[38px] sm:pr-[24px] sm:pt-[51px] sm:pb-[42px] cursor-pointer`}
       onClick={clickHandler}
       onMouseEnter={hoverHandler}
       onMouseLeave={unhoverHandler}

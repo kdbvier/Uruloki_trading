@@ -3,6 +3,7 @@ import { CoinTypeLanding } from "./cointype.landing";
 import { SectionTitle, SectionTitleProps } from "./sectiontitle.landing";
 import { BlurLanding } from "./blur.landing";
 import { Navbar, NavbarProps } from "./navbar.section";
+import Link from "next/link"
 
 export interface HeroProps {
   title: string;
@@ -55,17 +56,12 @@ export const HeroLanding: React.FC<HeroProps> = ({
       />
       <div className="text-tsuka-100 mb-4 md:mb-0 z-10">
         <div className="flex flex-col sm:flex-row justify-center mt-10 gap-4 pb-10 sm:pb-0">
-          <div className="bg-[#ffffff44] rounded-full p-[1px] flex justify-center items-center">
-            <input
-              type={"email"}
-              className="h-full w-full sm:w-[312px] text-white font-Steradian-400 bg-black text-base font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
-              placeholder="Enter Your Email"
-            ></input>
-          </div>
           <div className="inline-block bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center">
-            <button className="h-full w-full text-white bg-black text-base font-Inter-400 text-center rounded-full pl-[38.5px] py-[17.5px] pr-[38.5px]">
-              Get Started
-            </button>
+            <Link href="/homepage">
+              <button className="h-full w-full text-white bg-black text-base font-Inter-400 text-center rounded-full pl-[38.5px] py-[17.5px] pr-[38.5px]">
+                Get Started
+              </button>
+            </Link>
           </div>
         </div>
         <div className="relative w-full flex justify-center">

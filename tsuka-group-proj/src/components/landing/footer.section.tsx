@@ -1,4 +1,5 @@
 import { FaArrowRight } from "react-icons/fa";
+import Link from "next/link";
 
 export interface FooterProps {
   mainText: string;
@@ -23,17 +24,12 @@ export const FooterLanding: React.FC<FooterProps> = ({
       </div>
       <div className="text-tsuka-100 mb-4 md:mb-0">
         <div className="sm:flex justify-center mt-10">
-          {/* <div className="inline-block bg-[#ffffff44] w-full sm:max-w-[340px] rounded-full p-[1px] mr-4">
-            <input
-              type={"email"}
-              className="h-full w-full text-white bg-black text-base font-Steradian-400 font-normal rounded-full pl-[23px] py-[17.5px] pr-[14px]"
-              placeholder="Enter Your Email"
-            ></input>
-          </div> */}
           <div className="inline-block w-full sm:max-w-[180px] bg-gradient-to-r from-[#003525] to-[#31C699] rounded-full p-[1px] justify-center items-center mt-3 sm:0">
-            <button className="h-full w-full text-white bg-black text-base font-Steradian-400 font-normal text-center rounded-full pl-[21.5px] py-[17.5px] pr-[21.5px] flex justify-center items-center gap-3">
-              {"Get Started"}<FaArrowRight />
-            </button>
+            <Link href="/homepage">
+              <button className="h-full w-full text-white bg-black text-base font-Steradian-400 font-normal text-center rounded-full pl-[21.5px] py-[17.5px] pr-[21.5px] flex justify-center items-center gap-3">
+                {"Get Started"}<FaArrowRight />
+              </button>
+            </Link>
           </div>
         </div>
       </div>
