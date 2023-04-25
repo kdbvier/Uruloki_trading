@@ -6,11 +6,10 @@ import Joi from "joi";
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
   status: Joi.string().required(),
-  token_price: Joi.number().required(),
-  single_price: Joi.number().optional(), //Price if target price order
-  from_price: Joi.number().optional(), //Min price if price range
-  to_price: Joi.number().optional(), //Max price if price range
-  budget: Joi.number().required(), //Budget in usd
+  single_price: Joi.number().optional(),
+  from_price: Joi.number().optional(),
+  to_price: Joi.number().optional(),
+  budget: Joi.number().required(),
   order_type: Joi.string().valid("buy", "sell").required(),
   price_type: Joi.string().valid("range", "single").required(),
   user_id: Joi.number().required(),

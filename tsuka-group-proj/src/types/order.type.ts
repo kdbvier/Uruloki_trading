@@ -3,7 +3,6 @@ export type Order = {
     user_id: number;
     pair_address: string | null;
     status: string | null;
-    token_price: number | null;
     single_price: number | null;
     from_price: number | null;
     to_price: number | null;
@@ -15,8 +14,7 @@ export type Order = {
 export type PostOrder = {
     user_id: number;
     pair_address: string ;
-    status: string ;
-    token_price: number ;
+    status: string;
     single_price?: number;
     from_price?: number | null;
     to_price?: number | null;
@@ -28,7 +26,6 @@ export type PostOrder = {
   export type PatchOrder = {
     pair_address?: string ;
     status?: string ;
-    token_price?: number ;
     single_price?: number;
     from_price?: number | null;
     to_price?: number | null;
