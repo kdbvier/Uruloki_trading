@@ -92,12 +92,15 @@ const Ssr = ({ responsData }: SsrProps) => {
 export async function getServerSideProps() {
   const responsData = await getEntriesLanding();
 
-  // console.log(
-  //   "responsData::::In getServerSideProps",
-  //   JSON.stringify(responsData)
-  // );
+export const getServerSideProps = async () => {
+  const landingPageContents = (
+    await ContentService.instance.getEntriesByType<ILandingPage>("landingPage")
+  )[0];
+  const landingPage = landingPageContents.fields;
 
-  return { props: { responsData } };
-}
-
-export default Ssr;
+  getLandingPage().then((response) =>
+    console.log("response GraphQL:: ", response)
+  );
+  console.log("Inside ServerSideProps", landingPage);
+  return { props: { landingPage } };
+};

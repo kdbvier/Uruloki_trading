@@ -4,6 +4,8 @@ export type Position = {
   priceUsdt: number;
   amountBlur: number;
   executionValue: number;
+  address: string;
+  timestamp: string;
 };
 
 export type TokenPositions = {
