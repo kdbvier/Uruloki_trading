@@ -15,8 +15,6 @@ import {
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { FiPlusCircle } from "react-icons/fi";
-import { DefaultButton } from "@/components/ui/buttons/default.button";
 
 interface InputToken {
   id: string;
@@ -75,22 +73,14 @@ export default function Pair({ id }: { id: string }) {
             </div>
             <div className="col-span-12 md:col-span-3">
               {currentToken && compareToken && (
-                <>
-                  <DefaultButton
-                    label="Create an Order"
-                    callback={() => console.log("default click")}
-                    filled={true}
-                    Icon={FiPlusCircle}
-                  />
-                  <OrderWidgetToken
-                    name1={currentToken?.chain.name as string}
-                    code1={currentToken?.chain.code as string}
-                    name2={compareToken?.chain.name as string}
-                    code2={compareToken?.chain.code as string}
-                    status={statusOrder}
-                    orders={orders}
-                  />
-                </>
+                <OrderWidgetToken
+                  name1={currentToken?.chain.name as string}
+                  code1={currentToken?.chain.code as string}
+                  name2={compareToken?.chain.name as string}
+                  code2={compareToken?.chain.code as string}
+                  status={statusOrder}
+                  orders={orders}
+                />
               )}
             </div>
           </div>
