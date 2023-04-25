@@ -122,7 +122,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <button
               className={`${
                 isBuy
-                  ? "text-custom-primary border-primary"
+                  ? "text-custom-primary border-custom-primary"
                   : "text-tsuka-300 border-tsuka-300"
               } w-1/2 border-b text-center py-[11px]`}
               onClick={() => setIsBuy(true)}
@@ -133,7 +133,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <button
               className={`${
                 !isBuy
-                  ? "text-custom-primary border-primary"
+                  ? "text-custom-primary border-custom-primary"
                   : "text-tsuka-300 border-tsuka-300"
               } w-1/2 border-b text-center py-[11px]`}
               onClick={() => setIsBuy(false)}
@@ -269,7 +269,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </div>
           <div className="flex justify-between text-sm mt-1">
             <span className="text-tsuka-200">Price for an tokens</span>
-            <span className="text-green">{0.00305968}</span>
+            <span className="text-custom-green">{0.00305968}</span>
           </div>
           <button
             className="w-full rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
