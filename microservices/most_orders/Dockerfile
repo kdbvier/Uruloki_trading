@@ -8,4 +8,4 @@ COPY . /app
 RUN apt-get install -y ca-certificates
 RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
 # Run myscript.py when the container launches
-CMD ["python", "market_data.py"]
+CMD ["python", "most_orders.py"]

@@ -7,6 +7,8 @@ services:
   token_data:
     build:
       dockerfile: token_info/Dockerfile
-
+  most_orders:
+    build:
+      dockerfile: most_orders/Dockerfile
 
     
