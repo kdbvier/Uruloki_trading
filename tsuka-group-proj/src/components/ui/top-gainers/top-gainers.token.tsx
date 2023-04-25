@@ -65,28 +65,11 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                         <FiArrowUpRight className="mt-0.5" />
                         <span>{`${topGainer.risingPercent}%`}</span>
                       </div>
-<<<<<<< HEAD
-                    </td>
-                    <td className="py-2 md:py-5">
-                      <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                        <span className="text-tsuka-200">${commafy(topGainer.price)}</span>
-                        <div className="ml-2 flex text-green">
-                          <FiArrowUpRight className="mt-0.5" />
-                          <span>{`${topGainer.risingPercent}%`}</span>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })
-            }
-=======
                     </div>
                   </td>
                 </tr>
               );
             })}
->>>>>>> c769cf2b66a16c0adfc8419acab1f9b2020e4ef9
           </tbody>
         </table>
       </div>
