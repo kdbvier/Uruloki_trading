@@ -1,15 +1,26 @@
 export interface HeaderNotificationButtonProps {
   callback: () => void;
+  showNotify: boolean;
+  setShowNotify: any;
 }
 
 export const HeaderNotificationButton: React.FC<
   HeaderNotificationButtonProps
-> = ({ callback }) => {
+> = ({ callback, showNotify, setShowNotify }) => {
+  const notifyHandler = () => {
+    if (showNotify) {
+      setShowNotify(false);
+    } else {
+      setShowNotify(true);
+      callback();
+    }
+  }
+
   return (
     <button
       type="button"
-      onClick={callback}
-      className="rounded-full p-1 text-tsuka-400 hover:text-tsuka-500 focus:outline-none mx-3 md:ml-0"
+      onClick={notifyHandler}
+      className={`rounded-full p-2${showNotify ? " bg-tsuka-500 text-primary": " text-tsuka-400"} focus:outline-none mr-1 ml-3 md:ml-0`}
     >
       <span className="sr-only">View notifications</span>
       <svg
