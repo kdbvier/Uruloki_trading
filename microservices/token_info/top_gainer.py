@@ -228,7 +228,7 @@ def update_token_data():
                     try:
                         connection.execute(text(
                             "INSERT INTO top_gainers(token_cache_id,`rank`) SELECT id, rank() over(order by change_24hr) from token_cache limit 100;"))
-                        logging.info("succcessfully updated top_movers table")
+                        logging.info("succcessfully updated top_gainers table")
                     except Exception as e:
                         print(e)
                         logging.error(
