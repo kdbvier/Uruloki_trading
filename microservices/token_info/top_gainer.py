@@ -1,7 +1,7 @@
 import time
 import sqlalchemy
 from sqlalchemy.sql import text
-from sqlalchemy import bindparam
+from sqlalchemy.dialects.mysql import insert,dialect
 import requests
 import json
 import pandas
@@ -176,7 +176,7 @@ def get_top_gainers() -> pandas.DataFrame | None:
         # create pair name string
         # dbdf["pair_name"] = dbdf["symbol"].astype(
         #     str)+"/"+dbdf["paired_with_token"].astype(str)
-
+        del dbdf["paired_with_token"]
         return dbdf
     except Exception as e:
         print(e)
@@ -192,31 +192,38 @@ def update_token_data():
             dbdf = get_top_gainers()
 
             if type(dbdf) != type(None):
+                # try:
+                dbdf = dbdf.drop_duplicates("pair_address", keep='first')
+                dbdf['chain'] = "ethereum"
+                dbdf['last_updated'] = datetime.utcnow().strftime("%Y-%m-%d")
+                dbdf = dbdf.replace({numpy.NaN: None})
+                data_dict = dbdf.to_dict("records")
+                connection = connengine.connect()
+
+
+                logging.info("starting insert")
+                statement = text("INSERT INTO token_cache(chain, name ,pair_address, price, change_24hr, volume,last_updated, address, short_name ) VALUES( :chain, :name, :pair_address, :price, :change_24hr, :volume, :last_updated, :address, :short_name ) ON DUPLICATE KEY UPDATE price = token_cache.price, change_24hr = token_cache.change_24hr, volume = token_cache.volume, last_updated = token_cache.last_updated;")
+                for line in data_dict:
+                    connection.execute(statement,line)
+                
+
+                logging.info("Successfully updated database")
+
                 try:
-                    dbdf = dbdf.drop_duplicates("pair_address", keep='first')
-                    dbdf['chain'] = "ethereum"
-                    dbdf = dbdf.replace({numpy.NaN: None})
-                    data_dict = dbdf.to_dict("records")
-                    connection = connengine.connect()
-                    connection.execute(table_token_cache.delete())
-                    connection.execute(table_token_cache.insert(), data_dict)
-                    logging.info("Successfully updated database")
+                    connection.execute(table_top_gainers.delete())
+                    connection.execute(table_top_movers.delete())
+                except:
+                    logging.error(
+                        "unable to delete historical data in top_mover/top_gainers")
 
-                    try:
-                        connection.execute(table_top_gainers.delete())
-                        connection.execute(table_top_movers.delete())
-                    except:
-                        logging.error(
-                            "unable to delete historical data in top_mover/top_gainers")
-
-                    try:
-                        connection.execute(text("INSERT INTO top_movers(token_cache_id,`rank`) SELECT id, rank() over(order by abs(change_24hr)) from token_cache limit 100;")
-                                           )
-                        logging.info("succcessfully updated top_movers table")
-                    except Exception as e:
-                        print(e)
-                        logging.error(
-                            "unable to to insert data in top_movers table")
+                try:
+                    connection.execute(text("INSERT INTO top_movers(token_cache_id,`rank`) SELECT id, rank() over(order by abs(change_24hr)) from token_cache limit 100;")
+                                        )
+                    logging.info("succcessfully updated top_movers table")
+                except Exception as e:
+                    print(e)
+                    logging.error(
+                        "unable to to insert data in top_movers table")
 
                     try:
                         connection.execute(text(
