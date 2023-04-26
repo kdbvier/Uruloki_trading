@@ -1,15 +1,17 @@
 export interface HeaderMenuButtonProps {
+  menuCollapsed: boolean;
   callback: () => void;
 }
 
 export const HeaderMenuButton: React.FC<HeaderMenuButtonProps> = ({
+  menuCollapsed,
   callback,
 }) => {
   return (
     <button
       type="button"
       onClick={callback}
-      className="inline-flex items-center justify-center md:hidden rounded-md p-2 text-tsuka-400 hover:bg-tsuka-600 hover:text-tsuka-500 focus:outline-none"
+      className={`inline-flex items-center justify-center md:hidden ${menuCollapsed ? "bg-tsuka-700" : "bg-tsuka-500"} rounded-full p-2 ${menuCollapsed ? "text-tsuka-400" : "text-primary"} focus:outline-none`}
       aria-controls="mobile-menu"
       aria-expanded="false"
     >

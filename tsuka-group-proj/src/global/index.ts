@@ -14,6 +14,12 @@ export interface ITopMoversTokenProps {
   topMovers: ITopMover[]
 }
 
+export interface INotificationsTokenProps {
+  notifications: INotification[];
+  closeNotification: () => void;
+}
+
+
 export interface ITopGainer {
   rank: number;
   token: {
@@ -64,4 +70,11 @@ export interface ITopMover {
   orderCount: number;
   buyOrderCount: number;
   sellOrderCount: number;
+}
+
+export interface INotification {
+  buy: boolean;   //true: Buy, false: Sell
+  amount: number;
+  asset: string;
+  executedAt: number;
 }
