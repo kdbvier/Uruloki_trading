@@ -39,7 +39,6 @@ model orders {
   order_id     Int                @id @unique(map: "order_id") @default(autoincrement())
   pair_address String             @db.VarChar(255)
   status       String?            @db.VarChar(100)
-  token_price  Float?
   single_price Float?
   from_price   Float?
   to_price     Float?
@@ -57,13 +56,14 @@ model token_cache {
   name             String?            @db.VarChar(1000)
   chain            String?            @db.VarChar(1000)
   pair_address     String             @unique(map: "pair_address") @db.VarChar(255)
-  address          String?            @db.VarChar(1000)
   price            Float?
   change_24hr      Float?
   volume           Int?
-  market_cap       Int?
+  market_cap       Float?
   last_updated     DateTime?          @db.Date
   id               Int                @id @unique(map: "id") @default(autoincrement())
+  address          String?            @db.VarChar(1000)
+  short_name       String?            @db.VarChar(1000)
   orders           orders[]
   most_buy_orders  most_buy_orders[]
   most_sell_orders most_sell_orders[]

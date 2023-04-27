@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { FiX, FiChevronDown, FiPlusCircle } from "react-icons/fi";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { commafy, unCommafy } from "@/helpers/calc.helper";
 import { Token } from "@/types/token.type";
 import { PostOrder } from "@/types";
 import Orders from "@/lib/api/orders"
+import { useEffect, useState } from "react";
+import { FiX, FiPlusCircle } from "react-icons/fi";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -32,22 +32,23 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     {
       name: "bitcoin",
       code: "BTC",
-      title: "Bitcoin"
+      title: "Bitcoin",
     },
     {
       name: "ethereum",
       code: "ETH",
-      title: "Ethereum"
-    }
+      title: "Ethereum",
+    },
   ];
 
-  useEffect(() => {setShowPopupBg(false)});
+  useEffect(() => {
+    setShowPopupBg(false);
+  });
 
   const handleNumberInputChange = (name: string, event: any) => {
     const value = event.target.value.replace(/,/g, "");
     const pattern = /^\d*\.?\d*$/;
-    if (!pattern.test(value))
-      return;
+    if (!pattern.test(value)) return;
     let newValue = "";
     if (value.search("\\.") !== -1) {
       let [integerPart, decimalPart] = value.split(".");
@@ -55,7 +56,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
       // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
     } else {
-      newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     switch (name) {
       case "amount":
@@ -70,11 +71,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       case "max":
         setMaxPrice(newValue);
         break;
-    
+
       default:
         break;
     }
-  }
+  };
 
   const blurHandler = (name: string, event: any) => {
     let value = event.target.value.replace(/,/g, "");
@@ -86,7 +87,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       value = (+value).toString();
       let [integerPart, decimalPart] = value.split(".");
       integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}`;
+      newValue = decimalPart
+        ? `${integerPart}.${decimalPart}`
+        : `${integerPart}`;
     }
     switch (name) {
       case "amount":
@@ -101,11 +104,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       case "max":
         setMaxPrice(newValue);
         break;
-    
+
       default:
         break;
     }
-  }
+  };
 
   const submit = async () => {
     setShowEditOrderModal(false);
@@ -113,7 +116,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       user_id: 1,
       pair_address: token?.pair?.address ? token?.pair?.address : "0x00",
       status: "Active",
-      token_price: unCommafy(token?.price.value),
+      // token_price: unCommafy(token?.price.value),
       single_price: unCommafy(targetPrice),
       from_price: unCommafy(minPrice),
       to_price: unCommafy(maxPrice),
@@ -148,14 +151,22 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </p>
           <div className="w-full mt-4 flex">
             <button
-              className={`${isBuy ? "text-primary border-primary" : "text-tsuka-300 border-tsuka-300"} w-1/2 border-b text-center py-[11px]`}
+              className={`${
+                isBuy
+                  ? "text-custom-primary border-custom-primary"
+                  : "text-tsuka-300 border-tsuka-300"
+              } w-1/2 border-b text-center py-[11px]`}
               onClick={() => setIsBuy(true)}
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">BLUR with WETH</p>
             </button>
             <button
-              className={`${!isBuy ? "text-primary border-primary" : "text-tsuka-300 border-tsuka-300"} w-1/2 border-b text-center py-[11px]`}
+              className={`${
+                !isBuy
+                  ? "text-custom-primary border-custom-primary"
+                  : "text-tsuka-300 border-tsuka-300"
+              } w-1/2 border-b text-center py-[11px]`}
               onClick={() => setIsBuy(false)}
             >
               <p className="font-medium">SELL</p>
@@ -164,24 +175,42 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </div>
           <div className="w-full mt-4 flex gap-2 text-sm">
             <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${isRange ? "bg-tsuka-400" : ""}`}
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                isRange ? "bg-tsuka-400" : ""
+              }`}
               onClick={() => setIsRange(true)}
             >
-              <div className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${isRange ? "primary" : "tsuka-300"}`} />
-              <span className={isRange ? "text-tsuka-50" : "text-tsuka-300"}>Price Range</span>
+              <div
+                className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${
+                  isRange ? "primary" : "tsuka-300"
+                }`}
+              />
+              <span className={isRange ? "text-tsuka-50" : "text-tsuka-300"}>
+                Price Range
+              </span>
             </button>
             <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${!isRange ? "bg-tsuka-400" : ""}`}
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                !isRange ? "bg-tsuka-400" : ""
+              }`}
               onClick={() => setIsRange(false)}
             >
-              <div className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${!isRange ? "primary" : "tsuka-300"}`} />
-              <span className={!isRange ? "text-tsuka-50" : "text-tsuka-300"}>Single Price</span>
+              <div
+                className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${
+                  !isRange ? "primary" : "tsuka-300"
+                }`}
+              />
+              <span className={!isRange ? "text-tsuka-50" : "text-tsuka-300"}>
+                Single Price
+              </span>
             </button>
           </div>
           {
             !isRange &&
             <div className="relative mt-4">
-              <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">Target ($)</span>
+              <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
+                Target ($)
+              </span>
               <input
                 type="text"
                 className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
@@ -206,7 +235,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </div>
               <span className="hidden md:block mx-4 mt-4 text-tsuka-300">-</span>
               <div className="relative mt-4">
-                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">To ($)</span>
+                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
+                  Max price ($)
+                </span>
                 <input
                   type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
@@ -231,7 +262,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                     width={16}
                     height={16}
                   />
-                  <span className="ml-1 text-sm text-tsuka-100 mr-2">{tokens[selectedToken].title}</span>
+                  <span className="ml-1 text-sm text-tsuka-100 mr-2">
+                    {tokens[selectedToken].title}
+                  </span>
                 </div>
               </div>
               <input
@@ -255,7 +288,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50">{3.000493} BTC</span>
-                <span className="text-primary text-xs"> MAX</span>
+                <span className="text-custom-primary text-xs"> MAX</span>
               </p>
               <span className="text-tsuka-50 text-sm">${0}</span>
             </div>
@@ -266,7 +299,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </div>
           <div className="flex justify-between text-sm mt-1">
             <span className="text-tsuka-200">Price for an tokens</span>
-            <span className="text-green">{0.003059680}</span>
+            <span className="text-custom-green">{0.00305968}</span>
           </div>
           <button
             className="w-full flex justify-center items-center rounded-[10px] bg-primary py-2 mt-3 text-white"

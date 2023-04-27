@@ -3,16 +3,26 @@ import { IMostSellOrdersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FiRefreshCcw } from "react-icons/fi";
 
 export const MostSellOrders: React.FC<IMostSellOrdersTokenProps> = ({
   mostSellOrders,
 }) => {
+  const router = useRouter();
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
-        <span className="text-tsuka-50 text-[18px] font-medium">Most Sell Orders</span>
-        <Link className="flex items-center text-xs text-primary" href="#"><FiRefreshCcw className="mr-1" />Auto-Refreshed in 5 sec.</Link>
+        <span className="text-tsuka-50 text-[18px] font-medium">
+          Most Sell Orders
+        </span>
+        <Link
+          className="flex items-center text-xs text-custom-primary"
+          href="#"
+        >
+          <FiRefreshCcw className="mr-1" />
+          Auto-Refreshed in 5 sec.
+        </Link>
       </div>
 
       <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-hidden mt-5">
@@ -27,7 +37,13 @@ export const MostSellOrders: React.FC<IMostSellOrdersTokenProps> = ({
           <tbody>
             {mostSellOrders.map((mostSellOrder, idx) => {
               return (
-                <tr className="border-t border-t-tsuka-400" key={idx}>
+                <tr
+                  onClick={() => {
+                    router.push("/pair/2");
+                  }}
+                  className="cursor-pointer border-t border-t-tsuka-400"
+                  key={idx}
+                >
                   <td className="py-2 md:py-5">
                     {mostSellOrder.rank >= 1 && mostSellOrder.rank <= 3 ? (
                       <Image

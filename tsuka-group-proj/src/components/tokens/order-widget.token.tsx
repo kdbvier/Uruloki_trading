@@ -1,11 +1,11 @@
+import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ChartBound } from "@/types/chart-bound.type";
 import {
   OrderStatusEnum,
   SingleOrder,
   TokenOrder,
 } from "@/types/token-order.type";
-import { useMemo, useEffect } from "react";
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { useMemo } from "react";
 import { OrderWidgetGraph } from "../ui/tokens/order-widget-graph.token";
 
 export const OrderWidgetToken: React.FC<TokenOrder> = ({
@@ -60,19 +60,36 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
       <div className="flex flex-row items-center mb-4">
-        <TokenIconsToken name={name1} shortName={code1} width={32} height={32} />
-        <TokenIconsToken className="-ml-1" name={name2} shortName={code2} width={32} height={32} />
+        <TokenIconsToken
+          name={name1}
+          shortName={code1}
+          width={32}
+          height={32}
+        />
+        <TokenIconsToken
+          className="-ml-1"
+          name={name2}
+          shortName={code2}
+          width={32}
+          height={32}
+        />
         <div className="px-2 flex-1 flex-col">
           <p className="text-tsuka-50 text-lg font-semibold">
             {code1}/{code2}
           </p>
-          <label className="text-sm text-tsuka-200">ID: {name1}/{name2}</label>
+          <label className="text-sm text-tsuka-200">
+            ID: {name1}/{name2}
+          </label>
         </div>
         <div className="text-end">
           <div className="text-tsuka-200 text-sm">Status</div>
           <div className="flex items-center font-medium">
-            <div className={`w-1 h-1 mr-1 rounded-full bg-${statusColor}`}></div>
-            <span className={`text-${statusColor}`}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
+            <div
+              className={`w-1 h-1 mr-1 rounded-full bg-${statusColor}`}
+            ></div>
+            <span className={`text-${statusColor}`}>
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
           </div>
         </div>
       </div>
@@ -109,7 +126,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
         }
       })}
       {/* <div className="relative flex justify-center">
-        <button className="text-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
+        <button className="text-custom-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
         {
           showPopup &&
           <EditOrDeleteToken setShowPopupBg={setShowPopupBg} setShowEditOrderModal={setShowEditOrderModal} setShowConfirmDlg={setShowConfirmDlg} />

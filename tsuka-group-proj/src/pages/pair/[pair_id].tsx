@@ -1,6 +1,6 @@
 import { tokensData } from "@/@fake-data/token.fake-data";
-import { AllPositionsToken } from "@/components/tokens/all-positions.token";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
+import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
@@ -71,7 +71,7 @@ export default function Pair({ id }: { id: string }) {
                   <PoolInfoToken token={token} />
                 </div>
                 <div className="col-span-12 md:col-span-5">
-                  <AllPositionsToken token={token} />
+                  <OrderBookToken token={token} />
                 </div>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function Pair({ id }: { id: string }) {
                 orders={orders}
               />
             )}
-            <AllPositionsToken token={token} />
+            <OrderBookToken token={token} />
             <PoolInfoToken token={token} />
           </div>
         </>

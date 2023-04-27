@@ -1,53 +1,25 @@
+import { numberWithCommas } from "@/helpers/comma.helper";
 import { getTokenPosition } from "@/store/apps/token-positions";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
-import { FiltersButton } from "../ui/buttons/filters.button";
 
-export interface AllPositionsTokenProps {
+export interface OrderBookTokenProps {
   token: {
     id: string;
     token: string;
   };
 }
 
-export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
-  token,
-}) => {
+export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
-
-  const options = [
-    {
-      title: "All Positions",
-      active: true,
-    },
-    {
-      title: "Activity",
-      active: false,
-    },
-  ];
 
   useEffect(() => {
     dispatch(getTokenPosition(token.id));
   }, [dispatch, token]);
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100">
-      <div className="w-full flex items-center justify-start border-b border-tsuka-400 px-4 pt-2">
-        {options.map(({ title, active }, index) => (
-          <span
-            key={index}
-            className={`${
-              active ? "border-b-2 border-accent" : ""
-            } p-4 text-center mx-2 text-lg font-semibold text-tsuka-50`}
-          >
-            {title}
-          </span>
-        ))}
-        <div className="ml-auto">
-          <FiltersButton callback={() => console.log("filters button")} />
-        </div>
-      </div>
+    <div>
       {status === "loading" && "Loading..."}
       {status === "ok" && value && (
         <div className="p-4 flex">
@@ -71,14 +43,14 @@ export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
                       }}
                     ></div>
                   </div>
-                  <span className="flex-1 py-2 px-4 font-normal">
-                    $ {item.priceUsdt}
+                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
+                    {numberWithCommas(item.priceUsdt)}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
-                    {item.amountBlur}
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
+                    {item.amount}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
-                    $ {value?.sell?.totalValue}
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
+                    {numberWithCommas(value?.sell?.totalValue)}
                   </span>
                 </div>
               ))}
@@ -97,7 +69,7 @@ export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
                   key={index}
                   className="text-green-400 border-b border-tsuka-400 text-base relative w-full text-left flex flex-center"
                 >
-                  <div className="absolute w-full rounded-lg m-2 mr-4">
+                  <div className="text-green-400 absolute w-full rounded-lg m-2 mr-4">
                     <div
                       className="bg-green-400/20 h-6 rounded text-start flex items-center px-2 mr-auto"
                       style={{
@@ -105,14 +77,14 @@ export const AllPositionsToken: React.FC<AllPositionsTokenProps> = ({
                       }}
                     ></div>
                   </div>
-                  <span className="flex-1 py-2 px-4 font-normal">
-                    $ {item.priceUsdt}
+                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
+                    {numberWithCommas(item.priceUsdt)}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
-                    {item.amountBlur}
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
+                    {item.amount}
                   </span>
-                  <span className="flex-1 py-2 px-4 text-end font-normal">
-                    $ {value?.buy?.totalValue}
+                  <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
+                    {numberWithCommas(value?.buy?.totalValue)}
                   </span>
                 </div>
               ))}
