@@ -2,9 +2,10 @@ import { userOrder } from "@/@fake-data/user-order.fake-data";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { OrderStatusEnum } from "@/types/token-order.type";
-import { useState } from "react";
+import { OrderStatusEnum, UserOrder } from "@/types/token-order.type";
+import { useState, useEffect } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
+import Orders from '../lib/api/orders';
 
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
@@ -12,7 +13,14 @@ export default function MyOrder() {
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-
+  const [userOrderData, setUserOrderData] = useState<UserOrder[]>([])
+  useEffect(()=> {
+    const fetchData =async () => {
+      const userOrder_1 = await Orders.getOrdersbyUserId("1");
+      setUserOrderData([...userOrder_1]);
+    }
+    fetchData();
+  }, [])
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
@@ -67,7 +75,7 @@ export default function MyOrder() {
 
       {/* content */}
       <div className="grid grid-cols-12 gap-x-5">
-        {userOrder.map((order, idx) => {
+        {userOrderData.map((order, idx) => {
           if (idx > 2)
             return (
               <div

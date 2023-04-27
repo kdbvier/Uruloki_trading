@@ -1,4 +1,5 @@
 import {  Order, PatchOrder, PostOrder } from "@/types";
+import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
 
 
@@ -10,7 +11,7 @@ export default class Orders {
 
   static getOrdersbyUserId = async (
     userId: string
-  ): Promise<Order> => {
+  ): Promise<UserOrder[]> => {
     return await httpRequest.get(`/orders/user/${userId}`);
   };
 

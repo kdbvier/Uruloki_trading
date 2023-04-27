@@ -93,38 +93,40 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           </div>
         </div>
       </div>
-      {orders?.map((order) => {
-        if (isSingle(order)) {
-          return (
-            <OrderWidgetGraph
-              key={order.id}
-              buy={order.order_type === "buy"}
-              value1={order.price}
-              budget={order.budget}
-              bound={chartBound}
-              showPopupBg={showPopupBg}
-              setShowPopupBg={setShowPopupBg}
-              setShowEditOrderModal={setShowEditOrderModal}
-              setShowDeletedAlert={setShowDeletedAlert}
-            />
-          );
-        } else {
-          return (
-            <OrderWidgetGraph
-              key={order.id}
-              buy={order.order_type === "buy"}
-              value1={order.prices[0]}
-              value2={order.prices[1]}
-              budget={order.budget}
-              bound={chartBound}
-              showPopupBg={showPopupBg}
-              setShowPopupBg={setShowPopupBg}
-              setShowEditOrderModal={setShowEditOrderModal}
-              setShowDeletedAlert={setShowDeletedAlert}
-            />
-          );
-        }
-      })}
+      <div className="md:h-[350px] md:overflow-scroll">
+        {orders?.map((order) => {
+          if (isSingle(order)) {
+            return (
+              <OrderWidgetGraph
+                key={order.id}
+                buy={order.order_type === "buy"}
+                value1={order.price}
+                budget={order.budget}
+                bound={chartBound}
+                showPopupBg={showPopupBg}
+                setShowPopupBg={setShowPopupBg}
+                setShowEditOrderModal={setShowEditOrderModal}
+                setShowDeletedAlert={setShowDeletedAlert}
+              />
+            );
+          } else {
+            return (
+              <OrderWidgetGraph
+                key={order.id}
+                buy={order.order_type === "buy"}
+                value1={order.prices[0]}
+                value2={order.prices[1]}
+                budget={order.budget}
+                bound={chartBound}
+                showPopupBg={showPopupBg}
+                setShowPopupBg={setShowPopupBg}
+                setShowEditOrderModal={setShowEditOrderModal}
+                setShowDeletedAlert={setShowDeletedAlert}
+              />
+            );
+          }
+        })}
+      </div>
       {/* <div className="relative flex justify-center">
         <button className="text-custom-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
         {
