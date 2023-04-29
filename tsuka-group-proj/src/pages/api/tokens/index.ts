@@ -18,6 +18,7 @@ export default async function TokenCacheHandler(
   switch (method) {
     case "GET":
       try {
+        
         const topGainers = await prisma.top_gainers.findMany({
           include: {
             token_cache: {
@@ -25,6 +26,7 @@ export default async function TokenCacheHandler(
                 name: true,
                 price: true,
                 chain: true,
+                short_name:true,
                 change_24hr: true,
               },
             },
@@ -88,6 +90,7 @@ export default async function TokenCacheHandler(
               token_cache: {
                 name: mb.token_cache.name,
                 chain: mb.token_cache.chain,
+                short_name:mb.token_cache.short_name
               },
               buy_orders,
               total_orders,
@@ -121,6 +124,7 @@ export default async function TokenCacheHandler(
               token_cache: {
                 name: ms.token_cache.name,
                 chain: ms.token_cache.chain,
+                short_name:ms.token_cache.short_name
               },
               sell_orders,
               total_orders,

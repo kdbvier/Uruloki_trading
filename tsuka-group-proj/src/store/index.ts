@@ -5,6 +5,7 @@ import tokenCompareSlice from "./apps/token-compare";
 import tokenHistoryPositionSlice from "./apps/token-history-positions";
 import tokenPositionSlice from "./apps/token-positions";
 import userOrderSlice from "./apps/user-order";
+import homePageTokenSlice  from "./apps/tokens";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     tokenPosition: tokenPositionSlice,
     tokenHistoryPosition: tokenHistoryPositionSlice,
     userOrder: userOrderSlice,
+    homepageTokens:homePageTokenSlice
   },
 });
 
