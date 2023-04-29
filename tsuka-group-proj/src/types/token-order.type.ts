@@ -6,6 +6,7 @@ export enum PriceTypeEnum {
   SINGLE = "single",
   RANGE = "range",
 }
+
 export enum OrderStatusEnum {
   ACTIVE = "Active",
   EXECUTED = "Executed",

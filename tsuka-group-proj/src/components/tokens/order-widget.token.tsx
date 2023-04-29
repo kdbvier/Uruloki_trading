@@ -41,19 +41,19 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return { min, max };
   }, [orders]);
 
-  const statusColor = useMemo((): string => {
+  const statusColor = useMemo((): { text: string; bg: string } => {
     switch (status) {
       case OrderStatusEnum.ACTIVE:
-        return "green";
+        return { text: "text-green-400", bg: "bg-green-400" };
 
       case OrderStatusEnum.CANCELLED:
-        return "red";
+        return { text: "text-red-400", bg: "bg-red-400" };
 
       case OrderStatusEnum.EXECUTED:
-        return "blue";
+        return { text: "text-blue-400", bg: "bg-blue-400" };
 
       default:
-        return "blue";
+        return { text: "text-blue-400", bg: "bg-blue-400" };
     }
   }, [status]);
 
@@ -85,9 +85,9 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           <div className="text-tsuka-200 text-sm">Status</div>
           <div className="flex items-center font-medium">
             <div
-              className={`w-1 h-1 mr-1 rounded-full bg-${statusColor}`}
+              className={`w-1 h-1 mr-1 rounded-full ${statusColor.bg}`}
             ></div>
-            <span className={`text-${statusColor}`}>
+            <span className={statusColor.text}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
