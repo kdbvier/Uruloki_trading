@@ -1,8 +1,10 @@
 import { Strategy } from "@/types/strategy.type";
+import { useState } from "react";
 import { MdArrowForward } from "react-icons/md";
 import { DefaultButton } from "../ui/buttons/default.button";
 import { StatusSpan } from "../ui/spans/status.span";
 import { TokenIconSpan } from "../ui/spans/token-icon.span";
+import { TokenPairStrategies } from "../ui/strategies/token-pair.strategies";
 
 export interface SidebarStrategiesProps {
   open: boolean;
@@ -15,6 +17,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
   handleOpen,
   strategy,
 }) => {
+  const [showExtraId, setShowExtraId] = useState<number | null>(null);
   return (
     <div
       className={
@@ -26,7 +29,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
       <div
         className={`${
           open ? "translate-x-0 right-8" : "translate-x-full right-0"
-        } fixed top-0 z-40 h-screen p-4 overflow-y-auto shadow-xl transition-transform bg-tsuka-500 w-[516px]`}
+        } fixed top-0 z-40 h-screen p-6 overflow-y-auto shadow-xl transition-transform bg-tsuka-500 w-[516px]`}
       >
         <div className="w-min whitespace-nowrap">
           <DefaultButton
@@ -35,6 +38,15 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
             Icon={MdArrowForward}
           />
         </div>
+        <div>
+          <div className="text-tsuka-50 text-3xl">
+            Order & Strategies
+            <span className="text-tsuka-200 text-lg ml-1">
+              ({strategy.orderTokens.length})
+            </span>
+          </div>
+        </div>
+        <div className="py-2">Showing list of strategies</div>
         <div className="flex flex-col mt-4 gap-4">
           {strategy?.orderTokens?.map((item, index) => (
             <div
@@ -48,7 +60,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
                     <TokenIconSpan code={item.code2} name={item.name2} />
                     {item.extraTokens && (
                       <span className="flex items-center justify-center w-7 h-7 text-xs font-medium text-tsuka-50 bg-tsuka-400 rounded-full">
-                        {item.extraTokens.length}
+                        +{item.extraTokens.length}
                       </span>
                     )}
                   </div>
@@ -65,12 +77,53 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
                 </div>
                 {item.extraTokens && (
                   <div className="ml-2 px-2 border-l-2 text-sm border-accent text-accent border-dashed">
-                    {`${2 + item.extraTokens.length} tokens in strategy`}
-                    <span className="text-xs font-light">(Click to see)</span>
+                    {showExtraId === index && (
+                      <>
+                        <div className="flex mt-2">
+                          <TokenPairStrategies
+                            id={strategy.id}
+                            name1={item.name1}
+                            code1={item.code1}
+                            name2={item.name2}
+                            code2={item.code2}
+                          />
+                        </div>
+                        {item.extraTokens.map((extra) => (
+                          <div key={extra.code} className="flex mt-2">
+                            <TokenPairStrategies
+                              id={strategy.id}
+                              name1={item.name1}
+                              code1={item.code1}
+                              name2={extra.name}
+                              code2={extra.code}
+                            />
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    <span>
+                      {showExtraId === index
+                        ? ""
+                        : `${2 + item.extraTokens.length} orders in strategy`}
+                      <span
+                        onClick={() =>
+                          setShowExtraId((prev) =>
+                            prev === index ? null : index
+                          )
+                        }
+                        className="text-xs font-light"
+                      >
+                        {showExtraId === index
+                          ? "(Show less)"
+                          : "(Click to see)"}
+                      </span>
+                    </span>
                   </div>
                 )}
               </div>
-              <StatusSpan status={item.status} />
+              <div>
+                <StatusSpan status={item.status} />
+              </div>
             </div>
           ))}
         </div>

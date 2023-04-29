@@ -45,7 +45,7 @@ export const strategiesData: Array<Strategy> = [
         status: OrderStatusEnum.EXECUTED,
         extraTokens: [
           {
-            code: "Sol",
+            code: "SOL",
             name: "Solana",
           },
         ],
