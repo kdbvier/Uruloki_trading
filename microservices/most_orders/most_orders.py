@@ -75,7 +75,7 @@ def insert_updates():
 
     try:
         # most sells
-        connection.execute(text(connection.execute(text("insert into most_sell_orders(token_cache_id,`rank`) select token_cache.id,_rank from token_cache inner join (select pair_address, dense_rank() over (order by count(order_type) desc) as _rank from orders  where order_type = 'sell' group by orders.pair_address) as y on token_cache.pair_address = y.pair_address;"))))
+        connection.execute(text("insert into most_sell_orders(token_cache_id,`rank`) select token_cache.id,_rank from token_cache inner join (select pair_address, dense_rank() over (order by count(order_type) desc) as _rank from orders  where order_type = 'sell' group by orders.pair_address) as y on token_cache.pair_address = y.pair_address;"))
         logging.info("successfully updated most_sell_orders table")
     except Exception as e:
         print(e)
@@ -290,11 +290,3 @@ while True:
     time.sleep(int(SCHEDULE))
     logging.info("sleeping zzzzzzzzzzzzzz...")
 
-
-# "select name,token_cache.id,y.pair_address,y._rank from token_cache right join (select pair_address, dense_rank() over (order by count(order_type) desc) as _rank from orders  where order_type = 'buy' group by orders.pair_address) as y on token_cache.pair_address = y.pair_address ;"
-
-# "select name,token_cache.id,y.pair_address,y._rank from token_cache right join (select pair_address, dense_rank() over (order by count(order_type) desc) as _rank from orders  where order_type = 'sell' group by orders.pair_address) as y on token_cache.pair_address = y.pair_address ;"
-
-
-# #find the ones that don't exist
-# 'select name,token_cache.id,y.pair_address,y._rank from token_cache right join (select pair_address, dense_rank() over (order by count(order_type) desc) as _rank from orders  where order_type = 'buy' group by orders.pair_address) as y on token_cache.pair_address = y.pair_address where token_cache.id is null;'
