@@ -8,6 +8,9 @@ export default class Orders {
   static getOrders = async (): Promise<Order> => {
     return await httpRequest.get('/orders');
   };
+  static getOrderById = async (order_id: number):Promise<Order> => {
+    return await httpRequest.get(`orders/${order_id}`);
+  }
 
   static getOrdersbyUserId = async (
     userId: string
@@ -29,9 +32,9 @@ export default class Orders {
     return await httpRequest.post("/orders", data);
   };
 
-  static editOrder = async (orderId:string,data: PatchOrder): Promise<Order> => {
+  static editOrder = async (orderId:number,data: PatchOrder): Promise<Order> => {
     console.log("posting edit data :::");
-    return await httpRequest.post(`/orders/${orderId}`, data);
+    return await httpRequest.patch(`/orders/${orderId}`, data);
   };
 
   static deleteOrder = async (

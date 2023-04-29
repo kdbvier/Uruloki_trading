@@ -17,14 +17,18 @@ const initialState: UserOrderState = {
 };
 
 export const setSelectedOrder = createAsyncThunk(
-  "",
-  async (order_id:number):Promise<void> => {
-    
+  "userOrder/select",
+  async (order_id:number):Promise<Order> => {
+    if(order_id == -1){
+      return await {} as Order;
+    }
+    const data = await Orders.getOrderById(order_id);
+    return data;
   }
 );
 
 interface updateEditOrderParams {
-  id: string,
+  id: number,
   patchData: PatchOrder
 }
 export const EditUserOrder = createAsyncThunk<unknown, updateEditOrderParams, {dispatch:any}>(
@@ -66,7 +70,17 @@ export const userOrderSlice = createSlice({
       })
       .addCase(getUserOrder.rejected, (state) => {
         state.status = "failed";
-      });
+      })
+      .addCase(setSelectedOrder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(setSelectedOrder.fulfilled, (state, action) => {
+        state.status = "ok";
+        state.selectedOrder = action.payload;
+      })
+      .addCase(setSelectedOrder.rejected, (state) => {
+        state.status = "failed";
+      })
   },
 });
 

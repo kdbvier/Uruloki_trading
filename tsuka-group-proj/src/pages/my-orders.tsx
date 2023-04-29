@@ -22,7 +22,6 @@ export default function MyOrder() {
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
-  const [userOrderData, setUserOrderData] = useState<UserOrder[]>([]);
   const dispatch = useAppDispatch();
   const {
     value,
@@ -38,6 +37,10 @@ export default function MyOrder() {
   //   }
   //   fetchData();
   // }, [])
+  const handleEditModal = (show:boolean, id:number)=>{
+    setSelectedOrderId(id)
+    setShowEditOrderModal(show);
+  }
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
@@ -112,7 +115,7 @@ export default function MyOrder() {
                   orders={order.orders}
                   showPopupBg={showPopupBg}
                   setShowPopupBg={setShowPopupBg}
-                  setShowEditOrderModal={setShowEditOrderModal}
+                  setShowEditOrderModal={handleEditModal}
                   setShowDeletedAlert={setShowDeletedAlert}
                 />
               </div>
@@ -128,7 +131,7 @@ export default function MyOrder() {
                 orders={order.orders}
                 showPopupBg={showPopupBg}
                 setShowPopupBg={setShowPopupBg}
-                setShowEditOrderModal={setShowEditOrderModal}
+                setShowEditOrderModal={handleEditModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
             </div>
@@ -156,6 +159,11 @@ export default function MyOrder() {
         <EditOrderToken
           setShowPopupBg={setShowPopupBg}
           setShowEditOrderModal={setShowEditOrderModal}
+          selectedOrderId = {selectedOrderId}
+          closeHandler = {()=>{
+            setShowEditOrderModal(false);
+            setSelectedOrderId(-1);
+          }}
         />
       )}
       {showDeletedAlert && (

@@ -1,29 +1,88 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
-import { EditUserOrder } from '@/store/apps/user-order';
+import { EditUserOrder, setSelectedOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
+import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 export interface EditOrderTokenProp {
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
+  selectedOrderId: number;
+  closeHandler:() => void;
 }
-
+const handleNumberFormat = (num: number): string => {
+  let value = num.toString();
+  const pattern = /^\d*\.?\d*$/;
+  if (!pattern.test(value)) return "";
+  let newValue = "";
+  if (value.search("\\.") !== -1) {
+    let [integerPart, decimalPart] = value.split(".");
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
+    // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
+  } else {
+    newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return newValue;
+};
+const toNumber = (str: string): number => {
+  const value = str.replace(/,/g, "");
+  const num = Number(value);
+  if (Number.isNaN(num)) {
+    return -1;
+  }
+  return num;
+};
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowPopupBg,
   setShowEditOrderModal,
+  selectedOrderId,
+  closeHandler,
 }) => {
   const dispatch = useAppDispatch();
 
+  const selectedOrder = useAppSelector(
+    (state) => state.userOrder.selectedOrder
+  );
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
-  const [isBuy, setIsBuy] = useState(true);
-  const [targetPrice, setTargetPrice] = useState("25,000");
-  const [minPrice, setMinPrice] = useState("25,000");
-  const [maxPrice, setMaxPrice] = useState("35,000");
-  const [amount, setAmount] = useState("40,000");
-  const [isRange, setIsRange] = useState(false);
+  const [isBuy, setIsBuy] = useState(
+    selectedOrder.order_type === OrderTypeEnum.BUY
+  );
+  const [targetPrice, setTargetPrice] = useState(
+    handleNumberFormat(selectedOrder.single_price ?? -1)
+  );
+  const [minPrice, setMinPrice] = useState(
+    handleNumberFormat(selectedOrder.from_price ?? -1)
+  );
+  const [maxPrice, setMaxPrice] = useState(
+    handleNumberFormat(selectedOrder.to_price ?? -1)
+  );
+  const [amount, setAmount] = useState(
+    handleNumberFormat(selectedOrder.budget ?? -1)
+  );
+  const [isRange, setIsRange] = useState(
+    selectedOrder.price_type === PriceTypeEnum.RANGE
+  );
 
+  useEffect(() => {
+    dispatch(setSelectedOrder(selectedOrderId));
+  }, []);
+
+  useEffect(() => {
+    setTargetPrice(handleNumberFormat(selectedOrder.single_price ?? -1));
+    setMinPrice(handleNumberFormat(selectedOrder.from_price ?? -1));
+    setAmount(handleNumberFormat(selectedOrder.budget ?? -1));
+    setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
+  }, [selectedOrder]);
+
+  const closeClickHandler = () => {
+    closeHandler();
+    setTargetPrice(handleNumberFormat(-1));
+    setMinPrice(handleNumberFormat(-1));
+    setAmount(handleNumberFormat(-1));
+  };
   const tokens = [
     {
       name: "bitcoin",
@@ -106,21 +165,22 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
-  const order_id = "4";
   const handleSubmit = () => {
     const patchData = {} as PatchOrder;
-    patchData.budget = Number(amount);
-    patchData.order_type = isBuy?"buy":"sell";
-    patchData.price_type = isRange?"range":"single";
-    if(isRange){
-      patchData.from_price = Number(minPrice);
-      patchData.to_price = Number(maxPrice);
+    patchData.budget = toNumber(amount);
+    patchData.order_type = isBuy ? "buy" : "sell";
+    patchData.price_type = isRange ? "range" : "single";
+    if (isRange) {
+      patchData.from_price = toNumber(minPrice);
+      patchData.to_price = toNumber(maxPrice);
     } else {
-      patchData.single_price = Number(targetPrice);
+      patchData.single_price = toNumber(targetPrice);
     }
-    dispatch(EditUserOrder({id:order_id, patchData}));
+    console.log("before submit::");
+    console.log(patchData);
+    dispatch(EditUserOrder({ id: selectedOrderId, patchData }));
     setShowEditOrderModal(false);
-  }
+  };
 
   return (
     <div
@@ -131,7 +191,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         <div className="relative w-full md:w-[440px] bg-tsuka-500 border rounded-2xl border-[#343C4F] text-tsuka-50 p-6">
           <FiX
             className="absolute top-3 right-3 text-tsuka-300 text-lg cursor-pointer"
-            onClick={() => setShowEditOrderModal(false)}
+            onClick={closeClickHandler}
           />
           <p className="text-2xl font-medium">Edit Order</p>
           <p className="text-sm">

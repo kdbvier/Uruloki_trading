@@ -22,9 +22,41 @@ export default async function orderHandler(
 ) {
   const { query, method,body} = req;
   const { orderid } = query;
-  console.log("Receved Request for update orderid:::  ", orderid);
+
   switch (method) {
+    case "GET":
+      try {
+        const orderExist = await prisma.orders.findFirst({
+          where: {
+            order_id: Number(orderid),
+          },
+        });
+        if (!orderExist) {
+          res
+            .status(404)
+            .json({
+              payload: undefined,
+              message: `Order id ${orderid} not found!`,
+            });
+          break;
+        }
+        res
+          .status(200)
+          .json({
+            payload: orderExist,
+            message: `Successfully deleted order id ${orderid}`,
+          });
+      } catch (err) {
+        res
+          .status(400)
+          .json({
+            payload: undefined,
+            message: `Something went wrong! Please read the error message '${err}'`,
+          });
+      }
+      break;
     case "PATCH":
+      console.log("Receved PATCH Request for update orderid:::  ", orderid, req.body);
       try {
         const {value,error} = reqBodySchema.validate(body);
         if(error){
@@ -89,7 +121,7 @@ export default async function orderHandler(
       }
       break;
     default:
-      res.setHeader("Allow", ["DELETE", "PATCH"]);
+      res.setHeader("Allow", ["GET", "DELETE", "PATCH"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

@@ -13,7 +13,7 @@ export interface OrderWidgetGraphProp {
   bound: ChartBound;
   showPopupBg: boolean;
   setShowPopupBg: (a: any) => void;
-  setShowEditOrderModal: (a: any) => void;
+  setShowEditOrderModal: (show: boolean, order_id:number) => void;
   setShowDeletedAlert: (a: any) => void;
 }
 
@@ -63,7 +63,9 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
           {showPopup && (
             <EditOrDeleteToken
               setShowPopupBg={setShowPopupBg}
-              setShowEditOrderModal={setShowEditOrderModal}
+              setShowEditOrderModal={()=>{
+                setShowEditOrderModal(true, id);
+              }}
               setShowConfirmDlg={setShowConfirmDlg}
             />
           )}
