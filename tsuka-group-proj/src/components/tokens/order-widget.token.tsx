@@ -99,6 +99,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
             return (
               <OrderWidgetGraph
                 key={order.id}
+                id = {order.id}
                 buy={order.order_type === "buy"}
                 value1={order.price}
                 budget={order.budget}
@@ -113,6 +114,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
             return (
               <OrderWidgetGraph
                 key={order.id}
+                id={order.id}
                 buy={order.order_type === "buy"}
                 value1={order.prices[0]}
                 value2={order.prices[1]}

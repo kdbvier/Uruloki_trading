@@ -15,6 +15,10 @@ export default class Orders {
     return await httpRequest.get(`/orders/user/${userId}`);
   };
 
+  static getOrdersbyUserIdandFilters = async (userId:string, status:string, search:string): Promise<UserOrder[]>=>{
+    return await httpRequest.get(`orders/user/${userId}?status=${status}&search=${search}`);
+  }
+
   static getOrdersbyTokenPair = async (
     tokenpair: string
   ): Promise<Order> => {
@@ -26,6 +30,7 @@ export default class Orders {
   };
 
   static editOrder = async (orderId:string,data: PatchOrder): Promise<Order> => {
+    console.log("posting edit data :::");
     return await httpRequest.post(`/orders/${orderId}`, data);
   };
 

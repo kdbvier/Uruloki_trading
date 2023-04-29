@@ -1,4 +1,8 @@
 import { userOrder } from "@/@fake-data/user-order.fake-data";
+
+import { getUserOrder } from '@/store/apps/user-order';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
@@ -9,18 +13,31 @@ import Orders from '../lib/api/orders';
 
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const handleSearchChange = (e:any)=>{
+    setSearchValue(e.target.value);
+  }
   const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-  const [userOrderData, setUserOrderData] = useState<UserOrder[]>([])
-  useEffect(()=> {
-    const fetchData =async () => {
-      const userOrder_1 = await Orders.getOrdersbyUserId("1");
-      setUserOrderData([...userOrder_1]);
-    }
-    fetchData();
-  }, [])
+  const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
+  const [userOrderData, setUserOrderData] = useState<UserOrder[]>([]);
+  const dispatch = useAppDispatch();
+  const {
+    value,
+    status,
+  } = useAppSelector((state)=> state.userOrder);
+  useEffect(()=>{
+    dispatch(getUserOrder("1"));
+  },[dispatch]);
+  // useEffect(()=> {
+  //   const fetchData =async () => {
+  //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
+  //     setUserOrderData([...userOrder_1]);
+  //   }
+  //   fetchData();
+  // }, [])
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
@@ -57,6 +74,8 @@ export default function MyOrder() {
                 type="text"
                 className="w-full md:w-[200px] bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
                 placeholder="Find tokens..."
+                value={searchValue}
+                onChange={handleSearchChange}
               />
             </div>
             <button
@@ -75,7 +94,7 @@ export default function MyOrder() {
 
       {/* content */}
       <div className="grid grid-cols-12 gap-x-5">
-        {userOrderData.map((order, idx) => {
+        {value.map((order, idx) => {
           if (idx > 2)
             return (
               <div
@@ -85,11 +104,11 @@ export default function MyOrder() {
                 key={idx}
               >
                 <OrderWidgetToken
-                  name1={"ethereum"}
-                  code1={"ETH"}
-                  name2={"bitcoin"}
-                  code2={"BTC"}
-                  status={OrderStatusEnum.EXECUTED}
+                  name1={order.orders[0].baseTokenLongName}
+                  code1={order.orders[0].baseTokenShortName}
+                  name2={order.orders[0].pairTokenLongName}
+                  code2={order.orders[0].pairTokenShortName}
+                  status={order.orders[0].status}
                   orders={order.orders}
                   showPopupBg={showPopupBg}
                   setShowPopupBg={setShowPopupBg}
@@ -101,11 +120,11 @@ export default function MyOrder() {
           return (
             <div className="col-span-12 md:col-span-6 lg:col-span-4" key={idx}>
               <OrderWidgetToken
-                name1={"ethereum"}
-                code1={"ETH"}
-                name2={"bitcoin"}
-                code2={"BTC"}
-                status={OrderStatusEnum.ACTIVE}
+                name1={order.orders[0].baseTokenLongName}
+                code1={order.orders[0].baseTokenShortName}
+                name2={order.orders[0].pairTokenLongName}
+                code2={order.orders[0].pairTokenShortName}
+                status={order.orders[0].status}
                 orders={order.orders}
                 showPopupBg={showPopupBg}
                 setShowPopupBg={setShowPopupBg}

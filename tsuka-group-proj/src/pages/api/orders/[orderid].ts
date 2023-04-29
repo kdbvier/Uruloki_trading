@@ -22,6 +22,7 @@ export default async function orderHandler(
 ) {
   const { query, method,body} = req;
   const { orderid } = query;
+  console.log("Receved Request for update orderid:::  ", orderid);
   switch (method) {
     case "PATCH":
       try {
@@ -45,7 +46,7 @@ export default async function orderHandler(
           },
           data:value
         });
-        res.status(200).json({payload:order,message: `Successfully updated order id ${orderid}`});
+        res.status(200).json({payload: order,message: `Successfully updated order id ${orderid}`});
       } catch (err) {
         res
           .status(400).json({payload: undefined,message: `Something went wrong! Please read the error message '${err}'`});

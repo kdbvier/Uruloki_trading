@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
+  id: number;
   buy: boolean;
   value1: number;
   value2?: number;
@@ -17,6 +18,7 @@ export interface OrderWidgetGraphProp {
 }
 
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
+  id,
   buy,
   value1,
   value2,

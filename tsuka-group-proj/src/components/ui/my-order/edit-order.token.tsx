@@ -1,7 +1,9 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
-
+import { EditUserOrder } from '@/store/apps/user-order';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { PatchOrder } from "@/types";
 export interface EditOrderTokenProp {
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
@@ -11,6 +13,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowPopupBg,
   setShowEditOrderModal,
 }) => {
+  const dispatch = useAppDispatch();
+
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
   const [isBuy, setIsBuy] = useState(true);
@@ -101,6 +105,22 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         break;
     }
   };
+
+  const order_id = "4";
+  const handleSubmit = () => {
+    const patchData = {} as PatchOrder;
+    patchData.budget = Number(amount);
+    patchData.order_type = isBuy?"buy":"sell";
+    patchData.price_type = isRange?"range":"single";
+    if(isRange){
+      patchData.from_price = Number(minPrice);
+      patchData.to_price = Number(maxPrice);
+    } else {
+      patchData.single_price = Number(targetPrice);
+    }
+    dispatch(EditUserOrder({id:order_id, patchData}));
+    setShowEditOrderModal(false);
+  }
 
   return (
     <div
@@ -273,9 +293,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </div>
           <button
             className="w-full rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
-            onClick={() => {
-              setShowEditOrderModal(false);
-            }}
+            onClick={handleSubmit}
           >
             Apply Changes
           </button>
