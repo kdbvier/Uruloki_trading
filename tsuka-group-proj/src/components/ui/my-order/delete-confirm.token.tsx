@@ -10,7 +10,7 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
   setShowDeletedAlert,
 }) => {
   return (
-    <div className="absolute z-40 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]">
+    <div className="absolute z-40 right-0 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]">
       <p className="text-center text-tsuka-50 text-lg font-medium">
         Are you sure?
       </p>

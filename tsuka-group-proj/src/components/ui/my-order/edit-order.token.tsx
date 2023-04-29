@@ -1,15 +1,23 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { commafy, unCommafy } from "@/helpers/calc.helper";
+import { Token } from "@/types/token.type";
+import { PostOrder } from "@/types";
+import Orders from "@/lib/api/orders"
 import { useEffect, useState } from "react";
-import { FiX } from "react-icons/fi";
+import { FiX, FiPlusCircle } from "react-icons/fi";
 
 export interface EditOrderTokenProp {
+  isEdit?: boolean;
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
+  token?: Token;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
+  isEdit = true,
   setShowPopupBg,
   setShowEditOrderModal,
+  token,
 }) => {
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
@@ -18,7 +26,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [minPrice, setMinPrice] = useState("25,000");
   const [maxPrice, setMaxPrice] = useState("35,000");
   const [amount, setAmount] = useState("40,000");
-  const [isRange, setIsRange] = useState(false);
+  const [isRange, setIsRange] = useState(true);
 
   const tokens = [
     {
@@ -102,6 +110,29 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
+  const submit = async () => {
+    setShowEditOrderModal(false);
+    const data: PostOrder = {
+      user_id: 1,
+      pair_address: token?.pair?.address ? token?.pair?.address : "0x00",
+      status: "Active",
+      // token_price: unCommafy(token?.price.value),
+      single_price: unCommafy(targetPrice),
+      from_price: unCommafy(minPrice),
+      to_price: unCommafy(maxPrice),
+      budget: unCommafy(amount),
+      order_type: isBuy ? "buy" : "sell",
+      price_type: isRange ? "range" : "single",
+    }
+    console.log(data);
+    try {
+      let res = await Orders.createOrder(data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);      
+    }
+  }
+
   return (
     <div
       className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen"
@@ -113,7 +144,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             className="absolute top-3 right-3 text-tsuka-300 text-lg cursor-pointer"
             onClick={() => setShowEditOrderModal(false)}
           />
-          <p className="text-2xl font-medium">Edit Order</p>
+          <p className="text-2xl font-medium">{isEdit ? "Edit Order" : "Create an Order"}</p>
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">${"490,080.23"}</span>
@@ -174,7 +205,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </span>
             </button>
           </div>
-          {!isRange && (
+          {
+            !isRange &&
             <div className="relative mt-4">
               <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
                 Target ($)
@@ -187,13 +219,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 onBlur={(e) => blurHandler("target", e)}
               />
             </div>
-          )}
-          {isRange && (
-            <>
+          }
+          {
+            isRange &&
+            <div className="block md:flex justify-between items-center">
               <div className="relative mt-4">
-                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
-                  Min price ($)
-                </span>
+                <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">From ($)</span>
                 <input
                   type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
@@ -202,6 +233,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   onBlur={(e) => blurHandler("min", e)}
                 />
               </div>
+              <span className="hidden md:block mx-4 mt-4 text-tsuka-300">-</span>
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
                   Max price ($)
@@ -214,11 +246,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   onBlur={(e) => blurHandler("max", e)}
                 />
               </div>
-            </>
-          )}
-          <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
-            Amount
-          </span>
+            </div>
+          }
+          <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">Amount</span>
           <div className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md">
             <div className="w-full flex justify-between">
               <div
@@ -272,12 +302,15 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <span className="text-custom-green">{0.00305968}</span>
           </div>
           <button
-            className="w-full rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
-            onClick={() => {
-              setShowEditOrderModal(false);
-            }}
+            className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
+            onClick={submit}
           >
-            Apply Changes
+            {
+              isEdit ? <>Apply Changes</> :
+              <>
+                <FiPlusCircle className="mr-1" /> Create Order
+              </>
+            }
           </button>
         </div>
       </div>
