@@ -21,6 +21,10 @@ export type PostOrder = {
     budget: number;
     order_type: "buy" | "sell" ;
     price_type: "single" | "range" ;
+    baseTokenShortName: string,
+    baseTokenLongName: string,
+    pairTokenShortName: string,
+    pairTokenLongName: string,
   }
 
   export type PatchOrder = {
