@@ -42,7 +42,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
           <div className="text-tsuka-50 text-3xl">
             Order & Strategies
             <span className="text-tsuka-200 text-lg ml-1">
-              ({strategy.orderTokens.length})
+              ({strategy?.orderTokens.length})
             </span>
           </div>
         </div>
