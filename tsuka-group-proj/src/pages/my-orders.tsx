@@ -1,6 +1,6 @@
 import { userOrder } from "@/@fake-data/user-order.fake-data";
 
-import { getUserOrder } from '@/store/apps/user-order';
+import { getUserOrder, getUserOrderWithFilter } from '@/store/apps/user-order';
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
@@ -14,9 +14,7 @@ import Orders from '../lib/api/orders';
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>('');
-  const handleSearchChange = (e:any)=>{
-    setSearchValue(e.target.value);
-  }
+  
   const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
@@ -28,8 +26,8 @@ export default function MyOrder() {
     status,
   } = useAppSelector((state)=> state.userOrder);
   useEffect(()=>{
-    dispatch(getUserOrder("1"));
-  },[dispatch]);
+    dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
+  },[dispatch, openMode]);
   // useEffect(()=> {
   //   const fetchData =async () => {
   //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
@@ -37,6 +35,14 @@ export default function MyOrder() {
   //   }
   //   fetchData();
   // }, [])
+  const handleSearchChange = (e:any)=>{
+    console.log("changing")
+    setSearchValue(e.target.value);
+  }
+  const handleSearchSubmit = ()=>{
+    console.log("user pressed enter key");
+    dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
+  }
   const handleEditModal = (show:boolean, id:number)=>{
     setSelectedOrderId(id)
     setShowEditOrderModal(show);
@@ -79,6 +85,11 @@ export default function MyOrder() {
                 placeholder="Find tokens..."
                 value={searchValue}
                 onChange={handleSearchChange}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    handleSearchSubmit()
+                  }
+                }}
               />
             </div>
             <button
@@ -97,7 +108,10 @@ export default function MyOrder() {
 
       {/* content */}
       <div className="grid grid-cols-12 gap-x-5">
-        {value.map((order, idx) => {
+        {status==="loading"&&(<div className="w-screen h-screen">
+          <h1 className="text-white">Loading...</h1>
+        </div>)}
+        {status!=="loading"&&value.map((order, idx) => {
           if (idx > 2)
             return (
               <div

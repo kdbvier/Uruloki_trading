@@ -36,15 +36,37 @@ export default async function OrderByUserHandler(
         //////From Origin End?///
         //// Mine Own function Start////
         console.log(req.query);
-        let { status, search } = req.query;
+        let { status }  = req.query;
+        let search = req.query.search as string;
         console.log("params: ", status, " ", search);
-        let statusString = status + "";
-        if (!search) search = "";
-        const orders = await prisma.orders.findMany({
+        if (!search.trim()) search = "";
+        const orders = search? await prisma.orders.findMany({
           where: {
             user_id: Number(userid),
             NOT: {
               token_cache: null,
+            },
+            status: status==="Open"?"Active":{
+              not: "Active"
+            },
+            OR: [
+              { pairTokenLongName: { contains: search } },
+              { pairTokenShortName: { contains: search } },
+              { baseTokenLongName: { contains: search } },
+              { baseTokenShortName: { contains: search } },
+            ],
+          },
+          include: {
+            token_cache: true,
+          },
+        }): await prisma.orders.findMany({
+          where: {
+            user_id: Number(userid),
+            NOT: {
+              token_cache: null,
+            },
+            status: status==="Open"?"Active":{
+              not: "Active"
             },
           },
           include: {

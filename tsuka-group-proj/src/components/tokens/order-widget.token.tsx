@@ -41,21 +41,39 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return { min, max };
   }, [orders]);
 
-  const statusColor = useMemo((): string => {
-    switch (status) {
-      case OrderStatusEnum.ACTIVE:
-        return "green";
+  // const statusColor = useMemo((): string => {
+  //   switch (status) {
+  //     case OrderStatusEnum.ACTIVE:
+  //       return "bg-green";
 
-      case OrderStatusEnum.CANCELLED:
-        return "red";
+  //     case OrderStatusEnum.CANCELLED:
+  //       return "bg-red";
 
-      case OrderStatusEnum.EXECUTED:
-        return "blue";
+  //     case OrderStatusEnum.EXECUTED:
+  //       return "bg-blue";
 
-      default:
-        return "blue";
-    }
-  }, [status]);
+  //     default:
+  //       return "bg-blue";
+  //   }
+  // }, [status]);
+  // const statusForeColor = useMemo((): string => {
+  //   switch (status) {
+  //     case OrderStatusEnum.ACTIVE:
+  //       return "text-green";
+
+  //     case OrderStatusEnum.CANCELLED:
+  //       return "text-red";
+
+  //     case OrderStatusEnum.EXECUTED:
+  //       return "text-blue";
+
+  //     default:
+  //       return "text-blue";
+  //   }
+  // }, [status]);
+
+  const statusColor = status===OrderStatusEnum.ACTIVE?"bg-green-500":status===OrderStatusEnum.CANCELLED?"bg-red-500":status===OrderStatusEnum.EXECUTED?"bg-blue-500":"bg-black-500";
+  const statusForeColor = status===OrderStatusEnum.ACTIVE?"text-green-500":status===OrderStatusEnum.CANCELLED?"text-red-500":status===OrderStatusEnum.EXECUTED?"text-blue-500":"text-black-500";
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
@@ -85,9 +103,9 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           <div className="text-tsuka-200 text-sm">Status</div>
           <div className="flex items-center font-medium">
             <div
-              className={`w-1 h-1 mr-1 rounded-full bg-${statusColor}`}
+              className={`w-1 h-1 mr-1 rounded-full ${statusColor}`}
             ></div>
-            <span className={`text-${statusColor}`}>
+            <span className={`${statusForeColor}`}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>

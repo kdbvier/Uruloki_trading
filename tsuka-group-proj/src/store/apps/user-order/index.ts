@@ -38,14 +38,27 @@ export const EditUserOrder = createAsyncThunk<unknown, updateEditOrderParams, {d
     const data = await Orders.editOrder(id, patchData);
     console.log("data updated")
 
-    const user_id = '1'
+    const user_id = 1;
     if(data){
-      dispatch(getUserOrder(user_id))
+      // dispatch(getUserOrder(user_id))
+      dispatch(getUserOrderWithFilter({id: user_id, status: "Open", search:""}))
     }
     return data;
   }
 );
-
+interface getUserOrderWithFilterParams {
+  id: number,
+  status:string,
+  search: string,
+}
+export const getUserOrderWithFilter = createAsyncThunk<UserOrder[], getUserOrderWithFilterParams, {dispatch:any}>(
+  "userOrder/getwithfilter",
+  async ({id, status, search}):Promise<UserOrder[]> => {
+    // const data = userOrder.find((item) => item.id === id)!;
+    const data = await Orders.getOrdersbyUserIdandFilters(id, status, search)
+    return data;
+  }
+);
 export const getUserOrder = createAsyncThunk(
   "userOrder/get",
   async (id: string) => {
@@ -69,6 +82,16 @@ export const userOrderSlice = createSlice({
         state.value = action.payload;
       })
       .addCase(getUserOrder.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(getUserOrderWithFilter.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getUserOrderWithFilter.fulfilled, (state, action) => {
+        state.status = "ok";
+        state.value = action.payload;
+      })
+      .addCase(getUserOrderWithFilter.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(setSelectedOrder.pending, (state) => {

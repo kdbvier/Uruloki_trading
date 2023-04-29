@@ -18,7 +18,7 @@ export default class Orders {
     return await httpRequest.get(`/orders/user/${userId}`);
   };
 
-  static getOrdersbyUserIdandFilters = async (userId:string, status:string, search:string): Promise<UserOrder[]>=>{
+  static getOrdersbyUserIdandFilters = async (userId:number, status:string, search:string): Promise<UserOrder[]>=>{
     return await httpRequest.get(`orders/user/${userId}?status=${status}&search=${search}`);
   }
 
