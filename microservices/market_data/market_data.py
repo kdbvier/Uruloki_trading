@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime, timedelta
 import time
@@ -8,7 +9,7 @@ import requests
 import os
 from dotenv import load_dotenv
 dict_cache = dict()
-pair_addresses = []
+contract_addresses = []
 
 
 def request_cache(address):
@@ -26,8 +27,9 @@ logging.info('Script Started')
 
 SCHEDULE = os.getenv("SCHEDULE")
 API_KEY = os.getenv("ETHERSCAN_APIKEY")
+BITQKEY = os.getenv("BITQUERY_APIKEY")
 WEI_CONST = 10**18
-
+TIMERANGE = os.getenv("TOP_GAINERS_TIME_RANGE")
 
 # Set Env Variable
 
@@ -61,7 +63,7 @@ except Exception as e:
     exit(0)
 
 
-def update_market_cap(contract_address, price_usd: float):
+def fetch_market_cap(contract_address, price_usd: float):
 
     try:
         url = f'https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress={contract_address}&apikey={API_KEY}'
@@ -82,16 +84,18 @@ def update_market_cap(contract_address, price_usd: float):
         return None
 
 
-def update_all_rows():
-    global pair_addresses
+def update_market_caps():
+
+    last_updated = datetime.utcnow().strftime("%Y-%m-%d")
+    global contract_addresses
     try:
         logging.info("attempting to get token_data")
         connection = connengine.connect()
         stmt = select(table_token_cache.c.address, cast(
-            table_token_cache.c.price, sqlalchemy.Float))
-        #incase join
-            # .select_from(table_token_cache).join(top_gainers, table_token_cache.c.id == top_gainers.c.token_cache_id)
-        pair_addresses = [row for row in connection.execute(stmt)]
+            table_token_cache.c.price, sqlalchemy.Float), table_token_cache.c.pair_address)
+        # incase join
+        # .select_from(table_token_cache).join(top_gainers, table_token_cache.c.id == top_gainers.c.token_cache_id)
+        contract_addresses = [row for row in connection.execute(stmt)]
         logging.info("token data fetch successfully")
     except:
         logging.error("failed to fetch token_data.... exiting")
@@ -100,11 +104,12 @@ def update_all_rows():
     results = []
     try:
         logging.info('fetching circulating supply')
-        for res in pair_addresses:
+        for res in contract_addresses:
             if res[1] != None:
-                mp = update_market_cap(res[0], res[1])
+                mp = fetch_market_cap(res[0], res[1])
                 if mp != None:
-                    obj = {"_address": res[0], "_market_cap": int(mp)}
+                    obj = {"_pair_address": res[2], "_market_cap": int(
+                        mp), "_last_updated": last_updated}
                     results.append(obj)
 
         logging.info('circulating supply received')
@@ -117,9 +122,10 @@ def update_all_rows():
     try:
         logging.info('attempting to update database')
         stmt = table_token_cache.update().\
-            where(table_token_cache.c.address == bindparam('_address')).\
+            where(table_token_cache.c.pair_address == bindparam('_pair_address')).\
             values({
                 'market_cap': bindparam('_market_cap'),
+                'last_updated': bindparam("_last_updated")
             })
         connection.execute(stmt, results)
         logging.info("database updated succesfully")
@@ -129,15 +135,17 @@ def update_all_rows():
         print("failed 2 update database  : {}".format(e))
         logging.info("database failed")
 
+    connection.close()
     return
 
 
 while True:
     logging.info("Attempting to update database")
     try:
-        update_all_rows()
-    except:
+        update_market_caps()
+    except Exception as e:
         logging.error("something went wrong while updating results")
+        print(e)
 
     time.sleep(int(SCHEDULE))
     logging.info("sleeping zzzzzzzzzzzzzz...")
