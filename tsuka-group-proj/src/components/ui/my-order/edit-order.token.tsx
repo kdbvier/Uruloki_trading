@@ -302,7 +302,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <span className="text-custom-green">{0.00305968}</span>
           </div>
           <button
-            className="w-full flex justify-center items-center rounded-[10px] bg-primary py-2 mt-3 text-white"
+            className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
             onClick={submit}
           >
             {
