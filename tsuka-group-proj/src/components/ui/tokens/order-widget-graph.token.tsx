@@ -1,6 +1,7 @@
 import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
 import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
 import { ChartBound } from "@/types/chart-bound.type";
+import { OrderStatusEnum } from "@/types/token-order.type";
 import { useEffect, useMemo, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 
@@ -11,6 +12,7 @@ export interface OrderWidgetGraphProp {
   value2?: number;
   budget: number;
   bound: ChartBound;
+  status: string;
   showPopupBg: boolean;
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (show: boolean, order_id:number) => void;
@@ -24,6 +26,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   value2,
   budget,
   bound: { min, max },
+  status,
   showPopupBg,
   setShowPopupBg,
   setShowEditOrderModal,
@@ -48,16 +51,18 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
     return [percent1, percent2];
   }, [value1, value2, min, max]);
 
+  const statusColor = status===OrderStatusEnum.ACTIVE?"text-custom-primary":"text-tsuka-100";
+
   return (
     <div className="mb-2">
       <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
         <div
-          className="relative text-custom-primary flex items-center gap-2 cursor-pointer"
-          onClick={() => {
+          className={`relative ${statusColor} flex items-center gap-2 cursor-pointer`}
+          onClick={status===OrderStatusEnum.ACTIVE?() => {
             setShowPopup(true);
             setShowPopupBg(true);
-          }}
+          }:()=>{}}
         >
           Edit <FiEdit />
           {showPopup && (
@@ -72,7 +77,10 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
           {showConfirmDlg && (
             <DeleteConfirmToken
               setShowPopupBg={setShowPopupBg}
-              setShowConfirmDlg={setShowConfirmDlg}
+              setShowConfirmDlg={(show:boolean)=>{
+                setShowConfirmDlg(show);
+              }}
+              deleteID={id}
               setShowDeletedAlert={setShowDeletedAlert}
             />
           )}

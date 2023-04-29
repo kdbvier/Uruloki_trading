@@ -26,6 +26,7 @@ export default function MyOrder() {
     status,
   } = useAppSelector((state)=> state.userOrder);
   useEffect(()=>{
+    //TODO: change id to my id
     dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
   },[dispatch, openMode]);
   // useEffect(()=> {
@@ -41,6 +42,7 @@ export default function MyOrder() {
   }
   const handleSearchSubmit = ()=>{
     console.log("user pressed enter key");
+    //TODO: change id to my id
     dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
   }
   const handleEditModal = (show:boolean, id:number)=>{

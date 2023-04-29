@@ -38,7 +38,7 @@ export default class Orders {
   };
 
   static deleteOrder = async (
-    orderId: string
+    orderId: number
   ): Promise<Order> => {
     return await httpRequest.delete(`/orders/${orderId}`);
   };

@@ -67,6 +67,16 @@ export const getUserOrder = createAsyncThunk(
     return data;
   }
 );
+export const deleteOrder = createAsyncThunk(
+  "userOrder/delete",
+  async (id: number, {dispatch}) => {
+    const data= await Orders.deleteOrder(id);
+    if(data){
+      dispatch(getUserOrderWithFilter({id:1, status:"Open", search:""}));
+    }
+    return data;
+  }
+)
 
 export const userOrderSlice = createSlice({
   name: "userOrder",

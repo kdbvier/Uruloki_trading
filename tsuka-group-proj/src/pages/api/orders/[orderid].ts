@@ -2,6 +2,7 @@ import type  { ApiResponse, Order } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
+import { OrderStatusEnum } from "@/types/token-order.type";
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().optional(),
@@ -100,10 +101,13 @@ export default async function orderHandler(
             });
           break;
         }
-        const orders = await prisma.orders.delete({
+        const orders = await prisma.orders.update({
           where: {
             order_id: Number(orderid),
           },
+          data:{
+            status:OrderStatusEnum.CANCELLED
+          }
         });
         res
           .status(200)

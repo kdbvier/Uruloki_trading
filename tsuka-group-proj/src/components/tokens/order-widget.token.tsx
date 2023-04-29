@@ -92,7 +92,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           height={32}
         />
         <div className="px-2 flex-1 flex-col">
-          <p className="text-tsuka-50 text-lg font-semibold">
+          <p className="text-tsuka-50 text-lg font-semibold uppercase">
             {code1}/{code2}
           </p>
           <label className="text-sm text-tsuka-200">
@@ -122,6 +122,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 value1={order.price}
                 budget={order.budget}
                 bound={chartBound}
+                status={order.status}
                 showPopupBg={showPopupBg}
                 setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
@@ -138,6 +139,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 value2={order.prices[1]}
                 budget={order.budget}
                 bound={chartBound}
+                status={order.status}
                 showPopupBg={showPopupBg}
                 setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
