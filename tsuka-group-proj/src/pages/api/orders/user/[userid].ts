@@ -62,9 +62,9 @@ export default async function OrderByUserHandler(
         }): await prisma.orders.findMany({
           where: {
             user_id: Number(userid),
-            NOT: {
-              token_cache: null,
-            },
+            // NOT: {
+            //   token_cache: null,
+            // },
             status: status==="Open"?"Active":{
               not: "Active"
             },
@@ -76,8 +76,9 @@ export default async function OrderByUserHandler(
 
         const groupedOrders: { id: string; orders: any[] }[] = orders.reduce(
           (result: { id: string; orders: any[] }[], order) => {
-            const tokenCacheId = order.token_cache?.pair_address ?? "";
-            if (!tokenCacheId) return result;
+            // const tokenCacheId = order.token_cache?.pair_address ?? "";
+            const tokenCacheId = order.pair_address;
+            // if (!tokenCacheId) return result;
             // if(!tokenCacheId) {
             //   return result;
             // }

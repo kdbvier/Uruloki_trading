@@ -9,7 +9,7 @@ export interface EditOrderTokenProp {
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
   selectedOrderId: number;
-  closeHandler:() => void;
+  closeHandler: () => void;
 }
 const handleNumberFormat = (num: number): string => {
   let value = num.toString();
@@ -208,7 +208,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               onClick={() => setIsBuy(true)}
             >
               <p className="font-medium">Buy</p>
-              <p className="text-xs">BLUR with WETH</p>
+              <p className="text-xs">BLUR with {selectedOrder.pairTokenShortName}</p>
             </button>
             <button
               className={`${
@@ -219,7 +219,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               onClick={() => setIsBuy(false)}
             >
               <p className="font-medium">SELL</p>
-              <p className="text-xs">BLUR for WETH</p>
+              <p className="text-xs">BLUR for {selectedOrder.pairTokenShortName}</p>
             </button>
           </div>
           <div className="w-full mt-4 flex gap-2 text-sm">
@@ -307,13 +307,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               >
                 <div className="flex items-center">
                   <TokenIconsToken
-                    name={tokens[selectedToken].name}
-                    shortName={tokens[selectedToken].code}
+                    name={selectedOrder.baseTokenLongName!}
+                    shortName={selectedOrder.baseTokenShortName!}
                     width={16}
                     height={16}
                   />
                   <span className="ml-1 text-sm text-tsuka-100 mr-2">
-                    {tokens[selectedToken].title}
+                    {selectedOrder.baseTokenLongName}
                   </span>
                 </div>
               </div>
