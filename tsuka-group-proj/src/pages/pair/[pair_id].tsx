@@ -26,10 +26,8 @@ interface InputToken {
 
 export default function Pair({ id }: { id: string }) {
   const dispatch = useAppDispatch();
-  const {
-    token: { value: token },
-    userOrder: { value: userOrder },
-  } = useAppSelector((state) => state);
+  const { value: token } = useAppSelector((state) => state.token);
+  const { value: userOrder } = useAppSelector((state) => state.userOrder);
   const router = useRouter();
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
@@ -113,15 +111,14 @@ export default function Pair({ id }: { id: string }) {
           </div>
         </>
       )}
-      {
-        showEditOrderModal &&
+      {showEditOrderModal && (
         <EditOrderToken
           isEdit={false}
           setShowPopupBg={() => {}}
           setShowEditOrderModal={setShowEditOrderModal}
           token={token}
         />
-      }
+      )}
     </div>
   );
 }

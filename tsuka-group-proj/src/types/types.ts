@@ -3,6 +3,16 @@ export type ApiResponse<T> = {
   message: string;
 };
 
+export type OrderBookResponse<T> = {
+  payload:
+    | {
+        sell: Array<T> | T | undefined;
+        buy: Array<T> | T | undefined;
+      }
+    | undefined;
+  message: string;
+};
+
 export type Notification = {
   notification_id: number;
   user_id: number;

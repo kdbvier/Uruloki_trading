@@ -1,22 +1,20 @@
-import {  Order, PatchOrder, PostOrder } from "@/types";
+import { Order, PatchOrder, PostOrder } from "@/types";
 import { httpRequest } from "./http";
-
-
 
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
-    return await httpRequest.get('/orders');
+    return await httpRequest.get("/orders");
   };
 
-  static getOrdersbyUserId = async (
-    userId: string
-  ): Promise<Order> => {
+  static getOrderBooks = async (token: string): Promise<any> => {
+    return await httpRequest.get(`/orders/book/${token}`);
+  };
+
+  static getOrdersbyUserId = async (userId: string): Promise<Order> => {
     return await httpRequest.get(`/orders/user/${userId}`);
   };
 
-  static getOrdersbyTokenPair = async (
-    tokenpair: string
-  ): Promise<Order> => {
+  static getOrdersbyTokenPair = async (tokenpair: string): Promise<Order> => {
     return await httpRequest.get(`/orders/tokenpair/${tokenpair}`);
   };
 
@@ -24,13 +22,14 @@ export default class Orders {
     return await httpRequest.post("/orders", data);
   };
 
-  static editOrder = async (orderId:string,data: PatchOrder): Promise<Order> => {
+  static editOrder = async (
+    orderId: string,
+    data: PatchOrder
+  ): Promise<Order> => {
     return await httpRequest.post(`/orders/${orderId}`, data);
   };
 
-  static deleteOrder = async (
-    orderId: string
-  ): Promise<Order> => {
+  static deleteOrder = async (orderId: string): Promise<Order> => {
     return await httpRequest.delete(`/orders/${orderId}`);
   };
 }
