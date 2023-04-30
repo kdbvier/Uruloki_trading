@@ -7,6 +7,9 @@ export interface OrderBookTokenProps {
   token: {
     id: string;
     token: string;
+    pair: {
+      address: string;
+    };
   };
 }
 
@@ -24,7 +27,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
   }, []);
 
   const updateTokenPosition = () => {
-    dispatch(getTokenOrderBooks());
+    dispatch(getTokenOrderBooks(token?.pair?.address));
   };
 
   useEffect(() => {

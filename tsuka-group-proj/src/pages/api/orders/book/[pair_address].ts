@@ -1,4 +1,4 @@
-import type { Order, OrderBookResponse } from "@/types";
+import type { OrderBookResponse, OrdersBook, OrdersBookType } from "@/types";
 import { Prisma, PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 
 export default async function orderHandler(
   req: NextApiRequest,
-  res: NextApiResponse<OrderBookResponse<Order>>
+  res: NextApiResponse<OrderBookResponse<OrdersBook>>
 ) {
   const { query, method } = req;
-  const { token } = query;
+  const { pair_address } = query;
   switch (method) {
     case "GET":
       try {
@@ -23,13 +23,13 @@ export default async function orderHandler(
             order_type: true,
           },
           where: {
-            baseTokenShortName: token as string,
+            pair_address: pair_address as string,
             status: "Active",
           },
         });
 
-        const groupedSellOrders: any = {};
-        const groupedBuyOrders: any = {};
+        const groupedSellOrders: OrdersBookType = {};
+        const groupedBuyOrders: OrdersBookType = {};
 
         for (const order of orders) {
           const price =
@@ -44,13 +44,13 @@ export default async function orderHandler(
             if (groupedSellOrders[price ?? ""]) {
               groupedSellOrders[price ?? ""].size += size;
             } else {
-              groupedSellOrders[price ?? ""] = { price, size };
+              groupedSellOrders[price ?? ""] = { price: price as number, size };
             }
           } else if (order.order_type === "buy") {
             if (groupedBuyOrders[price ?? ""]) {
               groupedBuyOrders[price ?? ""].size += size;
             } else {
-              groupedBuyOrders[price ?? ""] = { price, size };
+              groupedBuyOrders[price ?? ""] = { price: price as number, size };
             }
           }
         }

@@ -15,9 +15,9 @@ const initialState: TokenOrderBooksState = {
 
 export const getTokenOrderBooks = createAsyncThunk(
   "tokenOrderBook/get",
-  async (token: string = "BTC"): Promise<TokenOrderBooks> => {
+  async (pair_address: string): Promise<TokenOrderBooks> => {
     const tokenOrderBooksData: TokenOrderBooks = await Orders.getOrderBooks(
-      token
+      pair_address
     );
     return { ...tokenOrderBooksData };
   }

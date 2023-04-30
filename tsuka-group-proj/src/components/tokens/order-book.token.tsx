@@ -9,6 +9,9 @@ export interface OrderBookTokenProps {
   token: {
     id: string;
     token: string;
+    pair: {
+      address: string;
+    };
   };
 }
 
