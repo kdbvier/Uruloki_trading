@@ -1,19 +1,10 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
 import { getTokenOrderBooks } from "@/store/apps/token-order-books";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { Token } from "@/types/token.type";
 import { useEffect, useState } from "react";
 
-export interface OrderBookTokenProps {
-  token: {
-    id: string;
-    token: string;
-    pair: {
-      address: string;
-    };
-  };
-}
-
-export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
+export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenOrderBooks);
   const [maxSum, setMaxSum] = useState(0);
@@ -27,7 +18,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
   }, []);
 
   const updateTokenPosition = () => {
-    dispatch(getTokenOrderBooks(token?.pair?.address));
+    dispatch(getTokenOrderBooks(token?.pair?.address as string));
   };
 
   useEffect(() => {
