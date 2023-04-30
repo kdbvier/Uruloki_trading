@@ -208,7 +208,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               onClick={() => setIsBuy(true)}
             >
               <p className="font-medium">Buy</p>
-              <p className="text-xs">BLUR with {selectedOrder.pairTokenShortName}</p>
+              <p className="text-xs">
+                BLUR with {selectedOrder.pairTokenShortName}
+              </p>
             </button>
             <button
               className={`${
@@ -219,7 +221,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               onClick={() => setIsBuy(false)}
             >
               <p className="font-medium">SELL</p>
-              <p className="text-xs">BLUR for {selectedOrder.pairTokenShortName}</p>
+              <p className="text-xs">
+                BLUR for {selectedOrder.pairTokenShortName}
+              </p>
             </button>
           </div>
           <div className="w-full mt-4 flex gap-2 text-sm">
@@ -307,8 +311,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               >
                 <div className="flex items-center">
                   <TokenIconsToken
-                    name={selectedOrder.baseTokenLongName!}
-                    shortName={selectedOrder.baseTokenShortName!}
+                    name={selectedOrder.baseTokenLongName ?? "Bitcoin"}
+                    shortName={selectedOrder.baseTokenShortName ?? "BTC"}
                     width={16}
                     height={16}
                   />
@@ -337,7 +341,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <div className="w-full flex justify-between mt-1">
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
-                <span className="text-tsuka-50">{3.000493} BTC</span>
+                <span className="text-tsuka-50 uppercase">
+                  {3.000493} {selectedOrder.baseTokenShortName ?? "BTC"}
+                </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
               <span className="text-tsuka-50 text-sm">${0}</span>

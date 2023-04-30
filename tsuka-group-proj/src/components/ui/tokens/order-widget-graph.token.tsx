@@ -92,7 +92,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span className={buy ? "text-custom-green" : "text-custom-red"}>
               {value2 ? "Price range" : "Target price"}
             </span>
-            <span>{`$${value1}${
+            <span>{`$${value1.toLocaleString()}${
               value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""
             }`}</span>
           </div>
