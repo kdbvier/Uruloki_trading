@@ -36,6 +36,7 @@
     "react-icons": "^4.8.0",
     "react-number-format": "^5.1.4",
     "react-redux": "^8.0.5",
+    "react-toastify": "^9.1.2",
     "react-ts-tradingview-widgets": "^1.0.14",
     "typescript": "5.0.4"
   },

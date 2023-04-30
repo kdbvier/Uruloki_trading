@@ -26,7 +26,6 @@ export interface ITopGainer {
     id: string;
     name: string;
     shortName: string;
-    imgUrl: string;
   };
   price: number;
   risingPercent: number;
@@ -38,7 +37,6 @@ export interface IMostBuyOrder {
     id: string;
     name: string;
     shortName: string;
-    imgUrl: string;
   };
   buyOrders: number;
 }
@@ -49,7 +47,6 @@ export interface IMostSellOrder {
     id: string;
     name: string;
     shortName: string;
-    imgUrl: string;
   };
   sellOrders: number;
 }
@@ -61,7 +58,6 @@ export interface ITopMover {
     id: string;
     name: string;
     shortName: string;
-    imgUrl: string;
   };
   price: number;
   risingPercent: number;

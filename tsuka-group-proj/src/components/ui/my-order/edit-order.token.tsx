@@ -1,15 +1,27 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { commafy, unCommafy } from "@/helpers/calc.helper";
+import { Token } from "@/types/token.type";
+import { PostOrder } from "@/types";
+import Orders from "@/lib/api/orders";
 import { useEffect, useState } from "react";
-import { FiX } from "react-icons/fi";
+
 import { EditUserOrder, setSelectedOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
+
+import { FiX, FiPlusCircle } from "react-icons/fi";
+
 export interface EditOrderTokenProp {
+  isEdit?: boolean;
   setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
+
   selectedOrderId: number;
   closeHandler: () => void;
+
+//  token?: Token;
+
 }
 const handleNumberFormat = (num: number): string => {
   let value = num.toString();
@@ -35,6 +47,7 @@ const toNumber = (str: string): number => {
   return num;
 };
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
+  isEdit = true,
   setShowPopupBg,
   setShowEditOrderModal,
   selectedOrderId,
@@ -165,6 +178,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
+
   const handleSubmit = () => {
     const patchData = {} as PatchOrder;
     patchData.budget = toNumber(amount);
@@ -180,6 +194,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     console.log(patchData);
     dispatch(EditUserOrder({ id: selectedOrderId, patchData }));
     setShowEditOrderModal(false);
+
   };
 
   return (
@@ -193,7 +208,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             className="absolute top-3 right-3 text-tsuka-300 text-lg cursor-pointer"
             onClick={closeClickHandler}
           />
-          <p className="text-2xl font-medium">Edit Order</p>
+          <p className="text-2xl font-medium">
+            {isEdit ? "Edit Order" : "Create an Order"}
+          </p>
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">${"490,080.23"}</span>
@@ -273,10 +290,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             </div>
           )}
           {isRange && (
-            <>
+            <div className="block md:flex justify-between items-center">
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
-                  Min price ($)
+                  From ($)
                 </span>
                 <input
                   type="text"
@@ -286,6 +303,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   onBlur={(e) => blurHandler("min", e)}
                 />
               </div>
+              <span className="hidden md:block mx-4 mt-4 text-tsuka-300">
+                -
+              </span>
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
                   Max price ($)
@@ -298,7 +318,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   onBlur={(e) => blurHandler("max", e)}
                 />
               </div>
-            </>
+            </div>
           )}
           <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
             Amount
@@ -361,7 +381,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             className="w-full rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
             onClick={handleSubmit}
           >
-            Apply Changes
+            {isEdit ? (
+              <>Apply Changes</>
+            ) : (
+              <>
+                <FiPlusCircle className="mr-1" /> Create Order
+              </>
+            )}
           </button>
         </div>
       </div>
