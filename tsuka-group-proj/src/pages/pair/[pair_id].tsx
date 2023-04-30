@@ -15,6 +15,9 @@ import {
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import { FiPlusCircle } from "react-icons/fi";
+import { DefaultButton } from "@/components/ui/buttons/default.button";
+import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 
 interface InputToken {
   id: string;
@@ -31,6 +34,7 @@ export default function Pair({ id }: { id: string }) {
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const { pair_id = id || "" } = router.query;
 
   useEffect(() => {
@@ -52,7 +56,7 @@ export default function Pair({ id }: { id: string }) {
   }, [userOrder]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-4 md:px-10 py-6">
       {token && (
         <>
           <FullHeaderToken token={token} />
@@ -73,14 +77,22 @@ export default function Pair({ id }: { id: string }) {
             </div>
             <div className="col-span-12 md:col-span-3">
               {currentToken && compareToken && (
-                <OrderWidgetToken
-                  name1={currentToken?.chain.name as string}
-                  code1={currentToken?.chain.code as string}
-                  name2={compareToken?.chain.name as string}
-                  code2={compareToken?.chain.code as string}
-                  status={statusOrder}
-                  orders={orders}
-                />
+                <>
+                  <DefaultButton
+                    label="Create an Order"
+                    callback={() => setShowEditOrderModal(true)}
+                    filled={true}
+                    Icon={FiPlusCircle}
+                  />
+                  <OrderWidgetToken
+                    name1={currentToken?.chain.name as string}
+                    code1={currentToken?.chain.code as string}
+                    name2={compareToken?.chain.name as string}
+                    code2={compareToken?.chain.code as string}
+                    status={statusOrder}
+                    orders={orders}
+                  />
+                </>
               )}
             </div>
           </div>
@@ -101,6 +113,15 @@ export default function Pair({ id }: { id: string }) {
           </div>
         </>
       )}
+      {
+        showEditOrderModal &&
+        <EditOrderToken
+          isEdit={false}
+          setShowPopupBg={() => {}}
+          setShowEditOrderModal={setShowEditOrderModal}
+          token={token}
+        />
+      }
     </div>
   );
 }

@@ -46,6 +46,10 @@ model orders {
   order_type   orders_order_type?
   price_type   orders_price_type?
   user_id      Int
+  baseTokenShortName  String?
+  baseTokenLongName   String?
+  pairTokenShortName  String?
+  pairTokenLongName   String?
   token_cache  token_cache?       @relation(fields: [pair_address], references: [pair_address])
 
   @@index([user_id], map: "fk_user_id_idx")

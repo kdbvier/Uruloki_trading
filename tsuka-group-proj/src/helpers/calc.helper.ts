@@ -63,3 +63,7 @@ export const commafy3 = (num: number) => {
   }
   return str.join('.');
 }
+
+export const unCommafy = (num: any) => {
+  return Number(num.replace(/,/g, ""));
+}
