@@ -16,6 +16,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
   const [maxSum, setMaxSum] = useState(0);
 
   useEffect(() => {
+    updateTokenPosition();
     const intervalId = setInterval(updateTokenPosition, 2000);
     return () => {
       clearInterval(intervalId);
