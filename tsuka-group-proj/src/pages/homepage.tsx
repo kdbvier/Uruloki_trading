@@ -6,8 +6,15 @@ import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-to
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getHomrPageTokens } from "@/store/apps/tokens";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
-import { MostBuyOrdersMapper, MostSellOrdersMapper, TopGainersMapper, TopMoversMapper } from "@/lib/mapper";
+import {
+  MostBuyOrdersMapper,
+  MostSellOrdersMapper,
+  TopGainersMapper,
+  TopMoversMapper,
+} from "@/lib/mapper";
 
 let currentTranslateX: number = 0;
 
@@ -64,6 +71,24 @@ export default function Home() {
     moveTo(toIdx);
   };
 
+  useEffect(() => {
+    if (value.mostBuyOrders?.length === 0) {
+      const notify = () => toast.error("Failed to load MostBuyOrders Data!");
+      notify();
+    }
+    if (value.mostSellOrders?.length === 0) {
+      const notify = () => toast.error("Failed to load MostSellOrders Data!");
+      notify();
+    }
+    if (value.topGainers?.length === 0) {
+      const notify = () => toast.error("Failed to load TopGainers Data!");
+      notify();
+    }
+    if (value.topMovers?.length === 0) {
+      const notify = () => toast.error("Failed to load TopMovers Data!");
+      notify();
+    }
+  }, [status]);
 
   // useEffect(() => {
   //   const container = document.getElementsByClassName("swipable-container")[0];
@@ -74,14 +99,21 @@ export default function Home() {
 
   return (
     <>
-      {(status === "loading" || _.isEmpty(value)) && <div className="text-white text-2xl">Loading...</div>}
-      {(status === "ok" && !_.isEmpty(value)) && (
+      <ToastContainer />
+      {(status === "loading" || _.isEmpty(value)) && (
+        <div className="text-white text-2xl">Loading...</div>
+      )}
+      {status === "ok" && !_.isEmpty(value) && (
         <div className="px-4 md:px-10 pt-6 pb-8">
           <ContentHeader title="Homepage" className="w-full mb-6" />
           <div className="hidden md:flex md:gap-5">
             <TopGainers topGainers={TopGainersMapper(value.topGainers)} />
-            <MostBuyOrders mostBuyOrders={MostBuyOrdersMapper(value.mostBuyOrders)} />
-            <MostSellOrders mostSellOrders={MostSellOrdersMapper(value.mostSellOrders)} />
+            <MostBuyOrders
+              mostBuyOrders={MostBuyOrdersMapper(value.mostBuyOrders)}
+            />
+            <MostSellOrders
+              mostSellOrders={MostSellOrdersMapper(value.mostSellOrders)}
+            />
           </div>
           <div className="swipable-container w-screen -ml-4 overflow-hidden">
             <div ref={content} className="md:hidden w-[300%] -ml-[0px] flex">
@@ -89,10 +121,14 @@ export default function Home() {
                 <TopGainers topGainers={TopGainersMapper(value.topGainers)} />
               </div>
               <div className="w-1/3 px-4">
-                <MostBuyOrders mostBuyOrders={MostBuyOrdersMapper(value.mostBuyOrders)} />
+                <MostBuyOrders
+                  mostBuyOrders={MostBuyOrdersMapper(value.mostBuyOrders)}
+                />
               </div>
               <div className="w-1/3 px-4">
-                <MostSellOrders mostSellOrders={MostSellOrdersMapper(value.mostSellOrders)} />
+                <MostSellOrders
+                  mostSellOrders={MostSellOrdersMapper(value.mostSellOrders)}
+                />
               </div>
             </div>
           </div>
