@@ -119,10 +119,11 @@ def update_MOST_tables():
         connection.execute(most_buy_orders.delete())
         # empty table
         connection.execute(most_sell_orders.delete())
+        logging.info("delete data in most_buy and sell")
     except:
         logging.error(
             "unable to to delete data in most_buy_orders or sell_orders")
-        return
+    
 
     insert_updates()
 
