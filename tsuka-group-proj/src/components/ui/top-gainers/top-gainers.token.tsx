@@ -28,7 +28,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
-              <th className="py-2">Tokens</th>
+              <th className="py-2">Token</th>
               <th className="py-2 text-right md:text-left">Price(USD)</th>
             </tr>
           </thead>

@@ -73,7 +73,7 @@ export default function MyOrder() {
               <div
                 className={`${
                   showAll ? "" : "hidden md:block"
-                } col-span-12 md:col-span-6 lg:col-span-4`}
+                } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition2`}
                 key={idx}
               >
                 <OrderWidgetToken
@@ -91,7 +91,7 @@ export default function MyOrder() {
               </div>
             );
           return (
-            <div className="col-span-12 md:col-span-6 lg:col-span-4" key={idx}>
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition2" key={idx}>
               <OrderWidgetToken
                 name1={"ethereum"}
                 code1={"ETH"}
@@ -121,7 +121,7 @@ export default function MyOrder() {
       )}
       {showPopupBg && (
         <div
-          className="fixed left-0 top-0 z-30 bg-[rgba(255,255,255,0)] w-full h-screen"
+          className="fixed left-0 top-0 z-30 bg-[rgba(255,255,255,0.5)] w-full h-full"
           onClick={() => setShowPopupBg(false)}
         />
       )}

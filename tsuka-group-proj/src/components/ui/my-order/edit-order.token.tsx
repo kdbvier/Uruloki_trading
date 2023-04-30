@@ -20,26 +20,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   token,
 }) => {
   const [seletCollaped, setSeletCollaped] = useState(true);
-  const [selectedToken, setSelectedToken] = useState(0);
   const [isBuy, setIsBuy] = useState(true);
   const [targetPrice, setTargetPrice] = useState("25,000");
   const [minPrice, setMinPrice] = useState("25,000");
   const [maxPrice, setMaxPrice] = useState("35,000");
   const [amount, setAmount] = useState("40,000");
   const [isRange, setIsRange] = useState(true);
-
-  const tokens = [
-    {
-      name: "bitcoin",
-      code: "BTC",
-      title: "Bitcoin",
-    },
-    {
-      name: "ethereum",
-      code: "ETH",
-      title: "Ethereum",
-    },
-  ];
 
   useEffect(() => {
     setShowPopupBg(false);
@@ -257,13 +243,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               >
                 <div className="flex items-center">
                   <TokenIconsToken
-                    name={tokens[selectedToken].name}
-                    shortName={tokens[selectedToken].code}
+                    name={token?.chain.name ? token?.chain.name : ""}
+                    shortName={token?.chain.code ? token?.chain.code : ""}
                     width={16}
                     height={16}
                   />
                   <span className="ml-1 text-sm text-tsuka-100 mr-2">
-                    {tokens[selectedToken].title}
+                    {token?.chain.name}
                   </span>
                 </div>
               </div>
