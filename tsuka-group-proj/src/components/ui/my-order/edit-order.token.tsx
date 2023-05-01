@@ -227,7 +227,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                BLUR with {selectedOrder.pairTokenShortName}
+              {selectedOrder.baseTokenShortName} with {selectedOrder.pairTokenShortName}
               </p>
             </button>
             <button
@@ -240,7 +240,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                BLUR for {selectedOrder.pairTokenShortName}
+              {selectedOrder.pairTokenShortName} with {selectedOrder.baseTokenShortName}
               </p>
             </button>
           </div>
@@ -332,8 +332,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               >
                 <div className="flex items-center">
                   <TokenIconsToken
-                    name={selectedOrder.baseTokenLongName ?? "Bitcoin"}
-                    shortName={selectedOrder.baseTokenShortName ?? "BTC"}
+                    name={selectedOrder.baseTokenLongName ?? ""}
+                    shortName={selectedOrder.baseTokenShortName ?? ""}
                     width={16}
                     height={16}
                   />
@@ -363,7 +363,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {3.000493} {selectedOrder.baseTokenShortName ?? "BTC"}
+                  {3.000493} {selectedOrder.baseTokenShortName ?? ""}
                 </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>

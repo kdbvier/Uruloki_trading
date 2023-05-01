@@ -1,4 +1,8 @@
 export type Order = {
+  baseTokenShortName: string;
+  pairTokenShortName: string;
+  baseTokenLongName: string;
+  pairTokenLongName: string;
   order_id: number;
   user_id: number;
   pair_address: string | null;
