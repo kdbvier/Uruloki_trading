@@ -217,7 +217,7 @@ def update_token_data():
                         "unable to delete historical data in top_mover/top_gainers")
 
                 try:
-                    connection.execute(text("INSERT INTO top_movers(token_cache_id,`rank`) SELECT id, rank() over(order by abs(change_24hr)) from token_cache limit 100;")
+                    connection.execute(text("INSERT INTO top_movers(token_cache_id,`rank`) SELECT id, rank() over(order by abs(change_24hr) desc ) from token_cache limit 100;")
                                         )
                     logging.info("succcessfully updated top_movers table")
                 except Exception as e:
@@ -227,7 +227,7 @@ def update_token_data():
 
                 try:
                     connection.execute(text(
-                        "INSERT INTO top_gainers(token_cache_id,`rank`) SELECT id, rank() over(order by change_24hr) from token_cache limit 100;"))
+                        "INSERT INTO top_gainers(token_cache_id,`rank`) SELECT id, rank() over(order by change_24hr desc) from token_cache limit 100;"))
                     logging.info("succcessfully updated top_gainers table")
                 except Exception as e:
                     print(e)
