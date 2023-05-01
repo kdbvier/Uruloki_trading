@@ -39,10 +39,10 @@ export default {
     setShowDeletedAlert: () => {},
   },
   decorators: [
-    (Story) => {
+    (Story: any) => {
       return <Provider store={store}>{Story()}</Provider>;
     },
   ],
-} as Meta<TokenOrder>;
+} as unknown as Meta<TokenOrder>;
 
 export const FiltersButton: StoryObj<TokenOrder> = {};
