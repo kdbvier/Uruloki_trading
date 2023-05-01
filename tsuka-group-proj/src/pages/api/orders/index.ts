@@ -5,7 +5,7 @@ import Joi from "joi";
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
-  status: Joi.string().required(),
+  status: Joi.string().optional().default('Active'),
   single_price: Joi.number().optional(),
   from_price: Joi.number().optional(),
   to_price: Joi.number().optional(),
@@ -30,6 +30,7 @@ export default async function orderHandler(
   const { method, body } = req;
   switch (method) {
     case "POST":
+     
       try {
         const { value, error } = reqBodySchema.validate(body);
         if (error) {

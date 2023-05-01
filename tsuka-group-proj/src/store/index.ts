@@ -6,6 +6,7 @@ import tokenHistoryPositionSlice from "./apps/token-history-positions";
 import tokenPositionSlice from "./apps/token-positions";
 import userOrderSlice from "./apps/user-order";
 import tokenOrderBooksSlice from "./apps/token-order-books";
+import homePageTokenSlice  from "./apps/tokens";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     tokenOrderBooks: tokenOrderBooksSlice,
     tokenHistoryPosition: tokenHistoryPositionSlice,
     userOrder: userOrderSlice,
+    homepageTokens:homePageTokenSlice
   },
 });
 
