@@ -1,4 +1,5 @@
 import {
+  OrderStatusEnum,
   OrderTypeEnum,
   PriceTypeEnum,
   RangeOrder,
@@ -16,6 +17,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 2,
@@ -23,6 +29,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -35,6 +46,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -42,6 +58,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.SELL,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -54,6 +75,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -61,6 +87,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -73,6 +104,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -80,6 +116,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.SELL,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -92,6 +133,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -99,6 +145,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -111,6 +162,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -118,6 +174,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.SELL,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -130,6 +191,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -137,6 +203,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
@@ -149,6 +220,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.BUY,
         price_type: PriceTypeEnum.SINGLE,
         price: 3214,
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
       {
         id: 4,
@@ -156,6 +232,11 @@ export const userOrder: Array<UserOrder> = [
         order_type: OrderTypeEnum.SELL,
         price_type: PriceTypeEnum.RANGE,
         prices: [5347.94, 3214, 9873.43],
+        status: OrderStatusEnum.ACTIVE,
+        baseTokenShortName: "Test", 
+        baseTokenLongName: "Test", 
+        pairTokenShortName: "Test", 
+        pairTokenLongName: "Test"
       },
     ],
   },
