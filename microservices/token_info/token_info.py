@@ -1,7 +1,7 @@
 import time
 import sqlalchemy
 from sqlalchemy.sql import text
-from sqlalchemy.dialects.mysql import insert,dialect
+from sqlalchemy.dialects.mysql import insert, dialect
 import requests
 import json
 import pandas
@@ -117,7 +117,7 @@ def get_top_gainers() -> pandas.DataFrame | None:
     try:
         response = requests.request("POST", URL, headers=headers, data=payload)
         res = json.loads(response.text)
-        
+
         main_data_frame = pandas.json_normalize(
             res['data']['ethereum'], 'dexTrades')
         main_data_frame['latest_price'] = pandas.to_numeric(
@@ -130,10 +130,9 @@ def get_top_gainers() -> pandas.DataFrame | None:
         data_frame = data_frame[data_frame["sellCurrency.symbol"].isin(
             STABLECOINS)]
 
-
-        
-        #price movement is now percentage
-        data_frame['price_movement'] = (data_frame['latest_price'] - data_frame['earliest_price']) / (data_frame['earliest_price'])
+        # price movement is now percentage
+        data_frame['price_movement'] = (
+            (data_frame['latest_price'] - data_frame['earliest_price']) / (data_frame['earliest_price']))*100
 
         # convert price to USDT
         uniqueTokens = data_frame["sellCurrency.address"].unique().tolist()
@@ -147,8 +146,8 @@ def get_top_gainers() -> pandas.DataFrame | None:
                                         left_on="sellCurrency.address", right_on="buyCurrency.address")
 
         mergedPD['last_price'] = pandas.to_numeric(mergedPD['last_price'])
-        # mergedPD["price_movement_USD"] = mergedPD["price_movement"] 
-            # mergedPD["last_price"]
+        # mergedPD["price_movement_USD"] = mergedPD["price_movement"]
+        # mergedPD["last_price"]
 
         # latest price has units (token A ). last_price has units (USD for token B)
         mergedPD["token_price_USD"] = mergedPD["latest_price"] * \
@@ -202,12 +201,10 @@ def update_token_data():
                 data_dict = dbdf.to_dict("records")
                 connection = connengine.connect()
 
-
                 logging.info("starting insert")
                 statement = text("INSERT INTO token_cache(chain, name ,pair_address, price, change_24hr, volume,last_updated, address, short_name ) VALUES( :chain, :name, :pair_address, :price, :change_24hr, :volume, :last_updated, :address, :short_name ) ON DUPLICATE KEY UPDATE price = token_cache.price, change_24hr = token_cache.change_24hr, volume = token_cache.volume, last_updated = token_cache.last_updated;")
                 for line in data_dict:
-                    connection.execute(statement,line)
-                
+                    connection.execute(statement, line)
 
                 logging.info("Successfully updated database")
 
@@ -220,7 +217,7 @@ def update_token_data():
 
                 try:
                     connection.execute(text("INSERT INTO top_movers(token_cache_id,`rank`) SELECT id, rank() over(order by abs(change_24hr) desc ) from token_cache limit 100;")
-                                        )
+                                       )
                     logging.info("succcessfully updated top_movers table")
                 except Exception as e:
                     print(e)
@@ -235,7 +232,6 @@ def update_token_data():
                     print(e)
                     logging.error(
                         "unable to to insert data in top_gainerstable")
-
 
                 except Exception as e:
                     print(e)
