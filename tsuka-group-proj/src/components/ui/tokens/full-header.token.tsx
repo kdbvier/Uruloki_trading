@@ -22,22 +22,29 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
   }, [dispatch, token]);
 
   return (
-    <div className="w-full text-tsuka-300 flex items-start py-2 mb-4 flex-col md:items-center md:flex-row">
-      <Link href="/" className="text-xl p-2 rounded-full cursor-pointer">
-        <MdArrowBack />
-      </Link>
-      {status === "loading" && "Loading..."}
+    <div className="w-full text-tsuka-300 flex py-2 mb-4 sm:flex-col items-center sm:items-start lg:items-center lg:flex-row justify-between sm:justify-normal lg:justify-between">
+      {status === "loading" && (
+        <>
+          <Link href="/" className="text-xl p-2 rounded-full cursor-pointer">
+            <MdArrowBack />
+          </Link>
+          "Loading..."
+        </>
+      )}
       {status === "ok" && value && (
         <>
-          <div className="flex w-full items-center justify-center">
+          <div className="flex sm:mb-8 lg:mb-0 items-center">
+            <Link href="/" className="text-xl pr-2 xs:p-2 rounded-full cursor-pointer">
+              <MdArrowBack />
+            </Link>
             <HorizontalIconsToken
               inputToken={value.chain}
               outputToken={value.pair as any}
               large={true}
             />
             <div className="px-2 flex-1 flex-col">
-              <p className="text-base">
-                <label className="text-tsuka-50 text-2xl font-semibold">
+              <p className="text-sm xs:text-base">
+                <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
                   {value.chain?.code}
                 </label>
                 /{value.pair?.code}
@@ -63,7 +70,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
                 </label>
               </div>
             </div>
-            <div className="hidden md:flex text-sm mr-12">
+          </div>
+          <div className=" lg:flex-1 flex w-full lg:w-auto justify-end sm:justify-between lg:justify-end items-center">
+            <div className="hidden sm:flex text-sm mr-12">
               <InfoSpanToken title={"TXS"} value={"189"} />
               <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
                 <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
@@ -82,7 +91,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
               />
             </div>
             <div className="text-sm justify-end">
-              <div className="flex items-end justify-end">
+              <div className="flex flex-col lg:flex-row items-end justify-end">
                 <div
                   className={`${
                     value.price?.operator === "+"
@@ -92,7 +101,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
                 >
                   {value.price?.variationValue}%
                 </div>
-                <div className="text-tsuka-50 ml-2 text-xl md:text-2xl">
+                <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
                   ${value.price?.value}
                 </div>
               </div>
@@ -106,13 +115,14 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
                 >
                   {value.price?.variationValueDiference}
                 </div>
-                <div className="text-tsuka-50 ml-2">
+                <div className="text-tsuka-50 text-xs xs:ml-2">
                   {value.chain?.code} {value.price?.value}
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex md:hidden text-sm pt-6 mt-4 border-t border-tsuka-400">
+
+          {/* <div className="hidden xs:flex md:hidden text-sm pt-6 mt-4 border-t border-tsuka-400">
             <InfoSpanToken title={"TXS"} value={"189"} />
             <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
               <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
@@ -129,7 +139,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
               title={"24h"}
               value={`${value.price?.operator}${value.price?.variationValue}%`}
             />
-          </div>
+          </div> */}
         </>
       )}
     </div>

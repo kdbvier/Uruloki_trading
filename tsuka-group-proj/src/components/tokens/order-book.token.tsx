@@ -36,7 +36,7 @@ export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
   }, [dispatch, token]);
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100">
+    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 overflow-x-scroll">
       <div className="w-full flex items-center justify-start border-b border-tsuka-400 px-4 pt-2">
         {options.map(({ title, path }, index) => (
           <span
