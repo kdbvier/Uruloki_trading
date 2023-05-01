@@ -51,7 +51,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                         alt={"medal" + topGainer.rank}
                       />
                     ) : (
-                      <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-normal">
+                      <span className="ml-1 mr-2 text-tsuka-200 text-[16px] leading-[20px] font-normal">
                         #{idx}
                       </span>
                     )}

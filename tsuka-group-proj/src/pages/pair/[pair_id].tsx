@@ -50,7 +50,7 @@ export default function Pair({ id }: { id: string }) {
   }, [dispatch, pair_id, token]);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
-    return userOrder?.orders;
+    return userOrder[0]?.orders;
   }, [userOrder]);
 
   return (
@@ -116,7 +116,8 @@ export default function Pair({ id }: { id: string }) {
           isEdit={false}
           setShowPopupBg={() => {}}
           setShowEditOrderModal={setShowEditOrderModal}
-          token={token}
+          selectedOrderId={0} //TODO: Fix this
+          closeHandler={()=>{}} //TODO: Fix this
         />
       )}
     </div>
