@@ -86,6 +86,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   useEffect(() => {
     setTargetPrice(handleNumberFormat(selectedOrder.single_price ?? -1));
     setMinPrice(handleNumberFormat(selectedOrder.from_price ?? -1));
+    setMaxPrice(handleNumberFormat(selectedOrder.to_price ?? -1));
     setAmount(handleNumberFormat(selectedOrder.budget ?? -1));
     setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
   }, [selectedOrder]);
