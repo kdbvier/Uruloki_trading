@@ -20,7 +20,7 @@ export const HeaderNotificationButton: React.FC<
     <button
       type="button"
       onClick={notifyHandler}
-      className={`rounded-full p-2${showNotify ? " bg-tsuka-500 text-primary": " text-tsuka-400"} focus:outline-none mr-1 ml-3 md:ml-0`}
+      className={`rounded-full p-2${showNotify ? " bg-tsuka-500 text-primary": " text-tsuka-400"} focus:outline-none mx-0 sm:mr-1 sm:ml-3 md:ml-0`}
     >
       <span className="sr-only">View notifications</span>
       <svg

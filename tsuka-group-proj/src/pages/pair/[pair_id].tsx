@@ -60,7 +60,7 @@ export default function Pair({ id }: { id: string }) {
       {token && (
         <>
           <FullHeaderToken token={token} />
-          <div className="hidden md:grid grid-cols-11 gap-4">
+          <div className="hidden lg:grid grid-cols-11 gap-4">
             {/* <div className="col-span-12 md:col-span-3">
               <CompareTokenChainToken token={token} networks={networks} />
             </div> */}
@@ -96,7 +96,7 @@ export default function Pair({ id }: { id: string }) {
               )}
             </div>
           </div>
-          <div className="block md:hidden">
+          <div className="block lg:hidden">
             <LiveGraphToken token={token.chain?.code} />
             {currentToken && compareToken && orders && (
               <OrderWidgetToken

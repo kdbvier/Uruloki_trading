@@ -47,8 +47,8 @@ export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
               )
             }
             className={`${
-              path === selectedPath ? "border-b-2 border-accent" : ""
-            } p-4 text-center mx-2 text-lg font-semibold text-tsuka-50 cursor-pointer`}
+              path === selectedPath ? "border-b-2 border-accent" : "border-b-2 border-transparent"
+            } py-4 xs:p-4 text-center whitespace-nowrap mx-2 text-base sm:text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
           </span>
