@@ -130,8 +130,10 @@ def get_top_gainers() -> pandas.DataFrame | None:
         data_frame = data_frame[data_frame["sellCurrency.symbol"].isin(
             STABLECOINS)]
 
-        data_frame['price_movement'] = data_frame['latest_price'] - \
-            data_frame['earliest_price']
+
+        
+        #price movement is now percentage
+        data_frame['price_movement'] = (data_frame['latest_price'] - data_frame['earliest_price']) / (data_frame['earliest_price'])
 
         # convert price to USDT
         uniqueTokens = data_frame["sellCurrency.address"].unique().tolist()
@@ -145,8 +147,8 @@ def get_top_gainers() -> pandas.DataFrame | None:
                                         left_on="sellCurrency.address", right_on="buyCurrency.address")
 
         mergedPD['last_price'] = pandas.to_numeric(mergedPD['last_price'])
-        mergedPD["price_movement_USD"] = mergedPD["price_movement"] * \
-            mergedPD["last_price"]
+        # mergedPD["price_movement_USD"] = mergedPD["price_movement"] 
+            # mergedPD["last_price"]
 
         # latest price has units (token A ). last_price has units (USD for token B)
         mergedPD["token_price_USD"] = mergedPD["latest_price"] * \
@@ -163,7 +165,7 @@ def get_top_gainers() -> pandas.DataFrame | None:
             "smartContract.address.address": "pair_address",
             "token_price_USD": "price",
             "volumeUSD": "volume",
-            "price_movement_USD": "change_24hr"
+            "price_movement": "change_24hr"
         }, inplace=True)
 
         dbdf = mergedPD[["name", "short_name", "address",
