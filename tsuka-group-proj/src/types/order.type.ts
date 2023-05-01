@@ -9,6 +9,10 @@ export type Order = {
     budget: number | null;
     order_type: "buy" | "sell" | null;
     price_type: "single" | "range" | null;
+    baseTokenShortName: string | null;
+    pairTokenShortName: string | null;
+    baseTokenLongName: string | null;
+    pairTokenLongName: string | null;
   };
 
 export type PostOrder = {
@@ -21,10 +25,10 @@ export type PostOrder = {
     budget: number;
     order_type: "buy" | "sell" ;
     price_type: "single" | "range" ;
-    baseTokenShortName: string,
-    baseTokenLongName: string,
-    pairTokenShortName: string,
-    pairTokenLongName: string,
+    baseTokenShortName?: string | null;
+    pairTokenShortName?: string | null;
+    baseTokenLongName?: string | null;
+    pairTokenLongName?: string | null;
   }
 
   export type PatchOrder = {
@@ -36,4 +40,8 @@ export type PostOrder = {
     budget?: number;
     order_type?: "buy" | "sell" ;
     price_type?: "single" | "range" ;
+    baseTokenShortName?: string | null;
+    pairTokenShortName?: string | null;
+    baseTokenLongName?: string | null;
+    pairTokenLongName?: string | null;
   }

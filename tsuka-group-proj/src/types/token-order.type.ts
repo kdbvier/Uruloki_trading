@@ -17,6 +17,11 @@ export interface Order {
   budget: number;
   price_type: PriceTypeEnum;
   order_type: OrderTypeEnum;
+  status: OrderStatusEnum;
+  baseTokenShortName: string;
+  baseTokenLongName: string;
+  pairTokenShortName: string;
+  pairTokenLongName: string;
 }
 
 export interface SingleOrder extends Order {
