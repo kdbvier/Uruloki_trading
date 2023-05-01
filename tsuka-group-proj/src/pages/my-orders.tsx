@@ -57,7 +57,7 @@ export default function MyOrder() {
           My Orders
         </h1>
         <div className="w-full md:w-auto flex flex-wrap">
-          <div className="w-full md:w-auto flex gap-1">
+          <div className="w-full md:w-auto flex md:gap-1">
             <button
               className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${
                 openMode ? "bg-tsuka-500 text-custom-primary" : "text-tsuka-300"
@@ -78,12 +78,12 @@ export default function MyOrder() {
             </button>
           </div>
           <hr className="md:hidden w-full mt-3 mb-5 border-tsuka-500" />
-          <div className="md:ml-4 flex w-full md:w-auto items-center gap-3">
+          <div className="md:ml-4 flex w-full md:w-auto items-center gap-3 md:gap-1 lg:gap-3">
             <div className="grow md:grow-0 flex items-center text-sm text-tsuka-100">
               <FiSearch className="ml-4 -mr-7 z-10 text-tsuka-300" />
               <input
                 type="text"
-                className="w-full md:w-[200px] bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
+                className="w-full md:max-w-[140px] lg:max-w-[200px] bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
                 placeholder="Find tokens..."
                 value={searchValue}
                 onChange={handleSearchChange}
