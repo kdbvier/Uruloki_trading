@@ -22,9 +22,9 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
     <div>
       {status === "loading" && "Loading..."}
       {status === "ok" && value && (
-        <div className="p-4 flex">
+        <div className="p-4 flex gap-2">
           <div className="flex-1">
-            <div className="h-96 ">
+            <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USDT)</span>
                 <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
@@ -56,7 +56,6 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenProps> = ({ token }) => {
               ))}
             </div>
           </div>
-          <div className="w-2" />
           <div className="flex-1">
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
