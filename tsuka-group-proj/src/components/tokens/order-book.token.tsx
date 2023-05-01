@@ -30,8 +30,8 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
   }, [dispatch, token]);
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100">
-      <div className="w-full flex items-center justify-start border-b border-tsuka-400 px-4 pt-2">
+    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 px-2">
+      <div className="w-full flex items-center justify-start border-b border-tsuka-400 px-2 pt-2 mb-2">
         {options.map(({ title, path }, index) => (
           <span
             key={index}
@@ -41,8 +41,8 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
               )
             }
             className={`${
-              path === selectedPath ? "border-b-2 border-accent" : ""
-            } p-4 text-center mx-2 text-lg font-semibold text-tsuka-50 cursor-pointer`}
+              path === selectedPath ? "border-b-2 border-accent" : "border-b-2 border-transparent"
+            } py-4 xs:p-4 text-center whitespace-nowrap mx-2 text-base sm:text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
           </span>
@@ -51,7 +51,9 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
           <FiltersButton callback={() => console.log("filters button")} />
         </div>
       </div>
-      {OrderComponent && <OrderComponent token={token} />}
+      <div className="overflow-x-scroll">
+        {OrderComponent && <OrderComponent token={token} />}
+      </div>
     </div>
   );
 };

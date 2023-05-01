@@ -72,7 +72,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center md:justify-start">
-                <div className="flex flex-shrink-0 items-center px-4 md:px-2">
+                <div className="flex flex-shrink-0 items-center pl-2 xs:px-4 md:px-2">
                   <p className="text-xl font-extrabold text-tsuka-100 ">
                     <Image className="hidden sm:block" src="/logos/logo.png" alt="logo" width={111} height={40} />
                     <Image className="sm:hidden" src="/logos/logo_icon.png" alt="logo" width={40} height={40} />
