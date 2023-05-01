@@ -1,17 +1,15 @@
+
 import {  Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
 
-
-
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
-    return await httpRequest.get('/orders');
+    return await httpRequest.get("/orders");
   };
   static getOrderById = async (order_id: number):Promise<Order> => {
     return await httpRequest.get(`orders/${order_id}`);
   }
-
   static getOrdersbyUserId = async (
     userId: string
   ): Promise<UserOrder[]> => {
@@ -31,7 +29,6 @@ export default class Orders {
   static createOrder = async (data: PostOrder): Promise<Order> => {
     return await httpRequest.post("/orders", data);
   };
-
   static editOrder = async (orderId:number,data: PatchOrder): Promise<Order> => {
     console.log("posting edit data :::");
     return await httpRequest.patch(`/orders/${orderId}`, data);

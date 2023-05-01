@@ -4,15 +4,9 @@ import { useEffect, useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
+import { Token } from "@/types/token.type";
 
-export interface OrderBookTokenProps {
-  token: {
-    id: string;
-    token: string;
-  };
-}
-
-export const OrderBookToken: React.FC<OrderBookTokenProps> = ({ token }) => {
+export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
