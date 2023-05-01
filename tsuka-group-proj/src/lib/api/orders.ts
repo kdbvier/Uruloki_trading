@@ -7,6 +7,11 @@ export default class Orders {
   static getOrders = async (): Promise<Order> => {
     return await httpRequest.get("/orders");
   };
+
+  static getOrderBooks = async (pair_address: string): Promise<any> => {
+    return await httpRequest.get(`/orders/book/${pair_address}`);
+  };
+
   static getOrderById = async (order_id: number):Promise<Order> => {
     return await httpRequest.get(`orders/${order_id}`);
   }
