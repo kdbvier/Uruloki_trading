@@ -5,7 +5,7 @@ import {
 } from "@/@types/generated/contentful.types";
 import { createClient } from "contentful";
 // import { config } from "dotenv";
-
+ 
 // /*
 //  * We tell TypeScript that those environment variables are always defined.
 //  * If you want to learn more about this madness, read:
