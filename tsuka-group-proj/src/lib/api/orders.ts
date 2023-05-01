@@ -2,7 +2,7 @@
 import {  Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
-
+ 
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
     return await httpRequest.get("/orders");
