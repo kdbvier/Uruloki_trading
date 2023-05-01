@@ -5,13 +5,44 @@ import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { OrderStatusEnum } from "@/types/token-order.type";
 import { useState } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
+import { Token } from "@/types/token.type";
 
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
-  const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
+
+  const basetokenshortname: Token = {
+    id: "string",
+    token: "string",
+    chain: {
+      name: "ethereum",
+      code: "ETH",
+    },
+    price: {
+      value: "string",
+      operator: "+",
+      variationValue: 0,
+    },
+    volume: {
+      value: "string",
+      currencyLabel: "string",
+    },
+    marketCap: {
+      value: "string",
+      currencyLabel: "string",
+    },
+    nOrders: {
+      value: "string",
+      currencyLabel: "string",
+    },
+    orderSplit: {
+      buy: 0,
+      sell: 0,
+    },
+  };
+  
 
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
@@ -73,7 +104,7 @@ export default function MyOrder() {
               <div
                 className={`${
                   showAll ? "" : "hidden md:block"
-                } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition2`}
+                } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
                 key={idx}
               >
                 <OrderWidgetToken
@@ -83,15 +114,13 @@ export default function MyOrder() {
                   code2={"BTC"}
                   status={OrderStatusEnum.EXECUTED}
                   orders={order.orders}
-                  showPopupBg={showPopupBg}
-                  setShowPopupBg={setShowPopupBg}
                   setShowEditOrderModal={setShowEditOrderModal}
                   setShowDeletedAlert={setShowDeletedAlert}
                 />
               </div>
             );
           return (
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition2" key={idx}>
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition" key={idx}>
               <OrderWidgetToken
                 name1={"ethereum"}
                 code1={"ETH"}
@@ -99,8 +128,6 @@ export default function MyOrder() {
                 code2={"BTC"}
                 status={OrderStatusEnum.ACTIVE}
                 orders={order.orders}
-                showPopupBg={showPopupBg}
-                setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
@@ -119,21 +146,14 @@ export default function MyOrder() {
           </button>
         </div>
       )}
-      {showPopupBg && (
-        <div
-          className="fixed left-0 top-0 z-30 bg-[rgba(255,255,255,0.5)] w-full h-full"
-          onClick={() => setShowPopupBg(false)}
-        />
-      )}
       {showEditOrderModal && (
         <EditOrderToken
-          setShowPopupBg={setShowPopupBg}
           setShowEditOrderModal={setShowEditOrderModal}
+          token={basetokenshortname}
         />
       )}
       {showDeletedAlert && (
         <DeletedAlertToken
-          setShowPopupBg={setShowPopupBg}
           setShowDeletedAlert={setShowDeletedAlert}
         />
       )}

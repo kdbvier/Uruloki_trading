@@ -117,7 +117,6 @@ export default function Pair({ id }: { id: string }) {
         showEditOrderModal &&
         <EditOrderToken
           isEdit={false}
-          setShowPopupBg={() => {}}
           setShowEditOrderModal={setShowEditOrderModal}
           token={token}
         />

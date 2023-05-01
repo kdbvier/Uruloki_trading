@@ -15,8 +15,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   code2,
   status,
   orders,
-  showPopupBg = false,
-  setShowPopupBg = () => {},
   setShowEditOrderModal = () => {},
   setShowDeletedAlert = () => {},
 }) => {
@@ -85,9 +83,9 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           <div className="text-tsuka-200 text-sm">Status</div>
           <div className="flex items-center font-medium">
             <div
-              className={`w-1 h-1 mr-1 rounded-full bg-${statusColor}`}
+              className={`w-1 h-1 mr-1 rounded-full bg-custom-${statusColor}`}
             ></div>
-            <span className={`text-${statusColor}`}>
+            <span className={`text-custom-${statusColor}`}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
@@ -102,8 +100,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
               value1={order.price}
               budget={order.budget}
               bound={chartBound}
-              showPopupBg={showPopupBg}
-              setShowPopupBg={setShowPopupBg}
               setShowEditOrderModal={setShowEditOrderModal}
               setShowDeletedAlert={setShowDeletedAlert}
             />
@@ -117,25 +113,12 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
               value2={order.prices[1]}
               budget={order.budget}
               bound={chartBound}
-              showPopupBg={showPopupBg}
-              setShowPopupBg={setShowPopupBg}
               setShowEditOrderModal={setShowEditOrderModal}
               setShowDeletedAlert={setShowDeletedAlert}
             />
           );
         }
       })}
-      {/* <div className="relative flex justify-center">
-        <button className="text-custom-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
-        {
-          showPopup &&
-          <EditOrDeleteToken setShowPopupBg={setShowPopupBg} setShowEditOrderModal={setShowEditOrderModal} setShowConfirmDlg={setShowConfirmDlg} />
-        }
-        {
-          showConfirmDlg &&
-          <DeleteConfirmToken setShowPopupBg={setShowPopupBg} setShowConfirmDlg={setShowConfirmDlg} setShowDeletedAlert={setShowDeletedAlert} />
-        }
-      </div> */}
     </div>
   );
 };

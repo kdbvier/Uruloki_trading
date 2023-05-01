@@ -8,14 +8,12 @@ import { FiX, FiPlusCircle } from "react-icons/fi";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
-  setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
   token?: Token;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   isEdit = true,
-  setShowPopupBg,
   setShowEditOrderModal,
   token,
 }) => {
@@ -26,10 +24,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [maxPrice, setMaxPrice] = useState("35,000");
   const [amount, setAmount] = useState("40,000");
   const [isRange, setIsRange] = useState(true);
-
-  useEffect(() => {
-    setShowPopupBg(false);
-  });
 
   const handleNumberInputChange = (name: string, event: any) => {
     const value = event.target.value.replace(/,/g, "");
@@ -122,7 +116,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   return (
     <div
       className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen"
-      onClick={() => setShowPopupBg(false)}
     >
       <div className="w-full h-full flex justify-center items-center p-4 md:p-0">
         <div className="relative w-full md:w-[440px] bg-tsuka-500 border rounded-2xl border-[#343C4F] text-tsuka-50 p-6">

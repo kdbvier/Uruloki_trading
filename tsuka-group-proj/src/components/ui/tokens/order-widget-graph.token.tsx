@@ -1,7 +1,7 @@
 import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
 import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
 import { ChartBound } from "@/types/chart-bound.type";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
@@ -10,8 +10,6 @@ export interface OrderWidgetGraphProp {
   value2?: number;
   budget: number;
   bound: ChartBound;
-  showPopupBg: boolean;
-  setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
   setShowDeletedAlert: (a: any) => void;
 }
@@ -22,22 +20,15 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   value2,
   budget,
   bound: { min, max },
-  showPopupBg,
-  setShowPopupBg,
   setShowEditOrderModal,
   setShowDeletedAlert,
 }) => {
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showEditOrDelete, setShowEditOrDelete] = useState<boolean>(false);
   const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
-
+  
   useEffect(() => {
-    if (showPopupBg == false) setShowPopup(false);
-    setShowConfirmDlg(false);
-  }, [showPopupBg]);
-
-  useEffect(() => {
-    if (showConfirmDlg == false) setShowPopupBg(false);
-  }, [showConfirmDlg]);
+    console.log(showEditOrDelete);
+  }, [showEditOrDelete]);
 
   const percents = useMemo(() => {
     const range = max - min;
@@ -50,24 +41,22 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
     <div className="mb-2">
       <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
-        <div
-          className="relative text-custom-primary flex items-center gap-2 cursor-pointer"
-          onClick={() => {
-            setShowPopup(true);
-            setShowPopupBg(true);
-          }}
-        >
-          Edit <FiEdit />
-          {showPopup && (
+        <div className="relative">
+          <span
+            className="text-custom-primary flex items-center gap-2 cursor-pointer"
+            onClick={() => {setShowEditOrDelete(true);}}
+          >
+            Edit <FiEdit />
+          </span>
+          {showEditOrDelete && (
             <EditOrDeleteToken
-              setShowPopupBg={setShowPopupBg}
+              setShowEditOrDelete={setShowEditOrDelete}
               setShowEditOrderModal={setShowEditOrderModal}
               setShowConfirmDlg={setShowConfirmDlg}
             />
           )}
           {showConfirmDlg && (
             <DeleteConfirmToken
-              setShowPopupBg={setShowPopupBg}
               setShowConfirmDlg={setShowConfirmDlg}
               setShowDeletedAlert={setShowDeletedAlert}
             />
