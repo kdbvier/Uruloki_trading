@@ -27,7 +27,7 @@ export const TokenIconsToken: React.FC<TokenIconsTokenProps> = ({
 
   return (
     <div className={className + " rounded-full overflow-hidden bg-tsuka-50"}>
-      <img src={hasError ? "/imgs/empty-img.png" : img} width={width} height={height} alt="token" onError={handleImageInputError}/>
+      <img src={hasError ? "/imgs/empty-img7.png" : img} width={width} height={height} alt="token" onError={handleImageInputError}/>
     </div>
   );
 };
