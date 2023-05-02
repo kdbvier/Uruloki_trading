@@ -39,21 +39,39 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return { min, max };
   }, [orders]);
 
-  const statusColor = useMemo((): string => {
-    switch (status) {
-      case OrderStatusEnum.ACTIVE:
-        return "green";
+  // const statusColor = useMemo((): string => {
+  //   switch (status) {
+  //     case OrderStatusEnum.ACTIVE:
+  //       return "bg-green";
 
-      case OrderStatusEnum.CANCELLED:
-        return "red";
+  //     case OrderStatusEnum.CANCELLED:
+  //       return "bg-red";
 
-      case OrderStatusEnum.EXECUTED:
-        return "blue";
+  //     case OrderStatusEnum.EXECUTED:
+  //       return "bg-blue";
 
-      default:
-        return "blue";
-    }
-  }, [status]);
+  //     default:
+  //       return "bg-blue";
+  //   }
+  // }, [status]);
+  // const statusForeColor = useMemo((): string => {
+  //   switch (status) {
+  //     case OrderStatusEnum.ACTIVE:
+  //       return "text-green";
+
+  //     case OrderStatusEnum.CANCELLED:
+  //       return "text-red";
+
+  //     case OrderStatusEnum.EXECUTED:
+  //       return "text-blue";
+
+  //     default:
+  //       return "text-blue";
+  //   }
+  // }, [status]);
+
+  const statusColor = status===OrderStatusEnum.ACTIVE?"bg-green-500":status===OrderStatusEnum.CANCELLED?"bg-red-500":status===OrderStatusEnum.EXECUTED?"bg-blue-500":"bg-black-500";
+  const statusForeColor = status===OrderStatusEnum.ACTIVE?"text-green-500":status===OrderStatusEnum.CANCELLED?"text-red-500":status===OrderStatusEnum.EXECUTED?"text-blue-500":"text-black-500";
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
@@ -72,7 +90,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           height={32}
         />
         <div className="px-2 flex-1 flex-col">
-          <p className="text-tsuka-50 text-lg font-semibold">
+          <p className="text-tsuka-50 text-lg font-semibold uppercase">
             {code1}/{code2}
           </p>
           <label className="text-sm text-tsuka-200">
@@ -91,34 +109,51 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           </div>
         </div>
       </div>
-      {orders?.map((order) => {
-        if (isSingle(order)) {
-          return (
-            <OrderWidgetGraph
-              key={order.id}
-              buy={order.order_type === "buy"}
-              value1={order.price}
-              budget={order.budget}
-              bound={chartBound}
-              setShowEditOrderModal={setShowEditOrderModal}
-              setShowDeletedAlert={setShowDeletedAlert}
-            />
-          );
-        } else {
-          return (
-            <OrderWidgetGraph
-              key={order.id}
-              buy={order.order_type === "buy"}
-              value1={order.prices[0]}
-              value2={order.prices[1]}
-              budget={order.budget}
-              bound={chartBound}
-              setShowEditOrderModal={setShowEditOrderModal}
-              setShowDeletedAlert={setShowDeletedAlert}
-            />
-          );
+      <div className="md:h-[350px] md:overflow-scroll">
+        {orders?.map((order) => {
+          if (isSingle(order)) {
+            return (
+              <OrderWidgetGraph
+                key={order.id}
+                id = {order.id}
+                buy={order.order_type === "buy"}
+                value1={order.price}
+                budget={order.budget}
+                bound={chartBound}
+                status={order.status}
+                setShowEditOrderModal={setShowEditOrderModal}
+                setShowDeletedAlert={setShowDeletedAlert}
+              />
+            );
+          } else {
+            return (
+              <OrderWidgetGraph
+                key={order.id}
+                id={order.id}
+                buy={order.order_type === "buy"}
+                value1={order.prices[0]}
+                value2={order.prices[1]}
+                budget={order.budget}
+                bound={chartBound}
+                status={order.status}
+                setShowEditOrderModal={setShowEditOrderModal}
+                setShowDeletedAlert={setShowDeletedAlert}
+              />
+            );
+          }
+        })}
+      </div>
+      {/* <div className="relative flex justify-center">
+        <button className="text-custom-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>
+        {
+          showPopup &&
+          <EditOrDeleteToken setShowPopupBg={setShowPopupBg} setShowEditOrderModal={setShowEditOrderModal} setShowConfirmDlg={setShowConfirmDlg} />
         }
-      })}
+        {
+          showConfirmDlg &&
+          <DeleteConfirmToken setShowPopupBg={setShowPopupBg} setShowConfirmDlg={setShowConfirmDlg} setShowDeletedAlert={setShowDeletedAlert} />
+        }
+      </div> */}
     </div>
   );
 };

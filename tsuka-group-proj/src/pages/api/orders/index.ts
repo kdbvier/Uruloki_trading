@@ -1,11 +1,11 @@
-import type  { ApiResponse, Order } from "@/types";
-import {  PrismaClient } from "@prisma/client";
+import type { ApiResponse, Order } from "@/types";
+import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
-  status: Joi.string().required(),
+  status: Joi.string().optional().default('Active'),
   single_price: Joi.number().optional(),
   from_price: Joi.number().optional(),
   to_price: Joi.number().optional(),
@@ -13,8 +13,12 @@ const reqBodySchema = Joi.object({
   order_type: Joi.string().valid("buy", "sell").required(),
   price_type: Joi.string().valid("range", "single").required(),
   user_id: Joi.number().required(),
+  baseTokenShortName: Joi.string().optional(),
+  baseTokenLongName: Joi.string().optional(),
+  pairTokenShortName: Joi.string().optional(),
+  pairTokenLongName: Joi.string().optional(),
 })
-  .max(10)
+  .max(14)
   .min(7);
 
 const prisma = new PrismaClient();
@@ -26,30 +30,28 @@ export default async function orderHandler(
   const { method, body } = req;
   switch (method) {
     case "POST":
+     
       try {
-        const {value,error} = reqBodySchema.validate(body);
+        const { value, error } = reqBodySchema.validate(body);
         if (error) {
-          res
-            .status(404)
-            .json({
-              payload: undefined,
-              message: `Validation Error: ${error.message}`,
-            });
+          res.status(404).json({
+            payload: undefined,
+            message: `Validation Error: ${error.message}`,
+          });
           break;
         }
         const order = await prisma.orders.create({
           data: value,
         });
+        console.log(order);
         res
           .status(200)
           .json({ payload: order, message: `Successfully created order` });
       } catch (err) {
-        res
-          .status(400)
-          .json({
-            payload: undefined,
-            message: `Something went wrong! Please read the error message '${err}'`,
-          });
+        res.status(400).json({
+          payload: undefined,
+          message: `Something went wrong! Please read the error message '${err}'`,
+        });
       }
       break;
     case "GET":
@@ -59,16 +61,14 @@ export default async function orderHandler(
           .status(200)
           .json({ payload: orders, message: `Successfully found orders` });
       } catch (err) {
-        res
-          .status(400)
-          .json({
-            payload: undefined,
-            message: `Something went wrong! Please read the error message '${err}'`,
-          });
+        res.status(400).json({
+          payload: undefined,
+          message: `Something went wrong! Please read the error message '${err}'`,
+        });
       }
       break;
     default:
-      res.setHeader("Allow", ["POST","GET"]);
+      res.setHeader("Allow", ["POST", "GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

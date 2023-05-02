@@ -1,8 +1,6 @@
-import {
-  OrderBookToken,
-  OrderBookTokenProps,
-} from "@/components/tokens/order-book.token";
+import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { store } from "@/store";
+import { Token } from "@/types/token.type";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
@@ -16,10 +14,10 @@ export default {
     },
   },
   decorators: [
-    (Story) => {
+    (Story: any) => {
       return <Provider store={store}>{Story()}</Provider>;
     },
   ],
-} as Meta<OrderBookTokenProps>;
+} as unknown as Meta<Token>;
 
-export const FiltersButton: StoryObj<OrderBookTokenProps> = {};
+export const FiltersButton: StoryObj<Token> = {};

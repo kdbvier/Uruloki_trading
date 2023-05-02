@@ -3,6 +3,7 @@ import type {
   MostBuyOrder,
   MostSellOrder,
   Tokens,
+  TopGainerItem,
   TopMoverItem,
 } from "@/types";
 import { PrismaClient } from "@prisma/client";
@@ -17,19 +18,29 @@ export default async function TokenCacheHandler(
   const { method } = req;
   switch (method) {
     case "GET":
+      try{
+        let topGainers:TopGainerItem[]= []
+        let topMoversData:TopMoverItem[]= []
+        let mostBuyData:MostBuyOrder[]= []
+        let mostSellData:MostSellOrder[]= []
       try {
-        const topGainers = await prisma.top_gainers.findMany({
+          topGainers = await prisma.top_gainers.findMany({
           include: {
             token_cache: {
               select: {
                 name: true,
                 price: true,
                 chain: true,
+                short_name:true,
                 change_24hr: true,
               },
             },
           },
         });
+      } catch (err) {
+        topGainers=[]
+      }
+      try{
         const topMovers = await prisma.top_movers.findMany({
           include: {
             token_cache: {
@@ -39,7 +50,7 @@ export default async function TokenCacheHandler(
             },
           },
         });
-        const topMoversData = topMovers.map((tm: any) => {
+        topMoversData = topMovers.map((tm: any) => {
           let sell_orders = 0;
           let buy_orders = 0;
           let total_orders = 0;
@@ -61,6 +72,10 @@ export default async function TokenCacheHandler(
             { buy_orders, sell_orders, total_orders }
           ) as TopMoverItem;
         });
+      } catch (err) {
+       topMoversData=[]
+      }
+      try{
         const mostBuy = await prisma.most_buy_orders.findMany({
           include: {
             token_cache: {
@@ -70,7 +85,7 @@ export default async function TokenCacheHandler(
             },
           },
         });
-        const mostBuyData = mostBuy.map((mb: any) => {
+        mostBuyData = mostBuy.map((mb: any) => {
           let buy_orders = 0;
           let total_orders = 0;
           mb.token_cache.orders.map((order: any) => {
@@ -88,13 +103,16 @@ export default async function TokenCacheHandler(
               token_cache: {
                 name: mb.token_cache.name,
                 chain: mb.token_cache.chain,
+                short_name:mb.token_cache.short_name
               },
               buy_orders,
               total_orders,
             }
           ) as MostBuyOrder;
         });
-
+      } catch (err) {
+        mostBuyData=[]
+      }try{
         const mostSell = await prisma.most_sell_orders.findMany({
           include: {
             token_cache: {
@@ -104,7 +122,7 @@ export default async function TokenCacheHandler(
             },
           },
         });
-        const mostSellData = mostSell.map((ms: any) => {
+        mostSellData = mostSell.map((ms: any) => {
           let sell_orders = 0;
           let total_orders = 0;
           ms.token_cache.orders.map((order: any) => {
@@ -121,19 +139,22 @@ export default async function TokenCacheHandler(
               token_cache: {
                 name: ms.token_cache.name,
                 chain: ms.token_cache.chain,
+                short_name:ms.token_cache.short_name
               },
               sell_orders,
               total_orders,
             }
           ) as MostSellOrder;
         });
+      } catch (err) {
+        mostSellData=[]
+      }
         const data: Tokens = {
           topGainers: topGainers,
           topMovers: topMoversData,
           mostBuyOrders: mostBuyData,
           mostSellOrders: mostSellData,
         };
-
         res
           .status(200)
           .json({ payload: data, message: `Successfully found Tokens` });

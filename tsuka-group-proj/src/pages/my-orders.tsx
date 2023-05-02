@@ -1,49 +1,54 @@
 import { userOrder } from "@/@fake-data/user-order.fake-data";
+
+import { getUserOrder, getUserOrderWithFilter } from '@/store/apps/user-order';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { OrderStatusEnum } from "@/types/token-order.type";
-import { useState } from "react";
+import { OrderStatusEnum, UserOrder } from "@/types/token-order.type";
+import { useState, useEffect } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
-import { Token } from "@/types/token.type";
+import Orders from '../lib/api/orders';
 
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
+  const [searchValue, setSearchValue] = useState<string>('');
+  
+  const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-
-  const basetokenshortname: Token = {
-    id: "string",
-    token: "string",
-    chain: {
-      name: "ethereum",
-      code: "ETH",
-    },
-    price: {
-      value: "string",
-      operator: "+",
-      variationValue: 0,
-    },
-    volume: {
-      value: "string",
-      currencyLabel: "string",
-    },
-    marketCap: {
-      value: "string",
-      currencyLabel: "string",
-    },
-    nOrders: {
-      value: "string",
-      currencyLabel: "string",
-    },
-    orderSplit: {
-      buy: 0,
-      sell: 0,
-    },
-  };
-  
-
+  const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
+  const dispatch = useAppDispatch();
+  const {
+    value,
+    status,
+  } = useAppSelector((state)=> state.userOrder);
+  useEffect(()=>{
+    //TODO: change id to my id
+    dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
+  },[dispatch, openMode]);
+  // useEffect(()=> {
+  //   const fetchData =async () => {
+  //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
+  //     setUserOrderData([...userOrder_1]);
+  //   }
+  //   fetchData();
+  // }, [])
+  const handleSearchChange = (e:any)=>{
+    console.log("changing")
+    setSearchValue(e.target.value);
+  }
+  const handleSearchSubmit = ()=>{
+    console.log("user pressed enter key");
+    //TODO: change id to my id
+    dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
+  }
+  const handleEditModal = (show:boolean, id:number)=>{
+    setSelectedOrderId(id)
+    setShowEditOrderModal(show);
+  }
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
@@ -52,7 +57,7 @@ export default function MyOrder() {
           My Orders
         </h1>
         <div className="w-full md:w-auto flex flex-wrap">
-          <div className="w-full md:w-auto flex gap-1">
+          <div className="w-full md:w-auto flex md:gap-1">
             <button
               className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${
                 openMode ? "bg-tsuka-500 text-custom-primary" : "text-tsuka-300"
@@ -73,13 +78,20 @@ export default function MyOrder() {
             </button>
           </div>
           <hr className="md:hidden w-full mt-3 mb-5 border-tsuka-500" />
-          <div className="md:ml-4 flex w-full md:w-auto items-center gap-3">
+          <div className="md:ml-4 flex w-full md:w-auto items-center gap-3 md:gap-1 lg:gap-3">
             <div className="grow md:grow-0 flex items-center text-sm text-tsuka-100">
               <FiSearch className="ml-4 -mr-7 z-10 text-tsuka-300" />
               <input
                 type="text"
-                className="w-full md:w-[200px] bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
+                className="w-full md:max-w-[140px] lg:max-w-[200px] bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
                 placeholder="Find tokens..."
+                value={searchValue}
+                onChange={handleSearchChange}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    handleSearchSubmit()
+                  }
+                }}
               />
             </div>
             <button
@@ -98,7 +110,10 @@ export default function MyOrder() {
 
       {/* content */}
       <div className="grid grid-cols-12 gap-x-5">
-        {userOrder.map((order, idx) => {
+        {status==="loading"&&(<div className="w-screen h-screen">
+          <h1 className="text-white">Loading...</h1>
+        </div>)}
+        {status!=="loading"&&value.map((order, idx) => {
           if (idx > 2)
             return (
               <div
@@ -108,13 +123,13 @@ export default function MyOrder() {
                 key={idx}
               >
                 <OrderWidgetToken
-                  name1={"ethereum"}
-                  code1={"ETH"}
-                  name2={"bitcoin"}
-                  code2={"BTC"}
-                  status={OrderStatusEnum.EXECUTED}
+                  name1={order.orders[0].baseTokenLongName}
+                  code1={order.orders[0].baseTokenShortName}
+                  name2={order.orders[0].pairTokenLongName}
+                  code2={order.orders[0].pairTokenShortName}
+                  status={order.orders[0].status}
                   orders={order.orders}
-                  setShowEditOrderModal={setShowEditOrderModal}
+                  setShowEditOrderModal={handleEditModal}
                   setShowDeletedAlert={setShowDeletedAlert}
                 />
               </div>
@@ -122,13 +137,13 @@ export default function MyOrder() {
           return (
             <div className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition" key={idx}>
               <OrderWidgetToken
-                name1={"ethereum"}
-                code1={"ETH"}
-                name2={"bitcoin"}
-                code2={"BTC"}
-                status={OrderStatusEnum.ACTIVE}
+                name1={order.orders[0].baseTokenLongName}
+                code1={order.orders[0].baseTokenShortName}
+                name2={order.orders[0].pairTokenLongName}
+                code2={order.orders[0].pairTokenShortName}
+                status={order.orders[0].status}
                 orders={order.orders}
-                setShowEditOrderModal={setShowEditOrderModal}
+                setShowEditOrderModal={handleEditModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
             </div>
@@ -149,7 +164,11 @@ export default function MyOrder() {
       {showEditOrderModal && (
         <EditOrderToken
           setShowEditOrderModal={setShowEditOrderModal}
-          token={basetokenshortname}
+          selectedOrderId = {selectedOrderId}
+          closeHandler = {()=>{
+            setShowEditOrderModal(false);
+            setSelectedOrderId(-1);
+          }}
         />
       )}
       {showDeletedAlert && (

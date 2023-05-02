@@ -1,25 +1,30 @@
 import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.token";
 import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
 import { ChartBound } from "@/types/chart-bound.type";
+import { OrderStatusEnum } from "@/types/token-order.type";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
+  id: number;
   buy: boolean;
   value1: number;
   value2?: number;
   budget: number;
   bound: ChartBound;
+  status: string;
   setShowEditOrderModal: (a: any) => void;
   setShowDeletedAlert: (a: any) => void;
 }
 
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
+  id,
   buy,
   value1,
   value2,
   budget,
   bound: { min, max },
+  status,
   setShowEditOrderModal,
   setShowDeletedAlert,
 }) => {
@@ -36,6 +41,8 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
     const percent2 = value2 ? ((value2 - min) / range) * 90 + 10 : undefined;
     return [percent1, percent2];
   }, [value1, value2, min, max]);
+
+  const statusColor = status===OrderStatusEnum.ACTIVE?"text-custom-primary":"text-tsuka-100";
 
   return (
     <div className="mb-2">
@@ -58,6 +65,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
           {showConfirmDlg && (
             <DeleteConfirmToken
               setShowConfirmDlg={setShowConfirmDlg}
+              deleteID={id}
               setShowDeletedAlert={setShowDeletedAlert}
             />
           )}
@@ -69,7 +77,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span className={buy ? "text-custom-green" : "text-custom-red"}>
               {value2 ? "Price range" : "Target price"}
             </span>
-            <span>{`$${value1}${
+            <span>{`$${value1.toLocaleString()}${
               value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""
             }`}</span>
           </div>

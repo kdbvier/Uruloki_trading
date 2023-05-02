@@ -3,6 +3,16 @@ export type ApiResponse<T> = {
   message: string;
 };
 
+export type OrderBookResponse<T> = {
+  payload:
+    | {
+        sell: Array<T> | T | undefined;
+        buy: Array<T> | T | undefined;
+      }
+    | undefined;
+  message: string;
+};
+
 export type Notification = {
   notification_id: number;
   user_id: number;
@@ -18,6 +28,7 @@ export type TopGainerItem = {
     name: string | null;
     price: number | null;
     chain: string | null;
+    short_name: string | null;
     change_24hr: number | null;
   };
 };
@@ -33,6 +44,8 @@ export type TopMoverItem = {
     pair_address: string;
     price: number | null;
     change_24hr: number | null;
+    address: string | null;
+    short_name: string | null;
     volume: number | null;
     market_cap: number | null;
   };
@@ -45,8 +58,11 @@ export type MostBuyOrder = {
   token_cache: {
     name: string | null;
     chain: string | null;
+    short_name: string | null;
   };
-} & OrderDetails;
+  buy_orders: number;
+  total_orders: number;
+} 
 
 export type MostSellOrder = {
   id: number;
@@ -55,8 +71,11 @@ export type MostSellOrder = {
   token_cache: {
     name: string | null;
     chain: string | null;
+    short_name: string | null;
   };
-} & OrderDetails;
+  sell_orders: number;
+  total_orders: number;
+}
 
 type OrderDetails = {
   buy_orders: number;

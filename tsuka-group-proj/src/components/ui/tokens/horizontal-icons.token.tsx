@@ -28,7 +28,7 @@ export const HorizontalIconsToken: React.FC<HorizontalIconsTokenProps> = ({
 
   return (
     <div
-      className={`${large ? "w-12 h-12" : "w-10 h-10"} mx-4 flex -space-x-4`}
+      className={`${large ? "w-12 h-12" : "w-10 h-10"} mr-2 xs:mx-4 flex -space-x-4`}
     >
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mb-auto rounded-full`}

@@ -26,10 +26,8 @@ interface InputToken {
 
 export default function Pair({ id }: { id: string }) {
   const dispatch = useAppDispatch();
-  const {
-    token: { value: token },
-    userOrder: { value: userOrder },
-  } = useAppSelector((state) => state);
+  const { value: token } = useAppSelector((state) => state.token);
+  const { value: userOrder } = useAppSelector((state) => state.userOrder);
   const router = useRouter();
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
@@ -52,7 +50,7 @@ export default function Pair({ id }: { id: string }) {
   }, [dispatch, pair_id, token]);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
-    return userOrder?.orders;
+    return userOrder[0]?.orders;
   }, [userOrder]);
 
   return (
@@ -60,7 +58,7 @@ export default function Pair({ id }: { id: string }) {
       {token && (
         <>
           <FullHeaderToken token={token} />
-          <div className="hidden md:grid grid-cols-11 gap-4">
+          <div className="hidden lg:grid grid-cols-11 gap-4">
             {/* <div className="col-span-12 md:col-span-3">
               <CompareTokenChainToken token={token} networks={networks} />
             </div> */}
@@ -96,7 +94,7 @@ export default function Pair({ id }: { id: string }) {
               )}
             </div>
           </div>
-          <div className="block md:hidden">
+          <div className="block lg:hidden">
             <LiveGraphToken token={token.chain?.code} />
             {currentToken && compareToken && orders && (
               <OrderWidgetToken
@@ -113,14 +111,14 @@ export default function Pair({ id }: { id: string }) {
           </div>
         </>
       )}
-      {
-        showEditOrderModal &&
+      {showEditOrderModal && (
         <EditOrderToken
           isEdit={false}
           setShowEditOrderModal={setShowEditOrderModal}
-          token={token}
+          selectedOrderId={0} //TODO: Fix this
+          closeHandler={()=>{}} //TODO: Fix this
         />
-      }
+      )}
     </div>
   );
 }

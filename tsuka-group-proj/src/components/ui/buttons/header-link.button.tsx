@@ -17,7 +17,7 @@ export const HeaderLinkButton: React.FC<HeaderLinkButtonProps> = ({
       href={path}
       className={`${
         active ? "text-tsuka-50" : "text-tsuka-100"
-      } font-normal block rounded-md px-3 py-2.5 text-lg md:text-base`}
+      } font-normal whitespace-nowrap block rounded-md px-3 py-2.5 text-lg md:text-base`}
     >
       {title}
     </a>
