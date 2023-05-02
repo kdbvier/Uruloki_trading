@@ -39,8 +39,6 @@ export interface TokenOrder {
   code2: string;
   status: OrderStatusEnum;
   orders: Array<SingleOrder | RangeOrder>;
-  showPopupBg?: boolean;
-  setShowPopupBg?: any;
   setShowEditOrderModal?: any;
   setShowDeletedAlert?: any;
 }

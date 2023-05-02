@@ -114,7 +114,6 @@ export default function Pair({ id }: { id: string }) {
       {showEditOrderModal && (
         <EditOrderToken
           isEdit={false}
-          setShowPopupBg={() => {}}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={0} //TODO: Fix this
           closeHandler={()=>{}} //TODO: Fix this

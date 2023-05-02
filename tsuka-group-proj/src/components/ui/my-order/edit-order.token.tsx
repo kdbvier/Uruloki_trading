@@ -14,7 +14,6 @@ import { FiX, FiPlusCircle } from "react-icons/fi";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
-  setShowPopupBg: (a: any) => void;
   setShowEditOrderModal: (a: any) => void;
 
   selectedOrderId: number;
@@ -48,7 +47,6 @@ const toNumber = (str: string): number => {
 };
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   isEdit = true,
-  setShowPopupBg,
   setShowEditOrderModal,
   selectedOrderId,
   closeHandler,
@@ -96,6 +94,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setTargetPrice(handleNumberFormat(-1));
     setMinPrice(handleNumberFormat(-1));
     setAmount(handleNumberFormat(-1));
+    setShowEditOrderModal(false);
   };
   const tokens = [
     {
@@ -109,10 +108,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       title: "Ethereum",
     },
   ];
-
-  useEffect(() => {
-    setShowPopupBg(false);
-  });
 
   const handleNumberInputChange = (name: string, event: any) => {
     const value = event.target.value.replace(/,/g, "");
@@ -201,7 +196,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   return (
     <div
       className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen"
-      onClick={() => setShowPopupBg(false)}
     >
       <div className="w-full h-full flex justify-center items-center p-4 md:p-0">
         <div className="relative w-full md:w-[440px] bg-tsuka-500 border rounded-2xl border-[#343C4F] text-tsuka-50 p-6">
@@ -309,7 +303,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </span>
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
-                  Max price ($)
+                  To ($)
                 </span>
                 <input
                   type="text"
@@ -379,7 +373,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <span className="text-custom-green">{0.00305968}</span>
           </div>
           <button
-            className="w-full rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
+            className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
             onClick={handleSubmit}
           >
             {isEdit ? (

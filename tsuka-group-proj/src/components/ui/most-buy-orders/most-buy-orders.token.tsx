@@ -31,7 +31,7 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
-              <th className="py-2">Tokens</th>
+              <th className="py-2">Token</th>
               <th className="py-2 text-right md:text-left">Buy Orders</th>
             </tr>
           </thead>

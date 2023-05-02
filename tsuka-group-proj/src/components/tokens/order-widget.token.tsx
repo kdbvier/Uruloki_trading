@@ -15,8 +15,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   code2,
   status,
   orders,
-  showPopupBg = false,
-  setShowPopupBg = () => {},
   setShowEditOrderModal = () => {},
   setShowDeletedAlert = () => {},
 }) => {
@@ -103,9 +101,9 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           <div className="text-tsuka-200 text-sm">Status</div>
           <div className="flex items-center font-medium">
             <div
-              className={`w-1 h-1 mr-1 rounded-full ${statusColor}`}
+              className={`w-1 h-1 mr-1 rounded-full bg-custom-${statusColor}`}
             ></div>
-            <span className={`${statusForeColor}`}>
+            <span className={`text-custom-${statusColor}`}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
@@ -123,8 +121,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
-                showPopupBg={showPopupBg}
-                setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
@@ -140,8 +136,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
-                showPopupBg={showPopupBg}
-                setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
