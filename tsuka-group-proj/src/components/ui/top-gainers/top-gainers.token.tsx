@@ -30,8 +30,8 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
               <th className="py-2">Token</th>
-              <th className="py-2 text-center md:text-left">Price(USD)</th>
-              <th className="py-2 text-right md:text-center">Percentage</th>
+              <th colSpan={2} className="py-2 text-center md:text-left">Price(USD)</th>
+              {/* <th className="py-2 text-right md:text-center"></th> */}
             </tr>
           </thead>
           <tbody>
@@ -89,7 +89,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                       </p>
                     </div>
                   </td>
-                  <td className="py-2 md:py-5">
+                  <td className="py-2 md:py-5 w-16">
                     <span className="text-tsuka-200">{priceEle}</span>
                   </td>
                   <td className="py-2 md:py-5">
