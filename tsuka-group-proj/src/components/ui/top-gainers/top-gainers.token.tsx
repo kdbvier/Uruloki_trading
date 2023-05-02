@@ -1,6 +1,7 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopGainersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -34,6 +35,14 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
           </thead>
           <tbody>
             {topGainers.map((topGainer, idx) => {
+              let priceEle;
+              if(topGainer.price>=0.01){
+                console.log('topgainer price: ', topGainer.price);
+                priceEle = commafy(topGainer.price)
+              }else{
+                priceEle = <>{formatNumberToHtmlTag(topGainer.price).integerPart}.0<sub>{formatNumberToHtmlTag(topGainer.price).leadingZerosCount}</sub>
+                {formatNumberToHtmlTag(topGainer.price).remainingDecimal}</>
+              }
               return (
                 <tr
                   onClick={() => {
@@ -73,7 +82,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                   <td className="py-2 md:py-5">
                     <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
                       <span className="text-tsuka-200">
-                        ${commafy(topGainer.price)}
+                      {priceEle}
                       </span>
                       <div className="ml-2 flex text-[#6FCF97]">
                         <FiArrowUpRight className="mt-0.5" />
