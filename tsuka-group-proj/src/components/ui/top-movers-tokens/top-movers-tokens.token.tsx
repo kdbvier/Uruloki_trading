@@ -72,9 +72,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               <th className="py-2">Price(USD)</th>
               <th className="py-2 hidden md:table-cell">Volume</th>
               <th className="py-2 hidden md:table-cell">Market Cap</th>
-              <th className="py-2 hidden md:table-cell">
-                Total Num. of Orders
-              </th>
+              <th className="py-2 hidden md:table-cell">Total Orders</th>
               <th className="py-2 hidden md:table-cell">Order Split</th>
               <th className="md:hidden"></th>
             </tr>
@@ -83,7 +81,12 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
             {topMovers.map((topMover, idx) => {
               return (
                 <Fragment key={idx}>
-                  <tr onClick={() => {router.push("/pair/2")}} className="cursor-pointer border-t border-t-tsuka-400">
+                  <tr
+                    onClick={() => {
+                      router.push("/pair/2");
+                    }}
+                    className="cursor-pointer border-t border-t-tsuka-400"
+                  >
                     <td className="py-2 md:py-8">
                       <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">
                         #{idx + 1}
@@ -192,7 +195,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                           <hr className="border-tsuka-300 my-2" />
                           <div className="w-full flex justify-between">
                             <span className="text-[14px] leading-[18px] text-tsuka-100">
-                              Total Num. of Orders
+                              Total Orders
                             </span>
                             <span className="text-[14px] leading-[18px] text-tsuka-50">
                               {`${commafy2(topMover.orderCount)}`}
