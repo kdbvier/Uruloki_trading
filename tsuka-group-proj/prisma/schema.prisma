@@ -56,6 +56,22 @@ model orders {
   @@index([pair_address], map: "fk_pair_address_idx")
 }
 
+model strategies {
+  strategy_id Int    @id @unique(map: "order_id") @default(autoincrement())
+  name        String
+  user_id     Int
+
+  @@index([user_id], map: "fk_user_id_idx")
+}
+
+model order_strategy {
+  id         Int @id @default(autoincrement())
+  orderId    Int
+  strategyId Int
+
+  @@unique([orderId, strategyId], name: "order_strategy_unique")
+}
+
 model token_cache {
   name             String?            @db.VarChar(1000)
   chain            String?            @db.VarChar(1000)
