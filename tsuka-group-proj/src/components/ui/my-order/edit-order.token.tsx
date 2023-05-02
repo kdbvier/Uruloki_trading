@@ -94,6 +94,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setTargetPrice(handleNumberFormat(-1));
     setMinPrice(handleNumberFormat(-1));
     setAmount(handleNumberFormat(-1));
+    setShowEditOrderModal(false);
   };
   const tokens = [
     {
