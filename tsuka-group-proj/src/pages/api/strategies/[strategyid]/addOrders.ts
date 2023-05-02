@@ -47,7 +47,21 @@ export default async function strategyHandler(
         console.log(orderStrategies);
         await prisma.order_strategy.createMany({
           data: orderStrategies,
+          skipDuplicates: false,
         });
+        // await prisma.$transaction([
+        //   prisma.order_strategy.createMany({
+        //     data: orderStrategies,
+        //     // Add a unique constraint on the field that should be unique
+        //     // in order to prevent duplicates from being inserted
+        //     // and return an error if any duplicates are found
+        //     onError: ((error: any, record: OrderStrategy) => {
+        //       throw new Error(
+        //         `Duplicate record found: ${JSON.stringify(record)}`
+        //       );
+        //     }) as never,
+        //   }),
+        // ]);
         console.log("created");
         const orderStrategiesCreated = await prisma.order_strategy.findMany({
           where: {
@@ -58,10 +72,19 @@ export default async function strategyHandler(
           payload: orderStrategiesCreated,
           message: `Successfully added orders to strategy id ${strategyid}`,
         });
-      } catch (err) {
+      } catch (err: any) {
+        if (err.code == "P2002") {
+          res.status(400).json({
+            payload: undefined,
+            message: "Duplicate record(s) found",
+          });
+          return;
+        }
         res.status(400).json({
           payload: undefined,
-          message: `Something went wrong! Please read the error message '${err}'`,
+          message: `Something went wrong! Please read the error message '${JSON.stringify(
+            err
+          )}'`,
         });
       }
       break;
