@@ -2,6 +2,7 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
 import { ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import {
@@ -80,6 +81,23 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
           </thead>
           <tbody>
             {topMovers.map((topMover, idx) => {
+              let priceEle;
+              if (topMover.price >= 0.01) {
+                // console.log("topMover price >: ", topMover.price);
+                priceEle = `$${commafy(topMover.price)}`;
+              } else {
+                // console.log("topMover price <: ", topMover.price);
+
+                priceEle = (
+                  <>
+                    ${formatNumberToHtmlTag(topMover.price).integerPart}.0
+                    <sub>
+                      {formatNumberToHtmlTag(topMover.price).leadingZerosCount}
+                    </sub>
+                    {formatNumberToHtmlTag(topMover.price).remainingDecimal}
+                  </>
+                );
+              }
               return (
                 <Fragment key={idx}>
                   <tr
@@ -119,9 +137,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                     </td>
                     <td className="py-2 md:py-8 text-right md:text-left">
                       <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                        <span className="text-tsuka-200">{`$${commafy(
-                          topMover.price
-                        )}`}</span>
+                        <span className="text-tsuka-200">{priceEle}</span>
                         
                       </div>
                     </td>
