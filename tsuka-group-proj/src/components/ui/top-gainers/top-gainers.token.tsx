@@ -38,12 +38,14 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
             {topGainers.map((topGainer, idx) => {
               let priceEle;
               if (topGainer.price >= 0.01) {
-                console.log("topgainer price: ", topGainer.price);
-                priceEle = commafy(topGainer.price);
+                console.log("topgainer price >: ", topGainer.price);
+                priceEle = `$${commafy(topGainer.price)}`;
               } else {
+                console.log("topgainer price <: ", topGainer.price);
+
                 priceEle = (
                   <>
-                    {formatNumberToHtmlTag(topGainer.price).integerPart}.0
+                    ${formatNumberToHtmlTag(topGainer.price).integerPart}.0
                     <sub>
                       {formatNumberToHtmlTag(topGainer.price).leadingZerosCount}
                     </sub>
