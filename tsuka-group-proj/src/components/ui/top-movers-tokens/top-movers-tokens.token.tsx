@@ -69,7 +69,8 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               <th className="py-2 hidden md:table-cell">ID</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
-              <th className="py-2">Price(USD)</th>
+              <th className="py-2 text-right md:text-left">Price(USD)</th>
+              <th className="py-2 text-right md:text-left">Percentage</th>
               <th className="py-2 hidden md:table-cell">Volume</th>
               <th className="py-2 hidden md:table-cell">Market Cap</th>
               <th className="py-2 hidden md:table-cell">Total Orders</th>
@@ -121,13 +122,18 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                         <span className="text-tsuka-200">{`$${commafy(
                           topMover.price
                         )}`}</span>
+                        
+                      </div>
+                    </td>
+                    <td className="py-2 md:py-8 text-right md:text-left">
+                      <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
                         {topMover.risingPercent > 0 ? (
-                          <div className="ml-2 flex text-custom-green">
+                          <div className="flex text-custom-green">
                             <FiArrowUpRight className="mt-0.5" />
                             <span>{`${topMover.risingPercent}%`}</span>
                           </div>
                         ) : (
-                          <div className="ml-2 flex text-custom-red">
+                          <div className="flex text-custom-red">
                             <FiArrowDownRight className="mt-0.5" />
                             <span>{`${0 - topMover.risingPercent}%`}</span>
                           </div>

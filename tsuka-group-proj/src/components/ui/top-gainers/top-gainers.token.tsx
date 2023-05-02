@@ -30,18 +30,26 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
               <th className="py-2">Token</th>
-              <th className="py-2 text-right md:text-left">Price(USD)</th>
+              <th className="py-2 text-center md:text-left">Price(USD)</th>
+              <th className="py-2 text-right md:text-center">Percentage</th>
             </tr>
           </thead>
           <tbody>
             {topGainers.map((topGainer, idx) => {
               let priceEle;
-              if(topGainer.price>=0.01){
-                console.log('topgainer price: ', topGainer.price);
-                priceEle = commafy(topGainer.price)
-              }else{
-                priceEle = <>{formatNumberToHtmlTag(topGainer.price).integerPart}.0<sub>{formatNumberToHtmlTag(topGainer.price).leadingZerosCount}</sub>
-                {formatNumberToHtmlTag(topGainer.price).remainingDecimal}</>
+              if (topGainer.price >= 0.01) {
+                console.log("topgainer price: ", topGainer.price);
+                priceEle = commafy(topGainer.price);
+              } else {
+                priceEle = (
+                  <>
+                    {formatNumberToHtmlTag(topGainer.price).integerPart}.0
+                    <sub>
+                      {formatNumberToHtmlTag(topGainer.price).leadingZerosCount}
+                    </sub>
+                    {formatNumberToHtmlTag(topGainer.price).remainingDecimal}
+                  </>
+                );
               }
               return (
                 <tr
@@ -80,14 +88,12 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                     </div>
                   </td>
                   <td className="py-2 md:py-5">
-                    <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                      <span className="text-tsuka-200">
-                      {priceEle}
-                      </span>
-                      <div className="ml-2 flex text-[#6FCF97]">
-                        <FiArrowUpRight className="mt-0.5" />
-                        <span>{`${topGainer.risingPercent}%`}</span>
-                      </div>
+                    <span className="text-tsuka-200">{priceEle}</span>
+                  </td>
+                  <td className="py-2 md:py-5">
+                    <div className="ml-2 flex text-[#6FCF97]">
+                      <FiArrowUpRight className="mt-0.5" />
+                      <span>{`${topGainer.risingPercent}%`}</span>
                     </div>
                   </td>
                 </tr>
