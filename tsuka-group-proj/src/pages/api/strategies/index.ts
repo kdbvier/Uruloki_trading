@@ -5,7 +5,6 @@ import Joi from "joi";
 
 const reqBodySchema = Joi.object({
   name: Joi.string().required(),
-  orders: Joi.string().optional(),
   user_id: Joi.number().required(),
 })
   .max(3)

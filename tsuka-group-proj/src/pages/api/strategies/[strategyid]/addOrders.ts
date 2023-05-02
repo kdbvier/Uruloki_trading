@@ -1,4 +1,4 @@
-import type { ApiResponse, Strategy } from "@/types";
+import type { ApiResponse, OrderStrategy } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 
 export default async function strategyHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Strategy>>
+  res: NextApiResponse<ApiResponse<OrderStrategy>>
 ) {
   const { query, method, body } = req;
   const { strategyid } = query;
@@ -40,17 +40,23 @@ export default async function strategyHandler(
           break;
         }
         const { orders } = value;
-        const strategy = await prisma.strategies.update({
+        const orderStrategies = orders.map((order: number[]) => ({
+          orderId: order,
+          strategyId: strategyExist.strategy_id,
+        }));
+        console.log(orderStrategies);
+        await prisma.order_strategy.createMany({
+          data: orderStrategies,
+        });
+        console.log("created");
+        const orderStrategiesCreated = await prisma.order_strategy.findMany({
           where: {
-            strategy_id: Number(strategyid),
-          },
-          data: {
-            orders: orders?.join(","),
+            strategyId: strategyExist.strategy_id,
           },
         });
         res.status(200).json({
-          payload: strategy,
-          message: `Successfully deleted strategy id ${strategyid}`,
+          payload: orderStrategiesCreated,
+          message: `Successfully added orders to strategy id ${strategyid}`,
         });
       } catch (err) {
         res.status(400).json({

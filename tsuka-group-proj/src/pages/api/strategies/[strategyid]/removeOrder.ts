@@ -1,4 +1,4 @@
-import type { ApiResponse, Strategy } from "@/types";
+import type { ApiResponse, OrderStrategy } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 
 export default async function strategyHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Strategy>>
+  res: NextApiResponse<ApiResponse<OrderStrategy>>
 ) {
   const { query, method, body } = req;
   const { strategyid } = query;
@@ -37,29 +37,29 @@ export default async function strategyHandler(
             payload: undefined,
             message: `Strategy id ${strategyid} not found!`,
           });
-          break;
+          return;
         }
         const { order_id } = value;
-        const orders = strategyExist.orders?.split(",");
-        const orderIndex: number = orders?.indexOf(order_id) as number;
-        if (orderIndex === -1) {
+        const orderExist = await prisma.order_strategy.findFirst({
+          where: {
+            strategyId: Number(strategyid),
+            orderId: Number(order_id),
+          },
+        });
+        if (!orderExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Order id ${order_id} not found in strategy "${strategyExist.name}"`,
+            message: `Strategy ${strategyExist.name} hasn't got a order id ${order_id}!`,
           });
           return;
         }
-        orders?.splice(orderIndex, 1);
-        const strategy = await prisma.strategies.update({
+        const deleteOrder = await prisma.order_strategy.delete({
           where: {
-            strategy_id: Number(strategyid),
-          },
-          data: {
-            orders: orders?.join(","),
+            id: orderExist.id,
           },
         });
         res.status(200).json({
-          payload: strategy,
+          payload: deleteOrder,
           message: `Successfully deleted strategy id ${strategyid}`,
         });
       } catch (err) {
