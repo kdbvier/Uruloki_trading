@@ -70,7 +70,9 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               <th className="py-2 hidden md:table-cell">ID</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
-              <th colSpan={2} className="py-2 text-right md:text-left">Price(USD)</th>
+              <th colSpan={2} className="py-2 text-right md:text-left">
+                Price(USD)
+              </th>
               {/* <th className="py-2 text-right md:text-left"></th> */}
               <th className="py-2 hidden md:table-cell">Volume</th>
               <th className="py-2 hidden md:table-cell">Market Cap</th>
@@ -81,6 +83,9 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
           </thead>
           <tbody>
             {topMovers.map((topMover, idx) => {
+              /// TODO: This is only for test
+              let shortName = "ETH"
+              let id= "ethereum";
               let priceEle;
               if (topMover.price >= 0.01) {
                 // console.log("topMover price >: ", topMover.price);
@@ -122,38 +127,39 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                       </span>
                     </td>
                     <td className="py-2 md:py-8 flex items-center">
+                      
                       <TokenIconsToken
-                        name={topMover.chain.id}
-                        shortName={topMover.chain.shortName}
+                        name={id}
+                        shortName={shortName}
                       />
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                         <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                          {topMover.chain.name}
+                          {shortName}
                         </p>
-                        <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
+                        {/* <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
                           {topMover.chain.shortName}
-                        </p>
+                        </p> */}
                       </div>
                     </td>
                     <td className="py-2 md:py-8 w-16 text-right md:text-left">
                       {/* <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal"> */}
-                        <span className="text-tsuka-200">{priceEle}</span>
-                        
+                      <span className="text-tsuka-200">{priceEle}</span>
+
                       {/* </div> */}
                     </td>
                     <td className="py-2 md:py-8 text-right md:text-left">
                       {/* <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal"> */}
-                        {topMover.risingPercent > 0 ? (
-                          <div className="flex text-custom-green">
-                            <FiArrowUpRight className="mt-0.5" />
-                            <span>{`${topMover.risingPercent}%`}</span>
-                          </div>
-                        ) : (
-                          <div className="flex text-custom-red">
-                            <FiArrowDownRight className="mt-0.5" />
-                            <span>{`${0 - topMover.risingPercent}%`}</span>
-                          </div>
-                        )}
+                      {topMover.risingPercent > 0 ? (
+                        <div className="flex text-custom-green">
+                          <FiArrowUpRight className="mt-0.5" />
+                          <span>{`${topMover.risingPercent}%`}</span>
+                        </div>
+                      ) : (
+                        <div className="flex text-custom-red">
+                          <FiArrowDownRight className="mt-0.5" />
+                          <span>{`${0 - topMover.risingPercent}%`}</span>
+                        </div>
+                      )}
                       {/* </div> */}
                     </td>
                     <td className="hidden md:table-cell py-2 md:py-8">
