@@ -232,14 +232,12 @@ def update_token_data():
                     print(e)
                     logging.error(
                         "unable to to insert data in top_gainerstable")
+                
+                try:
+                    connection.close()
+                except:
+                    pass
 
-                except Exception as e:
-                    print(e)
-                    logging.error("Unable to write results to database")
-                    # fileName = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
-                    # logging.error(
-                    #     "local copy of results has been saved in {}.csv".format(fileName))
-                    # dbdf.to_csv("{}.csv".format(fileName))
         except:
             logging.error("something went wrong while updating results")
 

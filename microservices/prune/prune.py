@@ -54,6 +54,7 @@ while True:
         connection = connengine.connect()
         res = connection.execute(text("delete from token_cache where id not in (select token_cache_id from most_buy_orders) and token_cache.id not in (select token_cache_id from most_sell_orders) and token_cache.id not in (select token_cache_id from top_movers) and token_cache.id not in (select token_cache_id from top_gainers);"))
         logging.info("prune successfull")
+        connection.close()
     except:
         logging.error("prune failed")
 
