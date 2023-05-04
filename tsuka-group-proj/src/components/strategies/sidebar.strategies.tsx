@@ -29,8 +29,8 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
     >
       <div
         className={`${
-          open ? "translate-x-0 right-8" : "translate-x-full right-0"
-        } fixed top-0 z-40 h-screen p-6 overflow-y-auto shadow-xl transition-transform bg-tsuka-500 w-[516px]`}
+          open ? "translate-x-0 right-4 md:right-8" : "translate-x-full right-0"
+        } fixed top-0 z-40 h-screen p-6 overflow-y-auto shadow-xl transition-transform bg-tsuka-500 w-full md:w-[516px]`}
       >
         <div className="w-min whitespace-nowrap">
           <DefaultButton

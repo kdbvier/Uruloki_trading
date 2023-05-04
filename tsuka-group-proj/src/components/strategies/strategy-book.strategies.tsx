@@ -33,7 +33,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
           <span
             key={index}
             onClick={() => setSelectedPath(path)}
-            className={`p-4 text-center mx-2 text-lg font-semibold text-tsuka-50 cursor-pointer`}
+            className={`p-4 md:text-center mx-2 text-sm text-left md:text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
           </span>
@@ -46,7 +46,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
       <div>
         {strategies && (
           <div className="p-4 flex">
-            <div className="flex-1">
+            <div className="flex-1 overflow-x-auto">
               <table className="overflow-auto w-full">
                 <thead className="text-sm text-left font-normal text-tsuka-300 border-b border-tsuka-400">
                   <tr>
@@ -66,7 +66,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
                     <th className="px-4 py-2" />
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="">
                   {strategies?.map((item, index) => (
                     <tr
                       key={index}

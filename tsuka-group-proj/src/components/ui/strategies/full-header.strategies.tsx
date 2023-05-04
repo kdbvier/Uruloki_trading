@@ -49,7 +49,7 @@ export const FullHeaderStrategies: React.FC<FullHeaderStrategiesProps> = ({
       {!value && "Strategy ID not found"}
       {status === "ok" && value && (
         <>
-          <div className="flex w-full items-center justify-center">
+          <div className="flex w-full items-start md:items-center justify-center flex-col md:flex-row">
             <div className="px-2 flex-1 flex-col">
               <p className="text-3xl">
                 #{strategyId}
@@ -71,7 +71,7 @@ export const FullHeaderStrategies: React.FC<FullHeaderStrategiesProps> = ({
                 </label>
               </div>
             </div>
-            <div className="text-sm justify-end w-full max-w-xs">
+            <div className="text-sm mt-4 md:mt-0 justify-end w-full max-w-xs">
               <DefaultButton
                 label="Create an Order"
                 callback={() => console.log("default click")}

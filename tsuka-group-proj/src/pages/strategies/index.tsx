@@ -1,6 +1,7 @@
 import { StrategyBookStrategies } from "@/components/strategies/strategy-book.strategies";
 import { getStrategies } from "@/store/apps/strategies";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function StrategyDetails() {
@@ -14,16 +15,26 @@ export default function StrategyDetails() {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col">
-      {strategies && (
-        <div className="p-8">
-          <div className="w-full gap-4 text-tsuka-300 flex py-2 mb-2 flex-col md:items-center md:flex-row">
-            <p className="text-4xl text-tsuka-50">My Strategies</p>
-            <p className="text-2xl">My Orders</p>
-          </div>
-          <StrategyBookStrategies strategies={strategies} />
-        </div>
-      )}
+    <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
+      <div className="w-full gap-4 text-tsuka-300 flex py-2 mb-2 md:items-center flex-row">
+        <Link
+          href={"/strategies"}
+          className={
+            "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
+          }
+        >
+          My Strategies
+        </Link>
+        <Link
+          href={"/my-orders"}
+          className={
+            "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
+          }
+        >
+          My Orders
+        </Link>
+      </div>
+      {strategies && <StrategyBookStrategies strategies={strategies} />}
     </div>
   );
 }
