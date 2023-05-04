@@ -29,20 +29,7 @@ export default async function tokenPriceInPairHandler(
           break;
         }
         const { pair_address } = value;
-        const tokenPairResponse = await axios.post(
-          "https://graphql.bitquery.io",
-          {
-            query: G_QUERY_GetTokenPair,
-            variables: {
-              pair_address,
-            },
-          },
-          {
-            headers: {
-              "X-API-KEY": process.env.X_API_KEY,
-            },
-          }
-        );
+        const tokenPairResponse = await G_QUERY_GetTokenPair(pair_address);
         if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
           res.status(404).json({
             payload: undefined,
@@ -71,20 +58,9 @@ export default async function tokenPriceInPairHandler(
           pairedTokenAddress = token1Address;
         }
 
-        const quotePriceResponse = await axios.post(
-          "https://graphql.bitquery.io",
-          {
-            query: G_QUERY_GetQuotePrice,
-            variables: {
-              baseCurrency: tokenAddress,
-              quoteCurrency: pairedTokenAddress,
-            },
-          },
-          {
-            headers: {
-              "X-API-KEY": process.env.X_API_KEY,
-            },
-          }
+        const quotePriceResponse = await G_QUERY_GetQuotePrice(
+          tokenAddress,
+          pairedTokenAddress
         );
         const { quotePrice } =
           quotePriceResponse.data.data.ethereum.dexTrades[0];
@@ -97,20 +73,9 @@ export default async function tokenPriceInPairHandler(
             pairedTokenAddress === process.env.WETH_ADDR
               ? process.env.USDC_ADDR
               : process.env.USDT_ADDR;
-          const baseQuotePriceResponse = await axios.post(
-            "https://graphql.bitquery.io",
-            {
-              query: G_QUERY_GetQuotePrice,
-              variables: {
-                baseCurrency,
-                quoteCurrency,
-              },
-            },
-            {
-              headers: {
-                "X-API-KEY": process.env.X_API_KEY,
-              },
-            }
+          const baseQuotePriceResponse = await G_QUERY_GetQuotePrice(
+            baseCurrency,
+            quoteCurrency as string
           );
           const { quotePrice: baseQuotePrice } =
             baseQuotePriceResponse.data.data.ethereum.dexTrades[0];
