@@ -23,6 +23,7 @@
     "esbuild": "^0.17.17",
     "eslint": "^8.38.0",
     "eslint-config-next": "^13.3.0",
+    "ethers": "^5.7.2",
     "generate": "^0.10.0",
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
@@ -38,7 +39,8 @@
     "react-redux": "^8.0.5",
     "react-toastify": "^9.1.2",
     "react-ts-tradingview-widgets": "^1.0.14",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "wagmi": "^0.12.12"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.0.6",
