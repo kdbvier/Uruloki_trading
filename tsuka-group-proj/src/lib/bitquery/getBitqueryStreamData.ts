@@ -42,7 +42,8 @@ const transformStreamData = (data: any) => {
   // const time =  moment(data.data.EVM.DEXTrades[0].Block.Time).format('YYYY-MM-DD');
   
   return {
-    time: moment(time).format('YYYY-MM-DD'),
+    // time: moment(time).format('YYYY-MM-DD'),
+    time: (new Date(time)).getTime()/1000,
     open,
     high,
     low,

@@ -3,7 +3,11 @@ import { createChart } from 'lightweight-charts';
 import { getBitqueryOHLCData } from '../../lib/bitquery/getBitqueryOHLCData';
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-
+// price label bg color #f03349
+// time label bg color #363a45
+// down color #d83045
+// up color #179981
+// average line color #199a82
 const BitqueryOHLCChart = () => {
   const chartRef = useRef();
   const barSeriesRef = useRef();
@@ -22,32 +26,32 @@ const BitqueryOHLCChart = () => {
       layout: {
         background: {
           type: 'solid',
-          color: '#222',
+          color: '#151924',
         },
-        textColor: '#DDD',
+        textColor: '#abacb1',
       },
       crosshair: {
         mode: LightweightCharts.CrosshairMode.Normal,
         // Vertical crosshair line (showing Date in Label)
         vertLine: {
           width: 8,
-          color: '#C3BCDB44',
+          color: '#474a55',
           style: LightweightCharts.LineStyle.Solid,
-          labelBackgroundColor: '#9B7DFF',
+          labelBackgroundColor: '#474a55',
         },
 
         // Horizontal crosshair line (showing Price in Label)
         horzLine: {
-            color: '#9B7DFF',
-            labelBackgroundColor: '#9B7DFF',
+            color: '#363a45',
+            labelBackgroundColor: '#363a45',
         },
       },
       PriceRange: {
         minValue: 0, // start from 0
       },
       rightPriceScale: {
-        borderColor: '#71649C',
-        autoScale: false,
+        borderColor: 'rgba(197, 203, 206, 0.5)',
+        // autoScale: false,
         minValue: 0, 
       },
       
@@ -59,54 +63,41 @@ const BitqueryOHLCChart = () => {
           color: 'rgba(197, 203, 206, 0.1)',
         },
       },
-      
+      localization: {
+        timeFormatter: businessDayOrTimestamp => {
+            return new Date(businessDayOrTimestamp).toLocaleString(); //or whatever JS formatting you want here
+        },
+      },
+      timeScale: {
+        tickMarkFormatter: (businessDayOrTimestamp) => {
+          const date = new Date(businessDayOrTimestamp * 1000); // multiply by 1000 to convert to milliseconds
+          const hours = date.getHours().toString().padStart(2, '0'); // get hours and pad with leading zero if necessary
+          const minutes = date.getMinutes().toString().padStart(2, '0'); // get minutes and pad with leading zero if necessary
+          const timeString = `${hours}:${minutes}`;
+          return timeString;
+        },
+      },
     });
     // lineSeries
     const lineSeries = chart.addLineSeries({
-      color: '#26a69a',
-      lineWidth: 2,
-      
-      autoscaleInfoProvider: () => ({
-        priceRange: {
-            minValue: 0,
-            maxValue: 100,
-        },
-        margins: {
-            above: 10,
-            below: 10,
-        },
-      }),
     });
-    
 
-    // Apply the options to the chart
-    chart.applyOptions({
-      handleScale: {
-        axisPressedMouseMove: {
-          price: false,
-          time: false
-        },
-      },
-      
-    });
-        // Save the reference to the line series in a ref object
+      // Save the reference to the line series in a ref object
     lineSeriesRef.current = lineSeries;
     var mainSeries = chart.addBarSeries({
       thinBars: true,
-      openVisible: true,
       downColor: '#ff4976',
       upColor: '#4bffb5',
     });
     
     barSeriesRef.current = mainSeries;
     var temp = [];
-    var mainSeries1  = chart.addCandlestickSeries();
     // Changing the Candlestick colors
     mainSeries.applyOptions({
-      wickUpColor: 'rgb(54, 116, 217)',
-      upColor: 'rgb(54, 116, 217)',
-      wickDownColor: 'rgb(225, 50, 85)',
-      downColor: 'rgb(225, 50, 85)',
+      // wickUpColor: '#179981',
+      upColor: '#179981',
+      // wickDownColor: '#d83045',
+      downColor: '#d83045',
       borderVisible: false,
     }); 
     var tempTime;
@@ -114,13 +105,11 @@ const BitqueryOHLCChart = () => {
       var tempItem = {};
       if(tempTime == value["time"])
         return;
-      console.log("tempTime:1",tempTime);
 
       Object.keys(value).forEach((key) => {
         tempItem[key] = value[key];
       })
       tempTime = tempItem["time"];
-      console.log("tempTime:2",tempTime);
       temp.push(tempItem);
     })
     console.log("bitquery:::", temp);
@@ -131,7 +120,20 @@ const BitqueryOHLCChart = () => {
 
       // Compare the dates
       return dateA - dateB;
-    })
+    });
+    // const data = [
+    //   { time: '2018-12-22', open: 75.16, high: 82.84, low: 36.16, close: 45.72 },
+    //   { time: '2018-12-23', open: 45.12, high: 53.90, low: 45.12, close: 48.09 },
+    //   { time: '2018-12-24', open: 60.71, high: 60.71, low: 53.39, close: 59.29 },
+    //   { time: '2018-12-25', open: 68.26, high: 68.26, low: 59.04, close: 60.50 },
+    //   { time: '2018-12-26', open: 67.71, high: 105.85, low: 66.67, close: 91.04 },
+    //   { time: '2018-12-27', open: 91.04, high: 121.40, low: 82.70, close: 111.40 },
+    //   { time: '2018-12-28', open: 111.51, high: 142.83, low: 103.34, close: 131.25 },
+    //   { time: '2018-12-29', open: 131.33, high: 151.17, low: 77.68, close: 96.43 },
+    //   { time: '2018-12-30', open: 106.33, high: 110.20, low: 90.39, close: 98.10 },
+    //   { time: '2018-12-31', open: 109.87, high: 114.69, low: 85.66, close: 111.26 },
+    // ];
+    
     const candlestickSeries = chart.addCandlestickSeries({
       upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
       wickUpColor: '#26a69a', wickDownColor: '#ef5350',
@@ -150,31 +152,8 @@ const BitqueryOHLCChart = () => {
     });
 
     // Set the data for the Area Series
-    areaSeries.setData(lineData);
-
-    const data = [
-      { time: '2018-12-22', open: 75.16, high: 82.84, low: 36.16, close: 45.72 },
-      { time: '2018-12-23', open: 45.12, high: 53.90, low: 45.12, close: 48.09 },
-      { time: '2018-12-24', open: 60.71, high: 60.71, low: 53.39, close: 59.29 },
-      { time: '2018-12-25', open: 68.26, high: 68.26, low: 59.04, close: 60.50 },
-      { time: '2018-12-26', open: 67.71, high: 105.85, low: 66.67, close: 91.04 },
-      { time: '2018-12-27', open: 91.04, high: 121.40, low: 82.70, close: 111.40 },
-      { time: '2018-12-28', open: 111.51, high: 142.83, low: 103.34, close: 131.25 },
-      { time: '2018-12-29', open: 131.33, high: 151.17, low: 77.68, close: 96.43 },
-      { time: '2018-12-30', open: 106.33, high: 110.20, low: 90.39, close: 98.10 },
-      { time: '2018-12-31', open: 109.87, high: 114.69, low: 85.66, close: 111.26 },
-    ];
-
-    // Setting the border color for the horizontal axis
-    chart.timeScale().applyOptions({
-      borderColor: '#71649C',
-    });
-
-    // Example of applying both properties in a single call
-    chart.timeScale().applyOptions({
-      borderColor: '#71649C',
-      barSpacing: 10,
-    });
+    // areaSeries.setData(lineData);
+   
     chart.timeScale().fitContent();
 
   //   var lastClose = data[data.length - 1].close;
@@ -315,16 +294,15 @@ const BitqueryOHLCChart = () => {
   }, [dispatch, firstBitquery]);
 
   useEffect(() => {
-    console.log("lineSeriesRef.current:",lineSeriesRef.current);
-    console.log("streamValue:",streamValue.time);
-    if (typeof(streamValue.time) == "undefined" || !lineSeriesRef.current) return;
+    
+    if (typeof(streamValue?.time) == "undefined" || !lineSeriesRef.current) return;
 
     const updatedData = {
       time: streamValue.time,
-      open: parseFloat(streamValue.open/19030),
-      high: parseFloat(streamValue.high/19030),
-      low: parseFloat(streamValue.low/19030),
-      close: parseFloat(streamValue.close/19030),
+      open: parseFloat(streamValue.open),
+      high: parseFloat(streamValue.high),
+      low: parseFloat(streamValue.low),
+      close: parseFloat(streamValue.close),
     };
     // const updatedData = {
     //   time: streamValue.time,

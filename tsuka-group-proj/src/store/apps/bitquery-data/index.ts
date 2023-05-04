@@ -18,9 +18,9 @@ const initialState: BitqueryDataState = {
 
 const transformData = async (data: any) => {
   return data.map((item:any) => ({
-    time: moment(item.timeInterval.minute).format('YYYY-MM-DD'),
+    // time: moment(item.timeInterval.minute).format('YYYY-MM-DD'),
     // time: new Date(moment(item.timeInterval.minute).format('YYYY-MM-DD')).getTime(),
-    // time: item.timeInterval.minute,
+    time: (new Date(item.timeInterval.minute + " UTC")).getTime(),
     open: parseFloat(item.open) * item.baseAmount,
     high: parseFloat(item.high) * item.baseAmount,
     low: parseFloat(item.low) * item.baseAmount,
@@ -39,16 +39,16 @@ const transformStreamData = (data: any) => {
   // const open = prices[0];
 
   const buySideTime = buySide.length !== 0 ? buySide[buySide.length-1].Block.Time : ""; 
-  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Buy.Price : "";  
-  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Buy.Price)) : "";
-  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Buy.Price)) : ""; 
-  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Buy.Price : ""; 
+  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Sell.Price / buySide[0].Trade.Buy.Price : "";  
+  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Sell.Price / item.Trade.Buy.Price)) : "";
+  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Sell.Price / item.Trade.Buy.Price)) : ""; 
+  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Sell.Price / buySide[buySide.length -1].Trade.Buy.Price : ""; 
 
   const sellSideTime = sellSide.length !== 0 ? sellSide[sellSide.length -1].Block.Time : ""; 
-  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Buy.Price : "";  
-  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) => item.Trade.Buy.Price)) : "";
-  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) => item.Trade.Buy.Price)) : ""; 
-  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Buy.Price : ""; 
+  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Sell.Price / sellSide[0].Trade.Buy.Price : "";  
+  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) =>item.Trade.Sell.Price / item.Trade.Buy.Price)) : "";
+  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) =>item.Trade.Sell.Price / item.Trade.Buy.Price)) : ""; 
+  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Sell.Price / sellSide[sellSide.length -1].Trade.Buy.Price : ""; 
   console.log("buySideTime",buySideTime);
   console.log("buySideClose",buySideClose);
 
@@ -63,7 +63,8 @@ const transformStreamData = (data: any) => {
   // const time =  moment(data.data.EVM.DEXTrades[0].Block.Time).format('YYYY-MM-DD');
   
   return {
-    time: moment(time).format('YYYY-MM-DD'),
+    // time: moment(time).format('YYYY-MM-DD'),
+    time: (new Date(time)).getTime()/1000,
     open,
     high,
     low,
@@ -94,7 +95,7 @@ export const getBitqueryStreamInfo = createAsyncThunk(
     const responsData = await getBitqueryStreamData();
     const tranData = await transformStreamData(responsData);
     console.log("here isfddddddddddddddddddddddddd")
-    return tranData;
+    // return tranData;
   }
 );
 

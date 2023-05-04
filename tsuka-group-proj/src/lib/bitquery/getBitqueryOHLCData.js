@@ -9,10 +9,11 @@ const fetchOHLCData = async () => {
   {
     ethereum(network: ethereum) {
       dexTrades(
-        options: {limit: 10000, asc: "timeInterval.minute"}
-        date: {since: "2023-01-01"}
-        smartContractAddress: {is: "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640"}
-        tradeAmountUsd: {gt: 1}
+        options: {limit: 1000, asc: "timeInterval.minute"}
+        date: {since: "2023-04-10"}
+        baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}
+        quoteCurrency: {is: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"}
+        tradeAmountUsd: {gt: 10}
       ) {
         timeInterval {
           minute(count: 40)
