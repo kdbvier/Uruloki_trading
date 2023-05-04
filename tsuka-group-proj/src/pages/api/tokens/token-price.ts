@@ -9,11 +9,6 @@ const reqBodySchema = Joi.object({
 });
 
 const prisma = new PrismaClient();
-const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
-const DAI_ADDR = "0x6b175474e89094c44da98b954eedeac495271d0f";
-const USDC_ADDR = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
-const USDT_ADDR = "0xdac17f958d2ee523a2206206994597c13d831ec7";
-const X_API_KEY = "BQYfyvw31f5AN6nWgSkVNmVwba7AI4f1";
 
 export default async function tokenPriceInPairHandler(
   req: NextApiRequest,
@@ -73,7 +68,7 @@ export default async function tokenPriceInPairHandler(
           },
           {
             headers: {
-              "X-API-KEY": X_API_KEY,
+              "X-API-KEY": process.env.X_API_KEY,
             },
           }
         );
@@ -83,9 +78,12 @@ export default async function tokenPriceInPairHandler(
         } = tokenPairResponse.data.data.ethereum.dexTrades[0];
         let token0Addr, token1Addr;
         if (
-          [WETH_ADDR, DAI_ADDR, USDT_ADDR, USDC_ADDR].includes(
-            String(token0Address).toLowerCase()
-          )
+          [
+            process.env.WETH_ADDR,
+            process.env.DAI_ADDR,
+            process.env.USDT_ADDR,
+            process.env.USDC_ADDR,
+          ].includes(String(token0Address).toLowerCase())
         ) {
           token0Addr = token1Address;
           token1Addr = token0Address;
@@ -128,24 +126,27 @@ export default async function tokenPriceInPairHandler(
           },
           {
             headers: {
-              "X-API-KEY": X_API_KEY,
+              "X-API-KEY": process.env.X_API_KEY,
             },
           }
         );
         const { quotePrice } =
           quotePriceResponse.data.data.ethereum.dexTrades[0];
+        console.log("quotePrice", quotePrice);
         if (
-          String(token1Addr).toLowerCase() === WETH_ADDR ||
-          String(token1Addr).toLowerCase() === DAI_ADDR
+          String(token1Addr).toLowerCase() === process.env.WETH_ADDR ||
+          String(token1Addr).toLowerCase() === process.env.DAI_ADDR
         ) {
           const baseCurrency = token1Addr;
           const quoteCurrency =
-            token1Addr === WETH_ADDR ? USDC_ADDR : USDT_ADDR;
+            token1Addr === process.env.WETH_ADDR
+              ? process.env.USDC_ADDR
+              : process.env.USDT_ADDR;
           const baseQuotePriceResponse = await axios.post(
             "https://graphql.bitquery.io",
             {
               query: `
-              {
+                  {
                 ethereum(network: ethereum) {
                   dexTrades(
                     baseCurrency: {is: "${baseCurrency}"}
@@ -175,7 +176,7 @@ export default async function tokenPriceInPairHandler(
             },
             {
               headers: {
-                "X-API-KEY": X_API_KEY,
+                "X-API-KEY": process.env.X_API_KEY,
               },
             }
           );
