@@ -3,6 +3,7 @@ import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.t
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
 import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getHomrPageTokens } from "@/store/apps/tokens";
@@ -101,7 +102,10 @@ export default function Home() {
     <>
       <ToastContainer />
       {(status === "loading" || _.isEmpty(value)) && (
-        <div className="text-white text-2xl">Loading...</div>
+        <LoadingBox
+          title="Loading data"
+          description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
+        />
       )}
       {status === "ok" && !_.isEmpty(value) && (
         <div className="px-4 md:px-10 pt-6 pb-8">
