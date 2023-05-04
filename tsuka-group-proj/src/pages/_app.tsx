@@ -4,69 +4,47 @@ import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "../store";
 
-import { WagmiConfig, configureChains, createClient, mainnet } from "wagmi";
+import { WagmiConfig, configureChains, createClient } from "wagmi";
+import { arbitrum, mainnet, polygon } from "wagmi/chains";
 
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { publicProvider } from "wagmi/providers/public";
-
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import {
+  EthereumClient,
+  w3mConnectors,
+  w3mProvider,
+} from "@web3modal/ethereum";
+import { Web3Modal } from "@web3modal/react";
 
 import { useRouter } from "next/router";
 
-const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet],
-  [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
-    publicProvider(),
-  ]
-);
+const chains = [arbitrum, mainnet, polygon];
+const projectId = process.env.YOUR_PROJECT_ID as string;
 
-// Set up client
-const client = createClient({
+const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiClient = createClient({
   autoConnect: true,
-  connectors: [
-    new MetaMaskConnector({ chains }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: "wagmi",
-      },
-    }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        projectId: "...",
-      },
-    }),
-    new InjectedConnector({
-      chains,
-      options: {
-        name: "Injected",
-        shimDisconnect: true,
-      },
-    }),
-  ],
+  connectors: w3mConnectors({ projectId, version: 1, chains }),
   provider,
-  webSocketProvider,
 });
+const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isLandingPage = router.pathname === "/index" || router.pathname === "/";
   return (
-    <WagmiConfig client={client}>
-      <Provider store={store}>
-        {isLandingPage ? (
-          <Component {...pageProps} />
-        ) : (
-          <DashboardLayout>
+    <>
+      <WagmiConfig client={wagmiClient}>
+        <Provider store={store}>
+          {isLandingPage ? (
             <Component {...pageProps} />
-          </DashboardLayout>
-        )}
-      </Provider>
-    </WagmiConfig>
+          ) : (
+            <DashboardLayout>
+              <Component {...pageProps} />
+            </DashboardLayout>
+          )}
+        </Provider>
+      </WagmiConfig>
+
+      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+    </>
   );
 }

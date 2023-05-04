@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { HeaderMenuButton } from "@/components/ui/buttons/header-menu.button";
 import { HeaderNotificationButton } from "@/components/ui/buttons/header-notification.button";
-import { HeaderWalletButton } from "@/components/ui/buttons/header-wallet.button";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -10,23 +9,13 @@ import { HeaderLinkButton } from "../ui/buttons/header-link.button";
 import { Notifications } from "@/components/ui/tokens/notifications.token";
 import { INotification } from "@/global";
 
-import { Connector, useAccount, useConnect, useDisconnect } from "wagmi";
-
-import Modal from "./Modal";
+import { Web3Button } from "@web3modal/react";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [showNotify, setShowNotify] = useState<boolean>(false);
 
-  const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect();
-  const { disconnect } = useDisconnect();
-  const { address, isConnected } = useAccount();
-
-  const [showModal, setShowModal] = useState(false);
   const [network, setNetwork] = useState("");
-  const [headerWalletButtonLabel, setHeaderWalletButtonLabel] =
-    useState("Connect Wallet");
 
   const handleChainChanged = (chainId: any) => {
     setNetwork(chainId);
@@ -55,40 +44,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const openModal = () => {
-    setShowModal(true);
-    document.body.style.overflowY = "hidden";
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    document.body.style.overflowY = "auto";
-  };
-
-  const connectWallet = async (connector: Connector) => {
-    try {
-      connect({ connector });
-      if (typeof window.ethereum !== "undefined") {
-        const chainId = await window.ethereum.request({
-          method: "eth_chainId",
-        });
-        setNetwork(chainId);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    closeModal();
-  };
-
-  const disconnectWallet = () => {
-    try {
-      disconnect();
-    } catch (err) {
-      console.log(err);
-    }
-    closeModal();
-  };
-
   // useEffects
   useEffect(() => {
     if (network && network !== "0x1") {
@@ -101,14 +56,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       window.ethereum?.on("chainChanged", handleChainChanged);
     }
   }, []);
-
-  useEffect(() => {
-    setHeaderWalletButtonLabel(
-      isConnected
-        ? `${String(address).slice(0, 5)}...${String(address).slice(-3)}`
-        : "Connect Wallet"
-    );
-  }, [address]);
 
   const router = useRouter();
 
@@ -214,12 +161,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   showNotify={showNotify}
                   setShowNotify={setShowNotify}
                 />
-                <HeaderWalletButton
-                  callback={openModal}
-                  wallet={{
-                    label: headerWalletButtonLabel,
-                  }}
-                />
+                <Web3Button />
               </div>
             </div>
           </div>
@@ -253,37 +195,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           )}
         </nav>
         <div className="">{children}</div>
-        <Modal
-          showModal={showModal}
-          handleConfirm={disconnectWallet}
-          handleClose={closeModal}
-          footer={isConnected}
-        >
-          {isConnected ? (
-            <p className="mx-auto text-white text-center">
-              Do you want to logout?
-            </p>
-          ) : (
-            <div className="flex flex-col w-80">
-              {connectors.map((connector) => (
-                <button
-                  disabled={!connector.ready}
-                  key={connector.id}
-                  onClick={() => connectWallet(connector)}
-                  className="py-2 bg-black hover:bg-slate-400 rounded-lg my-2 text-white hover:text-slate-900 transition-all"
-                >
-                  {connector.name}
-                  {!connector.ready && " (unsupported)"}
-                  {isLoading &&
-                    connector.id === pendingConnector?.id &&
-                    " (connecting)"}
-                </button>
-              ))}
-
-              {error && <div>{error.message}</div>}
-            </div>
-          )}
-        </Modal>
       </main>
     </>
   );
