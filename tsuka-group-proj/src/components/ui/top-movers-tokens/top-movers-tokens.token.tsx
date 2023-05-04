@@ -12,6 +12,7 @@ import {
   FiFilter,
   FiSearch,
 } from "react-icons/fi";
+import { getBitqueryOHLCData } from '../../../lib/bitquery/getBitqueryOHLCData'
 
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
@@ -33,7 +34,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
     newArray[idx] = newValue;
     setCollapeds(newArray);
   };
-
+  
   return (
     <div className="w-full bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className={`md:flex justify-between items-center`}>

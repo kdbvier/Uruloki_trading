@@ -18,22 +18,39 @@ import { useEffect, useMemo, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
+import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
+import { getBitqueryInitInfo, getBitqueryStreamInfo } from "@/store/apps/bitquery-data";
 
 interface InputToken {
   id: string;
   token: string;
 }
 
-export default function Pair({ id }: { id: string }) {
+
+export default function Pair({tranData}: any, { id }: { id: string }) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const { value: userOrder } = useAppSelector((state) => state.userOrder);
+  const { value: bitquery } = useAppSelector((state) => state.bitquery);
   const router = useRouter();
   const [currentToken, setCurrentToken] = useState<Token>();
   const [compareToken, setCompareToken] = useState<Token>();
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+  const [combinedData, setCombinedData] = useState<any>();
   const { pair_id = id || "" } = router.query;
+
+  useEffect( () => {
+    return () => {
+      stopBitqueryStream();
+      console.log('This function will run when the component is unmounted');
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("useEffect");
+    dispatch(getBitqueryInitInfo());
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(getToken(pair_id as string));
@@ -53,6 +70,7 @@ export default function Pair({ id }: { id: string }) {
     return userOrder[0]?.orders;
   }, [userOrder]);
 
+  console.log("combinedData", combinedData);
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
       {token && (
