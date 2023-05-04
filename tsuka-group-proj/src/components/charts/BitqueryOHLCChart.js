@@ -42,8 +42,13 @@ const BitqueryOHLCChart = () => {
             labelBackgroundColor: '#9B7DFF',
         },
       },
+      PriceRange: {
+        minValue: 0, // start from 0
+      },
       rightPriceScale: {
         borderColor: '#71649C',
+        autoScale: false,
+        minValue: 0, 
       },
       
       grid: {
@@ -54,14 +59,37 @@ const BitqueryOHLCChart = () => {
           color: 'rgba(197, 203, 206, 0.1)',
         },
       },
+      
     });
     // lineSeries
     const lineSeries = chart.addLineSeries({
       color: '#26a69a',
       lineWidth: 2,
+      
+      autoscaleInfoProvider: () => ({
+        priceRange: {
+            minValue: 0,
+            maxValue: 100,
+        },
+        margins: {
+            above: 10,
+            below: 10,
+        },
+      }),
     });
     
-    // Save the reference to the line series in a ref object
+
+    // Apply the options to the chart
+    chart.applyOptions({
+      handleScale: {
+        axisPressedMouseMove: {
+          price: false,
+          time: false
+        },
+      },
+      
+    });
+        // Save the reference to the line series in a ref object
     lineSeriesRef.current = lineSeries;
     var mainSeries = chart.addBarSeries({
       thinBars: true,

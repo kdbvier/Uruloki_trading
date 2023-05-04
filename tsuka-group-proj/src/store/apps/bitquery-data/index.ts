@@ -81,6 +81,12 @@ export const getBitqueryInitInfo = createAsyncThunk(
     return tranData;
   }
 );
+export const initBitqueryData = createAsyncThunk(
+  "bitqueryInitInfo/get",
+  async (any,{dispatch}): Promise<any> => {
+    return [{}];
+  }
+);
 
 export const getBitqueryStreamInfo = createAsyncThunk(
   "bitqueryStreamInfo/get",

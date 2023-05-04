@@ -1,6 +1,6 @@
 import { request, gql } from 'graphql-request';
 import { createSubscriptionClient } from './subscription-client';
-import { getBitqueryStream } from '@/store/apps/bitquery-data';
+import { getBitqueryStream, initBitqueryData } from '@/store/apps/bitquery-data';
 import { store } from '@/store';
 import moment from 'moment';
 
@@ -164,4 +164,6 @@ export const getBitqueryStreamData = async () => {
 export const stopBitqueryStream = async () => {
   client.unsubscribeAll();
   console.log("unsubscripbe");
+  store.dispatch(initBitqueryData());
+
 };
