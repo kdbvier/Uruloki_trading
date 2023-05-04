@@ -5,6 +5,6 @@ export const formItensData: Array<string> = [
   "Price (USD)",
   "Volume",
   "Market Cap",
-  "Total Num. of Orders",
+  "Total Orders",
   "Order Split",
 ];
