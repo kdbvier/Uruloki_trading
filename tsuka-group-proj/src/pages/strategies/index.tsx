@@ -28,7 +28,7 @@ export default function StrategyDetails() {
         <Link
           href={"/my-orders"}
           className={
-            "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
+            "hidden md:block text-[36px] leading-[52px] text-tsuka-200"
           }
         >
           My Orders
