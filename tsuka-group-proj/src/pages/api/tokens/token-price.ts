@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
 import axios from "axios";
+import { G_QUERY_GetQuotePrice, G_QUERY_GetTokenPair } from "./g_queries";
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
@@ -28,43 +29,13 @@ export default async function tokenPriceInPairHandler(
           break;
         }
         const { pair_address } = value;
-        const tokenCache = await prisma.token_cache.findFirst({
-          where: {
-            pair_address,
-          },
-        });
-        if (!tokenCache) {
-          res.status(404).json({
-            payload: undefined,
-            message: `Token pair ${pair_address} not found!`,
-          });
-          return;
-        }
         const tokenPairResponse = await axios.post(
           "https://graphql.bitquery.io",
           {
-            query: `
-          {
-            ethereum(network: ethereum) {
-              dexTrades(
-                smartContractAddress: {is: "${pair_address}"}
-                options: {limit: 1}
-              ) {
-                exchange {
-                  fullName
-                }
-                token0: baseCurrency {
-                  symbol
-                  address
-                }
-                token1: quoteCurrency {
-                  symbol
-                  address
-                }
-              }
-            }
-          }
-          `,
+            query: G_QUERY_GetTokenPair,
+            variables: {
+              pair_address,
+            },
           },
           {
             headers: {
@@ -72,11 +43,19 @@ export default async function tokenPriceInPairHandler(
             },
           }
         );
+        if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
+          res.status(404).json({
+            payload: undefined,
+            message: `Pair address ${pair_address} not found`,
+          });
+          return;
+        }
         const {
           token0: { address: token0Address },
           token1: { address: token1Address },
         } = tokenPairResponse.data.data.ethereum.dexTrades[0];
-        let token0Addr, token1Addr;
+        console.log(token0Address, token1Address);
+        let tokenAddress, pairedTokenAddress;
         if (
           [
             process.env.WETH_ADDR,
@@ -85,44 +64,21 @@ export default async function tokenPriceInPairHandler(
             process.env.USDC_ADDR,
           ].includes(String(token0Address).toLowerCase())
         ) {
-          token0Addr = token1Address;
-          token1Addr = token0Address;
+          tokenAddress = token1Address;
+          pairedTokenAddress = token0Address;
         } else {
-          token0Addr = token0Address;
-          token1Addr = token1Address;
+          tokenAddress = token0Address;
+          pairedTokenAddress = token1Address;
         }
 
         const quotePriceResponse = await axios.post(
           "https://graphql.bitquery.io",
           {
-            query: `
-            {
-              ethereum(network: ethereum) {
-                dexTrades(
-                  baseCurrency: {is: "${token0Addr}"}
-                  quoteCurrency: {is: "${token1Addr}"}
-                  options: {desc: ["block.timestamp.time", "transaction.index"], limit: 1}
-                ) {
-                  block {
-                    height
-                    timestamp {
-                      time(format: "%Y-%m-%d %H:%M:%S")
-                    }
-                  }
-                  transaction {
-                    index
-                  }
-                  baseCurrency {
-                    symbol
-                  }
-                  quoteCurrency {
-                    symbol
-                  }
-                  quotePrice
-                }
-              }
-            }
-            `,
+            query: G_QUERY_GetQuotePrice,
+            variables: {
+              baseCurrency: tokenAddress,
+              quoteCurrency: pairedTokenAddress,
+            },
           },
           {
             headers: {
@@ -132,47 +88,23 @@ export default async function tokenPriceInPairHandler(
         );
         const { quotePrice } =
           quotePriceResponse.data.data.ethereum.dexTrades[0];
-        console.log("quotePrice", quotePrice);
         if (
-          String(token1Addr).toLowerCase() === process.env.WETH_ADDR ||
-          String(token1Addr).toLowerCase() === process.env.DAI_ADDR
+          String(pairedTokenAddress).toLowerCase() === process.env.WETH_ADDR ||
+          String(pairedTokenAddress).toLowerCase() === process.env.DAI_ADDR
         ) {
-          const baseCurrency = token1Addr;
+          const baseCurrency = pairedTokenAddress;
           const quoteCurrency =
-            token1Addr === process.env.WETH_ADDR
+            pairedTokenAddress === process.env.WETH_ADDR
               ? process.env.USDC_ADDR
               : process.env.USDT_ADDR;
           const baseQuotePriceResponse = await axios.post(
             "https://graphql.bitquery.io",
             {
-              query: `
-                  {
-                ethereum(network: ethereum) {
-                  dexTrades(
-                    baseCurrency: {is: "${baseCurrency}"}
-                    quoteCurrency: {is: "${quoteCurrency}"}
-                    options: {desc: ["block.timestamp.time", "transaction.index"], limit: 1}
-                    ) {
-                    block {
-                      height
-                      timestamp {
-                        time(format: "%Y-%m-%d %H:%M:%S")
-                      }
-                    }
-                    transaction {
-                      index
-                    }
-                    baseCurrency {
-                      symbol
-                    }
-                    quoteCurrency {
-                      symbol
-                    }
-                    quotePrice
-                  }
-                }
-              }
-              `,
+              query: G_QUERY_GetQuotePrice,
+              variables: {
+                baseCurrency,
+                quoteCurrency,
+              },
             },
             {
               headers: {
@@ -182,7 +114,6 @@ export default async function tokenPriceInPairHandler(
           );
           const { quotePrice: baseQuotePrice } =
             baseQuotePriceResponse.data.data.ethereum.dexTrades[0];
-          console.log("baseQuotePrice", baseQuotePrice);
           res.status(200).json({
             payload: { quote_price: quotePrice * baseQuotePrice },
             message: `Successfully found price quote for pair address ${pair_address}`,
