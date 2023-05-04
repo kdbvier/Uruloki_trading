@@ -302,7 +302,10 @@ const BitqueryOHLCChart = () => {
     //   time: streamValue.time,
     //   value: parseFloat(streamValue.close),
     // };
-    const temp = { time: '2023-05-04', open: 75.16, high: 82.84, low: 36.16, close: 45.72 };
+    const temp = [
+      { time: '2023-05-04', open: 75.16, high: 82.84, low: 36.16, close: 45.72 },
+      { time: '2023-05-04', open: 85.16, high: 92.84, low: 16.16, close: 75.72 },
+    ];
     console.log("updateData:",updatedData);
     barSeriesRef.current.update(updatedData);
   }, [dispatch, streamValue]);

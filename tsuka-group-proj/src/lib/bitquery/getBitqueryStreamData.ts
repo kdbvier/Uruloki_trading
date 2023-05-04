@@ -18,16 +18,16 @@ const transformStreamData = (data: any) => {
   // const open = prices[0];
 
   const buySideTime = buySide.length !== 0 ? buySide[buySide.length-1].Block.Time : ""; 
-  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Buy.Price : "";  
-  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Buy.Price)) : "";
-  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Buy.Price)) : ""; 
-  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Buy.Price : ""; 
+  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Buy.Price * buySide[0].Trade.Buy.Amount : "";  
+  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : "";
+  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : ""; 
+  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Buy.Price * buySide[buySide.length -1].Trade.Buy.Amount : ""; 
 
   const sellSideTime = sellSide.length !== 0 ? sellSide[sellSide.length -1].Block.Time : ""; 
-  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Buy.Price : "";  
-  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) => item.Trade.Buy.Price)) : "";
-  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) => item.Trade.Buy.Price)) : ""; 
-  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Buy.Price : ""; 
+  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Buy.Price * sellSide[0].Trade.Buy.Amount : "";  
+  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : "";
+  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : ""; 
+  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Buy.Price * sellSide[sellSide.length -1].Trade.Buy.Amount : ""; 
   console.log("buySideTime",buySideTime);
   console.log("buySideClose",buySideClose);
 
@@ -58,7 +58,7 @@ const fetchStreamData = async () => {
           EVM(network: eth, trigger_on: head) {
             buyside: DEXTrades(
               orderBy: {descending: Block_Time}
-              where: {Trade: {Buy: {Currency: {SmartContract: {is: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}}}}}
+              where: {Trade: {Buy: {Currency: {SmartContract: {is: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"}}}}}
             ) {
               Block {
                 Number

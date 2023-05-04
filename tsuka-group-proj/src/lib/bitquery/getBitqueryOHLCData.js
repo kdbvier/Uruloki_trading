@@ -1,7 +1,8 @@
 import { request, gql } from 'graphql-request';
 
 const BITQUERY_API_ENDPOINT = 'https://graphql.bitquery.io/';
-
+// baseCurrency: {is: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}
+// quoteCurrency: {is: "0x383518188C0C6d7730D91b2c03a03C837814a899"}
 // WETH = 1 USD / OHM = 10.39 USD
 const fetchOHLCData = async () => {
   const query = gql`
@@ -9,13 +10,12 @@ const fetchOHLCData = async () => {
     ethereum(network: ethereum) {
       dexTrades(
         options: {limit: 10000, asc: "timeInterval.minute"}
-        date: {since: "2023-04-01"}
-        baseCurrency: {is: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}
-        quoteCurrency: {is: "0x383518188C0C6d7730D91b2c03a03C837814a899"}
-        tradeAmountUsd: {gt: 40}
+        date: {since: "2023-01-01"}
+        smartContractAddress: {is: "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640"}
+        tradeAmountUsd: {gt: 1}
       ) {
         timeInterval {
-          minute(count: 10)
+          minute(count: 40)
         }
         baseCurrency {
           symbol
