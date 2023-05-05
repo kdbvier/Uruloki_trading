@@ -64,7 +64,7 @@ const transformStreamData = (data: any) => {
   
   return {
     // time: moment(time).format('YYYY-MM-DD'),
-    time: (new Date(time)).getTime()/1000,
+    time: (new Date(time)).getTime(),
     open,
     high,
     low,
@@ -83,9 +83,17 @@ export const getBitqueryInitInfo = createAsyncThunk(
   }
 );
 export const initBitqueryData = createAsyncThunk(
-  "bitqueryInitInfo/get",
+  "bitqueryInitInfo/delete",
   async (any,{dispatch}): Promise<any> => {
-    return [{}];
+    console.log("initBitquery");
+    return [];
+  }
+);
+export const initBitqueryStreamData = createAsyncThunk(
+  "bitqueryStreamInfo/delete",
+  async (any,{dispatch}): Promise<any> => {
+    console.log("initBitquerystream");
+    return {};
   }
 );
 
@@ -123,6 +131,30 @@ export const bitquerySlice = createSlice({
         // state.value = action.payload;
       })
       .addCase(getBitqueryInitInfo.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(initBitqueryData.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(initBitqueryData.fulfilled, (state, action) => {
+        console.log("initBitquerydata:", action.payload);
+        state.status = "ok";
+        state.value = action.payload;
+        // state.value = action.payload;
+      })
+      .addCase(initBitqueryData.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(initBitqueryStreamData.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(initBitqueryStreamData.fulfilled, (state, action) => {
+        console.log("initBitqueryStreamData:", action.payload);
+        state.status = "ok";
+        state.streamValue = action.payload;
+        // state.value = action.payload;
+      })
+      .addCase(initBitqueryStreamData.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(getBitqueryStreamInfo.pending, (state) => {

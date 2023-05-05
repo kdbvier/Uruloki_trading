@@ -1,6 +1,6 @@
 import { request, gql } from 'graphql-request';
 import { createSubscriptionClient } from './subscription-client';
-import { getBitqueryStream, initBitqueryData } from '@/store/apps/bitquery-data';
+import { getBitqueryStream, initBitqueryData, initBitqueryStreamData } from '@/store/apps/bitquery-data';
 import { store } from '@/store';
 import moment from 'moment';
 
@@ -18,16 +18,16 @@ const transformStreamData = (data: any) => {
   // const open = prices[0];
 
   const buySideTime = buySide.length !== 0 ? buySide[buySide.length-1].Block.Time : ""; 
-  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Buy.Price * buySide[0].Trade.Buy.Amount : "";  
-  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : "";
-  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : ""; 
-  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Buy.Price * buySide[buySide.length -1].Trade.Buy.Amount : ""; 
+  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Sell.Price / buySide[0].Trade.Buy.Price : "";  
+  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Sell.Price / item.Trade.Buy.Price)) : "";
+  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Sell.Price / item.Trade.Buy.Price)) : ""; 
+  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Sell.Price / buySide[buySide.length -1].Trade.Buy.Price : ""; 
 
   const sellSideTime = sellSide.length !== 0 ? sellSide[sellSide.length -1].Block.Time : ""; 
-  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Buy.Price * sellSide[0].Trade.Buy.Amount : "";  
-  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : "";
-  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) => item.Trade.Buy.Price * item.Trade.Buy.Amount)) : ""; 
-  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Buy.Price * sellSide[sellSide.length -1].Trade.Buy.Amount : ""; 
+  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Sell.Price / sellSide[0].Trade.Buy.Price : "";  
+  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) =>item.Trade.Sell.Price / item.Trade.Buy.Price)) : "";
+  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) =>item.Trade.Sell.Price / item.Trade.Buy.Price)) : ""; 
+  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Sell.Price / sellSide[sellSide.length -1].Trade.Buy.Price : ""; 
   console.log("buySideTime",buySideTime);
   console.log("buySideClose",buySideClose);
 
@@ -43,7 +43,7 @@ const transformStreamData = (data: any) => {
   
   return {
     // time: moment(time).format('YYYY-MM-DD'),
-    time: (new Date(time)).getTime()/1000,
+    time: (new Date(time)).getTime(),
     open,
     high,
     low,
@@ -166,5 +166,6 @@ export const stopBitqueryStream = async () => {
   client.unsubscribeAll();
   console.log("unsubscripbe");
   store.dispatch(initBitqueryData());
+  store.dispatch(initBitqueryStreamData());
 
 };
