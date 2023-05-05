@@ -8,12 +8,16 @@ import { PropsWithChildren, useState } from "react";
 import { HeaderLinkButton } from "../ui/buttons/header-link.button";
 import { Notifications } from "@/components/ui/tokens/notifications.token";
 import { INotification } from "@/global";
+import { DefaultButton } from "../ui/buttons/default.button";
+import { FiPlusCircle } from "react-icons/fi";
+import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 
 import { Web3Button } from "@web3modal/react";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [showNotify, setShowNotify] = useState<boolean>(false);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
 
   const [network, setNetwork] = useState("");
 
@@ -143,7 +147,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                     />
                   </p>
                 </div>
-                <div className="hidden md:ml-6 md:block">
+                <div className="hidden lg:ml-6 lg:block">
                   <div className="flex px-10 space-x-4">
                     {navLinks?.map(({ path, title }) => (
                       <HeaderLinkButton
@@ -153,7 +157,22 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                         active={path === router.pathname}
                       />
                     ))}
+                    <DefaultButton
+                      label="Create an Order"
+                      callback={() => setShowEditOrderModal(true)}
+                      filled={true}
+                      Icon={FiPlusCircle}
+                    />
                   </div>
+
+                  {showEditOrderModal && (
+                    <EditOrderToken
+                      isEdit={false}
+                      setShowEditOrderModal={setShowEditOrderModal}
+                      selectedOrderId={0} //TODO: Fix this
+                      closeHandler={() => {}} //TODO: Fix this
+                    />
+                  )}
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex flex-row-reverse md:flex-row items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
@@ -172,7 +191,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
           {!menuCollapsed && (
-            <div className="md:hidden" id="mobile-menu">
+            <div className="lg:hidden" id="mobile-menu">
               <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700">
                 {navLinks?.map(({ path, title }, idx) => (
                   <div
@@ -189,6 +208,12 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                     />
                   </div>
                 ))}
+                <DefaultButton
+                  label="Create an Order"
+                  callback={() => setShowEditOrderModal(true)}
+                  filled={true}
+                  Icon={FiPlusCircle}
+                />
               </div>
             </div>
           )}

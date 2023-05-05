@@ -27,7 +27,7 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `setup id ${strategyid} not found!`,
           });
           break;
         }
@@ -38,7 +38,7 @@ export default async function strategyHandler(
         });
         res.status(200).json({
           payload: deletedStrategy,
-          message: `Successfully deleted strategy id ${strategyid}`,
+          message: `Successfully deleted setup id ${strategyid}`,
         });
       } catch (err) {
         res.status(400).json({
@@ -65,7 +65,7 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `setup id ${strategyid} not found!`,
           });
           break;
         }
@@ -77,7 +77,7 @@ export default async function strategyHandler(
         });
         res.status(200).json({
           payload: strategy,
-          message: `Successfully updated strategy id ${strategyid}`,
+          message: `Successfully updated setup id ${strategyid}`,
         });
       } catch (err) {
         res.status(400).json({
