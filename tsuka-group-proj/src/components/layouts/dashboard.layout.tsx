@@ -33,8 +33,13 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
         try {
           await window.ethereum?.request({
             method: "wallet_addEthereumChain",
-            params: [{ chainId: "0x1" }],
-            rpcUrls: ["http://localhost:3000/"],
+            params: [
+              {
+                chainId: "0x1",
+                chainName: "ETH",
+                rpcUrls: ["https://eth.llamarpc.com"],
+              },
+            ],
           });
         } catch (addError) {
           // handle "add" error
@@ -53,7 +58,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
-      window.ethereum?.on("chainChanged", handleChainChanged);
+      window?.ethereum?.on?.("chainChanged", handleChainChanged);
     }
   }, []);
 

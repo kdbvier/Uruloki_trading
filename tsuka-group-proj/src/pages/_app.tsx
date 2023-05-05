@@ -17,7 +17,7 @@ import { Web3Modal } from "@web3modal/react";
 import { useRouter } from "next/router";
 
 const chains = [arbitrum, mainnet, polygon];
-const projectId = process.env.YOUR_PROJECT_ID as string;
+const projectId = process.env.NEXT_PUBLIC_YOUR_PROJECT_ID as string;
 
 const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiClient = createClient({
@@ -44,7 +44,15 @@ export default function App({ Component, pageProps }: AppProps) {
         </Provider>
       </WagmiConfig>
 
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+      <Web3Modal
+        projectId={projectId}
+        explorerExcludedWalletIds={"ALL"}
+        explorerRecommendedWalletIds={[
+          process.env.NEXT_PUBLIC_METAMASK_WALLET_ID as string,
+          process.env.NEXT_PUBLIC_COINBASE_WALLET_ID as string,
+        ]}
+        ethereumClient={ethereumClient}
+      />
     </>
   );
 }
