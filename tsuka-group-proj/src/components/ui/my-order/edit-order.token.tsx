@@ -367,7 +367,14 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
-              <span className="text-tsuka-50 text-sm">${0}</span>
+              <span className="text-tsuka-50 text-sm">
+                $
+                {handleNumberFormat(
+                  parseFloat(
+                    (parseFloat(amount) * parseFloat(token_price)).toFixed(2)
+                  )
+                )}
+              </span>
             </div>
           </div>
           <div className="flex justify-between text-sm mt-3">
@@ -376,9 +383,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </div>
           <div className="flex justify-between text-sm mt-1">
             <span className="text-tsuka-200">Price for an tokens</span>
-            <span className="text-custom-green">
-              {handleNumberFormat(parseFloat(amount) * parseFloat(token_price))}
-            </span>
           </div>
           <button
             className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"
