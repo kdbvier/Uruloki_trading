@@ -116,7 +116,7 @@ export default function Pair({ id }: { id: string }) {
           isEdit={false}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={0} //TODO: Fix this
-          closeHandler={()=>{}} //TODO: Fix this
+          closeHandler={() => {}} //TODO: Fix this
         />
       )}
     </div>

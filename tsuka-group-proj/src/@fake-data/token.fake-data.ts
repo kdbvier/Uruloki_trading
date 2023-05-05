@@ -44,12 +44,12 @@ export const tokensData: Array<Token> = [
     chain: {
       name: "Ethereum",
       code: "ETH",
-      address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
+      address: "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72",
     },
     pair: {
       code: "BTC",
       name: "Bitcoin",
-      address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
+      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
     },
     price: {
       value: "4,095.98",
@@ -80,11 +80,12 @@ export const tokensData: Array<Token> = [
     chain: {
       name: "Bitcoin",
       code: "BTC",
+      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
     },
     pair: {
       code: "ETH",
       name: "Ethereum",
-      address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
+      address: "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72",
     },
     price: {
       value: "59,521.23",
