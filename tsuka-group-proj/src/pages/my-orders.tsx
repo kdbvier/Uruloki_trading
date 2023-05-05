@@ -9,6 +9,7 @@ import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { OrderStatusEnum, UserOrder } from "@/types/token-order.type";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import Orders from "../lib/api/orders";
 
@@ -63,8 +64,23 @@ export default function MyOrder() {
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
       <div className={`w-full flex justify-between items-center`}>
-        <h1 className="hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50">
-          My Orders
+        <h1 className="hidden md:flex text-[40px] leading-[52px] font-medium text-tsuka-50 items-center flex-row gap-4">
+          <Link
+            href={"/strategies"}
+            className={
+              "hidden md:block text-[24px] leading-[52px] text-tsuka-200"
+            }
+          >
+            My Strategies
+          </Link>
+          <Link
+            href={"/my-orders"}
+            className={
+              "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
+            }
+          >
+            My Orders
+          </Link>
         </h1>
         <div className="w-full md:w-auto flex flex-wrap">
           <div className="w-full md:w-auto flex md:gap-1">

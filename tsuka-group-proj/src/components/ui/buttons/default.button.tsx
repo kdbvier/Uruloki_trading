@@ -5,6 +5,7 @@ export interface DefaultButtonProps {
   callback: () => void;
   filled?: boolean;
   Icon?: IconType;
+  RightIcon?: IconType;
 }
 
 export const DefaultButton: React.FC<DefaultButtonProps> = ({
@@ -12,6 +13,7 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
   callback,
   filled,
   Icon,
+  RightIcon,
 }) => {
   return (
     <button
@@ -29,6 +31,11 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
         </label>
       )}
       {label}
+      {RightIcon && (
+        <label className="ml-1">
+          <RightIcon />
+        </label>
+      )}
     </button>
   );
 };

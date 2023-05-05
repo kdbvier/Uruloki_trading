@@ -1,6 +1,6 @@
+import React, { useEffect } from "react";
 import { HeaderMenuButton } from "@/components/ui/buttons/header-menu.button";
 import { HeaderNotificationButton } from "@/components/ui/buttons/header-notification.button";
-import { HeaderWalletButton } from "@/components/ui/buttons/header-wallet.button";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -12,10 +12,59 @@ import { DefaultButton } from "../ui/buttons/default.button";
 import { FiPlusCircle } from "react-icons/fi";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 
+import { Web3Button } from "@web3modal/react";
+
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [showNotify, setShowNotify] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+
+  const [network, setNetwork] = useState("");
+
+  const handleChainChanged = (chainId: any) => {
+    setNetwork(chainId);
+  };
+
+  const switchToEthereum = async () => {
+    try {
+      await window.ethereum?.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x1" }],
+      });
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError?.code === 4902) {
+        try {
+          await window.ethereum?.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: "0x1",
+                chainName: "ETH",
+                rpcUrls: ["https://eth.llamarpc.com"],
+              },
+            ],
+          });
+        } catch (addError) {
+          // handle "add" error
+        }
+      }
+      // handle other "switch" errors
+    }
+  };
+
+  // useEffects
+  useEffect(() => {
+    if (network && network !== "0x1") {
+      switchToEthereum();
+    }
+  }, [network]);
+
+  useEffect(() => {
+    if (window.ethereum !== undefined) {
+      window?.ethereum?.on?.("chainChanged", handleChainChanged);
+    }
+  }, []);
 
   const router = useRouter();
 
@@ -136,10 +185,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   showNotify={showNotify}
                   setShowNotify={setShowNotify}
                 />
-                <HeaderWalletButton
-                  callback={() => console.log("wallet click")}
-                  wallet={{ label: "Darkdakgo.eth" }}
-                />
+                <Web3Button />
               </div>
             </div>
           </div>
