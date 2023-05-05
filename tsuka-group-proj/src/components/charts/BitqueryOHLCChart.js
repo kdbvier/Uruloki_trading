@@ -8,6 +8,22 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 // down color #d83045
 // up color #179981
 // average line color #199a82
+const getUpdatedData = (forTime, datas) => {
+  const filterData = datas.filter((data) => data.time < forTime);
+  const time = forTime;
+  const open = filterData[0].open;
+  const close = filterData[filterData.length - 1].close;
+  const high = filterData.length !== 0 ? Math.max(...filterData.map((item) => item.high)) : "";
+  const low = filterData.length !== 0 ? Math.max(...filterData.map((item) => item.low)) : "";
+
+  return {
+    time,
+    open,
+    high,
+    low,
+    close
+  }
+}
 const BitqueryOHLCChart = () => {
   const chartRef = useRef();
   const barSeriesRef = useRef();
@@ -15,6 +31,7 @@ const BitqueryOHLCChart = () => {
   const dispatch = useAppDispatch();
   const firstBitquery = useAppSelector((state) => state.bitquery.value);
   const streamValue = useAppSelector((state) => state.bitquery.streamValue);
+  const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
 
   useEffect(() => {
     console.log("firstBitquery:::", firstBitquery);
@@ -268,11 +285,11 @@ const BitqueryOHLCChart = () => {
         currency: 'USD', // Currency for data points
     }).format;
     // Apply the custom priceFormatter to the chart
-    chart.applyOptions({
-      localization: {
-          priceFormatter: myPriceFormatter,
-      },
-    });
+    // chart.applyOptions({
+    //   localization: {
+    //       priceFormatter: myPriceFormatter,
+    //   },
+    // });
 
     // Adjust the options for the priceScale of the mainSeries
     mainSeries.priceScale().applyOptions({
@@ -294,25 +311,21 @@ const BitqueryOHLCChart = () => {
   }, [dispatch, firstBitquery]);
 
   useEffect(() => {
+    console.log("useEffect",streamValue);
+    if (streamValue.length == 0 || !barSeriesRef.current) return;
     
-    if (typeof(streamValue?.time) == "undefined" || !lineSeriesRef.current) return;
-
-    const updatedData = {
-      time: streamValue.time,
-      open: parseFloat(streamValue.open),
-      high: parseFloat(streamValue.high),
-      low: parseFloat(streamValue.low),
-      close: parseFloat(streamValue.close),
-    };
     // const updatedData = {
     //   time: streamValue.time,
-    //   value: parseFloat(streamValue.close),
+    //   open: parseFloat(streamValue.open),
+    //   high: parseFloat(streamValue.high),
+    //   low: parseFloat(streamValue.low),
+    //   close: parseFloat(streamValue.close),
     // };
-    const temp = [
-      { time: '2023-05-04', open: 75.16, high: 82.84, low: 36.16, close: 45.72 },
-      { time: '2023-05-04', open: 85.16, high: 92.84, low: 16.16, close: 75.72 },
-    ];
-    console.log("updateData:",updatedData);
+    console.log("inner");
+
+    const updatedData = getUpdatedData(forwardTime, streamValue);
+    console.log("updatedData",updatedData);
+
     barSeriesRef.current.update(updatedData);
   }, [dispatch, streamValue]);
 

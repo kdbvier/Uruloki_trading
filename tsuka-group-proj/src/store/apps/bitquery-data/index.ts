@@ -6,13 +6,15 @@ import moment from 'moment';
 
 export interface BitqueryDataState {
   value: BitqueryData[];
-  streamValue: BitqueryData;
+  streamValue: BitqueryData[];
+  forwardTime: any;
   status: "ok" | "loading" | "failed";
 }
 
 const initialState: BitqueryDataState = {
   value: [] as BitqueryData[],
-  streamValue: {} as BitqueryData,
+  streamValue: [] as BitqueryData[],
+  forwardTime: {} as any,
   status: "ok",
 };
 
@@ -35,20 +37,35 @@ const transformStreamData = (data: any) => {
   console.log("buySide",buySide);
   console.log("sellSide",sellSide);
 
+  let buySideFiltered = buySide.length !== 0 ? buySide
+  .filter((item: any) => item.Trade.Sell.Currency.Symbol === "USDC") : [];
+
+  let { buySidePrices, buySideTimes } = buySideFiltered.reduce((acc: any, item: any) => {
+    acc.buySidePrices.push(item.Trade.Buy.Price);
+    acc.buySideTimes.push(item.Block.Time);
+    return acc;
+  }, { buySidePrices: [], buySideTimes: [] });
+  let sellSideFiltered = sellSide.length !== 0 ? sellSide
+  .filter((item: any) => item.Trade.Sell.Currency.Symbol === "USDC") : [];
+  let { sellSidePrices, sellSideTimes } = sellSideFiltered.reduce((acc: any, item: any) => {
+    acc.sellSidePrices.push(item.Trade.Buy.Price);
+    acc.sellSideTimes.push(item.Block.Time);
+    return acc;
+  }, { sellSidePrices: [], sellSideTimes: [] });
+
   // const prices = data.data.EVM.DEXTrades.map((trade: any) => trade.Trade.Buy.Price);
   // const open = prices[0];
+  const buySideTime = buySideTimes.length !== 0 ? buySideTimes[buySideTimes.length-1] : ""; 
+  const buySideOpen = buySidePrices.length !== 0 ? buySidePrices[0] : "";  
+  const buySideHigh = buySidePrices.length !== 0 ? Math.max(...buySidePrices) : ""
+  const buySideLow = buySidePrices.length !== 0 ? Math.min(...buySidePrices) : ""; 
+  const buySideClose = buySidePrices.length !== 0 ? buySidePrices[buySidePrices.length -1] : ""; 
 
-  const buySideTime = buySide.length !== 0 ? buySide[buySide.length-1].Block.Time : ""; 
-  const buySideOpen = buySide.length !== 0 ? buySide[0].Trade.Sell.Price / buySide[0].Trade.Buy.Price : "";  
-  const buySideHigh = buySide.length !== 0 ? Math.max(...buySide.map((item:any) => item.Trade.Sell.Price / item.Trade.Buy.Price)) : "";
-  const buySideLow = buySide.length !== 0 ? Math.min(...buySide.map((item:any) => item.Trade.Sell.Price / item.Trade.Buy.Price)) : ""; 
-  const buySideClose = buySide.length !== 0 ? buySide[buySide.length -1].Trade.Sell.Price / buySide[buySide.length -1].Trade.Buy.Price : ""; 
-
-  const sellSideTime = sellSide.length !== 0 ? sellSide[sellSide.length -1].Block.Time : ""; 
-  const sellSideOpen = sellSide.length !== 0 ? sellSide[0].Trade.Sell.Price / sellSide[0].Trade.Buy.Price : "";  
-  const sellSideHigh = sellSide.length !== 0 ? Math.max(...sellSide.map((item:any) =>item.Trade.Sell.Price / item.Trade.Buy.Price)) : "";
-  const sellSideLow = sellSide.length !== 0 ? Math.min(...sellSide.map((item:any) =>item.Trade.Sell.Price / item.Trade.Buy.Price)) : ""; 
-  const sellSideClose = sellSide.length !== 0 ? sellSide[sellSide.length -1].Trade.Sell.Price / sellSide[sellSide.length -1].Trade.Buy.Price : ""; 
+  const sellSideTime = sellSideTimes.length !== 0 ? sellSideTimes[sellSideTimes.length -1] : ""; 
+  const sellSideOpen = sellSidePrices.length !== 0 ? sellSidePrices[0] : "";  
+  const sellSideHigh = sellSidePrices.length !== 0 ? Math.max(...sellSidePrices) : "";
+  const sellSideLow = sellSidePrices.length !== 0 ? Math.min(...sellSidePrices) : "";
+  const sellSideClose = sellSidePrices.length !== 0 ? sellSidePrices[sellSidePrices.length -1] : ""; 
   console.log("buySideTime",buySideTime);
   console.log("buySideClose",buySideClose);
 
@@ -70,6 +87,22 @@ const transformStreamData = (data: any) => {
     low,
     close
   };
+}
+const getAddData = (forwardTime: any, data:any) => {
+  console.log("getAddData");
+  const filterData = data.filter((item: any) => item.time < forwardTime);
+  const time = forwardTime;
+  const open = filterData[0];
+  const close = filterData[filterData.length - 1];
+  const high = Math.max(...filterData);
+  const low = Math.min(...filterData);
+  return {
+    time,
+    open,
+    high,
+    low,
+    close
+  }
 }
 export const getBitqueryInitInfo = createAsyncThunk(
   "bitqueryInitInfo/get",
@@ -128,6 +161,7 @@ export const bitquerySlice = createSlice({
       .addCase(getBitqueryInitInfo.fulfilled, (state, action) => {
         state.status = "ok";
         state.value = [...state.value, ...action.payload];
+        state.forwardTime = action.payload[action.payload.length - 1].time + 2400000;
         // state.value = action.payload;
       })
       .addCase(getBitqueryInitInfo.rejected, (state) => {
@@ -174,7 +208,18 @@ export const bitquerySlice = createSlice({
       .addCase(getBitqueryStream.fulfilled, (state, action) => {
         console.log("action.payload:::::::::",action.payload);
         state.status = "ok";
-        state.streamValue = action.payload;
+        let temp = action.payload;
+        // temp.time = state.forwardTime;
+        state.streamValue = [...state.streamValue, temp];
+        if(action.payload.time > state.forwardTime){
+          const addData = getAddData(state.forwardTime, state.streamValue);
+          console.log("Done");
+          state.value = [...state.value, addData];
+          state.forwardTime = action.payload.time + 2400000;
+        }else{
+
+        }
+        // state.streamValue = action.payload;
         // state.value = [...state.value, action.payload];
         // state.value.push(action.payload);
       })
