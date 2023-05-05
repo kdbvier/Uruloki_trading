@@ -14,6 +14,7 @@ const getUpdatedData = (forTime, datas) => {
   const open = filterData[0].open;
   const close = filterData[filterData.length - 1].close;
   const high = filterData.length !== 0 ? Math.max(...filterData.map((item) => item.high)) : "";
+
   const low = filterData.length !== 0 ? Math.max(...filterData.map((item) => item.low)) : "";
 
   return {
