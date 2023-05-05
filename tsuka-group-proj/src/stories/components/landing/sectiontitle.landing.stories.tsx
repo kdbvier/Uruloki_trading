@@ -9,10 +9,12 @@ export default {
   title: "Landing/Component/SectionTitle",
   component: SectionTitleComponent,
   args: {
-    mainText: "All-in-one platform for decentralized asset trading and arbitrage",
-    beforeMainText:"Automate Your Crypto Trades with Uruloki",
-    afterMainText:"Our platform allows you to create an order book for decentralized assets, and group multiple orders into a single strategy for arbitraging between assets.",
-    beforeTextStyle:false,
+    mainText:
+      "All-in-one platform for decentralized asset trading and arbitrage",
+    beforeMainText: "Automate Your Crypto Trades with Uruloki",
+    afterMainText:
+      "Our platform allows you to create an order book for decentralized assets, and group multiple orders into a single setup for arbitraging between assets.",
+    beforeTextStyle: false,
   },
 } as Meta<SectionTitleProps>;
 
