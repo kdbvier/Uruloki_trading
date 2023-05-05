@@ -21,10 +21,10 @@ const transformData = async (data: any) => {
     // time: moment(item.timeInterval.minute).format('YYYY-MM-DD'),
     // time: new Date(moment(item.timeInterval.minute).format('YYYY-MM-DD')).getTime(),
     time: (new Date(item.timeInterval.minute + " UTC")).getTime(),
-    open: parseFloat(item.open) * item.baseAmount,
-    high: parseFloat(item.high) * item.baseAmount,
-    low: parseFloat(item.low) * item.baseAmount,
-    close: parseFloat(item.close) * item.baseAmount,
+    open: parseFloat(item.open),
+    high: parseFloat(item.high),
+    low: parseFloat(item.low),
+    close: parseFloat(item.close),
   }));
   
 };
