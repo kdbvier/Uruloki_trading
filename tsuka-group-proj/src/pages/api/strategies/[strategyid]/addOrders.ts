@@ -52,7 +52,7 @@ export default async function strategyHandler(
         console.log("created");
         const orderStrategiesCreated = await prisma.order_strategy.findMany({
           where: {
-            strategyId: strategyExist.strategy_id,
+            strategyId: Number(strategyExist.strategy_id),
           },
         });
         res.status(200).json({

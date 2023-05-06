@@ -46,10 +46,10 @@ model orders {
   order_type         orders_order_type?
   price_type         orders_price_type?
   user_id            Int
-  baseTokenShortName String?
-  pairTokenShortName String?
-  baseTokenLongName  String?
-  pairTokenLongName  String?
+  baseTokenShortName String?            @db.VarChar(255)
+  pairTokenShortName String?            @db.VarChar(255)
+  baseTokenLongName  String?            @db.VarChar(255)
+  pairTokenLongName  String?            @db.VarChar(255)
   token_cache        token_cache?       @relation(fields: [pair_address], references: [pair_address])
 
   @@index([user_id], map: "fk_user_id_idx")
@@ -57,11 +57,11 @@ model orders {
 }
 
 model strategies {
-  strategy_id Int    @id @unique(map: "order_id") @default(autoincrement())
-  name        String
+  strategy_id BigInt           @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  name        String           @db.LongText
   user_id     Int
-
-  @@index([user_id], map: "fk_user_id_idx")
+  createdAt   DateTime?        @db.Timestamp(0)
+  status      strategy_status?
 }
 
 model order_strategy {
@@ -69,7 +69,7 @@ model order_strategy {
   orderId    Int
   strategyId Int
 
-  @@unique([orderId, strategyId], name: "order_strategy_unique")
+  @@unique([orderId, strategyId], name: "order_strategy_unique", map: "order_strategy_unique")
 }
 
 model token_cache {
@@ -124,4 +124,10 @@ enum orders_order_type {
 enum orders_price_type {
   range
   single
+}
+
+enum strategy_status {
+  Active
+  Executed
+  Cancelled
 }
