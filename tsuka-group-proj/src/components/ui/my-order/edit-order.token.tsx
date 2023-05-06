@@ -224,8 +224,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {selectedOrder.baseTokenShortName} with{" "}
-                {selectedOrder.pairTokenShortName}
+                {selectedOrder.pairTokenShortName} with{" "}
+                {selectedOrder.baseTokenShortName}
               </p>
             </button>
             <button
@@ -238,7 +238,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                {selectedOrder.pairTokenShortName} with{" "}
+                {selectedOrder.pairTokenShortName} for{" "}
                 {selectedOrder.baseTokenShortName}
               </p>
             </button>
