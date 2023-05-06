@@ -84,7 +84,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   );
 
   useEffect(() => {
-    console.log("useEffect/pair_address", pair_address);
     dispatch(getTokenPairPrice(pair_address as string));
     dispatch(setSelectedOrder(selectedOrderId));
   }, []);
@@ -371,7 +370,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 $
                 {handleNumberFormat(
                   parseFloat(
-                    (parseFloat(amount) * parseFloat(token_price)).toFixed(2)
+                    (
+                      parseFloat(amount.split(",").join("")) *
+                      parseFloat(token_price)
+                    ).toFixed(2)
                   )
                 )}
               </span>
@@ -380,9 +382,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <div className="flex justify-between text-sm mt-3">
             <span className="text-tsuka-200">Slippage</span>
             <span className="text-tsuka-50">{2.5}%</span>
-          </div>
-          <div className="flex justify-between text-sm mt-1">
-            <span className="text-tsuka-200">Price for an tokens</span>
           </div>
           <button
             className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"

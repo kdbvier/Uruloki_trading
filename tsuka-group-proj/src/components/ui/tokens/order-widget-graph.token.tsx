@@ -13,7 +13,7 @@ export interface OrderWidgetGraphProp {
   budget: number;
   bound: ChartBound;
   status: string;
-  setShowEditOrderModal: (a: any) => void;
+  setShowEditOrderModal: (a: any, b: any) => void;
   setShowDeletedAlert: (a: any) => void;
 }
 
@@ -30,7 +30,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
 }) => {
   const [showEditOrDelete, setShowEditOrDelete] = useState<boolean>(false);
   const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
-  
+
   useEffect(() => {
     console.log(showEditOrDelete);
   }, [showEditOrDelete]);
@@ -42,7 +42,14 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
     return [percent1, percent2];
   }, [value1, value2, min, max]);
 
-  const statusColor = status===OrderStatusEnum.ACTIVE?"text-custom-primary":"text-tsuka-100";
+  const handleShowEditOrderModal = (show: boolean) => {
+    setShowEditOrderModal(show, id);
+  };
+
+  const statusColor =
+    status === OrderStatusEnum.ACTIVE
+      ? "text-custom-primary"
+      : "text-tsuka-100";
 
   return (
     <div className="mb-2">
@@ -51,14 +58,16 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
         <div className="relative">
           <span
             className="text-custom-primary flex items-center gap-2 cursor-pointer"
-            onClick={() => {setShowEditOrDelete(true);}}
+            onClick={() => {
+              setShowEditOrDelete(true);
+            }}
           >
             Edit <FiEdit />
           </span>
           {showEditOrDelete && (
             <EditOrDeleteToken
               setShowEditOrDelete={setShowEditOrDelete}
-              setShowEditOrderModal={setShowEditOrderModal}
+              setShowEditOrderModal={handleShowEditOrderModal}
               setShowConfirmDlg={setShowConfirmDlg}
             />
           )}

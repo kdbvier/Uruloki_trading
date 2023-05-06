@@ -18,9 +18,9 @@ const initialState: UserOrderState = {
 
 export const setSelectedOrder = createAsyncThunk(
   "userOrder/select",
-  async (order_id:number):Promise<Order> => {
-    if(order_id == -1){
-      return await {} as Order;
+  async (order_id: number): Promise<Order> => {
+    if (order_id == -1) {
+      return {} as Order;
     }
     const data = await Orders.getOrderById(order_id);
     return data;
@@ -28,34 +28,41 @@ export const setSelectedOrder = createAsyncThunk(
 );
 
 interface updateEditOrderParams {
-  id: number,
-  patchData: PatchOrder
+  id: number;
+  patchData: PatchOrder;
 }
-export const EditUserOrder = createAsyncThunk<unknown, updateEditOrderParams, {dispatch:any}>(
-  "userOrder/post",
-  async ({id, patchData}, {dispatch}):Promise<Order> => {
-    // const data = userOrder.find((item) => item.id === id)!;
-    const data = await Orders.editOrder(id, patchData);
-    console.log("data updated")
+export const EditUserOrder = createAsyncThunk<
+  unknown,
+  updateEditOrderParams,
+  { dispatch: any }
+>("userOrder/post", async ({ id, patchData }, { dispatch }): Promise<Order> => {
+  // const data = userOrder.find((item) => item.id === id)!;
+  const data = await Orders.editOrder(id, patchData);
+  console.log("data updated");
 
-    const user_id = 1;
-    if(data){
-      // dispatch(getUserOrder(user_id))
-      dispatch(getUserOrderWithFilter({id: user_id, status: "Open", search:""}))
-    }
-    return data;
+  const user_id = 1;
+  if (data) {
+    // dispatch(getUserOrder(user_id))
+    dispatch(
+      getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
+    );
   }
-);
+  return data;
+});
 interface getUserOrderWithFilterParams {
-  id: number,
-  status:string,
-  search: string,
+  id: number;
+  status: string;
+  search: string;
 }
-export const getUserOrderWithFilter = createAsyncThunk<UserOrder[], getUserOrderWithFilterParams, {dispatch:any}>(
+export const getUserOrderWithFilter = createAsyncThunk<
+  UserOrder[],
+  getUserOrderWithFilterParams,
+  { dispatch: any }
+>(
   "userOrder/getwithfilter",
-  async ({id, status, search}):Promise<UserOrder[]> => {
+  async ({ id, status, search }): Promise<UserOrder[]> => {
     // const data = userOrder.find((item) => item.id === id)!;
-    const data = await Orders.getOrdersbyUserIdandFilters(id, status, search)
+    const data = await Orders.getOrdersbyUserIdandFilters(id, status, search);
     return data;
   }
 );
@@ -63,20 +70,20 @@ export const getUserOrder = createAsyncThunk(
   "userOrder/get",
   async (id: string) => {
     // const data = userOrder.find((item) => item.id === id)!;
-    const data = await Orders.getOrdersbyUserId(id)
+    const data = await Orders.getOrdersbyUserId(id);
     return data;
   }
 );
 export const deleteOrder = createAsyncThunk(
   "userOrder/delete",
-  async (id: number, {dispatch}) => {
-    const data= await Orders.deleteOrder(id);
-    if(data){
-      dispatch(getUserOrderWithFilter({id:1, status:"Open", search:""}));
+  async (id: number, { dispatch }) => {
+    const data = await Orders.deleteOrder(id);
+    if (data) {
+      dispatch(getUserOrderWithFilter({ id: 1, status: "Open", search: "" }));
     }
     return data;
   }
-)
+);
 
 export const userOrderSlice = createSlice({
   name: "userOrder",
@@ -113,7 +120,7 @@ export const userOrderSlice = createSlice({
       })
       .addCase(setSelectedOrder.rejected, (state) => {
         state.status = "failed";
-      })
+      });
   },
 });
 
