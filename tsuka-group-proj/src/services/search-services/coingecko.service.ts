@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { checkIfTokenIsErc20 } from './etherscan.service';
 import { checkIfTokenIsOnUniswap } from './uniswap.service';
 
 // Simple in-memory cache
@@ -31,8 +32,7 @@ export async function searchTokensByName(name: string): Promise<any[]> {
         return null;
       }
 
-      // const isErc20 = await checkIfTokenIsErc20(platform);
-      const isErc20 = true;
+      const isErc20 = await checkIfTokenIsErc20(platform);
       const isOnUniswap = await checkIfTokenIsOnUniswap(platform);
 
       if (isErc20 && isOnUniswap) {
