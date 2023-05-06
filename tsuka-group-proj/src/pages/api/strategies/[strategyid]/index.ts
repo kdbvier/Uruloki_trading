@@ -72,7 +72,7 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `setup id ${strategyid} not found!`,
           });
           break;
         }
@@ -134,7 +134,7 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `setup id ${strategyid} not found!`,
           });
           break;
         }

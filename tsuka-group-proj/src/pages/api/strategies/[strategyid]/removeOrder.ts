@@ -35,7 +35,7 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `setup id ${strategyid} not found!`,
           });
           return;
         }
@@ -49,7 +49,7 @@ export default async function strategyHandler(
         if (!orderExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy ${strategyExist.name} hasn't got a order id ${order_id}!`,
+            message: `setup ${strategyExist.name} hasn't got a order id ${order_id}!`,
           });
           return;
         }
@@ -60,7 +60,7 @@ export default async function strategyHandler(
         });
         res.status(200).json({
           payload: deleteOrder,
-          message: `Successfully deleted strategy id ${strategyid}`,
+          message: `Successfully deleted setup id ${strategyid}`,
         });
       } catch (err) {
         res.status(400).json({
