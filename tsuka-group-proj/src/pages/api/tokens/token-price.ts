@@ -41,7 +41,6 @@ export default async function tokenPriceInPairHandler(
           token0: { address: token0Address },
           token1: { address: token1Address },
         } = tokenPairResponse.data.data.ethereum.dexTrades[0];
-        console.log(token0Address, token1Address);
         let tokenAddress, pairedTokenAddress;
         if (
           [
@@ -62,12 +61,13 @@ export default async function tokenPriceInPairHandler(
           tokenAddress,
           pairedTokenAddress
         );
-        const { quotePrice } =
+        const { quotePrice: basePrice } =
           quotePriceResponse.data.data.ethereum.dexTrades[0];
         if (
           String(pairedTokenAddress).toLowerCase() === process.env.WETH_ADDR ||
           String(pairedTokenAddress).toLowerCase() === process.env.DAI_ADDR
         ) {
+          const baseQuotePrice = basePrice;
           const baseCurrency = pairedTokenAddress;
           const quoteCurrency =
             pairedTokenAddress === process.env.WETH_ADDR
@@ -77,16 +77,20 @@ export default async function tokenPriceInPairHandler(
             baseCurrency,
             quoteCurrency as string
           );
-          const { quotePrice: baseQuotePrice } =
+          const { quotePrice: quoteQuotePrice } =
             baseQuotePriceResponse.data.data.ethereum.dexTrades[0];
           res.status(200).json({
-            payload: { quote_price: quotePrice * baseQuotePrice },
+            payload: {
+              base_price: baseQuotePrice * quoteQuotePrice,
+              quote_price: quoteQuotePrice,
+            },
             message: `Successfully found price quote for pair address ${pair_address}`,
           });
           return;
         }
+        console.log(basePrice, 1);
         res.status(200).json({
-          payload: { quote_price: quotePrice },
+          payload: { base_price: basePrice, quote_price: 1 },
           message: `Successfully found price quote for pair address ${pair_address}`,
         });
       } catch (err) {

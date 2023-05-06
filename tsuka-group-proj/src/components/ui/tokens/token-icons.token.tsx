@@ -1,5 +1,5 @@
 import { coinMirrorUrl } from "@/services/coin-mirror.service";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export interface TokenIconsTokenProps {
@@ -19,15 +19,27 @@ export const TokenIconsToken: React.FC<TokenIconsTokenProps> = ({
 }) => {
   const [hasError, setHasError] = useState(false);
 
+  useEffect(() => {
+    setHasError(false);
+  }, [name, shortName]);
+
   function handleImageInputError() {
     setHasError(true);
   }
 
-  const img = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name.replace(" ", "-").toLowerCase()}.png`;
+  const img = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name
+    .replace(" ", "-")
+    .toLowerCase()}.png`;
 
   return (
     <div className={className + " rounded-full overflow-hidden bg-tsuka-50"}>
-      <img src={hasError ? "/imgs/empty-img6.png" : img} width={width} height={height} alt="token" onError={handleImageInputError}/>
+      <img
+        src={hasError ? "/imgs/empty-img6.png" : img}
+        width={width}
+        height={height}
+        alt="token"
+        onError={handleImageInputError}
+      />
     </div>
   );
 };

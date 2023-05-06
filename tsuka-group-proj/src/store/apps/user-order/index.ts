@@ -6,12 +6,19 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface UserOrderState {
   selectedOrder: Order;
+  selectedTokenPairPrice: TokenPairPrice;
   value: UserOrder[];
   status: "ok" | "loading" | "failed";
 }
 
+export type TokenPairPrice = {
+  base_price: number;
+  quote_price: number;
+};
+
 const initialState: UserOrderState = {
   selectedOrder: {} as Order,
+  selectedTokenPairPrice: {} as TokenPairPrice,
   value: [] as UserOrder[],
   status: "ok",
 };
@@ -31,6 +38,14 @@ interface updateEditOrderParams {
   id: number;
   patchData: PatchOrder;
 }
+
+export const getTokenPairPrice = createAsyncThunk(
+  "tokenPairPrice/get",
+  async (pair_address: string): Promise<TokenPairPrice> => {
+    const data = Orders.getTokenPairPrice(pair_address);
+    return data;
+  }
+);
 export const EditUserOrder = createAsyncThunk<
   unknown,
   updateEditOrderParams,
@@ -120,6 +135,9 @@ export const userOrderSlice = createSlice({
       })
       .addCase(setSelectedOrder.rejected, (state) => {
         state.status = "failed";
+      })
+      .addCase(getTokenPairPrice.fulfilled, (state, action) => {
+        state.selectedTokenPairPrice = action.payload;
       });
   },
 });
