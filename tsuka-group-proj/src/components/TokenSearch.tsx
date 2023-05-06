@@ -1,7 +1,10 @@
 // components/TokenSearch.tsx
 
 import { useState, useCallback } from "react";
-import { searchTokensByName,getPairsByTokenAddress } from "../lib/search_4";
+import {
+  searchTokensByName,
+  getPairsByTokenAddress,
+} from "../services/search-services";
 
 export const TokenSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -10,7 +13,7 @@ export const TokenSearch = () => {
   const handleSearch = useCallback(async () => {
     console.log("search button click");
     const results = await searchTokensByName(searchQuery);
-    console.log("results: there:: ", results, );
+    console.log("results: there:: ", results);
     setTokens(results);
   }, [searchQuery]);
 
@@ -34,7 +37,9 @@ export const TokenSearch = () => {
             <button
               style={{ marginTop: 1, backgroundColor: "slateblue" }}
               onClick={async () => {
-                const pairAddresses = await getPairsByTokenAddress(token.platform);
+                const pairAddresses = await getPairsByTokenAddress(
+                  token.platform
+                );
                 console.log("pairAddresses are:: ", pairAddresses);
               }}
             >

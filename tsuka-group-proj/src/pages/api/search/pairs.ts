@@ -2,7 +2,7 @@
 
 import type { ApiResponse } from "@/types";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getPairsByTokenAddress } from "@/lib/search_4";
+import { getPairsByTokenAddress } from "@/services/search-services";
 
 export default async function orderHandler(
   req: NextApiRequest,
@@ -15,11 +15,11 @@ export default async function orderHandler(
         // const orders = await prisma.orders.findMany({});
         let token0 = query.token0 as string;
         const tokens = await getPairsByTokenAddress(token0);
-        if(tokens.length===0){
+        if (tokens.length === 0) {
           res.status(404).json({
-            payload:undefined,
-            message: `No pairs found with token address ${token0}`
-          })
+            payload: undefined,
+            message: `No pairs found with token address ${token0}`,
+          });
         } else {
           res
             .status(200)

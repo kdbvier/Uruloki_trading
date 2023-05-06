@@ -2,7 +2,7 @@
 
 import type { ApiResponse } from "@/types";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { searchTokensByName } from "@/lib/search_4";
+import { searchTokensByName } from "@/services/search-services";
 
 export default async function orderHandler(
   req: NextApiRequest,
