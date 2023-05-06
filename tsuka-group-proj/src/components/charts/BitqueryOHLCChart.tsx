@@ -8,9 +8,10 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 // up color #179981
 // average line color #199a82
 
-// To subscribe get OHLC data from the Store
+// To subscribe, get OHLC data from the Store
 const getUpdatedData = (forTime: string, datas:any) => {
-  const filterData = datas.filter((data:any) => data.time < forTime);
+  const filterData1 = datas.filter((data:any) => data.time < forTime);
+  const filterData = filterData1.filter((data:any) => parseInt(forTime) - 2400000 < data.time);
   const time = forTime;
   const open = filterData[0].open;
   const close = filterData[filterData.length - 1].close;
