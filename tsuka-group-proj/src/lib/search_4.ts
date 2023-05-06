@@ -3,10 +3,25 @@ import { GraphQLClient, gql } from 'graphql-request';
 
 const uniswapClient = new GraphQLClient('https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2');
 
+// Simple in-memory cache
+const cache = {
+  data: [],
+  lastFetch: 0,
+  expiresIn: 5 * 60 * 1000, // Cache expires in 5 minutes
+};
+
 export async function searchTokensByName(name: string): Promise<any[]> {
   try {
-    const response = await axios.get('https://api.coingecko.com/api/v3/coins/list?include_platform=true');
-    const tokens = response.data.filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()));
+    const now = Date.now();
+    // Check if data is cached and still valid
+    if (cache.data.length === 0 || now - cache.lastFetch > cache.expiresIn) {
+      console.log("New api request going:::::::")
+      const response = await axios.get('https://api.coingecko.com/api/v3/coins/list?include_platform=true');
+
+      cache.data = response.data;
+      cache.lastFetch = now;
+    }
+    const tokens = cache.data.filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()));
 
     const erc20Tokens = await Promise.all(tokens.map(async (coin: any) => {
       const id = coin.id;
