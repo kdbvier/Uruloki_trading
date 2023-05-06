@@ -43,7 +43,7 @@ export async function searchTokensByName(name: string): Promise<any[]> {
 
 export async function checkIfTokenIsErc20(address: string): Promise<boolean> {
   try {
-    const response = await axios.get(`https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=7QMDZUMHW83FN8XWXS88VAGGQIFIM43D1D`);
+    const response = await axios.get(`https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${process.env.ETHERSCAN_API_KEY}`);
     const contractABI = JSON.parse(response.data.result);
     const erc20Functions = ['totalSupply', 'balanceOf', 'transfer', 'transferFrom', 'approve', 'allowance'];
 
@@ -75,5 +75,45 @@ export async function checkIfTokenIsOnUniswap(address: string): Promise<boolean>
   } catch (error) {
     console.error(`Error checking if token is on Uniswap: ${error}`);
     return false;
+  }
+}
+
+export async function getPairsByTokenAddress(tokenAddress: string):Promise<any[]> {
+  try {
+    // Find pairs
+    const pairQuery = gql`
+      query {
+        pairs(where: {token0: "${tokenAddress.toLowerCase()}"}, orderBy: reserveUSD, orderDirection: desc) {
+          id
+          token0 {
+            symbol
+            name
+          }
+          token1 {
+            symbol
+            name
+          }
+        }
+      }
+    `;
+
+    // const pairResponse:any = await request(UNISWAP_V2_API, pairQuery);
+    const pairResponse: any = await uniswapClient.request(pairQuery);
+    const pairs = pairResponse.pairs;
+
+    if (pairs.length === 0) {
+      console.log(`No pairs found with token address ${tokenAddress}`);
+      return [];
+    }
+
+    console.log(`Pairs for token address ${tokenAddress}:`);
+    pairs.forEach((pair: any) => {
+      console.log(`Pair address: ${pair.id}`);
+      console.log(`${pair.token0.symbol} - ${pair.token1.symbol}`);
+    });
+    return pairs;
+  } catch (error) {
+    console.error('Error fetching pairs:', error);
+    return [];
   }
 }

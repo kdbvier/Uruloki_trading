@@ -1,10 +1,9 @@
 // components/TokenSearch.tsx
 
-import { getPairsByTokenAddress } from "@/lib/search_3";
 import { useState, useCallback } from "react";
 import { fuzzySearchERC20Tokens } from "../lib/search";
 // import { searchERCTokens, searchTokensByName } from "../lib/search_1";
-import { checkIfTokenIsErc20, checkIfTokenIsOnUniswap, searchTokensByName } from "../lib/search_4";
+import { checkIfTokenIsErc20, checkIfTokenIsOnUniswap, searchTokensByName,getPairsByTokenAddress } from "../lib/search_4";
 import { search22Tokens } from "../lib/search_2";
 // import {fetchRecentTokenPairs} from '../lib/search'
 
