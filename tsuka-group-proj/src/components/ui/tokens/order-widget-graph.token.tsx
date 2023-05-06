@@ -2,7 +2,7 @@ import { DeleteConfirmToken } from "@/components/ui/my-order/delete-confirm.toke
 import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token";
 import { ChartBound } from "@/types/chart-bound.type";
 import { OrderStatusEnum } from "@/types/token-order.type";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
@@ -13,9 +13,7 @@ export interface OrderWidgetGraphProp {
   budget: number;
   bound: ChartBound;
   status: string;
-  showPopupBg: boolean;
-  setShowPopupBg: (a: any) => void;
-  setShowEditOrderModal: (show: boolean, order_id:number) => void;
+  setShowEditOrderModal: (a: any) => void;
   setShowDeletedAlert: (a: any) => void;
 }
 
@@ -27,22 +25,15 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   budget,
   bound: { min, max },
   status,
-  showPopupBg,
-  setShowPopupBg,
   setShowEditOrderModal,
   setShowDeletedAlert,
 }) => {
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showEditOrDelete, setShowEditOrDelete] = useState<boolean>(false);
   const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
-
+  
   useEffect(() => {
-    if (showPopupBg == false) setShowPopup(false);
-    setShowConfirmDlg(false);
-  }, [showPopupBg]);
-
-  useEffect(() => {
-    if (showConfirmDlg == false) setShowPopupBg(false);
-  }, [showConfirmDlg]);
+    console.log(showEditOrDelete);
+  }, [showEditOrDelete]);
 
   const percents = useMemo(() => {
     const range = max - min;
@@ -57,29 +48,23 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
     <div className="mb-2">
       <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
         <p>{buy ? "BUY" : "SELL"}</p>
-        <div
-          className={`relative ${statusColor} flex items-center gap-2 cursor-pointer`}
-          onClick={status===OrderStatusEnum.ACTIVE?() => {
-            setShowPopup(true);
-            setShowPopupBg(true);
-          }:()=>{}}
-        >
-          Edit <FiEdit />
-          {showPopup && (
+        <div className="relative">
+          <span
+            className="text-custom-primary flex items-center gap-2 cursor-pointer"
+            onClick={() => {setShowEditOrDelete(true);}}
+          >
+            Edit <FiEdit />
+          </span>
+          {showEditOrDelete && (
             <EditOrDeleteToken
-              setShowPopupBg={setShowPopupBg}
-              setShowEditOrderModal={()=>{
-                setShowEditOrderModal(true, id);
-              }}
+              setShowEditOrDelete={setShowEditOrDelete}
+              setShowEditOrderModal={setShowEditOrderModal}
               setShowConfirmDlg={setShowConfirmDlg}
             />
           )}
           {showConfirmDlg && (
             <DeleteConfirmToken
-              setShowPopupBg={setShowPopupBg}
-              setShowConfirmDlg={(show:boolean)=>{
-                setShowConfirmDlg(show);
-              }}
+              setShowConfirmDlg={setShowConfirmDlg}
               deleteID={id}
               setShowDeletedAlert={setShowDeletedAlert}
             />

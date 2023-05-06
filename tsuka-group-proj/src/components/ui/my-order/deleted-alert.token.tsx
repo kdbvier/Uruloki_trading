@@ -2,18 +2,15 @@ import Image from "next/image";
 import { FiX } from "react-icons/fi";
 
 export interface DeletedAlertTokenProp {
-  setShowPopupBg: (a: any) => void;
   setShowDeletedAlert: (a: any) => void;
 }
 
 export const DeletedAlertToken: React.FC<DeletedAlertTokenProp> = ({
-  setShowPopupBg,
   setShowDeletedAlert,
 }) => {
   return (
     <div
       className="fixed left-0 bottom-0 z-30 bg-gradient-to-t from-[#13151F] to-transparent w-full py-4 lg:py-8 flex justify-center items-center"
-      onClick={() => setShowPopupBg(false)}
     >
       <div className="relative bg-tsuka-500 rounded-2xl p-5 pr-7 flex items-center mx-6">
         <Image src="/icons/alert.png" alt="alter" width={40} height={40} />

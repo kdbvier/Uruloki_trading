@@ -31,54 +31,56 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
-              <th className="py-2">Tokens</th>
+              <th className="py-2">Token</th>
               <th className="py-2 text-right md:text-left">Buy Orders</th>
             </tr>
           </thead>
           <tbody>
             {mostBuyOrders.map((mostBuyOrder, idx) => {
               return (
-                <tr
-                  onClick={() => {
-                    router.push("/pair/2");
-                  }}
-                  className="cursor-pointer border-t border-t-tsuka-400"
-                  key={idx}
-                >
-                  <td className="py-2 md:py-5">
-                    {mostBuyOrder.rank >= 1 && mostBuyOrder.rank <= 3 ? (
-                      <Image
-                        src={`/icons/medal${mostBuyOrder.rank}.png`}
-                        width={24}
-                        height={24}
-                        alt={"medal" + mostBuyOrder.rank}
+                mostBuyOrder.token.name && (
+                  <tr
+                    onClick={() => {
+                      router.push("/pair/2");
+                    }}
+                    className="cursor-pointer border-t border-t-tsuka-400"
+                    key={idx}
+                  >
+                    <td className="py-2 md:py-5">
+                      {mostBuyOrder.rank >= 1 && mostBuyOrder.rank <= 3 ? (
+                        <Image
+                          src={`/icons/medal${mostBuyOrder.rank}.png`}
+                          width={24}
+                          height={24}
+                          alt={"medal" + mostBuyOrder.rank}
+                        />
+                      ) : (
+                        <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">
+                          #{idx}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-2 md:py-5 flex items-center">
+                      <TokenIconsToken
+                        name={mostBuyOrder.token.id}
+                        shortName={mostBuyOrder.token.shortName}
                       />
-                    ) : (
-                      <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">
-                        #{idx}
+                      <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
+                        <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
+                          {mostBuyOrder.token.name}
+                        </p>
+                        <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
+                          {mostBuyOrder.token.shortName}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="py-2 md:py-5 text-right md:text-left">
+                      <span className="text-tsuka-200">
+                        {commafy(mostBuyOrder.buyOrders)}
                       </span>
-                    )}
-                  </td>
-                  <td className="py-2 md:py-5 flex items-center">
-                    <TokenIconsToken
-                      name={mostBuyOrder.token.id}
-                      shortName={mostBuyOrder.token.shortName}
-                    />
-                    <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                      <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                        {mostBuyOrder.token.name}
-                      </p>
-                      <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
-                        {mostBuyOrder.token.shortName}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="py-2 md:py-5 text-right md:text-left">
-                    <span className="text-tsuka-200">
-                      {commafy(mostBuyOrder.buyOrders)}
-                    </span>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                )
               );
             })}
           </tbody>

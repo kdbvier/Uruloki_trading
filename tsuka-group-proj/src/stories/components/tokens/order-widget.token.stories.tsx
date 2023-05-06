@@ -34,6 +34,7 @@ export default {
         prices: [5424.54, 1324.57],
       },
     ],
+    showPopupBg: false,
     setShowPopupBg: () => {},
     setShowEditOrderModal: () => {},
     setShowDeletedAlert: () => {},

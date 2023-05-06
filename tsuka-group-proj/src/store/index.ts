@@ -1,5 +1,7 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import poolInfoSlice from "./apps/pool-info";
+import strategiesSlice from "./apps/strategies";
+import strategyDetailsSlice from "./apps/strategy-details";
 import tokenSlice from "./apps/token";
 import tokenCompareSlice from "./apps/token-compare";
 import tokenHistoryPositionSlice from "./apps/token-history-positions";
@@ -20,6 +22,8 @@ export const store = configureStore({
     userOrder: userOrderSlice,
     homepageTokens:homePageTokenSlice,
     bitquery: bitquerySlice,
+    strategies: strategiesSlice,
+    strategyDetails: strategyDetailsSlice,
   },
 });
 

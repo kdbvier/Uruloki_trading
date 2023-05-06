@@ -15,8 +15,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   code2,
   status,
   orders,
-  showPopupBg = false,
-  setShowPopupBg = () => {},
   setShowEditOrderModal = () => {},
   setShowDeletedAlert = () => {},
 }) => {
@@ -41,39 +39,21 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
     return { min, max };
   }, [orders]);
 
-  // const statusColor = useMemo((): string => {
-  //   switch (status) {
-  //     case OrderStatusEnum.ACTIVE:
-  //       return "bg-green";
+  const statusColor = useMemo((): { text: string; bg: string } => {
+    switch (status) {
+      case OrderStatusEnum.ACTIVE:
+        return { text: "text-green-400", bg: "bg-green-400" };
 
-  //     case OrderStatusEnum.CANCELLED:
-  //       return "bg-red";
+      case OrderStatusEnum.CANCELLED:
+        return { text: "text-red-400", bg: "bg-red-400" };
 
-  //     case OrderStatusEnum.EXECUTED:
-  //       return "bg-blue";
+      case OrderStatusEnum.EXECUTED:
+        return { text: "text-blue-400", bg: "bg-blue-400" };
 
-  //     default:
-  //       return "bg-blue";
-  //   }
-  // }, [status]);
-  // const statusForeColor = useMemo((): string => {
-  //   switch (status) {
-  //     case OrderStatusEnum.ACTIVE:
-  //       return "text-green";
-
-  //     case OrderStatusEnum.CANCELLED:
-  //       return "text-red";
-
-  //     case OrderStatusEnum.EXECUTED:
-  //       return "text-blue";
-
-  //     default:
-  //       return "text-blue";
-  //   }
-  // }, [status]);
-
-  const statusColor = status===OrderStatusEnum.ACTIVE?"bg-green-500":status===OrderStatusEnum.CANCELLED?"bg-red-500":status===OrderStatusEnum.EXECUTED?"bg-blue-500":"bg-black-500";
-  const statusForeColor = status===OrderStatusEnum.ACTIVE?"text-green-500":status===OrderStatusEnum.CANCELLED?"text-red-500":status===OrderStatusEnum.EXECUTED?"text-blue-500":"text-black-500";
+      default:
+        return { text: "text-blue-400", bg: "bg-blue-400" };
+    }
+  }, [status]);
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
@@ -103,9 +83,9 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
           <div className="text-tsuka-200 text-sm">Status</div>
           <div className="flex items-center font-medium">
             <div
-              className={`w-1 h-1 mr-1 rounded-full ${statusColor}`}
+              className={`w-1 h-1 mr-1 rounded-full ${statusColor.bg}`}
             ></div>
-            <span className={`${statusForeColor}`}>
+            <span className={statusColor.text}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
@@ -123,8 +103,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
-                showPopupBg={showPopupBg}
-                setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
@@ -140,8 +118,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
-                showPopupBg={showPopupBg}
-                setShowPopupBg={setShowPopupBg}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />

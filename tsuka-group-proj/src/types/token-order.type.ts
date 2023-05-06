@@ -6,6 +6,7 @@ export enum PriceTypeEnum {
   SINGLE = "single",
   RANGE = "range",
 }
+
 export enum OrderStatusEnum {
   ACTIVE = "Active",
   EXECUTED = "Executed",
@@ -39,8 +40,6 @@ export interface TokenOrder {
   code2: string;
   status: OrderStatusEnum;
   orders: Array<SingleOrder | RangeOrder>;
-  showPopupBg?: boolean;
-  setShowPopupBg?: any;
   setShowEditOrderModal?: any;
   setShowDeletedAlert?: any;
 }

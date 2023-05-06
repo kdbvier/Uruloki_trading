@@ -28,7 +28,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
           <Link href="/" className="text-xl p-2 rounded-full cursor-pointer">
             <MdArrowBack />
           </Link>
-          "Loading..."
+          &quot;Loading...&quot;
         </>
       )}
       {status === "ok" && value && (
