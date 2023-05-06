@@ -1,11 +1,7 @@
 // components/TokenSearch.tsx
 
 import { useState, useCallback } from "react";
-import { fuzzySearchERC20Tokens } from "../lib/search";
-// import { searchERCTokens, searchTokensByName } from "../lib/search_1";
-import { checkIfTokenIsErc20, checkIfTokenIsOnUniswap, searchTokensByName,getPairsByTokenAddress } from "../lib/search_4";
-import { search22Tokens } from "../lib/search_2";
-// import {fetchRecentTokenPairs} from '../lib/search'
+import { searchTokensByName,getPairsByTokenAddress } from "../lib/search_4";
 
 export const TokenSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,13 +9,7 @@ export const TokenSearch = () => {
 
   const handleSearch = useCallback(async () => {
     console.log("search button click");
-    // const results = await fuzzySearchERC20Tokens(searchQuery);
-    // const results = await fetchRecentTokenPairs(250);
-    // const results = await searchERCTokens(searchQuery);
     const results = await searchTokensByName(searchQuery);
-    // const results = await checkIfTokenIsErc20("0xdac17f958d2ee523a2206206994597c13d831ec7")
-    // const results1 = await checkIfTokenIsOnUniswap("0xdac17f958d2ee523a2206206994597c13d831ec7")
-    // const results = await search22Tokens(searchQuery);
     console.log("results: there:: ", results, );
     setTokens(results);
   }, [searchQuery]);
