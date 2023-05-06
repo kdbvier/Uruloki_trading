@@ -1,9 +1,10 @@
-import { request, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 
 const BITQUERY_API_ENDPOINT = 'https://graphql.bitquery.io/';
+const BITQUERY_API_KEY = "BQYhGqHd1MptOvjXeIUPAQ1L24huNj1l";
 // baseCurrency: {is: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}
 // quoteCurrency: {is: "0x383518188C0C6d7730D91b2c03a03C837814a899"}
-// WETH = 1 USD / OHM = 10.39 USD
+// WETH = 1 WETH / USDC = 10.39 USD
 const fetchOHLCData = async () => {
   const query = gql`
   {
@@ -43,7 +44,7 @@ const fetchOHLCData = async () => {
     method: "POST",
     headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYhGqHd1MptOvjXeIUPAQ1L24huNj1l"
+        "X-API-KEY": BITQUERY_API_KEY
     },
     body: JSON.stringify({
         query: query
@@ -52,7 +53,7 @@ const fetchOHLCData = async () => {
   const data = await response.json(); 
   return data.data.ethereum.dexTrades;
 };
-
+// fetch the historical data
 export const getBitqueryOHLCData = async () => {
   const ohlcData = await fetchOHLCData();
   return ohlcData;

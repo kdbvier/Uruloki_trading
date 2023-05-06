@@ -1,18 +1,23 @@
-import { request, gql } from 'graphql-request';
 import { createSubscriptionClient } from './subscription-client';
 import { getBitqueryStream, initBitqueryData, initBitqueryStreamData } from '@/store/apps/bitquery-data';
 import { store } from '@/store';
-import moment from 'moment';
 
-const BITQUERY_API_ENDPOINT = 'https://streaming.bitquery.io/graphql';
 const client = createSubscriptionClient();
 
-const transformStreamData = (data: any) => {
-  console.log("DEX",data.data.EVM);
+// manipulate the historical data
+export const transformData = async (data: any) => {
+  return data.map((item:any) => ({
+    time: (new Date(item.timeInterval.minute + " UTC")).getTime(),
+    open: parseFloat(item.open),
+    high: parseFloat(item.high),
+    low: parseFloat(item.low),
+    close: parseFloat(item.close),
+  }));
+};
+// manipulate the subscription data
+export const transformStreamData = (data: any) => {
   const buySide = data.data.EVM ?.buyside;
   const sellSide = data.data.EVM ?.sellside;
-  console.log("buySide",buySide);
-  console.log("sellSide",sellSide);
 
   let buySideFiltered = buySide.length !== 0 ? buySide
   .filter((item: any) => item.Trade.Sell.Currency.Symbol === "USDC") : [];
@@ -30,8 +35,6 @@ const transformStreamData = (data: any) => {
     return acc;
   }, { sellSidePrices: [], sellSideTimes: [] });
 
-  // const prices = data.data.EVM.DEXTrades.map((trade: any) => trade.Trade.Buy.Price);
-  // const open = prices[0];
   const buySideTime = buySideTimes.length !== 0 ? buySideTimes[buySideTimes.length-1] : ""; 
   const buySideOpen = buySidePrices.length !== 0 ? buySidePrices[0] : "";  
   const buySideHigh = buySidePrices.length !== 0 ? Math.max(...buySidePrices) : ""
@@ -49,11 +52,8 @@ const transformStreamData = (data: any) => {
   const high = buySideHigh !== "" ? buySideHigh : sellSideHigh; 
   const low = buySideLow !== "" ? buySideLow : sellSideLow; 
   const close = buySideClose !== "" ? buySideClose : sellSideClose; 
-  
-  console.log("sellSideTime",sellSideTime);
 
   return {
-    // time: moment(time).format('YYYY-MM-DD'),
     time: (new Date(time)).getTime(),
     open,
     high,
@@ -61,7 +61,24 @@ const transformStreamData = (data: any) => {
     close
   };
 }
-// WETH trades
+// Get OHLC data from the datas
+export const getAddData = (forwardTime: any, data:any) => {
+  const filterData = data.filter((item: any) => item.time < forwardTime);
+  const time = forwardTime;
+  const open = filterData[0];
+  const close = filterData[filterData.length - 1];
+  const high = Math.max(...filterData);
+  const low = Math.min(...filterData);
+  return {
+    time,
+    open,
+    high,
+    low,
+    close
+  }
+}
+
+// WETH / USDC trades
 const fetchStreamData = async () => {
   if (typeof window !== 'undefined') {
     const subscription = client.request({
@@ -153,7 +170,6 @@ const fetchStreamData = async () => {
         console.log(response);
         // const data = await response.json(); 
         const transData = transformStreamData(response);
-        console.log("here is", transData)
         if(transData.open != "")
           store.dispatch(getBitqueryStream(transData));
         return transData;
@@ -170,14 +186,14 @@ const fetchStreamData = async () => {
   };
 };
 
+// Request the Bitquery to subscribe 
 export const getBitqueryStreamData = async () => {
   const streamData = await fetchStreamData();
-  // console.log("getBitqueryStreamData:", streamData);
 };
+
+// Stop subscribing when leaving the page and init the Store
 export const stopBitqueryStream = async () => {
   client.unsubscribeAll();
-  console.log("unsubscripbe");
   store.dispatch(initBitqueryData());
   store.dispatch(initBitqueryStreamData());
-
 };

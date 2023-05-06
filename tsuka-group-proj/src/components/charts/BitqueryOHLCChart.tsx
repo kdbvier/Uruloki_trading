@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState} from 'react';
+import { useEffect, useRef} from 'react';
 import { createChart, ISeriesApi, CandlestickData  } from 'lightweight-charts';
-import { getBitqueryOHLCData } from '../../lib/bitquery/getBitqueryOHLCData';
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 // price label bg color #f03349
@@ -8,16 +7,15 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 // down color #d83045
 // up color #179981
 // average line color #199a82
+
+// To subscribe get OHLC data from the Store
 const getUpdatedData = (forTime: string, datas:any) => {
-  console.log("datas",datas)
-  if(typeof(datas.length) == "undefined") return;
   const filterData = datas.filter((data:any) => data.time < forTime);
   const time = forTime;
   const open = filterData[0].open;
   const close = filterData[filterData.length - 1].close;
-  const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : "";
-
-  const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : "";
+  const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : 0;
+  const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : 0;
 
   return {
     time,
@@ -27,42 +25,36 @@ const getUpdatedData = (forTime: string, datas:any) => {
     close
   }
 }
-interface MyCandlestickData extends CandlestickData {
-      [key: string]: any;
-    }
-    
+
+// This is our lightweight chart
 const BitqueryOHLCChart = () => {
   const chartRef = useRef<HTMLDivElement>(null)
-  const barSeriesRef = useRef<ISeriesApi<'Bar'> | null>(null);
   const candleStickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const dispatch = useAppDispatch();
   const firstBitquery = useAppSelector((state) => state.bitquery.value);
   const streamValue = useAppSelector((state) => state.bitquery.streamValue);
   const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
+
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
   }
   
+  // When the first data arrives
   useEffect(() => {
-    console.log("firstBitquery:::", firstBitquery);
-    if (!chartRef.current) return;
-    if (!firstBitquery) return;
+    if (!chartRef.current || !firstBitquery) return;
+    // create lightweight-chart
     const chart = createChart(chartRef.current, {
         width: 1300,
         height: 400,
         layout: {
           background: {
-            // type: 'solid',
             color: '#151924',
           },
           textColor: '#abacb1',
         },
         crosshair: {
-          // mode: LightweightCharts.CrosshairMode.Normal,
           vertLine: {
-            // width: 8,
             color: '#474a55',
-            // style: LightweightCharts.LineStyle.Solid,
             labelBackgroundColor: '#474a55',
           },
           horzLine: {
@@ -70,9 +62,6 @@ const BitqueryOHLCChart = () => {
             labelBackgroundColor: '#363a45',
           },
         },
-        // PriceRange: {
-        //   minValue: 0,
-        // },
         rightPriceScale: {
           borderColor: 'rgba(197, 203, 206, 0.5)',
         },
@@ -98,27 +87,13 @@ const BitqueryOHLCChart = () => {
             return timeString;
           },
         },
-      });
-    // Save the reference to the line series in a ref object
-    // var barSeries = chart.addBarSeries({
-    //   thinBars: true,
-    //   downColor: '#ff4976',
-    //   upColor: '#4bffb5',
-    // });
-    // barSeriesRef.current = barSeries;
-    // // Changing the Candlestick colors
-    // barSeries.applyOptions({
-    //   // wickUpColor: '#179981',
-    //   upColor: '#179981',
-    //   // wickDownColor: '#d83045',
-    //   downColor: '#d83045',
-    //   // borderVisible: false,
-    // }); 
+    });
     
-    
+    // the historical data from the Bitquery 
     let temp: MyCandlestickData[] = [];
-
+    // the time of last historical data in Store
     let tempTime: any = [];
+    // manipuate the historical data for the chart
     firstBitquery.map((value: Record<string, any>, key: number) => {
       let tempItem: MyCandlestickData = {
         time: "",
@@ -127,42 +102,32 @@ const BitqueryOHLCChart = () => {
         low: 0,
         close: 0
       };
-
     if (tempTime === value["time"]) {
       return;
     }
-
     Object.keys(value).forEach((key: string) => {
       tempItem[key] = value[key];
     });
-
     tempTime = tempItem["time"];
       temp.push(tempItem);
     });
-    console.log("bitquery:::", temp);
+
+    // In case existing wrong sort by time
     temp.sort((a: Record<string, any>, b: Record<string, any>) => {
       const dateA = new Date(a.time);
       const dateB = new Date(b.time);
-    
       // Compare the dates
       return dateA.getTime() - dateB.getTime();
     });
     
+    // Add the candlestick to the chart
     const candlestickSeries = chart.addCandlestickSeries({
       upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
       wickUpColor: '#26a69a', wickDownColor: '#ef5350',
     });
     candleStickSeriesRef.current=candlestickSeries;
+    // Set data to the chart
     candlestickSeries.setData(temp);
-    
-    const areaSeries = chart.addAreaSeries({
-      lastValueVisible: false, // hide the last value marker for this series
-      crosshairMarkerVisible: false, // hide the crosshair marker for this series
-      lineColor: 'transparent', // hide the line
-      topColor: 'rgba(56, 33, 110,0.6)',
-      bottomColor: 'rgba(56, 33, 110, 0.1)',
-    });
-
     chart.timeScale().fitContent();
 
     // Insert the resizing code here
@@ -176,30 +141,6 @@ const BitqueryOHLCChart = () => {
 
       chart.resize(newWidth, newHeight);
     };
-    // const myPriceFormatter = p => p.toFixed(2);
-    // Get the current users primary locale
-    const currentLocale = window.navigator.languages[0];
-    // Create a number format using Intl.NumberFormat
-    // const myPriceFormatter = Intl.NumberFormat(currentLocale, {
-    //     style: 'currency',
-    //     currency: 'USD', // Currency for data points
-    // }).format;
-    // Apply the custom priceFormatter to the chart
-    // chart.applyOptions({
-    //   localization: {
-    //       priceFormatter: myPriceFormatter,
-    //   },
-    // });
-
-    // Adjust the options for the priceScale of the mainSeries
-    // barSeries.priceScale().applyOptions({
-    //   autoScale: false, // disables auto scaling based on visible content
-    //   scaleMargins: {
-    //       top: 0.1,
-    //       bottom: 0.2,
-    //   },
-    // });
-    // Initial size update
     updateChartSize();
 
     // Update size on window resize
@@ -210,27 +151,15 @@ const BitqueryOHLCChart = () => {
     };
   }, [dispatch, firstBitquery]);
 
+  // When subscription data arrives
   useEffect(() => {
-    console.log("useEffect",streamValue);
-    console.log("candleStickSeriesRef",candleStickSeriesRef);
     if (streamValue.length == 0 || typeof(streamValue.length) == "undefined" || !candleStickSeriesRef.current) return;
-    
-    // const updatedData = {
-    //   time: streamValue.time,
-    //   open: parseFloat(streamValue.open),
-    //   high: parseFloat(streamValue.high),
-    //   low: parseFloat(streamValue.low),
-    //   close: parseFloat(streamValue.close),
-    // };
-    console.log("inner");
     if(typeof(streamValue.length) == "undefined") return;
     let updatedData: MyCandlestickData | null= null;
 
+    // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue);
-    if(typeof(updatedData) == undefined) return;
-    console.log("updatedData",updatedData);
-
-    // barSeriesRef.current?.update(updatedData);
+    // Update the chart
     candleStickSeriesRef.current.update(updatedData);
   }, [dispatch, streamValue, forwardTime]);
 

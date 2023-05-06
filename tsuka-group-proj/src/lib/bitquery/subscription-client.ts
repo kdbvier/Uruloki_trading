@@ -4,6 +4,7 @@ const token = "BQYhGqHd1MptOvjXeIUPAQ1L24huNj1l"; // get your auth token from so
 const GRAPHQL_ENDPOINT = 'wss://streaming.bitquery.io/graphql';
 const webSocketImpl = typeof window !== 'undefined' ? window.WebSocket : require('ws');
 
+// Create the socket client to connect Bitquery 
 export const createSubscriptionClient = () => {
   const client = new SubscriptionClient(GRAPHQL_ENDPOINT, {
     reconnect: true,
