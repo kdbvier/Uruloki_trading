@@ -26,7 +26,6 @@ interface InputToken {
   token: string;
 }
 
-
 export default function Pair({tranData}: any, { id }: { id: string }) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
@@ -40,10 +39,11 @@ export default function Pair({tranData}: any, { id }: { id: string }) {
   const [combinedData, setCombinedData] = useState<any>();
   const { pair_id = id || "" } = router.query;
 
+  // When this page becomes unmounted
   useEffect( () => {
     return () => {
+      // Stop subscribing from the Bitquery
       stopBitqueryStream();
-      console.log('This function will run when the component is unmounted');
     };
   }, []);
 

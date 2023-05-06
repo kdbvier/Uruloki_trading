@@ -12,7 +12,6 @@ import {
   FiFilter,
   FiSearch,
 } from "react-icons/fi";
-import { getBitqueryOHLCData } from '../../../lib/bitquery/getBitqueryOHLCData'
 
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
