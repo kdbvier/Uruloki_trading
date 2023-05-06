@@ -126,7 +126,7 @@ export const initBitqueryStreamData = createAsyncThunk(
   "bitqueryStreamInfo/delete",
   async (any,{dispatch}): Promise<any> => {
     console.log("initBitquerystream");
-    return {};
+    return [];
   }
 );
 

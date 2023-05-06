@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 // up color #179981
 // average line color #199a82
 const getUpdatedData = (forTime:any, datas:any) => {
+  console.log("datas",datas)
+  if(typeof(datas.length) == "undefined") return;
   const filterData = datas.filter((data:any) => data.time < forTime);
   const time = forTime;
   const open = filterData[0].open;
@@ -206,7 +208,7 @@ const BitqueryOHLCChart = () => {
   useEffect(() => {
     console.log("useEffect",streamValue);
     console.log("barSeriesRef",barSeriesRef);
-    if (streamValue.length == 0 || !barSeriesRef.current) return;
+    if (streamValue.length == 0 || typeof(streamValue.length) == "undefined" || !barSeriesRef.current) return;
     
     // const updatedData = {
     //   time: streamValue.time,
@@ -216,7 +218,6 @@ const BitqueryOHLCChart = () => {
     //   close: parseFloat(streamValue.close),
     // };
     console.log("inner");
-
     const updatedData = getUpdatedData(forwardTime, streamValue);
     console.log("updatedData",updatedData);
 
