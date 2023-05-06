@@ -211,7 +211,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              ${handleNumberFormat(Number(token_price.base_price.toFixed(2)))}
+              ${handleNumberFormat(Number(token_price.base_price?.toFixed(2)))}
             </span>
           </p>
           <div className="w-full mt-4 flex">
