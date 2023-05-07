@@ -2,7 +2,7 @@ export type SearchToken = {
   id: string,
   name: string,
   symbol: string,
-  platform: number,
+  address: number,
 }
 
 export type Token0 = {
