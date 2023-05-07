@@ -72,7 +72,7 @@ const Modal = ({
                   type="button"
                   onClick={handleClose}
                 >
-                  No, I'll stay
+                  No, I&apos;ll stay
                 </button>
               </div>
             )}
