@@ -30,6 +30,7 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isLandingPage = router.pathname === "/index" || router.pathname === "/";
+  
   return (
     <>
       <WagmiConfig client={wagmiClient}>

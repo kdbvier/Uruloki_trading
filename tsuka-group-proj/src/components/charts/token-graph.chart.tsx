@@ -3,6 +3,7 @@ import {
   AdvancedRealTimeChart,
   AdvancedRealTimeChartProps,
 } from "react-ts-tradingview-widgets";
+import BitqueryOHLCChart from './BitqueryOHLCChart';
 
 export interface TokenGraphChartProps {
   token: string;
@@ -103,8 +104,10 @@ export const TokenGraphChart: React.FC<TokenGraphChartProps> = ({ token }) => {
   }, []);
 
   return (
-    <div className="h-full">
-      {token && <AdvancedRealTimeChart style="8" {...config} symbol={token} />}
-    </div>
+    // <div className="h-full">
+    //   {token && <AdvancedRealTimeChart style="8" {...config} symbol={token} />}
+    // </div>
+    <BitqueryOHLCChart  />
+
   );
 };
