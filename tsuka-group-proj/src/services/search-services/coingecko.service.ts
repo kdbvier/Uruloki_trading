@@ -5,7 +5,7 @@ import { checkIfTokenIsOnUniswap } from './uniswap.service';
 
 // Simple in-memory cache
 const cache = {
-  data: [] as SearchToken[],
+  data: [],
   lastFetch: 0,
   expiresIn: 5 * 60 * 1000, // Cache expires in 5 minutes
 };
@@ -33,8 +33,8 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
         return null;
       }
 
-      // const isErc20 = await checkIfTokenIsErc20(platform);
-      const isErc20 = true;
+      const isErc20 = await checkIfTokenIsErc20(platform);
+      // const isErc20 = true;
       const isOnUniswap = await checkIfTokenIsOnUniswap(platform);
 
       if (isErc20 && isOnUniswap) {

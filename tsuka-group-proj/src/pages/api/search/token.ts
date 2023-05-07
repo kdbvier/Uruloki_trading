@@ -1,12 +1,12 @@
-/** route example: api/search/token?name=usdt */
+/** route example: api/search/token?name=tether */
 
-import type { ApiResponse } from "@/types";
+import type { ApiResponse, SearchToken } from "@/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { searchTokensByName } from "@/services/search-services";
 
-export default async function orderHandler(
+export default async function tokenSearchHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<any>>
+  res: NextApiResponse<ApiResponse<SearchToken>>
 ) {
   const { method, query } = req;
   switch (method) {
@@ -14,9 +14,16 @@ export default async function orderHandler(
       try {
         let name = query.name as string;
         const tokens = await searchTokensByName(name);
-        res
-          .status(200)
-          .json({ payload: tokens, message: `Successfully found tokens` });
+        if(tokens.length === 0) {
+          res.status(404).json({
+            payload: undefined,
+            message: `No tokens found for "${name}"`
+          })
+        } else {
+          res
+            .status(200)
+            .json({ payload: tokens, message: `Successfully found tokens` });
+        }
       } catch (err) {
         res.status(400).json({
           payload: undefined,
@@ -25,7 +32,7 @@ export default async function orderHandler(
       }
       break;
     default:
-      res.setHeader("Allow", ["POST", "GET"]);
+      res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

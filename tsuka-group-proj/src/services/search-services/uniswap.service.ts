@@ -1,3 +1,4 @@
+import { SearchPair } from '@/types';
 import axios from 'axios';
 import { GraphQLClient, gql } from 'graphql-request';
 
@@ -25,7 +26,7 @@ export async function checkIfTokenIsOnUniswap(address: string): Promise<boolean>
   }
 }
 
-export async function getPairsByTokenAddress(tokenAddress: string):Promise<any[]> {
+export async function getPairsByTokenAddress(tokenAddress: string):Promise<SearchPair[]> {
   try {
     // Find pairs
     const pairQuery = gql`
@@ -44,8 +45,7 @@ export async function getPairsByTokenAddress(tokenAddress: string):Promise<any[]
       }
     `;
 
-    // const pairResponse:any = await request(UNISWAP_V2_API, pairQuery);
-    const pairResponse: any = await uniswapClient.request(pairQuery);
+    const pairResponse = await uniswapClient.request(pairQuery) as {pairs: SearchPair[]};
     const pairs = pairResponse.pairs;
 
     if (pairs.length === 0) {
@@ -54,7 +54,7 @@ export async function getPairsByTokenAddress(tokenAddress: string):Promise<any[]
     }
 
     console.log(`Pairs for token address ${tokenAddress}:`);
-    pairs.forEach((pair: any) => {
+    pairs.forEach((pair: SearchPair) => {
       console.log(`Pair address: ${pair.id}`);
       console.log(`${pair.token0.symbol} - ${pair.token1.symbol}`);
     });

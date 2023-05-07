@@ -4,7 +4,7 @@ import axios from 'axios';
 const cache = new Map();
 
 // Helper function to check if a cache entry is expired
-function isCacheEntryExpired(timestamp: number) {
+function isCacheEntryExpired(timestamp: number): boolean {
   const now = Date.now();
   const fiveMinutes = 5 * 60 * 1000;
   return now - timestamp > fiveMinutes;
