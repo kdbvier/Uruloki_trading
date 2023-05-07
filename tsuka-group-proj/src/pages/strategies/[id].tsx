@@ -2,7 +2,7 @@ import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { FullHeaderStrategies } from "@/components/ui/strategies/full-header.strategies";
 import { getStrategyDetails } from "@/store/apps/strategy-details";
-import { getToken } from "@/store/apps/token";
+import { getTokenByStrategyId } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -38,7 +38,7 @@ export default function StrategyDetails({ id }: { id: string }) {
   }, []);
 
   useEffect(() => {
-    dispatch(getToken(strategyId as string));
+    dispatch(getTokenByStrategyId(strategyId as string));
   }, [dispatch, strategyId]);
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 export type Token = {
   id: string;
+  strategy_id?: string;
   token: string;
   chain: {
     name: string;
