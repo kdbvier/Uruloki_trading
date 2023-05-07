@@ -27,22 +27,22 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       const id = coin.id;
       const tokenName = coin.name;
       const symbol = coin.symbol;
-      const platform = coin.platforms.ethereum;
+      const address = coin.platforms.ethereum;
 
-      if (!platform) {
+      if (!address) {
         return null;
       }
 
-      const isErc20 = await checkIfTokenIsErc20(platform);
+      const isErc20 = await checkIfTokenIsErc20(address);
       // const isErc20 = true;
-      const isOnUniswap = await checkIfTokenIsOnUniswap(platform);
+      const isOnUniswap = await checkIfTokenIsOnUniswap(address);
 
       if (isErc20 && isOnUniswap) {
         return {
           id,
           name: tokenName,
           symbol,
-          platform,
+          address,
         } as SearchToken;
       }
 
