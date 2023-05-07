@@ -56,7 +56,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                 );
               }
               return (
-                topGainer.token.name && (
+                topGainer.token.name && topGainer.token.name!=="-" && (
                   <tr
                     onClick={() => {
                       router.push("/pair/2");
