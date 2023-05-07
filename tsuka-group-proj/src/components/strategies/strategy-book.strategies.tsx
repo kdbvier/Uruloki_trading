@@ -21,7 +21,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
 
   const options = [
     {
-      title: "List of Strategies",
+      title: "List of Setups",
       path: "strategies-list",
     },
   ];
@@ -54,7 +54,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
                       #
                     </th>
                     <th scope="col" className="px-4 py-2">
-                      Strategy Title
+                      Setup Title
                     </th>
                     <th scope="col" className="px-4 py-2 flex w-full">
                       <span>Chains</span>
@@ -145,7 +145,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
           <label className="mr-2">
             <HiOutlineArrowLongLeft size={24} />
           </label>
-          Order & Strategies
+          Order & Setups
         </button>
       </div>
       <SidebarStrategies
