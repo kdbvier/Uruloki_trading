@@ -11,7 +11,7 @@ import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
 import { FiX, FiPlusCircle } from "react-icons/fi";
-import { getTokenPairPrice } from "@/store/apps/token";
+import { getTokenPairPrice } from "@/store/apps/user-order";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -56,11 +56,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const selectedOrder = useAppSelector(
     (state) => state.userOrder.selectedOrder
   );
-  const pair_address = useAppSelector(
-    (state) => state.token.value.chain?.address
-  );
   const token_price = useAppSelector(
-    (state) => state?.token?.value?.price?.value
+    (state) => state.userOrder.selectedTokenPairPrice
   );
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
@@ -84,12 +81,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   );
 
   useEffect(() => {
-    console.log("useEffect/pair_address", pair_address);
-    dispatch(getTokenPairPrice(pair_address as string));
     dispatch(setSelectedOrder(selectedOrderId));
   }, []);
 
   useEffect(() => {
+    if (selectedOrder.pair_address) {
+      dispatch(getTokenPairPrice(selectedOrder.pair_address as string));
+    }
     setTargetPrice(handleNumberFormat(selectedOrder.single_price ?? -1));
     setMinPrice(handleNumberFormat(selectedOrder.from_price ?? -1));
     setMaxPrice(handleNumberFormat(selectedOrder.to_price ?? -1));
@@ -212,7 +210,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           </p>
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
-            <span className="text-tsuka-50">${token_price}</span>
+            <span className="text-tsuka-50">
+              ${handleNumberFormat(Number(token_price.base_price?.toFixed(2)))}
+            </span>
           </p>
           <div className="w-full mt-4 flex">
             <button
@@ -225,8 +225,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {selectedOrder.baseTokenShortName} with{" "}
-                {selectedOrder.pairTokenShortName}
+                {selectedOrder.pairTokenShortName} with{" "}
+                {selectedOrder.baseTokenShortName}
               </p>
             </button>
             <button
@@ -239,7 +239,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                {selectedOrder.pairTokenShortName} with{" "}
+                {selectedOrder.pairTokenShortName} for{" "}
                 {selectedOrder.baseTokenShortName}
               </p>
             </button>
@@ -332,13 +332,23 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               >
                 <div className="flex items-center">
                   <TokenIconsToken
-                    name={selectedOrder.baseTokenLongName ?? ""}
-                    shortName={selectedOrder.baseTokenShortName ?? ""}
+                    name={
+                      isBuy
+                        ? selectedOrder.pairTokenLongName ?? ""
+                        : selectedOrder.baseTokenLongName ?? ""
+                    }
+                    shortName={
+                      isBuy
+                        ? selectedOrder.pairTokenShortName ?? ""
+                        : selectedOrder.baseTokenShortName ?? ""
+                    }
                     width={16}
                     height={16}
                   />
                   <span className="ml-1 text-sm text-tsuka-100 mr-2">
-                    {selectedOrder.baseTokenLongName}
+                    {isBuy
+                      ? selectedOrder.pairTokenLongName
+                      : selectedOrder.baseTokenLongName}
                   </span>
                 </div>
               </div>
@@ -371,7 +381,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 $
                 {handleNumberFormat(
                   parseFloat(
-                    (parseFloat(amount) * parseFloat(token_price)).toFixed(2)
+                    (
+                      parseFloat(amount.split(",").join("")) *
+                      (isBuy ? token_price.quote_price : token_price.base_price)
+                    ).toFixed(2)
                   )
                 )}
               </span>
@@ -380,9 +393,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <div className="flex justify-between text-sm mt-3">
             <span className="text-tsuka-200">Slippage</span>
             <span className="text-tsuka-50">{2.5}%</span>
-          </div>
-          <div className="flex justify-between text-sm mt-1">
-            <span className="text-tsuka-200">Price for an tokens</span>
           </div>
           <button
             className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"

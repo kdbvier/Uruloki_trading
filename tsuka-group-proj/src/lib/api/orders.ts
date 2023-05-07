@@ -1,6 +1,7 @@
 import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
+import { TokenPairPrice } from "@/store/apps/user-order";
 
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
@@ -49,7 +50,7 @@ export default class Orders {
 
   static getTokenPairPrice = async (
     pair_address: string
-  ): Promise<{ quote_price: number }> => {
+  ): Promise<TokenPairPrice> => {
     console.log("getTokenPairPrice", pair_address);
     return await httpRequest.post("/tokens/token-price", {
       pair_address,
