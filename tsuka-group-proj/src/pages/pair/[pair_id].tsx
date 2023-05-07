@@ -33,7 +33,7 @@ export default function Pair({ id }: { id: string }) {
   const [compareToken, setCompareToken] = useState<Token>();
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
-  const { pair_id = id || "" } = router.query;
+  const { pair_id } = router.query;
 
   useEffect(() => {
     dispatch(getToken(pair_id as string));

@@ -51,6 +51,7 @@ const initialState: TokenState = {
 export const getToken = createAsyncThunk(
   "token/get",
   async (id: string): Promise<Token> => {
+    console.log("getToken", id);
     const data = tokensData.find((item) => item.id === id)!;
     return data;
   }
