@@ -27,9 +27,10 @@ export const TokenIconsToken: React.FC<TokenIconsTokenProps> = ({
     setHasError(true);
   }
 
-  const img = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name
-    .replace(" ", "-")
-    .toLowerCase()}.png`;
+  const img = `${coinMirrorUrl}/icon/${shortName.toLowerCase()}/200`;
+  // const img1 = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name
+  //   .replace(" ", "-")
+  //   .toLowerCase()}.png`;
 
   return (
     <div className={className + " rounded-full overflow-hidden bg-tsuka-50"}>
