@@ -29,7 +29,7 @@ export default function StrategyDetails({ id }: { id: string }) {
       {strategyDetails && (
         <div className="p-8">
           <FullHeaderStrategies strategyId={strategyId as string} />
-          <div className="hidden md:grid grid-cols-9 gap-4">
+          <div className="grid grid-cols-9 gap-4">
             {strategyDetails?.orderTokens?.map((item, index) => (
               <div key={index} className="col-span-9 md:col-span-3">
                 <OrderWidgetToken
