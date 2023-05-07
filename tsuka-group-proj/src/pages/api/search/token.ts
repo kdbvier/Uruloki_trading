@@ -6,7 +6,7 @@ import { searchTokensByName } from "@/services/search-services";
 
 export default async function tokenSearchHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<SearchToken>>
+  res: NextApiResponse<ApiResponse<SearchToken[]>>
 ) {
   const { method, query } = req;
   switch (method) {
