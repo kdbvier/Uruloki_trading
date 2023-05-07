@@ -35,7 +35,7 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `Setup id ${strategyid} not found!`,
           });
           return;
         }
@@ -52,12 +52,12 @@ export default async function strategyHandler(
         console.log("created");
         const orderStrategiesCreated = await prisma.order_strategy.findMany({
           where: {
-            strategyId: strategyExist.strategy_id,
+            strategyId: Number(strategyExist.strategy_id),
           },
         });
         res.status(200).json({
           payload: orderStrategiesCreated,
-          message: `Successfully added orders to strategy id ${strategyid}`,
+          message: `Successfully added orders to setup id ${strategyid}`,
         });
       } catch (err: any) {
         if (err.code == "P2002") {

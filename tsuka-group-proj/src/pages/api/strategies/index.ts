@@ -32,12 +32,10 @@ export default async function strategyHandler(
           data: value,
         });
         console.log(strategy);
-        res
-          .status(200)
-          .json({
-            payload: strategy,
-            message: `Successfully created strategy`,
-          });
+        res.status(200).json({
+          payload: strategy,
+          message: `Successfully created setup`,
+        });
       } catch (err) {
         res.status(400).json({
           payload: undefined,
@@ -50,7 +48,7 @@ export default async function strategyHandler(
         const strategies = await prisma.strategies.findMany({});
         res.status(200).json({
           payload: strategies,
-          message: `Successfully found strategies`,
+          message: `Successfully found setups`,
         });
       } catch (err) {
         res.status(400).json({

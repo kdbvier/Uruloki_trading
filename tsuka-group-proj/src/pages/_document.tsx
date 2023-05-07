@@ -4,7 +4,9 @@ export default function Document() {
   
   return (
     <Html lang="en" className="scroll-smooth">
-      <Head />
+      <Head>
+        <script async src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+      </Head>
       <body>
         <Main />
         <NextScript />
