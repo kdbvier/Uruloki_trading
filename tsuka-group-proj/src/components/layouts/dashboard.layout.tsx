@@ -126,7 +126,18 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       </Head>
       <main>
         <nav>
-          <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500">
+          <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500 relative overflow-hidden">
+            <Image
+              className="absolute top-0 left-0"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to right, rgba(0,0,0,1) 90%, rgba(0,0,0,0))",
+              }}
+              src="/imgs/sky.jfif"
+              width={700}
+              height={200}
+              alt="header bgImg sky"
+            />
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center md:justify-start">
                 <div className="flex flex-shrink-0 items-center pl-2 xs:px-4 md:px-2">

@@ -1,7 +1,7 @@
 import { Token } from "@/types/token.type";
 
 export const tokenData: Token = {
-  id: "1",
+  id: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
   token: "Ethereum",
   chain: {
     name: "Ethereum",
@@ -39,7 +39,7 @@ export const tokenData: Token = {
 
 export const tokensData: Array<Token> = [
   {
-    id: "1",
+    id: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
     token: "Ethereum",
     chain: {
       name: "Ethereum",

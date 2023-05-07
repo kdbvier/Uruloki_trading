@@ -51,15 +51,8 @@ const initialState: TokenState = {
 export const getToken = createAsyncThunk(
   "token/get",
   async (id: string): Promise<Token> => {
+    console.log("getToken", id);
     const data = tokensData.find((item) => item.id === id)!;
-    return data;
-  }
-);
-
-export const getTokenPairPrice = createAsyncThunk(
-  "tokenPairPrice/get",
-  async (pair_address: string): Promise<{ quote_price: number }> => {
-    const data = Orders.getTokenPairPrice(pair_address);
     return data;
   }
 );
@@ -75,22 +68,10 @@ export const tokenSlice = createSlice({
       })
       .addCase(getToken.fulfilled, (state, action) => {
         state.status = "ok";
-        // state.value = action.payload;
+        state.value = action.payload;
       })
       .addCase(getToken.rejected, (state) => {
         state.status = "failed";
-      })
-      .addCase(getTokenPairPrice.fulfilled, (state, action) => {
-        return {
-          ...state,
-          value: {
-            ...state.value,
-            price: {
-              ...state.value.price,
-              value: action.payload?.quote_price?.toString(),
-            },
-          },
-        };
       });
   },
 });
