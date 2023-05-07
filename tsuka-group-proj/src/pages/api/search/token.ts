@@ -12,12 +12,11 @@ export default async function orderHandler(
   switch (method) {
     case "GET":
       try {
-        // const orders = await prisma.orders.findMany({});
         let name = query.name as string;
         const tokens = await searchTokensByName(name);
         res
           .status(200)
-          .json({ payload: tokens, message: `Successfully found orders` });
+          .json({ payload: tokens, message: `Successfully found tokens` });
       } catch (err) {
         res.status(400).json({
           payload: undefined,

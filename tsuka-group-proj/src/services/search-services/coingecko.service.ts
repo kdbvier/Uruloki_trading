@@ -1,15 +1,16 @@
+import { SearchToken } from '@/types';
 import axios from 'axios';
 import { checkIfTokenIsErc20 } from './etherscan.service';
 import { checkIfTokenIsOnUniswap } from './uniswap.service';
 
 // Simple in-memory cache
 const cache = {
-  data: [],
+  data: [] as SearchToken[],
   lastFetch: 0,
   expiresIn: 5 * 60 * 1000, // Cache expires in 5 minutes
 };
 
-export async function searchTokensByName(name: string): Promise<any[]> {
+export async function searchTokensByName(name: string): Promise<SearchToken[]> {
   try {
     const now = Date.now();
     // Check if data is cached and still valid
@@ -22,7 +23,7 @@ export async function searchTokensByName(name: string): Promise<any[]> {
     }
     const tokens = cache.data.filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()));
 
-    const erc20Tokens = await Promise.all(tokens.map(async (coin: any) => {
+    const erc20Tokens: (SearchToken | null)[] = await Promise.all(tokens.map(async (coin: any) => {
       const id = coin.id;
       const tokenName = coin.name;
       const symbol = coin.symbol;
@@ -32,7 +33,8 @@ export async function searchTokensByName(name: string): Promise<any[]> {
         return null;
       }
 
-      const isErc20 = await checkIfTokenIsErc20(platform);
+      // const isErc20 = await checkIfTokenIsErc20(platform);
+      const isErc20 = true;
       const isOnUniswap = await checkIfTokenIsOnUniswap(platform);
 
       if (isErc20 && isOnUniswap) {
@@ -41,15 +43,20 @@ export async function searchTokensByName(name: string): Promise<any[]> {
           name: tokenName,
           symbol,
           platform,
-        };
+        } as SearchToken;
       }
 
       return null;
     }));
 
-    return erc20Tokens.filter((token: any) => token);
+    const erc20Tokens1: SearchToken[] = erc20Tokens.filter(isSearchToken);
+    return erc20Tokens1;
   } catch (error) {
     console.error(`Error searching tokens by name: ${error}`);
     return [];
   }
+}
+
+function isSearchToken(token: SearchToken | null): token is SearchToken {
+  return token !== null;
 }
