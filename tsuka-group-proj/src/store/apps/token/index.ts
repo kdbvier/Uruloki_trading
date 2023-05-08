@@ -1,5 +1,4 @@
 import { tokensData } from "@/@fake-data/token.fake-data";
-import Orders from "@/lib/api/orders";
 import { Token } from "@/types/token.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
@@ -57,6 +56,14 @@ export const getToken = createAsyncThunk(
   }
 );
 
+export const getTokenByStrategyId = createAsyncThunk(
+  "token/getByStrategyId",
+  async (id: string): Promise<Token> => {
+    const data = tokensData.find((item) => item?.strategy_id === id)!;
+    return data;
+  }
+);
+
 export const tokenSlice = createSlice({
   name: "token",
   initialState,
@@ -71,6 +78,16 @@ export const tokenSlice = createSlice({
         state.value = action.payload;
       })
       .addCase(getToken.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(getTokenByStrategyId.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getTokenByStrategyId.fulfilled, (state, action) => {
+        state.status = "ok";
+        state.value = action.payload;
+      })
+      .addCase(getTokenByStrategyId.rejected, (state) => {
         state.status = "failed";
       });
   },
