@@ -5,20 +5,16 @@ const BITQUERY_API_ENDPOINT = 'https://graphql.bitquery.io/';
 const BITQUERY_API_KEY = process.env.NEXT_PUBLIC_BITQUERY_API_KEY as string;
 const baseCurrencyAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 const quoteCurrencyAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as string; 
-const date = new Date(); // Replace this with your date object
-const formattedDate = moment(date).format('YYYY-MM-DD');
-const from = "2023-05-07";
 const interval = 40;
 // WETH = 1 WETH / USDC 
 const fetchOHLCData = async () => {
   const date = new Date(); // Replace this with your date object
-  const formattedDate = moment(date).format('YYYY-MM-DD');
-  const from = formattedDate;
+  const from = moment(date).format('YYYY-MM-DD');
   const query = gql`
   {
     ethereum(network: ethereum) {
       dexTrades(
-        options: {limit: 100, asc: "timeInterval.minute"}
+        options: {limit: 1000, asc: "timeInterval.minute"}
         date: {since: "${from}"}
         baseCurrency: {is: "${baseCurrencyAddress}"}
         quoteCurrency: {is: "${quoteCurrencyAddress}"}
