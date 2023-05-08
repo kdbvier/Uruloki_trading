@@ -71,7 +71,7 @@ export default function MyOrder() {
               "hidden md:block text-[24px] leading-[52px] text-tsuka-200"
             }
           >
-            My Strategies
+            My Setups
           </Link>
           <Link
             href={"/my-orders"}

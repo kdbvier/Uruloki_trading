@@ -1,4 +1,3 @@
-import type { ApiResponse, Strategy } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
@@ -14,7 +13,7 @@ const prisma = new PrismaClient();
 
 export default async function strategyHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Strategy>>
+  res: NextApiResponse
 ) {
   const { method, body } = req;
   switch (method) {

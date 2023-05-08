@@ -19,14 +19,17 @@ import { FiPlusCircle } from "react-icons/fi";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
-import { getBitqueryInitInfo, getBitqueryStreamInfo } from "@/store/apps/bitquery-data";
+import {
+  getBitqueryInitInfo,
+  getBitqueryStreamInfo,
+} from "@/store/apps/bitquery-data";
 
 interface InputToken {
   id: string;
   token: string;
 }
 
-export default function Pair({tranData}: any, { id }: { id: string }) {
+export default function Pair({ tranData }: any, { id }: { id: string }) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const { value: userOrder } = useAppSelector((state) => state.userOrder);
@@ -39,7 +42,7 @@ export default function Pair({tranData}: any, { id }: { id: string }) {
   const { pair_id } = router.query;
 
   // When this page becomes unmounted
-  useEffect( () => {
+  useEffect(() => {
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
@@ -49,7 +52,7 @@ export default function Pair({tranData}: any, { id }: { id: string }) {
   useEffect(() => {
     console.log("useEffect");
     dispatch(getBitqueryInitInfo());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getToken(pair_id as string));

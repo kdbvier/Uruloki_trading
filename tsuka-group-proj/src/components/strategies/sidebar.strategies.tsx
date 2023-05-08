@@ -41,13 +41,13 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
         </div>
         <div>
           <div className="text-tsuka-50 text-3xl">
-            Order & Strategies
+            Order & Setups
             <span className="text-tsuka-200 text-lg ml-1">
               ({strategies?.length})
             </span>
           </div>
         </div>
-        <div className="py-2">Showing list of strategies</div>
+        <div className="py-2">Showing list of setups</div>
         <div className="flex flex-col mt-4 gap-4">
           {strategies.map(({ id, orderTokens }) =>
             orderTokens?.map((item, index) => (
