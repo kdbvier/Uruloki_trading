@@ -33,7 +33,7 @@ export const TokenIconsToken: React.FC<TokenIconsTokenProps> = ({
   //   .toLowerCase()}.png`;
 
   return (
-    <div className={className + " rounded-full overflow-hidden bg-tsuka-50"}>
+    <div className={className + " rounded-full overflow-hidden bg-transparent"}>
       <img
         src={hasError ? "/imgs/empty-img6.png" : img}
         width={width}
