@@ -7,11 +7,38 @@ export interface OrderBookTokenProps {
   token: {
     id: string;
     token: string;
+    sellTrades?: any[];
+    buyTrades?: any[];
   };
 }
 
+const TradeRow = ({ item }: any) => {
+  return (
+    <div
+      className={`${
+        item.side === ("Buy" || "BUY") ? "text-green-400" : "text-red-400"
+      } border-b border-tsuka-400 text-base relative w-full text-left flex flex-center`}
+    >
+      <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
+        {item.side}
+      </span>
+      <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
+        {/* {numberWithCommas(item.priceUsdt)} */}
+      </span>
+      <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
+        {item.tradeAmount}
+      </span>
+      <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
+        {item.transaction.txFrom.address}
+      </span>
+    </div>
+  );
+};
+
 export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
   token,
+  sellTrades,
+  buyTrades,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector(
@@ -35,27 +62,14 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
                 <span className="flex-1 px-4 py-2">Amount {token.token}</span>
                 <span className="flex-1 px-4 py-2">Buyer Address</span>
               </div>
-              {value.map((item, index) => (
-                <div
-                  key={index}
-                  className={`${
-                    item.type === "Buy" ? "text-green-400" : "text-red-400"
-                  } border-b border-tsuka-400 text-base relative w-full text-left flex flex-center`}
-                >
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.type}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {numberWithCommas(item.priceUsdt)}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.amount}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.address}
-                  </span>
-                </div>
-              ))}
+              {sellTrades &&
+                sellTrades.map((item: any, index: number) => (
+                  <TradeRow key={index} item={item} />
+                ))}
+              {buyTrades &&
+                buyTrades.map((item: any, index: number) => (
+                  <TradeRow key={index} item={item} />
+                ))}
             </div>
           </div>
         </div>
