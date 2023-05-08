@@ -10,20 +10,36 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 // To subscribe, get OHLC data from the Store
 const getUpdatedData = (forTime: string, datas:any) => {
-  const filterData1 = datas.filter((data:any) => data.time < forTime);
-  const filterData = filterData1.filter((data:any) => parseInt(forTime) - 2400000 < data.time);
-  const time = forTime;
-  const open = filterData[0].open;
-  const close = filterData[filterData.length - 1].close;
-  const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : 0;
-  const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : 0;
-
-  return {
-    time,
-    open,
-    high,
-    low,
-    close
+  if(datas[datas.length - 1].time > forTime){
+    const filterData = datas.filter((data:any) => data.time > forTime);
+    const time = forTime + 2400000;
+    const open = filterData[0].open;
+    const close = filterData[filterData.length - 1].close;
+    const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : 0;
+    const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : 0;
+    return {
+      time,
+      open,
+      high,
+      low,
+      close
+    }
+  }else{
+    const filterData1 = datas.filter((data:any) => data.time < forTime);
+    const filterData = filterData1.filter((data:any) => parseInt(forTime) - 2400000 < data.time);
+    const time = forTime;
+    const open = filterData[0].open;
+    const close = filterData[filterData.length - 1].close;
+    const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : 0;
+    const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : 0;
+  
+    return {
+      time,
+      open,
+      high,
+      low,
+      close
+    }
   }
 }
 

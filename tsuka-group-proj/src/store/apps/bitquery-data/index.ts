@@ -114,12 +114,12 @@ export const bitquerySlice = createSlice({
         // temp.time = state.forwardTime;
         state.streamValue = [...state.streamValue, temp];
         if(action.payload.time > state.forwardTime){
+          state.forwardTime = state.forwardTime + 2400000;
           if(action.payload.time > state.forwardTime + 2400000){
             // state.value = [...state.value, ...action.payload];
           }else{
             // const addData = getAddData(state.forwardTime, state.streamValue);
             // state.value = [...state.value, addData];
-            state.forwardTime = state.forwardTime + 2400000;
           }
         }
       })
