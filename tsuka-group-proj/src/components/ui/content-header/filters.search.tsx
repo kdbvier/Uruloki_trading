@@ -49,6 +49,7 @@ const FilterSearchItem = ({
 export const FiltersSearch: React.FC<FiltersSearchProps> = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [items, setItems] = useState<FilterSearchItemType[]>([]);
   const [showDropDownMenu, setShowDropDownMenu] = useState(false);
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,29 +58,33 @@ export const FiltersSearch: React.FC<FiltersSearchProps> = () => {
     } = ev;
     setSearchQuery(value);
   };
-  useEffect(() => {
-    if (searchQuery.length >= 3) {
+  const handleKeyDown = (ev: React.KeyboardEvent<HTMLInputElement>) => {
+    if (ev.key === "Enter") {
       setLoading(true);
       HomePageTokens.searchTokens(searchQuery)
         .then((res) => {
           setItems(res);
+          setMessage("");
         })
         .catch((err) => {
           console.log("fetch token by name failed", err);
           setItems([]);
-          toast.error("Fetch token by name failed");
+          setMessage("Results could not be loaded at this time");
         })
         .finally(() => {
           setLoading(false);
         });
     }
-  }, [searchQuery]);
+  };
   useEffect(() => {
     const listener = (ev: MouseEvent) => {
       const { target } = ev;
       const thisElement = document.querySelector("#filterToken");
       if (thisElement?.contains(target as Node)) {
         setShowDropDownMenu(true);
+        setMessage(
+          "Type the name of a coin you want to search and press Enter."
+        );
       } else {
         setShowDropDownMenu(false);
       }
@@ -98,12 +103,13 @@ export const FiltersSearch: React.FC<FiltersSearchProps> = () => {
           name="searchQuery"
           value={searchQuery}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
       </div>
       {showDropDownMenu && (
         <div className="relative">
           {loading ? (
-            <div className="w-full bg-tsuka-500 py-2 rounded-xl shadow-[0_40px_50px_-15px_rgba(0,0,0,1)]">
+            <div className="absolute w-full bg-tsuka-500 py-2 rounded-xl shadow-[0_40px_50px_-15px_rgba(0,0,0,1)]">
               <img
                 className="rotate mx-auto"
                 src="/icons/loading.png"
@@ -117,7 +123,7 @@ export const FiltersSearch: React.FC<FiltersSearchProps> = () => {
               {items.length ? (
                 items.map((item) => <FilterSearchItem item={item} />)
               ) : (
-                <div className="text-tsuka-50">Token not found</div>
+                <div className="text-tsuka-50">{message}</div>
               )}
             </div>
           )}
