@@ -48,6 +48,7 @@ module.exports = {
       // "Steradian-600": ['Steradian-SemiBold', 'sans-serif'],
       "Steradian-600": ["Steradian-Bold", "sans-serif"],
       "Steradian-700": ["Steradian-ExtraBold", "sans-serif"],
+      "Uruloki": ["Uruloki", "sans-serif"],
     },
   },
   plugins: [],
