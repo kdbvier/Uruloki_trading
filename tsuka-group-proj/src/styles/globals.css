@@ -140,7 +140,10 @@ body {
   font-family: "Steradian-Light";
   src: url("../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Lt.otf");
 }
-
+@font-face {
+  font-family: "Uruloki";
+  src: url("/fonts/landing/DejitaruTsuka-Regular.otf");
+}
 @keyframes rotation {
   from {
     transform: rotate(0deg);
