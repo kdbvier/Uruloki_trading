@@ -34,8 +34,8 @@ export const Navbar: React.FC<NavbarProps> = ({ icon, titlesCollection }) => {
           style={{ position: "relative" }}
         />
         <div className="px-3 flex flex-col" style={{ position: "relative" }}>
-          <span className="font-Uruloki m-0 mt-[9px] tracking-widest stroke-transparent">DEJITARU</span>
-          <span className="text-[26px] tracking-widest font-Uruloki -mt-[13px] stroke-transparent">TSUKA</span> 
+          <span className="font-Uruloki m-0 mt-[9px] tracking-[7px] stroke-transparent">DEJITARU</span>
+          <span className="text-[26px] tracking-widest font-Uruloki -mt-[12px] stroke-transparent">URULOKI</span> 
         </div>
         </div>
         <button
