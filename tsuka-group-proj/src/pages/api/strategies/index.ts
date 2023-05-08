@@ -1,6 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
+import { getStrategy } from "./[strategyid]";
+import { ApiResponse, Strategy, StrategyStatusEnum } from "@/types";
+import {
+  OrderStatusEnum,
+  RangeOrder,
+  SingleOrder,
+} from "@/types/token-order.type";
 
 const reqBodySchema = Joi.object({
   name: Joi.string().required(),
@@ -13,7 +20,7 @@ const prisma = new PrismaClient();
 
 export default async function strategyHandler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<ApiResponse<Strategy>>
 ) {
   const { method, body } = req;
   switch (method) {
@@ -30,9 +37,30 @@ export default async function strategyHandler(
         const strategy = await prisma.strategies.create({
           data: value,
         });
+        const { orders, orderTokens } = await getStrategy(
+          strategy.strategy_id.toString()
+        );
         console.log(strategy);
         res.status(200).json({
-          payload: strategy,
+          payload: {
+            id: strategy.strategy_id.toString(),
+            title: strategy.name as string,
+            status: strategy.status as StrategyStatusEnum,
+            createdAt: Math.round(
+              (strategy.createdAt?.getTime() ?? 0) / 1000
+            ).toString() as string,
+            orderTokens: orderTokens.map((orderToken) => ({
+              network: "Ethereum",
+              name1: orderToken.baseTokenLongName as string,
+              code1: orderToken.baseTokenShortName as string,
+              name2: orderToken.pairTokenLongName as string,
+              code2: orderToken.baseTokenShortName as string,
+              status: orderToken.status as OrderStatusEnum,
+              orders: orders[orderToken.order_id] as Array<
+                SingleOrder | RangeOrder
+              >,
+            })),
+          },
           message: `Successfully created setup`,
         });
       } catch (err) {
@@ -45,8 +73,34 @@ export default async function strategyHandler(
     case "GET":
       try {
         const strategies = await prisma.strategies.findMany({});
+        const payload = await Promise.all(
+          strategies.map(async (strategy) => {
+            const { orders, orderTokens } = await getStrategy(
+              strategy.strategy_id.toString()
+            );
+            return {
+              id: strategy.strategy_id.toString(),
+              title: strategy.name as string,
+              status: strategy.status as StrategyStatusEnum,
+              createdAt: Math.round(
+                (strategy.createdAt?.getTime() ?? 0) / 1000
+              ).toString() as string,
+              orderTokens: orderTokens.map((orderToken) => ({
+                network: "Ethereum",
+                name1: orderToken.baseTokenLongName as string,
+                code1: orderToken.baseTokenShortName as string,
+                name2: orderToken.pairTokenLongName as string,
+                code2: orderToken.baseTokenShortName as string,
+                status: orderToken.status as OrderStatusEnum,
+                orders: orders[orderToken.order_id] as Array<
+                  SingleOrder | RangeOrder
+                >,
+              })),
+            };
+          })
+        );
         res.status(200).json({
-          payload: strategies,
+          payload,
           message: `Successfully found setups`,
         });
       } catch (err) {
