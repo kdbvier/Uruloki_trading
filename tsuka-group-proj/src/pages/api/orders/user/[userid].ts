@@ -83,7 +83,7 @@ export default async function OrderByUserHandler(
             });
 
         const groupedOrders: { id: string; orders: any[] }[] = orders.reduce(
-          (result: { id: string; orders: any[] }[], order) => {
+          (result: { id: string; orders: any[] }[], order: any) => {
             // const tokenCacheId = order.token_cache?.pair_address ?? "";
             const tokenCacheId = order.pair_address;
             // if (!tokenCacheId) return result;
