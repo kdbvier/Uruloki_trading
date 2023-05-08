@@ -142,7 +142,7 @@ body {
 }
 @font-face {
   font-family: "Uruloki";
-  src: url("../../public/fonts/landing/DejitaruTsuka-Regular.otf");
+  src: url("/fonts/landing/DejitaruTsuka-Regular.otf");
 }
 @keyframes rotation {
   from {
