@@ -12,10 +12,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import Orders from "../lib/api/orders";
+import { getStrategies } from "@/store/apps/strategies";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
@@ -24,6 +28,12 @@ export default function MyOrder() {
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.userOrder);
+  const {
+    strategies: { value: strategies },
+  } = useAppSelector((state) => state);
+  useEffect(() => {
+    dispatch(getStrategies());
+  }, [dispatch]);
   useEffect(() => {
     //TODO: change id to my id
     dispatch(
@@ -184,6 +194,23 @@ export default function MyOrder() {
               </div>
             );
           })}
+                    <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+            <button
+              type="button"
+              onClick={() => setShowSidebar(true)}
+              className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+            >
+              <label className="mr-2">
+                <HiOutlineArrowLongLeft size={24} />
+              </label>
+              Order & Strategies
+            </button>
+          </div>
+          <SidebarStrategies
+            open={showSidebar}
+            handleOpen={() => setShowSidebar(false)}
+            strategies={strategies!}
+          />
       </div>
       {!showAll && (
         <div className="mt-4 flex justify-center">

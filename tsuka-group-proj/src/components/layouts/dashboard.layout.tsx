@@ -160,14 +160,21 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 </div>
                 <div className="hidden lg:ml-6 lg:block">
                   <div className="flex px-10 space-x-4">
-                    {navLinks?.map(({ path, title }) => (
-                      <HeaderLinkButton
-                        key={path}
-                        path={path}
-                        title={title}
-                        active={path === router.pathname}
-                      />
-                    ))}
+                    {navLinks?.map(({ path, title }, index) => {
+                      let isActive = path === router.pathname;
+                      if(index===1 && router.pathname.indexOf("strategies")>=0){
+                        isActive = true;
+                      }
+
+                      return (
+                        <HeaderLinkButton
+                          key={path}
+                          path={path}
+                          title={title}
+                          active={isActive}
+                        />
+                      );
+                    })}
                     <DefaultButton
                       label="Create an Order"
                       callback={() => setShowEditOrderModal(true)}

@@ -104,7 +104,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                 );
               }
               return (
-                topMover.token && (
+                topMover.token && topMover.token !== "-" && (
                   <Fragment key={idx}>
                     <tr
                       onClick={() => {
