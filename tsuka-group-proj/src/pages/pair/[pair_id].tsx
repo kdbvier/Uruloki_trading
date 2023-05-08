@@ -23,6 +23,9 @@ import {
   getBitqueryInitInfo,
   getBitqueryStreamInfo,
 } from "@/store/apps/bitquery-data";
+import { getStrategies } from "@/store/apps/strategies";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 
 interface InputToken {
   id: string;
@@ -39,6 +42,8 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   const [compareToken, setCompareToken] = useState<Token>();
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+
   const { pair_id } = router.query;
 
   // When this page becomes unmounted
@@ -52,8 +57,11 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   useEffect(() => {
     console.log("useEffect");
     dispatch(getBitqueryInitInfo());
+    dispatch(getStrategies());
   }, [dispatch]);
-
+  const {
+    strategies: { value: strategies },
+  } = useAppSelector((state) => state);
   useEffect(() => {
     dispatch(getToken(pair_id as string));
   }, [dispatch, pair_id]);
@@ -139,6 +147,23 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
           closeHandler={() => {}} //TODO: Fix this
         />
       )}
+      <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+        <button
+          type="button"
+          onClick={() => setShowSidebar(true)}
+          className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+        >
+          <label className="mr-2">
+            <HiOutlineArrowLongLeft size={24} />
+          </label>
+          Order & Strategies
+        </button>
+      </div>
+      <SidebarStrategies
+        open={showSidebar}
+        handleOpen={() => setShowSidebar(false)}
+        strategies={strategies!}
+      />
     </div>
   );
 }
