@@ -1,168 +1,93 @@
 import { FiFilter, FiSearch } from "react-icons/fi";
 import { useState } from "react";
-import Image from "next/image";
+import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
+import { Cards } from "@/@fake-data/card.fake-data";
+import Chart from "@/components/charts/ReactApexcharts";
 export default function Profile() {
   const [searchValue, setSearchValue] = useState("");
 
-  interface ICards {
-    id: number;
-    image: any;
-    value: any;
-    title: string;
-    color: string;
-    backgroundColor: string;
-    backgroundImage: string;
-  }
-
-  const cards = [
+  const backgroundInfo = [
     {
-      id: 1,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Base.png",
-      color: "#131820",
-      backgroundColor: "#4BDB4B",
-      backgroundImage: "url('/imgs/bBase.png')",
+      color: "#4BDB4B",
+      backgroundImage: "url('/imgs/b_11.svg')",
     },
     {
-      id: 2,
-      value: "6.950",
-      title: "PLKD",
-      image: "/imgs/Protocol Icon.png",
-      color: "#FFFFFF",
-      backgroundColor: "#E6007A",
-      backgroundImage: "url('/imgs/background_1.png')",
+      color: "#E6007A",
+      backgroundImage: "url('/imgs/b_3.svg')",
     },
     {
-      id: 3,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_2.png",
-      color: "#131820",
-      backgroundColor: "#F7931A",
-      backgroundImage: "url('/imgs/background_2.png')",
+      color: "#F7931A",
+      backgroundImage: "url('/imgs/b_5.svg')",
     },
     {
-      id: 4,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_3.png",
-      color: "#FFFFFF",
-      backgroundColor: "#282D35",
-      backgroundImage: "url('/imgs/background_3.png')",
+      color: "#282D35",
+      backgroundImage: "url('/imgs/b_13.svg')",
     },
     {
-      id: 5,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_4.png",
-      color: "#FFFFFF",
-      backgroundColor: "#8A06D4",
-      backgroundImage: "url('/imgs/background_4.png')",
+      color: "#8A06D4",
+      backgroundImage: "url('/imgs/b_4.svg')",
     },
     {
-      id: 6,
-      value: "6.950",
-      title: "PLKD",
-      image: "/imgs/Protocol Icon_4.png",
-      color: "#FFFFFF",
-      backgroundColor: "#E84142",
-      backgroundImage: "url('/imgs/background_5.png')",
+      color: "#E84142",
+      backgroundImage: "url('/imgs/b_10.svg')",
     },
     {
-      id: 7,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_6.png",
-      color: "#FFFFFF",
-      backgroundColor: "#211F6D",
-      backgroundImage: "url('/imgs/background_6.png')",
+      color: "#211F6D",
+      backgroundImage: "url('/imgs/b_12.svg')",
     },
     {
-      id: 8,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_6.png",
-      color: "#131820",
-      backgroundColor: "#C2A633",
-      backgroundImage: "url('/imgs/background_7.png')",
+      color: "#C2A633",
+      backgroundImage: "url('/imgs/b_4.svg')",
     },
     {
-      id: 9,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_7.png",
-      color: "#FFFFFF",
-      backgroundColor: "#000000",
-      backgroundImage: "url('/imgs/background_8.png')",
+      color: "#000000",
+      backgroundImage: "url('/imgs/b_13.svg')",
     },
     {
-      id: 10,
-      value: "6.950",
-      title: "PLKD",
-      image: "/imgs/Protocol Icon_8.png",
-      color: "#FFFFFF",
-      backgroundColor: "#0033AD",
-      backgroundImage: "url('/imgs/background_9.png')",
+      color: "#0033AD",
+      backgroundImage: "url('/imgs/b_4.svg')",
     },
     {
-      id: 11,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_9.png",
-      color: "#131820",
-      backgroundColor: "#13B5EC",
-      backgroundImage: "url('/imgs/background_10.png')",
+      color: "#13B5EC",
+      backgroundImage: "url('/imgs/b_6.svg')",
     },
     {
-      id: 12,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_10.png",
-      color: "#131820",
-      backgroundColor: "#00EF8B",
-      backgroundImage: "url('/imgs/background_11.png')",
+      color: "#00EF8B",
+      backgroundImage: "url('/imgs/b_12.svg')",
     },
     {
-      id: 13,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_11.png",
-      color: "#FFFFFF",
-      backgroundColor: "#6747ED",
-      backgroundImage: "url('/imgs/background_12.png')",
+      color: "#6747ED",
+      backgroundImage: "url('/imgs/b_8.svg')",
     },
     {
-      id: 14,
-      value: "6.950",
-      title: "PLKD",
-      image: "/imgs/Protocol Icon_12.png",
-      color: "#FFFFFF",
-      backgroundColor: "#1B295E",
-      backgroundImage: "url('/imgs/background_13.png')",
+      color: "#1B295E",
+      backgroundImage: "url('/imgs/b_5.svg')",
     },
     {
-      id: 15,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_13.png",
-      color: "#131820",
-      backgroundColor: "#13B5EC",
-      backgroundImage: "url('/imgs/background_14.png')",
+      color: "#000000",
+      backgroundImage: "url('/imgs/b_4.svg')",
     },
     {
-      id: 16,
-      value: "6.950",
-      title: "ANCH",
-      image: "/imgs/Protocol Icon_14.png",
-      color: "#F73E40",
-      backgroundColor: "#474DFF",
-      backgroundImage: "url('/imgs/background_15.png')",
+      color: "#474DFF",
+      backgroundImage: "url('/imgs/b_2.svg')",
     },
   ];
 
   const handleSearchValue = (e: any) => {
     setSearchValue(e.target.value);
+  };
+
+  const getBackgroundIndex = (token_name: string) => {
+    const asciiKeys = [];
+    var totalIndex = 0;
+    var index = 0;
+    for (var i = 0; i < token_name.length; i++) {
+      asciiKeys.push(token_name[i].charCodeAt(0));
+
+      totalIndex += asciiKeys[i];
+      index = totalIndex % token_name.length;
+    }
+    return index;
   };
 
   return (
@@ -195,38 +120,39 @@ export default function Profile() {
         </div>
       </div>
       <div className="w-full md:flex pt-[32px] flex-row-reverse	">
-        <div className="flex flex-col ml-[21px]">
-          <div className="py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#6FCF97] cursor-pointer rounded-md">
+        <div className="flex flex-col md:ml-[21px] ">
+          <div className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#6FCF97] cursor-pointer rounded-md">
             Deposit
           </div>
-          <div className="py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#EB5757] cursor-pointer rounded-md mt-[11px]">
+          <div className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#EB5757] cursor-pointer rounded-md my-[11px]">
             Withdraw
           </div>
+          <Chart />
         </div>
-        <div className="flex flex-col items-center">
-          <div className=" md:grid md:grid-cols-4 gap-3 mb-[40px]">
-            {cards.map((card: ICards, key: number) => (
+        <div className="w-full flex flex-col items-center">
+          <div className="w-full grid gap-3 lg:grid-cols-3 mb-[40px] xl:grid-cols-4 md:grid-cols-2">
+            {Cards.map((card: any, key: number) => (
               <div
                 key={card.id}
-                className="flex py-[16px]  px-[16px] rounded-md items-center gap-[27px] bg-no-repeat	"
+                className="flex justify-between py-[16px] px-[16px] rounded-md items-center gap-[27px] bg-no-repeat bg-cover	"
                 style={{
-                  color: card.color,
-                  backgroundColor: card.backgroundColor,
-                  backgroundImage: card.backgroundImage,
+                  color: "#FFFFFF",
+                  backgroundColor:
+                    backgroundInfo[getBackgroundIndex(card.name)].color,
+                  backgroundImage: backgroundInfo[card.id - 1]?.backgroundImage,
                 }}
               >
-                <Image
-                  src={card.image}
-                  alt=""
-                  width="60"
-                  height="60"
-                  className="fill-current"
-                />
-                <div className="font-medium text-[18.9px] landing-[25px] font-['DM Sans'] ">
-                  {card.value}
+                <TokenIconsToken
+                  name={card.name}
+                  shortName={card.shortName}
+                  width={60}
+                  height={60}
+                ></TokenIconsToken>
+                <div className="flex  font-medium text-[18.9px] landing-[25px] font-['DM Sans'] ">
+                  <span>{card.value}</span>
                 </div>
-                <div className="font-medium text-[18.9px] landing-[25px] font-['DM Sans'  ]">
-                  {card.title}
+                <div className="flex  font-medium text-[18.9px] landing-[25px] font-['DM Sans'] ">
+                  <span>{card.shortName}</span>
                 </div>
               </div>
             ))}
