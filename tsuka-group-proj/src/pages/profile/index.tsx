@@ -4,7 +4,7 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
-export default function Profile(resData: any) {
+export default function Profile(resData: CardType) {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const Cards = resData.res;
