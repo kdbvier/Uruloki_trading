@@ -28,6 +28,7 @@ const Chart = () => {
       type: "donut",
       height: 150,
       width: "100%",
+      fontFamily: "sans-serif",
     },
     stroke: {
       width: 5,
@@ -48,7 +49,7 @@ const Chart = () => {
             value: {
               show: true,
               fontSize: "32px",
-              fontFamily: "DM Sans",
+              fontFamily: "sans-serif",
               fontWeight: 400,
               color: "rgba(255, 255, 255, 0.7)",
               offsetY: -10,
@@ -57,7 +58,7 @@ const Chart = () => {
               show: true,
               showAlways: true,
               color: "rgba(255, 255, 255, 0.5)",
-              fontFamily: "Open Sans",
+              fontFamily: "sans-serif",
               fontSize: "16px",
               fontWeight: 400,
               formatter: (val: string) => "5,251,501",
@@ -94,16 +95,16 @@ const Chart = () => {
         />
       </div>
       <div className="flex flex-col absolute top-[55px] right-3">
-        <div className="font-['DM Sans'] font-medium text-[10px] leading-[13px] text-[#6FCF97]">
+        <div className="font-Poppins-300 font-medium text-[10px] leading-[13px] text-[#6FCF97]">
           Active
         </div>
-        <div className="font-['DM Sans'] font-medium text-[16px] leading-[21px] text-[#BBC3D7]">
+        <div className="font-Poppins-300 font-medium text-[16px] leading-[21px] text-[#BBC3D7]">
           {changeString(chartData.active)}
         </div>
-        <div className="font-['DM Sans'] font-medium text-[10px] leading-[13px] text-[#EB5757] mt-5">
-          OUt Of Funds
+        <div className="font-Poppins-300 font-medium text-[10px] leading-[13px] text-[#EB5757] mt-5">
+          Out Of Funds
         </div>
-        <div className="font-['DM Sans'] font-medium text-[16px] leading-[21px] text-[#BBC3D7]">
+        <div className="font-Poppins-300 font-medium text-[16px] leading-[21px] text-[#BBC3D7]">
           {changeString(chartData.out)}
         </div>
       </div>
