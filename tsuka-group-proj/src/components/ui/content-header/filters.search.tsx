@@ -121,7 +121,7 @@ export const FiltersSearch: React.FC<FiltersSearchProps> = () => {
           ) : (
             <div className="absolute top-0 w-[280px] max-h-[300px] overflow-y-scroll bg-tsuka-500 p-5 shadow-[0_40px_50px_-15px_rgba(0,0,0,1)] rounded-xl flex flex-col">
               {items.length ? (
-                items.map((item) => <FilterSearchItem item={item} />)
+                items.map((item, i) => <FilterSearchItem item={item} key={i} />)
               ) : (
                 <div className="text-tsuka-50">{message}</div>
               )}
