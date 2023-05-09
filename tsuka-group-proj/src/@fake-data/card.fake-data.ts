@@ -1,6 +1,6 @@
-import { Card } from "@/types/card.type";
+import { CardType } from "@/types/card.type";
 
-export const Cards: Array<Card> = [
+export const Cards: Array<CardType> = [
   {
     id: 1,
     value: "6.950",
@@ -98,3 +98,7 @@ export const Cards: Array<Card> = [
     name: "Chainlink",
   },
 ];
+
+export const getCards = () => {
+  return Cards;
+};

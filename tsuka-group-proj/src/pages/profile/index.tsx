@@ -1,51 +1,54 @@
 import { FiFilter, FiSearch } from "react-icons/fi";
 import { useState } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
-import { Cards } from "@/@fake-data/card.fake-data";
+import { getCards } from "@/@fake-data/card.fake-data";
+import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
-export default function Profile() {
-  const [searchValue, setSearchValue] = useState("");
+export default function Profile(resData: any) {
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const Cards = resData.res;
 
   const backgroundInfo = [
     {
       color: "#4BDB4B",
-      backgroundImage: "url('/imgs/b_11.svg')",
-    },
-    {
-      color: "#E6007A",
       backgroundImage: "url('/imgs/b_3.svg')",
     },
     {
-      color: "#F7931A",
-      backgroundImage: "url('/imgs/b_5.svg')",
-    },
-    {
-      color: "#282D35",
-      backgroundImage: "url('/imgs/b_13.svg')",
-    },
-    {
-      color: "#8A06D4",
-      backgroundImage: "url('/imgs/b_4.svg')",
-    },
-    {
-      color: "#E84142",
-      backgroundImage: "url('/imgs/b_10.svg')",
-    },
-    {
-      color: "#211F6D",
+      color: "#E6007A",
       backgroundImage: "url('/imgs/b_12.svg')",
     },
     {
-      color: "#C2A633",
-      backgroundImage: "url('/imgs/b_4.svg')",
+      color: "#F7931A",
+      backgroundImage: "url('/imgs/b_16.svg')",
     },
     {
-      color: "#000000",
+      color: "#282D35",
+      backgroundImage: "url('/imgs/b_9.svg')",
+    },
+    {
+      color: "#8A06D4",
       backgroundImage: "url('/imgs/b_13.svg')",
     },
     {
+      color: "#E84142",
+      backgroundImage: "url('/imgs/b_8.svg')",
+    },
+    {
+      color: "#211F6D",
+      backgroundImage: "url('/imgs/b_3.svg')",
+    },
+    {
+      color: "#C2A633",
+      backgroundImage: "url('/imgs/b_3.svg')",
+    },
+    {
+      color: "#000000",
+      backgroundImage: "url('/imgs/b_3.svg')",
+    },
+    {
       color: "#0033AD",
-      backgroundImage: "url('/imgs/b_4.svg')",
+      backgroundImage: "url('/imgs/b_3.svg')",
     },
     {
       color: "#13B5EC",
@@ -57,7 +60,7 @@ export default function Profile() {
     },
     {
       color: "#6747ED",
-      backgroundImage: "url('/imgs/b_8.svg')",
+      backgroundImage: "url('/imgs/b_9.svg')",
     },
     {
       color: "#1B295E",
@@ -65,11 +68,11 @@ export default function Profile() {
     },
     {
       color: "#000000",
-      backgroundImage: "url('/imgs/b_4.svg')",
+      backgroundImage: "url('/imgs/b_12.svg')",
     },
     {
       color: "#474DFF",
-      backgroundImage: "url('/imgs/b_2.svg')",
+      backgroundImage: "url('/imgs/b_10.svg')",
     },
   ];
 
@@ -85,7 +88,7 @@ export default function Profile() {
       asciiKeys.push(token_name[i].charCodeAt(0));
 
       totalIndex += asciiKeys[i];
-      index = totalIndex % token_name.length;
+      index = totalIndex % backgroundInfo.length;
     }
     return index;
   };
@@ -131,7 +134,7 @@ export default function Profile() {
         </div>
         <div className="w-full flex flex-col items-center">
           <div className="w-full grid gap-3 lg:grid-cols-3 mb-[40px] xl:grid-cols-4 md:grid-cols-2">
-            {Cards.map((card: any, key: number) => (
+            {Cards?.map((card: CardType, key: number) => (
               <div
                 key={card.id}
                 className="flex justify-between py-[16px] px-[16px] rounded-md items-center gap-[27px] bg-no-repeat bg-cover	"
@@ -164,4 +167,12 @@ export default function Profile() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await getCards();
+
+  // Pass data to the page via props
+  return { props: { res } };
 }
