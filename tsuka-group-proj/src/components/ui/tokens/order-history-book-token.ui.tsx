@@ -23,7 +23,7 @@ const TradeRow = ({ item }: any) => {
         {item.side}
       </span>
       <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-        {/* {numberWithCommas(item.priceUsdt)} */}
+        {numberWithCommas(item.price)}
       </span>
       <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
         {item.tradeAmount}

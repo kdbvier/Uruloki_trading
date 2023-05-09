@@ -20,6 +20,7 @@ interface TokenDetailsProps {
 interface Trade {
   side: string;
   tradeAmount: number;
+  amount: number;
   transaction: {
     index: number;
     txFrom: {
@@ -109,6 +110,7 @@ const TokenDetails: React.FC<TokenDetailsProps> = ({
         return {
           side,
           tradeAmount: obj[side].Amount,
+          price: obj[side].Price,
           transaction: {
             txFrom: {
               address: obj[side].Currency.SmartContract,
@@ -202,7 +204,7 @@ const TokenDetails: React.FC<TokenDetailsProps> = ({
           <tr>
             <th>Type</th>
             <th>Price</th>
-            {/* <th>Amount Bitcoin</th> */}
+            <th>Amount</th>
             <th>Buyer Address</th>
           </tr>
         </thead>
@@ -210,6 +212,7 @@ const TokenDetails: React.FC<TokenDetailsProps> = ({
           {sellTrades?.map((trade) => (
             <tr key={trade.transaction.index}>
               <td style={{ padding: "1rem" }}>{trade.side}</td>
+              <td style={{ padding: "1rem" }}>{trade.amount}</td>
               <td style={{ padding: "1rem" }}>{trade.tradeAmount}</td>
               <td style={{ padding: "1rem" }}>
                 {trade.transaction.txFrom.address}
@@ -249,11 +252,7 @@ export default TokenDetails;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
 
-  const {
-    data: {
-      data: { ethereum },
-    },
-  } = await axios.post(
+  const { data } = await axios.post(
     "https://graphql.bitquery.io/",
     {
       query: `{
@@ -279,6 +278,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     }
   );
+
+  const ethereum = data?.data?.ethereum;
 
   const token0 = ethereum.arguments?.find(
     (el: any) => el.argument.name === "token0"
@@ -312,15 +313,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                   time(format: "%Y-%m-%d %H:%M:%S")
                 }
               }
-              baseCurrency {
-                symbol
-              }
-              quoteCurrency {
-                symbol
-              }
-              quotePrice
-              tradeAmount(in: USD)
-              quoteAmount
+              tradeAmount
               side
               sellAmount(in: USD)
               buyAmount(in: USD)
@@ -329,11 +322,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 txFrom {
                   address
                 }
-              }
-              baseAmount(in: USD)
-              count
-              maker {
-                address
               }
             }
           }
@@ -347,10 +335,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     );
 
-    const dexTrades = data.data.ethereum.dexTrades;
+    const dexTrades = data.data.ethereum.dexTrades.map((el: any) => {
+      const amount = el.side === "SELL" ? el.sellAmount : el.buyAmount;
+      return {
+        tradeAmount: el.tradeAmount,
+        side: el.side,
+        amount,
+        transaction: el.transaction,
+      };
+    });
 
-    sell24hrAgoTrades = dexTrades.filter((el: any) => el.side === "SELL");
-    buy24hrAgoTrades = dexTrades.filter((el: any) => el.side === "BUY");
+    if (dexTrades && dexTrades.length) {
+      sell24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "SELL");
+      buy24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "BUY");
+    }
   } catch (error) {
     console.log("err", error);
   }

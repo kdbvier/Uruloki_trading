@@ -64,7 +64,7 @@ const determineBaseAndQuote = (
     baseAddress = token1Address;
     quoteAddress = token0Address;
   } else {
-    if (token0Address.toLowerCase() < token1Address.toLowerCase()) {
+    if (token0Address?.toLowerCase() < token1Address?.toLowerCase()) {
       baseAddress = token0Address;
       quoteAddress = token1Address;
     } else {
@@ -75,13 +75,13 @@ const determineBaseAndQuote = (
   return { baseAddress, quoteAddress };
 };
 
-const getQuery = (tradeSide: string): { query: string } => {
+const getQuery = (tradeSide: string, id: string): { query: string } => {
   return {
     query: `
     subscription {
       EVM(network: eth) {
         DEXTrades(
-          where: {Trade: {Buy: {Currency: {SmartContract: {is: "0x514910771AF9Ca656af840dff83E8264EcF986CA"}}}}}
+          where: {Trade: {Buy: {Currency: {SmartContract: {is: "${id}"}}}}}
         ) {
           Trade {
             ${tradeSide} {
@@ -161,6 +161,7 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
         return {
           side,
           tradeAmount: obj[side].Amount,
+          price: obj[side].Price,
           transaction: {
             txFrom: {
               address: obj[side].Currency.SmartContract,
@@ -181,24 +182,27 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getQuery("Sell"), {
-          next: onNext,
-          error: (err) => {
-            console.log("Subscription error:", err);
-            reject(err);
-          },
-          complete: () => {
-            console.log("Subscription complete");
-            resolve();
-          },
-        });
+        unsubscribe = client.subscribe(
+          getQuery("Sell", token.pair?.address as string),
+          {
+            next: onNext,
+            error: (err) => {
+              console.log("Subscription error:", err);
+              reject(err);
+            },
+            complete: () => {
+              console.log("Subscription complete");
+              resolve();
+            },
+          }
+        );
       });
     })();
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [token.pair?.address]);
 
   useEffect(() => {
     const onNext = (data: any) => {
@@ -208,6 +212,7 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
         return {
           side,
           tradeAmount: obj[side].Amount,
+          price: obj[side].Price,
           transaction: {
             txFrom: {
               address: obj[side].Currency.SmartContract,
@@ -227,24 +232,27 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getQuery("Buy"), {
-          next: onNext,
-          error: (err) => {
-            console.log("Subscription error:", err);
-            reject(err);
-          },
-          complete: () => {
-            console.log("Subscription complete");
-            resolve();
-          },
-        });
+        unsubscribe = client.subscribe(
+          getQuery("Buy", token.pair?.address as string),
+          {
+            next: onNext,
+            error: (err) => {
+              console.log("Subscription error:", err);
+              reject(err);
+            },
+            complete: () => {
+              console.log("Subscription complete");
+              resolve();
+            },
+          }
+        );
       });
     })();
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [token.pair?.address]);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
     return userOrder[0]?.orders;
@@ -327,23 +335,21 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 export default PairDetail;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.query;
+  const { pair_id } = context.query;
 
-  let baseAddress = "";
   let sell24hrAgoTrades = [];
   let buy24hrAgoTrades = [];
+  let baseAddress = "";
+  let quoteAddress = "";
 
+  let data;
   try {
-    const {
-      data: {
-        data: { ethereum },
-      },
-    } = await axios.post(
+    const res = await axios.post(
       "https://graphql.bitquery.io/",
       {
         query: `{
           ethereum {
-            arguments(smartContractAddress: {is: "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f"}, smartContractEvent: {is: "PairCreated"}, options: { limit: 3 }) {
+            arguments(smartContractAddress: {is: "${pair_id}"}, smartContractEvent: {is: "PairCreated"}, options: { limit: 3 }) {
               block {
                 height
               }
@@ -364,11 +370,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       }
     );
+    data = res.data;
+  } catch (error) {}
 
-    const token0 = ethereum.arguments?.find(
+  if (data) {
+    const ethereum = data?.data?.ethereum;
+
+    const token0 = ethereum?.arguments?.find(
       (el: any) => el.argument.name === "token0"
     );
-    const token1 = ethereum.arguments?.find(
+    const token1 = ethereum?.arguments?.find(
       (el: any) => el.argument.name === "token1"
     );
 
@@ -378,8 +389,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
 
     baseAddress = addresses.baseAddress;
-    const quoteAddress = addresses.quoteAddress;
+    quoteAddress = addresses.quoteAddress;
+  }
 
+  try {
     const { data } = await axios.post(
       "https://graphql.bitquery.io/",
       {
@@ -388,7 +401,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             dexTrades(
               baseCurrency: {is: "${baseAddress}"}
               quoteCurrency: {is: "${quoteAddress}"}
-              options: {desc: ["block.timestamp.time", "transaction.index"], limit: 1}
+              options: {desc: ["block.timestamp.time", "transaction.index"], limit: 10}
             ) {
               block {
                 height
@@ -396,15 +409,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                   time(format: "%Y-%m-%d %H:%M:%S")
                 }
               }
-              baseCurrency {
-                symbol
-              }
-              quoteCurrency {
-                symbol
-              }
-              quotePrice
-              tradeAmount(in: USD)
-              quoteAmount
+              tradeAmount
               side
               sellAmount(in: USD)
               buyAmount(in: USD)
@@ -413,11 +418,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 txFrom {
                   address
                 }
-              }
-              baseAmount(in: USD)
-              count
-              maker {
-                address
               }
             }
           }
@@ -431,15 +431,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     );
 
-    const dexTrades = data.data.ethereum.dexTrades || [];
+    const dexTrades = data?.data?.ethereum?.dexTrades.map((el: any) => {
+      const amount = el.side === "SELL" ? el.sellAmount : el.buyAmount;
+      return {
+        tradeAmount: el.tradeAmount,
+        side: el.side,
+        amount,
+        transaction: el.transaction,
+      };
+    });
 
-    console.log("dexTrades = ", dexTrades);
-
-    sell24hrAgoTrades = dexTrades.filter((el: any) => el.side === "SELL");
-    buy24hrAgoTrades = dexTrades.filter((el: any) => el.side === "BUY");
-  } catch (error) {
-    console.log("err", error);
-  }
+    if (dexTrades && dexTrades.length) {
+      sell24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "SELL");
+      buy24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "BUY");
+    }
+  } catch (error) {}
 
   return {
     props: { sell24hrAgoTrades, buy24hrAgoTrades, baseAddress },
