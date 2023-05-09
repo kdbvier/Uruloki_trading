@@ -12,35 +12,35 @@ export default function Profile(resData: any) {
   const backgroundInfo = [
     {
       color: "#4BDB4B",
-      backgroundImage: "url('/imgs/b_3.svg')",
+      backgroundImage: "url('/imgs/b_15.svg')",
     },
     {
       color: "#E6007A",
-      backgroundImage: "url('/imgs/b_12.svg')",
+      backgroundImage: "url('/imgs/b_10.svg')",
     },
     {
       color: "#F7931A",
-      backgroundImage: "url('/imgs/b_16.svg')",
-    },
-    {
-      color: "#282D35",
-      backgroundImage: "url('/imgs/b_9.svg')",
-    },
-    {
-      color: "#8A06D4",
       backgroundImage: "url('/imgs/b_13.svg')",
     },
     {
+      color: "#282D35",
+      backgroundImage: "url('/imgs/b_12.svg')",
+    },
+    {
+      color: "#8A06D4",
+      backgroundImage: "url('/imgs/b_2.svg')",
+    },
+    {
       color: "#E84142",
-      backgroundImage: "url('/imgs/b_8.svg')",
+      backgroundImage: "url('/imgs/b_11.svg')",
     },
     {
       color: "#211F6D",
-      backgroundImage: "url('/imgs/b_3.svg')",
+      backgroundImage: "url('/imgs/b_14.svg')",
     },
     {
       color: "#C2A633",
-      backgroundImage: "url('/imgs/b_3.svg')",
+      backgroundImage: "url('/imgs/b_5.svg')",
     },
     {
       color: "#000000",
@@ -48,15 +48,15 @@ export default function Profile(resData: any) {
     },
     {
       color: "#0033AD",
-      backgroundImage: "url('/imgs/b_3.svg')",
+      backgroundImage: "url('/imgs/b_1.svg')",
     },
     {
       color: "#13B5EC",
-      backgroundImage: "url('/imgs/b_6.svg')",
+      backgroundImage: "url('/imgs/b_8.svg')",
     },
     {
       color: "#00EF8B",
-      backgroundImage: "url('/imgs/b_12.svg')",
+      backgroundImage: "url('/imgs/b_4.svg')",
     },
     {
       color: "#6747ED",
@@ -64,15 +64,15 @@ export default function Profile(resData: any) {
     },
     {
       color: "#1B295E",
-      backgroundImage: "url('/imgs/b_5.svg')",
+      backgroundImage: "url('/imgs/b_7.svg')",
     },
     {
       color: "#000000",
-      backgroundImage: "url('/imgs/b_12.svg')",
+      backgroundImage: "url('/imgs/b_3.svg')",
     },
     {
       color: "#474DFF",
-      backgroundImage: "url('/imgs/b_10.svg')",
+      backgroundImage: "url('/imgs/b_16.svg')",
     },
   ];
 
@@ -142,7 +142,9 @@ export default function Profile(resData: any) {
                   color: "#FFFFFF",
                   backgroundColor:
                     backgroundInfo[getBackgroundIndex(card.name)].color,
-                  backgroundImage: backgroundInfo[card.id - 1]?.backgroundImage,
+                  backgroundImage:
+                    backgroundInfo[getBackgroundIndex(card.name)]
+                      ?.backgroundImage,
                 }}
               >
                 <TokenIconsToken
