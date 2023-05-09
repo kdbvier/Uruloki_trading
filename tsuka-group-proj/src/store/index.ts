@@ -10,6 +10,7 @@ import userOrderSlice from "./apps/user-order";
 import tokenOrderBooksSlice from "./apps/token-order-books";
 import homePageTokenSlice  from "./apps/tokens";
 import bitquerySlice from "./apps/bitquery-data";
+import AllTokenCacheSlice from "./apps/token-cache";
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     userOrder: userOrderSlice,
     homepageTokens:homePageTokenSlice,
     bitquery: bitquerySlice,
+    tokencache: AllTokenCacheSlice,
     strategies: strategiesSlice,
     strategyDetails: strategyDetailsSlice,
   },
