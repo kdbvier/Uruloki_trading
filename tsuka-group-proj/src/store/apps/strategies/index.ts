@@ -1,6 +1,7 @@
 import { strategiesData } from "@/@fake-data/strategies.fake-data";
 import { Strategy } from "@/types/strategy.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import Strategies from "@/lib/api/strategies";
 
 export interface StrategiesState {
   value: Array<Strategy>;
@@ -13,9 +14,18 @@ const initialState: StrategiesState = {
 };
 
 export const getStrategies = createAsyncThunk(
-  "strategies/get",
+  "strategies/getAll",
   async (): Promise<Array<Strategy>> => {
-    return strategiesData;
+    const data = await Strategies.getStrategiesData();
+    return data;
+  }
+);
+
+export const getStrategy = createAsyncThunk(
+  "strategies/get",
+  async (id: string): Promise<Strategy> => {
+    const data = await Strategies.getStrategyData(id);
+    return data;
   }
 );
 
@@ -33,6 +43,19 @@ export const strategiesSlice = createSlice({
         state.value = action.payload;
       })
       .addCase(getStrategies.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(getStrategy.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getStrategy.fulfilled, (state, action) => {
+        state.status = "ok";
+        const index = state.value.findIndex(
+          ({ id }) => id === action.payload.id
+        );
+        state.value.splice(index, 1, action.payload);
+      })
+      .addCase(getStrategy.rejected, (state) => {
         state.status = "failed";
       });
   },
