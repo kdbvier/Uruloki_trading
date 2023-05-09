@@ -4,10 +4,15 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
-export default function Profile(resData: CardType) {
+import { CaaRecord } from "dns";
+
+type PageProps = {
+  resData: Array<CardType>;
+};
+export default function Profile({ resData }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const Cards = resData.res;
+  const Cards = resData;
 
   const backgroundInfo = [
     {
@@ -173,8 +178,8 @@ export default function Profile(resData: CardType) {
 
 export async function getServerSideProps() {
   // Fetch data from external API
-  const res = await getCards();
+  const resData = await getCards();
 
   // Pass data to the page via props
-  return { props: { res } };
+  return { props: { resData } };
 }
