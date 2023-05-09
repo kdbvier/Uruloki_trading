@@ -3,5 +3,4 @@ export type Card = {
   value: string;
   name: string;
   shortName: string;
-  backgroundImage: string;
 };
