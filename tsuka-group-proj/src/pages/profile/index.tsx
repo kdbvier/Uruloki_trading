@@ -4,15 +4,14 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
-import { CaaRecord } from "dns";
 
 type PageProps = {
-  resData: Array<CardType>;
+  tokenBalances: Array<CardType>;
 };
-export default function Profile({ resData }: PageProps) {
+export default function Profile({ tokenBalances }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const Cards = resData;
+  const Cards = tokenBalances;
 
   const backgroundInfo = [
     {
@@ -178,8 +177,8 @@ export default function Profile({ resData }: PageProps) {
 
 export async function getServerSideProps() {
   // Fetch data from external API
-  const resData = await getCards();
+  const getCardsData = await getCards();
 
   // Pass data to the page via props
-  return { props: { resData } };
+  return { props: { tokenBalances: getCardsData } };
 }
