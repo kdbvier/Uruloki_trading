@@ -1,6 +1,6 @@
 import {
   IBenifitsItemFields,
-  ILandingPage,
+  ILandingPage, 
   INavbarFields,
 } from "@/@types/generated/contentful.types";
 import {
