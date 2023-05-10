@@ -70,7 +70,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               <th className="py-2 hidden md:table-cell">ID</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
-              <th colSpan={2} className="py-2 text-right md:text-left">
+              <th colSpan={2} className="py-2 text-center md:text-left">
                 Price(USD)
               </th>
               {/* <th className="py-2 text-right md:text-left"></th> */}
