@@ -1,15 +1,33 @@
 import { FiFilter, FiSearch } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
+import { WithdrawModal } from "@/components/ui/profile/withdraw.modal";
+import { DepositModal } from "@/components/ui/profile/deposit.modal";
+import { getToken } from "@/@fake-data/token.data";
+import { TokenType } from "@/types/tokens.type";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
 };
 export default function Profile({ tokenBalances }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
+  const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
+  const [showDepositModal, setShowDepositModal] = useState<boolean>(false);
+  const [tokens, setTokens] = useState<TokenType[]>([]);
+  useEffect(() => {
+    setTokens(getToken());
+  }, []);
+
+  const handleWidthdrawOpenModal = () => {
+    setShowWithdrawModal(true);
+  };
+
+  const handleDepositOpenModal = () => {
+    setShowDepositModal(true);
+  };
 
   const Cards = tokenBalances;
 
@@ -128,12 +146,18 @@ export default function Profile({ tokenBalances }: PageProps) {
       </div>
       <div className="w-full md:flex pt-[32px] flex-row-reverse	">
         <div className="flex flex-col md:ml-[21px] ">
-          <div className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#6FCF97] cursor-pointer rounded-md">
+          <button
+            className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#6FCF97]  rounded-md"
+            onClick={handleDepositOpenModal}
+          >
             Deposit
-          </div>
-          <div className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#EB5757] cursor-pointer rounded-md my-[11px]">
+          </button>
+          <button
+            className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#EB5757] hover:bg-[#EB1727] rounded-md my-[11px]"
+            onClick={handleWidthdrawOpenModal}
+          >
             Withdraw
-          </div>
+          </button>
           <Chart />
         </div>
         <div className="w-full flex flex-col items-center">
@@ -171,6 +195,17 @@ export default function Profile({ tokenBalances }: PageProps) {
           </div>
         </div>
       </div>
+      <WithdrawModal
+        open={showWithdrawModal}
+        callback={() => setShowWithdrawModal(false)}
+        tokens={tokens}
+      />
+      <DepositModal
+        open={showDepositModal}
+        callback={() => setShowDepositModal(false)}
+        Cards={Cards}
+        backgroundInfo={backgroundInfo}
+      />
     </div>
   );
 }
