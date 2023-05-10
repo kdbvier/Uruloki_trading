@@ -75,13 +75,16 @@ const determineBaseAndQuote = (
   return { baseAddress, quoteAddress };
 };
 
-const getQuery = (tradeSide: string, id: string): { query: string } => {
+const getQuery = (
+  tradeSide: string,
+  baseAddress: string
+): { query: string } => {
   return {
     query: `
     subscription {
       EVM(network: eth) {
         DEXTrades(
-          where: {Trade: {Buy: {Currency: {SmartContract: {is: "${id}"}}}}}
+          where: {Trade: {Buy: {Currency: {SmartContract: {is: "${baseAddress}"}}}}}
         ) {
           Trade {
             ${tradeSide} {
@@ -182,27 +185,24 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(
-          getQuery("Sell", token.pair?.address as string),
-          {
-            next: onNext,
-            error: (err) => {
-              console.log("Subscription error:", err);
-              reject(err);
-            },
-            complete: () => {
-              console.log("Subscription complete");
-              resolve();
-            },
-          }
-        );
+        unsubscribe = client.subscribe(getQuery("Sell", baseAddress), {
+          next: onNext,
+          error: (err) => {
+            console.log("Subscription error:", err);
+            reject(err);
+          },
+          complete: () => {
+            console.log("Subscription complete");
+            resolve();
+          },
+        });
       });
     })();
 
     return () => {
       unsubscribe();
     };
-  }, [token.pair?.address]);
+  }, []);
 
   useEffect(() => {
     const onNext = (data: any) => {
@@ -232,27 +232,24 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(
-          getQuery("Buy", token.pair?.address as string),
-          {
-            next: onNext,
-            error: (err) => {
-              console.log("Subscription error:", err);
-              reject(err);
-            },
-            complete: () => {
-              console.log("Subscription complete");
-              resolve();
-            },
-          }
-        );
+        unsubscribe = client.subscribe(getQuery("Buy", baseAddress), {
+          next: onNext,
+          error: (err) => {
+            console.log("Subscription error:", err);
+            reject(err);
+          },
+          complete: () => {
+            console.log("Subscription complete");
+            resolve();
+          },
+        });
       });
     })();
 
     return () => {
       unsubscribe();
     };
-  }, [token.pair?.address]);
+  }, []);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
     return userOrder[0]?.orders;
@@ -436,7 +433,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return {
         tradeAmount: el.tradeAmount,
         side: el.side,
-        amount,
+        price: amount,
         transaction: el.transaction,
       };
     });
