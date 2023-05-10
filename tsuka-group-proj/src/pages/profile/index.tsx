@@ -4,8 +4,7 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
-import { WithdrawModal } from "@/components/ui/profile/withdraw.modal";
-import { DepositModal } from "@/components/ui/profile/deposit.modal";
+import { WithdrawAndDepositModal } from "@/components/ui/profile/modal";
 import { getToken } from "@/@fake-data/token.data";
 import { TokenType } from "@/types/tokens.type";
 
@@ -14,19 +13,22 @@ type PageProps = {
 };
 export default function Profile({ tokenBalances }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
-  const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
-  const [showDepositModal, setShowDepositModal] = useState<boolean>(false);
-  const [tokens, setTokens] = useState<TokenType[]>([]);
-  useEffect(() => {
-    setTokens(getToken());
-  }, []);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isDeposit, setIsDeposit] = useState<boolean>(false);
 
-  const handleWidthdrawOpenModal = () => {
-    setShowWithdrawModal(true);
+  // const [tokens, setTokens] = useState<TokenType[]>([]);
+  // useEffect(() => {
+  //   setTokens(getToken());
+  // }, []);
+
+  const handleOpenWidrawModal = () => {
+    setShowModal(true);
+    setIsDeposit(false);
   };
 
-  const handleDepositOpenModal = () => {
-    setShowDepositModal(true);
+  const handleOpenDepositModal = () => {
+    setIsDeposit(true);
+    setShowModal(true);
   };
 
   const Cards = tokenBalances;
@@ -148,13 +150,13 @@ export default function Profile({ tokenBalances }: PageProps) {
         <div className="flex flex-col md:ml-[21px] ">
           <button
             className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#6FCF97]  rounded-md"
-            onClick={handleDepositOpenModal}
+            onClick={handleOpenDepositModal}
           >
             Deposit
           </button>
           <button
             className="text-center py-[11px] px-[123px] font-medium font-['DM Sans'] text-[18.9px] leading-[25px] text-[#FFFFFF] bg-[#EB5757] hover:bg-[#EB1727] rounded-md my-[11px]"
-            onClick={handleWidthdrawOpenModal}
+            onClick={handleOpenWidrawModal}
           >
             Withdraw
           </button>
@@ -195,15 +197,11 @@ export default function Profile({ tokenBalances }: PageProps) {
           </div>
         </div>
       </div>
-      <WithdrawModal
-        open={showWithdrawModal}
-        callback={() => setShowWithdrawModal(false)}
-        tokens={tokens}
-      />
-      <DepositModal
-        open={showDepositModal}
-        callback={() => setShowDepositModal(false)}
+      <WithdrawAndDepositModal
+        open={showModal}
+        callback={() => setShowModal(false)}
         Cards={Cards}
+        isDeposit={isDeposit}
         backgroundInfo={backgroundInfo}
       />
     </div>

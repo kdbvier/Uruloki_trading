@@ -6,13 +6,15 @@ export interface ModalProps {
   open: boolean;
   callback: () => void;
   Cards: CardType[];
+  isDeposit: boolean;
   backgroundInfo: any[];
 }
 
-export const DepositModal: React.FC<ModalProps> = ({
+export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
   open,
   callback,
   Cards,
+  isDeposit,
   backgroundInfo,
 }) => {
   const getBackgroundIndex = (token_name: string) => {
@@ -39,7 +41,7 @@ export const DepositModal: React.FC<ModalProps> = ({
                 onClick={callback}
               />
               <h2 className="text-xl font-Poppins-300 font-medium mb-[22px] text-[24px] leading-[36px] text-['#BBC3D7]">
-                Widthdraw
+                {isDeposit ? "Deposit" : "Withdraw"}
               </h2>
               <div className="w-full flex justify-between items-center bg-tsuka-500 outline-none border border-tsuka-400 rounded-md  px-[19px] py-[11px] mb-[9px]">
                 <span className="text-[#676F84] font-Poppins-300 font-normal text-[14px] leading-[21px]">
