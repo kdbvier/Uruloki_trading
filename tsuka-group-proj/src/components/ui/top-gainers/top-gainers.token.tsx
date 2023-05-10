@@ -9,7 +9,7 @@ import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
 
 export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
   const router = useRouter();
-  return (
+  return ( 
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
         <span className="text-tsuka-50 text-[18px] font-medium">
@@ -59,7 +59,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                 topGainer.token.name && topGainer.token.name!=="-" && (
                   <tr
                     onClick={() => {
-                      router.push("/pair/2");
+                      router.push(`/pair/${topGainer.token.pair_address}`);
                     }}
                     className="cursor-pointer border-t border-t-tsuka-400"
                     key={idx}
@@ -98,7 +98,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                     <td className="py-2 md:py-5 text-right xl:text-left">
                       <div className="ml-2 flex text-[#6FCF97]">
                         <FiArrowUpRight className="mt-0.5" />
-                        <span>{`${topGainer.risingPercent}%`}</span>
+                        <span>{`${topGainer.risingPercent.toLocaleString()}%`}</span>
                       </div>
                     </td>
                   </tr>
