@@ -13,6 +13,7 @@ const reqBodySchema = Joi.object({
   budget: Joi.number().optional(),
   order_type: Joi.string().valid("buy", "sell").optional(),
   price_type: Joi.string().valid("range", "single").optional(),
+  is_continuous: Joi.boolean().valid(false, true).optional(),
 })
   .max(9)
   .min(1);

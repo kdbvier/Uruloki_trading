@@ -43,7 +43,7 @@ export default async function orderHandler(
         const order = await prisma.orders.create({
           data: value,
         });
-        console.log(order);
+        console.log("sus", order);
         res
           .status(200)
           .json({ payload: order, message: `Successfully created order` });

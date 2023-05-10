@@ -19,6 +19,7 @@ export interface Order {
   price_type: PriceTypeEnum;
   order_type: OrderTypeEnum;
   status: OrderStatusEnum;
+  is_continuous: boolean;
   baseTokenShortName: string;
   baseTokenLongName: string;
   pairTokenShortName: string;

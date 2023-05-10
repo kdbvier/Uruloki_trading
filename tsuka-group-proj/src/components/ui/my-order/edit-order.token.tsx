@@ -12,6 +12,8 @@ import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
 import { FiX, FiPlusCircle } from "react-icons/fi";
 import { getTokenPairPrice } from "@/store/apps/user-order";
+import ToggleButton from "../buttons/toggle.button";
+import { FaClock, FaSync } from "react-icons/fa";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -79,6 +81,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [isRange, setIsRange] = useState(
     selectedOrder.price_type === PriceTypeEnum.RANGE
   );
+  const [isContinuous, setIsContinuous] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(setSelectedOrder(selectedOrderId));
@@ -93,13 +96,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setMaxPrice(handleNumberFormat(selectedOrder.to_price ?? -1));
     setAmount(handleNumberFormat(selectedOrder.budget ?? -1));
     setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
+    setIsContinuous(selectedOrder.is_continuous ?? false);
   }, [selectedOrder]);
 
   const closeClickHandler = () => {
     closeHandler();
     setTargetPrice(handleNumberFormat(-1));
     setMinPrice(handleNumberFormat(-1));
+    setMaxPrice(handleNumberFormat(-1));
     setAmount(handleNumberFormat(-1));
+    setIsContinuous(false);
     setShowEditOrderModal(false);
   };
   const tokens = [
@@ -180,6 +186,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
+  const toggle = () => {
+    setIsContinuous((prevState) => !prevState);
+  };
   const handleSubmit = () => {
     const patchData = {} as PatchOrder;
     patchData.budget = toNumber(amount);
@@ -191,6 +200,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     } else {
       patchData.single_price = toNumber(targetPrice);
     }
+    patchData.is_continuous = isContinuous;
     console.log("before submit::");
     console.log(patchData);
     dispatch(EditUserOrder({ id: selectedOrderId, patchData }));
@@ -243,6 +253,71 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 {selectedOrder.baseTokenShortName}
               </p>
             </button>
+          </div>
+          {/* <div className="w-full mt-4 flex gap-2 text-sm">
+            <button
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                isContinuous ? "bg-tsuka-400" : ""
+              }`}
+              onClick={() => setIsContinuous(true)}
+            >
+              <span
+                className={isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
+              >
+                <FaSync className={isContinuous? "text-custom-green mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/> CONTNUOUS
+              </span>
+            </button>
+            <button
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                !isContinuous ? "bg-tsuka-400" : ""
+              }`}
+              onClick={() => setIsContinuous(false)}
+            >
+              <span
+                className={!isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
+              >
+                <FaClock className={!isContinuous?"text-custom-red mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/>ONE TIME
+              </span>
+            </button>
+          </div> */}
+          <div className="flex flex-row-reverse items-center mt-4">
+            <ToggleButton isContinuous={isContinuous} onToggle={toggle} />
+
+            {isContinuous ? (
+              <span
+                className={
+                  isContinuous
+                    ? "text-tsuka-50 flex items-center"
+                    : "text-tsuka-300 flex items-center"
+                }
+              >
+                <FaSync
+                  className={
+                    isContinuous
+                      ? "text-custom-green mr-1 xs:mr-2"
+                      : "text-tsuka-300 mr-1 xs:mr-2"
+                  }
+                />{" "}
+                CONTNUOUS
+              </span>
+            ) : (
+              <span
+                className={
+                  !isContinuous
+                    ? "text-tsuka-50 flex items-center"
+                    : "text-tsuka-300 flex items-center"
+                }
+              >
+                <FaClock
+                  className={
+                    !isContinuous
+                      ? "text-custom-red mr-1 xs:mr-2"
+                      : "text-tsuka-300 mr-1 xs:mr-2"
+                  }
+                />
+                ONE TIME
+              </span>
+            )}
           </div>
           <div className="w-full mt-4 flex gap-2 text-sm">
             <button
