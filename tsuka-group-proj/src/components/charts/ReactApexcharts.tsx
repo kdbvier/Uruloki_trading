@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import { ChartType } from "@/types/chart.type";
 
 const ReactApexcharts = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -11,20 +12,17 @@ const donutColors = {
   series2: "#EB5757",
 };
 
-let chartData = {
-  total: 0,
-  active: 42501,
-  out: 10211,
-};
-
-chartData.total = chartData.active + chartData.out;
-
 const changeString = (val: number) => {
   const res = val.toLocaleString();
   return res;
 };
 
-const Chart = () => {
+export interface ChartProps {
+  data: ChartType;
+}
+
+const Chart = (props: ChartProps) => {
+  const { data } = props;
   const options: ApexOptions = {
     chart: {
       type: "donut",
@@ -63,7 +61,7 @@ const Chart = () => {
               fontFamily: "sans-serif",
               fontSize: "16px",
               fontWeight: 400,
-              formatter: (val: string) => `${changeString(chartData.total)}`,
+              formatter: (val: string) => `${changeString(data.total)}`,
             },
           },
         },
@@ -101,13 +99,13 @@ const Chart = () => {
           Active
         </div>
         <div className="font-Poppins-300 font-medium text-[16px] leading-[21px] text-[#BBC3D7]">
-          {changeString(chartData.active)}
+          {changeString(data.active)}
         </div>
         <div className="font-Poppins-300 font-medium text-[10px] leading-[13px] text-[#EB5757] mt-5">
           Out Of Funds
         </div>
         <div className="font-Poppins-300 font-medium text-[16px] leading-[21px] text-[#BBC3D7]">
-          {changeString(chartData.out)}
+          {changeString(data.out)}
         </div>
       </div>
     </div>

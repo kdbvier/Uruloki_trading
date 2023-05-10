@@ -5,11 +5,14 @@ import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
 import { WithdrawAndDepositModal } from "@/components/ui/profile/modal";
+import { getChartData } from "@/@fake-data/chart.fake-data";
+import { ChartType } from "@/types/chart.type";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
+  chartData: ChartType;
 };
-export default function Profile({ tokenBalances }: PageProps) {
+export default function Profile({ tokenBalances, chartData }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
@@ -153,7 +156,7 @@ export default function Profile({ tokenBalances }: PageProps) {
           >
             Withdraw
           </button>
-          <Chart />
+          <Chart data={chartData} />
         </div>
         <div className="w-full flex flex-col items-center">
           <div className="w-full grid gap-3 lg:grid-cols-3 mb-[40px] xl:grid-cols-4 md:grid-cols-2">
@@ -204,7 +207,8 @@ export default function Profile({ tokenBalances }: PageProps) {
 export async function getServerSideProps() {
   // Fetch data from external API
   const getCardsData = await getCards();
+  const chartData = await getChartData();
 
   // Pass data to the page via props
-  return { props: { tokenBalances: getCardsData } };
+  return { props: { tokenBalances: getCardsData, chartData: chartData } };
 }

@@ -38,8 +38,6 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
     return index;
   };
 
-  console.log(Cards);
-
   return (
     <>
       {open && (
