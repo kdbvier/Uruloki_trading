@@ -38,6 +38,7 @@ export default async function TokenCacheHandler(
           },
         });
       } catch (err) {
+        console.log(err)
         topGainers=[]
       }
       try{
@@ -73,6 +74,7 @@ export default async function TokenCacheHandler(
           ) as TopMoverItem;
         });
       } catch (err) {
+        console.log(err)
        topMoversData=[]
       }
       try{
@@ -111,6 +113,7 @@ export default async function TokenCacheHandler(
           ) as MostBuyOrder;
         });
       } catch (err) {
+        console.log(err)
         mostBuyData=[]
       }try{
         const mostSell = await prisma.most_sell_orders.findMany({
@@ -147,6 +150,7 @@ export default async function TokenCacheHandler(
           ) as MostSellOrder;
         });
       } catch (err) {
+        console.log(err)
         mostSellData=[]
       }
         const data: Tokens = {

@@ -19,7 +19,7 @@ const reqBodySchema = Joi.object({
 
 const prisma = new PrismaClient();
 
-const getStrategy = async (strategyid: string) => {
+export const getStrategy = async (strategyid: string) => {
   const orderIds = await prisma.order_strategy.findMany({
     where: {
       strategyId: Number(strategyid),

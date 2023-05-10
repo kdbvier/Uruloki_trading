@@ -21,7 +21,19 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       cache.data = response.data;
       cache.lastFetch = now;
     }
-    const tokens = cache.data.filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()));
+    // const tokens = cache.data.filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()));
+    const tokens = cache.data
+      .filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()))
+      .sort((a: any, b: any) => {
+        if (a.name.toLowerCase() === name.toLowerCase()) {
+          return -1; // move a to the front
+        }
+        if (b.name.toLowerCase() === name.toLowerCase()) {
+          return 1; // move b to the front
+        }
+        return 0; // keep the order of a and b unchanged
+      });
+
 
     const erc20Tokens: (SearchToken | null)[] = await Promise.all(tokens.map(async (coin: any) => {
       const id = coin.id;
