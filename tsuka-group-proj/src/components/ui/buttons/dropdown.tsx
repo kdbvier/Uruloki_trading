@@ -16,9 +16,18 @@ const Dropdown : React.FC<DropdownOption> = ({allTokenName}) => {
     const [isOpen,
         setIsOpen] = useState < boolean > (false);
 
-    const [selectedOption, setSelectedOption] = useState < string > ("Tokens");
-        
+    const [selectedOption, setSelectedOption] = useState < string > ("");
+    
+    // set first token name
+    if(selectedOption == "" && typeof(allTokenName[0]?.shortName) != "undefined") {
+        setSelectedOption(allTokenName[0]?.shortName);
+    } 
     const options : TokenCache[] = allTokenName;
+
+    useEffect(() => {
+        console.log("hello");
+      }, []);
+
     useEffect(() => {
         dispatch(getHomrPageTokens());
       }, [dispatch, value]);
