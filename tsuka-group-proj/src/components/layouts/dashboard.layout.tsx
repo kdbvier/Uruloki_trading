@@ -78,8 +78,8 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       path: "/my-orders",
     },
     {
-      title: "Settings",
-      path: "/#",
+      title: "Profile",
+      path: "/profile",
     },
   ];
 
@@ -146,7 +146,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                       className="hidden sm:block"
                       src="/logos/logo.png"
                       alt="logo"
-                      width={111}
                       height={40}
                     /> */}
                     <div className="flex justify-between items-center">
