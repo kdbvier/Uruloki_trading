@@ -26,6 +26,7 @@ import {
 import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
+import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 
 interface InputToken {
   id: string;
@@ -64,6 +65,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   } = useAppSelector((state) => state);
   useEffect(() => {
     dispatch(getToken(pair_id as string));
+    dispatch(getOrdersbyTokenPair(pair_id as string));
   }, [dispatch, pair_id]);
 
   useEffect(() => {
