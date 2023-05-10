@@ -272,6 +272,71 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               ${handleNumberFormat(Number(token_price.base_price?.toFixed(2)))}
             </span>
           </p>
+          {/* <div className="w-full mt-4 flex gap-2 text-sm">
+            <button
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                isContinuous ? "bg-tsuka-400" : ""
+              }`}
+              onClick={() => setIsContinuous(true)}
+            >
+              <span
+                className={isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
+              >
+                <FaSync className={isContinuous? "text-custom-green mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/> CONTNUOUS
+              </span>
+            </button>
+            <button
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                !isContinuous ? "bg-tsuka-400" : ""
+              }`}
+              onClick={() => setIsContinuous(false)}
+            >
+              <span
+                className={!isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
+              >
+                <FaClock className={!isContinuous?"text-custom-red mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/>ONE TIME
+              </span>
+            </button>
+          </div> */}
+          <div className="flex flex-row-reverse justify-center items-center mt-4">
+            <ToggleButton isContinuous={isContinuous} onToggle={toggle} />
+
+            {isContinuous ? (
+              <span
+                className={
+                  isContinuous
+                    ? "text-tsuka-50 flex items-center"
+                    : "text-tsuka-300 flex items-center"
+                }
+              >
+                <FaSync
+                  className={
+                    isContinuous
+                      ? "text-custom-green mr-1 xs:mr-2"
+                      : "text-tsuka-300 mr-1 xs:mr-2"
+                  }
+                />{" "}
+                Continuous
+              </span>
+            ) : (
+              <span
+                className={
+                  !isContinuous
+                    ? "text-tsuka-50 flex items-center"
+                    : "text-tsuka-300 flex items-center"
+                }
+              >
+                <FaClock
+                  className={
+                    !isContinuous
+                      ? "text-custom-red mr-1 xs:mr-2"
+                      : "text-tsuka-300 mr-1 xs:mr-2"
+                  }
+                />
+                One time
+              </span>
+            )}
+          </div>
           <div className="w-full mt-4 flex">
             <button
               className={`${
@@ -300,71 +365,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </p>
             </button>
           </div>
-          {/* <div className="w-full mt-4 flex gap-2 text-sm">
-            <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
-                isContinuous ? "bg-tsuka-400" : ""
-              }`}
-              onClick={() => setIsContinuous(true)}
-            >
-              <span
-                className={isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
-              >
-                <FaSync className={isContinuous? "text-custom-green mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/> CONTNUOUS
-              </span>
-            </button>
-            <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
-                !isContinuous ? "bg-tsuka-400" : ""
-              }`}
-              onClick={() => setIsContinuous(false)}
-            >
-              <span
-                className={!isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
-              >
-                <FaClock className={!isContinuous?"text-custom-red mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/>ONE TIME
-              </span>
-            </button>
-          </div> */}
-          <div className="flex flex-row-reverse items-center mt-4">
-            <ToggleButton isContinuous={isContinuous} onToggle={toggle} />
-
-            {isContinuous ? (
-              <span
-                className={
-                  isContinuous
-                    ? "text-tsuka-50 flex items-center"
-                    : "text-tsuka-300 flex items-center"
-                }
-              >
-                <FaSync
-                  className={
-                    isContinuous
-                      ? "text-custom-green mr-1 xs:mr-2"
-                      : "text-tsuka-300 mr-1 xs:mr-2"
-                  }
-                />{" "}
-                CONTNUOUS
-              </span>
-            ) : (
-              <span
-                className={
-                  !isContinuous
-                    ? "text-tsuka-50 flex items-center"
-                    : "text-tsuka-300 flex items-center"
-                }
-              >
-                <FaClock
-                  className={
-                    !isContinuous
-                      ? "text-custom-red mr-1 xs:mr-2"
-                      : "text-tsuka-300 mr-1 xs:mr-2"
-                  }
-                />
-                ONE TIME
-              </span>
-            )}
-          </div>
+          
           <div className="w-full mt-4 flex gap-2 text-sm">
             <button
               className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
