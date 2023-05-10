@@ -187,7 +187,7 @@ const BitqueryOHLCChart = () => {
           } else {
             candlestickSeries.createPriceLine({
               price: prices[0],
-              color: order_type === "sell" ? "yello" : "purple",
+              color: order_type === "sell" ? "yellow" : "purple",
               lineWidth: 1,
               lineStyle: LineStyle.Dotted,
               axisLabelVisible: true,
