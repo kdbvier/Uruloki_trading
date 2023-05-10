@@ -1,7 +1,8 @@
 import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
+import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderStrategies } from "@/components/ui/strategies/full-header.strategies";
-import { getStrategyDetails } from "@/store/apps/strategy-details";
+import { getStrategies } from "@/store/apps/strategies";
 import { getTokenByStrategyId } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
@@ -14,12 +15,15 @@ import {
 export default function StrategyDetails({ id }: { id: string }) {
   const dispatch = useAppDispatch();
   const [showIndex, setShowIndex] = useState(0);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
+  const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const router = useRouter();
   const { id: strategyId = id || "" } = router.query;
-  const {
-    token: { value: token },
-    strategyDetails: { value: strategyDetails },
-  } = useAppSelector((state) => state);
+  const [token, setToken] = useState(null);
+  const [strategyDetails] = useAppSelector((state) =>
+    state.strategies.value.filter(({ id }) => id === strategyId)
+  );
 
   const settings = {
     dots: true,
@@ -37,19 +41,29 @@ export default function StrategyDetails({ id }: { id: string }) {
     setShowIndex((prev) => prev + 1);
   }, []);
 
+  const handleEditModal = (show: boolean, id: number) => {
+    console.log(show, id);
+    setSelectedOrderId(id);
+    setShowEditOrderModal(show);
+  };
+
   useEffect(() => {
     dispatch(getTokenByStrategyId(strategyId as string));
   }, [dispatch, strategyId]);
 
   useEffect(() => {
-    dispatch(getStrategyDetails(strategyId as string));
+    dispatch(getStrategies());
   }, [dispatch, strategyId]);
+
+  useEffect(() => {
+    dispatch(getStrategies());
+  }, []);
 
   return (
     <div className="flex flex-col">
       {strategyDetails && (
         <div className="p-8">
-          <FullHeaderStrategies strategyId={strategyId as string} />
+          <FullHeaderStrategies strategyDetails={strategyDetails} />
           <div className="hidden md:grid grid-cols-9 gap-4">
             {strategyDetails?.orderTokens?.map((item, index) => (
               <div key={index} className="col-span-9 md:col-span-3">
@@ -60,6 +74,8 @@ export default function StrategyDetails({ id }: { id: string }) {
                   code2={item.code2}
                   status={item.status}
                   orders={item.orders}
+                  setShowEditOrderModal={handleEditModal}
+                  setShowDeletedAlert={setShowDeletedAlert}
                 />
               </div>
             ))}
@@ -88,6 +104,8 @@ export default function StrategyDetails({ id }: { id: string }) {
                       code2={item.code2}
                       status={item.status}
                       orders={item.orders}
+                      setShowEditOrderModal={handleEditModal}
+                      setShowDeletedAlert={setShowDeletedAlert}
                     />
                   </div>
                 )
@@ -107,6 +125,16 @@ export default function StrategyDetails({ id }: { id: string }) {
               </label>
             </button>
           </div>
+          {showEditOrderModal && (
+            <EditOrderToken
+              setShowEditOrderModal={setShowEditOrderModal}
+              selectedOrderId={selectedOrderId}
+              closeHandler={() => {
+                setShowEditOrderModal(false);
+                setSelectedOrderId(-1);
+              }}
+            />
+          )}
           {token && <OrderBookToken token={token} />}
         </div>
       )}

@@ -54,7 +54,7 @@ export default async function strategyHandler(
               name1: orderToken.baseTokenLongName as string,
               code1: orderToken.baseTokenShortName as string,
               name2: orderToken.pairTokenLongName as string,
-              code2: orderToken.baseTokenShortName as string,
+              code2: orderToken.pairTokenShortName as string,
               status: orderToken.status as OrderStatusEnum,
               orders: orders[orderToken.order_id] as Array<
                 SingleOrder | RangeOrder
@@ -110,7 +110,7 @@ export default async function strategyHandler(
                 name2: orders[strategy.strategy_id][pair_address][0]
                   .pairTokenLongName as string,
                 code2: orders[strategy.strategy_id][pair_address][0]
-                  .baseTokenShortName as string,
+                  .pairTokenShortName as string,
                 status: orders[strategy.strategy_id][pair_address][0]
                   .status as OrderStatusEnum,
                 orders: orders[strategy.strategy_id][pair_address].map(

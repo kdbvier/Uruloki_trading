@@ -1,5 +1,5 @@
 import { coinMirrorUrl } from "@/services/coin-mirror.service";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface HorizontalIconsTokenProps {
   inputToken: { code: string; name: string };
@@ -23,22 +23,36 @@ export const HorizontalIconsToken: React.FC<HorizontalIconsTokenProps> = ({
     setHasOutputError(true);
   }
 
-  const inputIcon = `${coinMirrorUrl}/img/${inputToken?.code.toLowerCase()}-${inputToken?.name.toLowerCase()}.png`;
-  const outputIcon = `${coinMirrorUrl}/img/${outputToken?.code.toLowerCase()}-${outputToken?.name.toLowerCase()}.png`;
+  useEffect(() => {
+    setHasInputError(false);
+  }, [inputToken]);
 
+  useEffect(() => {
+    setHasOutputError(false);
+  }, [outputToken]);
+
+  // const inputIcon = `${coinMirrorUrl}/img/${inputToken?.code.toLowerCase()}-${inputToken?.name.toLowerCase()}.png`;
+  // const outputIcon = `${coinMirrorUrl}/img/${outputToken?.code.toLowerCase()}-${outputToken?.name.toLowerCase()}.png`;
+  const inputIcon = `${coinMirrorUrl}/icon/${inputToken?.code.toLowerCase()}/200`;
+  const outputIcon = `${coinMirrorUrl}/icon/${outputToken?.code.toLowerCase()}/200`;
+  const defaultIcon = "/imgs/empty-img6.png";
+
+  console.log(inputIcon, outputIcon);
   return (
     <div
-      className={`${large ? "w-12 h-12" : "w-10 h-10"} mr-2 xs:mx-4 flex -space-x-4`}
+      className={`${
+        large ? "w-12 h-12" : "w-10 h-10"
+      } mr-2 xs:mx-4 flex -space-x-4`}
     >
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mb-auto rounded-full`}
-        src={hasInputError ? "/imgs/empty-img.png" : inputIcon}
+        src={hasInputError ? defaultIcon : inputIcon}
         alt={inputToken?.name}
         onError={handleImageInputError}
       />
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mt-auto rounded-full`}
-        src={hasOutputError ? "/imgs/empty-img.png" : outputIcon}
+        src={hasOutputError ? defaultIcon : outputIcon}
         alt={outputToken?.name}
         onError={handleImageOutputError}
       />
