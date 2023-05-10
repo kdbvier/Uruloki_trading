@@ -61,7 +61,7 @@ const Chart = (props: ChartProps) => {
               fontFamily: "sans-serif",
               fontSize: "16px",
               fontWeight: 400,
-              formatter: (val: string) => `${changeString(data.total)}`,
+              formatter: (val: string) => `${changeString(data.active + data.out)}`,
             },
           },
         },
@@ -91,7 +91,7 @@ const Chart = (props: ChartProps) => {
           type="donut"
           height={220}
           options={options}
-          series={[80, 20]}
+          series={[data.active, data.out]}
         />
       </div>
       <div className="flex flex-col absolute top-[55px] right-3">
