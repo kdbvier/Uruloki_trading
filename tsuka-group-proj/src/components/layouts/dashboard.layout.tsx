@@ -177,7 +177,10 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   <div className="flex px-10 space-x-4">
                     {navLinks?.map(({ path, title }, index) => {
                       let isActive = path === router.pathname;
-                      if(index===1 && router.pathname.indexOf("strategies")>=0){
+                      if (
+                        index === 1 &&
+                        router.pathname.indexOf("strategies") >= 0
+                      ) {
                         isActive = true;
                       }
 
