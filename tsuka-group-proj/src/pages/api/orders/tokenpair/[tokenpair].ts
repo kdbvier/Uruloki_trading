@@ -1,5 +1,5 @@
-import type  { ApiResponse, Order } from "@/types";
-import { PrismaClient} from "@prisma/client";
+import type { ApiResponse, Order } from "@/types";
+import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
@@ -13,14 +13,26 @@ export default async function OrderByTokenPairHandler(
   switch (method) {
     case "GET":
       try {
+        const { status } = query;
+        const whereCondition: any = {
+          pair_address: String(tokenpair),
+        };
+        if (status) {
+          whereCondition["status"] = status;
+        }
         const orders = await prisma.orders.findMany({
-          where: {
-            pair_address:String(tokenpair)
-          },
+          where: whereCondition,
         });
-        res.status(200).json({ payload: orders, message: `Successfully found orders` });
+        res
+          .status(200)
+          .json({ payload: orders, message: `Successfully found orders` });
       } catch (err) {
-        res.status(400).json({ payload: undefined, message: `Something went wrong! Please read the error message '${err}'` });
+        res
+          .status(400)
+          .json({
+            payload: undefined,
+            message: `Something went wrong! Please read the error message '${err}'`,
+          });
       }
       break;
     default:

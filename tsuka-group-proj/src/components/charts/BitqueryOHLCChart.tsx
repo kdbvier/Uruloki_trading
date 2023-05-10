@@ -6,6 +6,7 @@ import {
   LineStyle,
 } from "lightweight-charts";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { Order } from "@/types";
 
 // price label bg color #f03349
 // time label bg color #363a45
@@ -41,8 +42,8 @@ const getUpdatedData = (forTime: string, datas: any) => {
       (data: any) => parseInt(forTime) - 2400000 < data.time
     );
     const time = forTime;
-    const open = filterData[0].open;
-    const close = filterData[filterData.length - 1].close;
+    const open = filterData[0]?.open;
+    const close = filterData[filterData.length - 1]?.close;
     const high =
       filterData.length !== 0
         ? Math.max(...filterData.map((item: any) => item.high))
@@ -64,14 +65,16 @@ const getUpdatedData = (forTime: string, datas: any) => {
 
 // This is our lightweight chart
 const BitqueryOHLCChart = () => {
-  const [showMarkers, setShowMarkers] = useState(false);
+  const [showMarkers, setShowMarkers] = useState(true);
   const chartRef = useRef<HTMLDivElement>(null);
   const candleStickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const dispatch = useAppDispatch();
   const firstBitquery = useAppSelector((state) => state.bitquery.value);
   const streamValue = useAppSelector((state) => state.bitquery.streamValue);
   const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
-  const userOrders = useAppSelector((state) => state.userOrder.value);
+  const activeOrdersByTokenpair = useAppSelector(
+    (state) => state.tokenpairOrders.value.orders
+  );
 
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
@@ -170,40 +173,51 @@ const BitqueryOHLCChart = () => {
     // Set data to the chart
     candlestickSeries.setData(temp);
     if (showMarkers) {
-      userOrders.map(({ orders }) => {
-        orders.map((order: any) => {
-          const { budget, price_type, order_type, baseTokenShortName } = order;
-          const price = order?.price ?? 0;
-          const prices = order?.prices ?? [0, 0];
+      activeOrdersByTokenpair.map(
+        ({
+          budget,
+          price_type,
+          order_type,
+          baseTokenShortName,
+          single_price,
+          from_price,
+          to_price,
+        }: Order) => {
           if (price_type === "single") {
             candlestickSeries.createPriceLine({
-              price: price,
+              price: single_price as number,
               color: order_type === "sell" ? "red" : "green",
               lineWidth: 1,
               lineStyle: LineStyle.Dotted,
               axisLabelVisible: true,
-              title: `${order_type.toUpperCase()} ${budget} ${baseTokenShortName}`,
+              title: `${(
+                order_type as string
+              ).toUpperCase()} ${budget} ${baseTokenShortName}`,
             });
           } else {
             candlestickSeries.createPriceLine({
-              price: prices[0],
+              price: from_price as number,
               color: order_type === "sell" ? "yellow" : "purple",
               lineWidth: 1,
               lineStyle: LineStyle.Dotted,
               axisLabelVisible: true,
-              title: `${order_type.toUpperCase()} ${budget} ${baseTokenShortName}`,
+              title: `${(
+                order_type as string
+              ).toUpperCase()} ${budget} ${baseTokenShortName}`,
             });
             candlestickSeries.createPriceLine({
-              price: prices[1],
+              price: to_price as number,
               color: order_type === "sell" ? "red" : "green",
               lineWidth: 1,
               lineStyle: LineStyle.Dotted,
               axisLabelVisible: true,
-              title: `${order_type.toUpperCase()} ${budget} ${baseTokenShortName}`,
+              title: `${(
+                order_type as string
+              ).toUpperCase()} ${budget} ${baseTokenShortName}`,
             });
           }
-        });
-      });
+        }
+      );
     }
     chart.timeScale().fitContent();
 
@@ -229,7 +243,7 @@ const BitqueryOHLCChart = () => {
       chart.remove();
       window.removeEventListener("resize", updateChartSize);
     };
-  }, [dispatch, firstBitquery, userOrders, showMarkers]);
+  }, [dispatch, firstBitquery, activeOrdersByTokenpair, showMarkers]);
 
   // When subscription data arrives
   useEffect(() => {
