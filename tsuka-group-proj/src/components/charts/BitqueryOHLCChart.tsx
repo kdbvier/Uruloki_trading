@@ -173,7 +173,7 @@ const BitqueryOHLCChart = () => {
     // Set data to the chart
     candlestickSeries.setData(temp);
     if (showMarkers) {
-      activeOrdersByTokenpair.map(
+      activeOrdersByTokenpair?.map(
         ({
           budget,
           price_type,
