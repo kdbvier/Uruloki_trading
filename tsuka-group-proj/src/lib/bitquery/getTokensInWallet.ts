@@ -74,7 +74,6 @@ export const getTokensInWallet = async (walletAddress: string): Promise<Array<Ca
 }
 
 const isScamToken = (tokenName: string): boolean => {
-    console.log(tokenName + " is scam? " + (tokenName.includes("...") || tokenName.includes(".com")))
-    if(tokenName.includes("...") || tokenName.includes(".com")) return true;
+   if(tokenName.includes("...") || tokenName.includes(".com")) return true;
     return false
 }
