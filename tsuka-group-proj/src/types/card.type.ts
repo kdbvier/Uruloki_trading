@@ -1,7 +1,7 @@
 export type CardType = {
   id: number;
   value: string;
-  amount: number;
+  amount: number; 
   name: string;
   shortName: string;
 };
