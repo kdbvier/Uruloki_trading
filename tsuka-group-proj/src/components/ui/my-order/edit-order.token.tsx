@@ -240,6 +240,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
+  const baseLongName = isEdit?selectedOrder.baseTokenLongName:name1;
+  const baseShortName = isEdit?selectedOrder.baseTokenShortName:code1;
+  const pairLongName = isEdit?selectedOrder.pairTokenLongName:name2;
+  const pairShortName = isEdit?selectedOrder.baseTokenShortName:code2;
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
       <div className="w-full h-full flex justify-center items-center p-4 md:p-0">
@@ -268,8 +272,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {selectedOrder.pairTokenShortName} with{" "}
-                {selectedOrder.baseTokenShortName}
+                {pairShortName} with{" "}
+                {baseShortName}
               </p>
             </button>
             <button
@@ -282,8 +286,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                {selectedOrder.pairTokenShortName} for{" "}
-                {selectedOrder.baseTokenShortName}
+                {pairShortName} for{" "}
+                {baseShortName}
               </p>
             </button>
           </div>
@@ -442,21 +446,21 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   <TokenIconsToken
                     name={
                       isBuy
-                        ? selectedOrder.pairTokenLongName ?? ""
-                        : selectedOrder.baseTokenLongName ?? ""
+                        ? pairLongName ?? ""
+                        : baseLongName ?? ""
                     }
                     shortName={
                       isBuy
-                        ? selectedOrder.pairTokenShortName ?? ""
-                        : selectedOrder.baseTokenShortName ?? ""
+                        ? pairShortName ?? ""
+                        : baseShortName ?? ""
                     }
                     width={16}
                     height={16}
                   />
                   <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
-                      ? selectedOrder.pairTokenLongName
-                      : selectedOrder.baseTokenLongName}
+                      ? pairLongName
+                      : baseLongName}
                   </span>
                 </div>
               </div>
@@ -481,7 +485,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {3.000493} {selectedOrder.baseTokenShortName ?? ""}
+                  {3.000493} {baseShortName ?? ""}
                 </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
