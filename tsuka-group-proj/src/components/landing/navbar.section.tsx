@@ -24,13 +24,20 @@ export const Navbar: React.FC<NavbarProps> = ({ icon, titlesCollection }) => {
   return (
     <div className="flex flex-col lg:flex-row w-full lg:justify-between items-center mb-32 z-50">
       <div className="flex justify-between items-center w-full ">
+        <div className="flex justify-between items-center">
         <Image
-          src={icon.url}
+          // src={icon.url}
+          src="/logos/logo_icon.png"
           alt="logo__image"
-          width={160}
-          height={58}
+          width={53}
+          height={53}
           style={{ position: "relative" }}
         />
+        <div className="px-3 flex flex-col" style={{ position: "relative" }}>
+          <span className="text-[26px] tracking-widest font-Uruloki  stroke-transparent">URULOKI</span> 
+          {/* <span className="font-Uruloki m-0 mt-[9px] tracking-[7px] stroke-transparent">DEJITARU</span> */}
+        </div>
+        </div>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="lg:hidden text-white focus:outline-none z-50"
