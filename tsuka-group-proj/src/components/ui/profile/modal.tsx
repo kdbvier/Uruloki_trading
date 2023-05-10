@@ -191,7 +191,9 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                   Amount :
                 </span>{" "}
                 <span className="text-[BBC3D7] font-Poppins-300 font-normal text-[14px] leading-[21px] ">
-                  {isDeposit ? tokens[index].amount : Cards[index].amount}
+                  {isDeposit
+                    ? tokens[index].amount + " " + tokens[index].shortName
+                    : Cards[index].amount + " " + Cards[index].shortName}
                 </span>{" "}
                 <span className="text-[#E88326] font-Poppins-300 font-medium text-[12px] leading-[18px]">
                   MAX

@@ -11,11 +11,13 @@ const donutColors = {
   series2: "#EB5757",
 };
 
-const chartData = {
-  total: 5251501,
+let chartData = {
+  total: 0,
   active: 42501,
   out: 10211,
 };
+
+chartData.total = chartData.active + chartData.out;
 
 const changeString = (val: number) => {
   const res = val.toLocaleString();
@@ -61,7 +63,7 @@ const Chart = () => {
               fontFamily: "sans-serif",
               fontSize: "16px",
               fontWeight: 400,
-              formatter: (val: string) => "5,251,501",
+              formatter: (val: string) => `${changeString(chartData.total)}`,
             },
           },
         },
