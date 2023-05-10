@@ -5,8 +5,6 @@ import { getCards } from "@/@fake-data/card.fake-data";
 import { CardType } from "@/types/card.type";
 import Chart from "@/components/charts/ReactApexcharts";
 import { WithdrawAndDepositModal } from "@/components/ui/profile/modal";
-import { getToken } from "@/@fake-data/token.data";
-import { TokenType } from "@/types/tokens.type";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
@@ -15,11 +13,6 @@ export default function Profile({ tokenBalances }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
-
-  // const [tokens, setTokens] = useState<TokenType[]>([]);
-  // useEffect(() => {
-  //   setTokens(getToken());
-  // }, []);
 
   const handleOpenWidrawModal = () => {
     setShowModal(true);
@@ -200,7 +193,6 @@ export default function Profile({ tokenBalances }: PageProps) {
       <WithdrawAndDepositModal
         open={showModal}
         callback={() => setShowModal(false)}
-        Cards={Cards}
         isDeposit={isDeposit}
         backgroundInfo={backgroundInfo}
       />
