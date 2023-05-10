@@ -193,6 +193,7 @@ export default function Profile({ tokenBalances }: PageProps) {
       <WithdrawAndDepositModal
         open={showModal}
         callback={() => setShowModal(false)}
+        Cards={Cards}
         isDeposit={isDeposit}
         backgroundInfo={backgroundInfo}
       />
