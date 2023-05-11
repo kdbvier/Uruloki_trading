@@ -8,20 +8,17 @@ import { HorizontalIconsToken } from "./horizontal-icons.token";
 import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
 import { ApiResponse, Order } from "@/types";
+import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 export interface FullHeaderTokenProps {
-  token: {
-    id: string;
-    token: string;
-  };
   pair_address: string;
 }
 
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
-  token,
   pair_address,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
+  const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
   const [orders, setOrders] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -39,8 +36,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
       }
     };
     getOrders();
-    console.log("parir", pair_address);
-    
+
+    dispatch(getTokenPairInfo(pair_address as string));
     dispatch(setPairAddress(pair_address as string));
   }, [pair_address]);
 
@@ -95,16 +92,22 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <MdArrowBack />
             </Link>
             <HorizontalIconsToken
-              inputToken={value.chain}
-              outputToken={value.pair as any}
+              inputToken={{
+                name: tokenPairInfo.baseToken.name,
+                code: tokenPairInfo.baseToken.symbol,
+              }}
+              outputToken={{
+                name: tokenPairInfo.pairedToken.name,
+                code: tokenPairInfo.pairedToken.symbol,
+              }}
               large={true}
             />
             <div className="px-2 flex-1 flex-col">
               <p className="text-sm xs:text-base">
                 <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
-                  {value.chain?.code}
+                  {tokenPairInfo.baseToken.symbol}
                 </label>
-                /{value.pair?.code}
+                /{tokenPairInfo.pairedToken.symbol}
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">
