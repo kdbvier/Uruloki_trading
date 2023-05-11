@@ -107,7 +107,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">
-                  Pair Token:{" "}
+                  Pair Address:{" "}
                 </label>
                 <div className="flex flex-col items-center justify-around ml-2">
                   <label className="text-xs text-tsuka-50">
