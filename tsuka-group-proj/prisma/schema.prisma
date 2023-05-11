@@ -45,6 +45,7 @@ model orders {
   budget             Float?
   order_type         orders_order_type?
   price_type         orders_price_type?
+  is_continuous      Boolean?           @default(false)
   user_id            Int
   baseTokenShortName String?            @db.VarChar(255)
   pairTokenShortName String?            @db.VarChar(255)
