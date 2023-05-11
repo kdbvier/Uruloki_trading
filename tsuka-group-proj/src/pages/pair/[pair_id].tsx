@@ -4,7 +4,7 @@ import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
-import { getToken } from "@/store/apps/token";
+import { getToken, setPairAddress } from "@/store/apps/token";
 import { getUserOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -43,16 +43,22 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [pair_address, setPair_address] = useState<String>("");
 
-  const { pair_id } = router.query;
-
+  let pair_id = "2";
+  
   // When this page becomes unmounted
   useEffect(() => {
+    
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
     };
   }, []);
+
+  useEffect(() => {
+    setPair_address(String(router.query.pair_id))
+  }, [router])
 
   useEffect(() => {
     console.log("useEffect");
@@ -64,7 +70,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   } = useAppSelector((state) => state);
   useEffect(() => {
     dispatch(getToken(pair_id as string));
-  }, [dispatch, pair_id]);
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -84,7 +90,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     <div className="flex flex-col px-4 md:px-10 py-6">
       {token && (
         <>
-          <FullHeaderToken token={token} />
+          <FullHeaderToken token={token} pair_address={String(pair_address)} />
           <div className="hidden lg:grid grid-cols-11 gap-4">
             {/* <div className="col-span-12 md:col-span-3">
               <CompareTokenChainToken token={token} networks={networks} />
