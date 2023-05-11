@@ -47,10 +47,9 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   const [pair_address, setPair_address] = useState<String>("");
 
   let pair_id = "2";
-  
+
   // When this page becomes unmounted
   useEffect(() => {
-    
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
@@ -58,15 +57,15 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   }, []);
 
   useEffect(() => {
-    setPair_address(String(router.query.pair_id))
-  }, [router])
+    setPair_address(String(router.query.pair_id));
+  }, [router]);
 
   useEffect(() => {
     console.log("useEffect");
     dispatch(getBitqueryInitInfo());
     dispatch(getStrategies());
   }, [dispatch]);
-  
+
   const {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
@@ -90,11 +89,9 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
 
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
-      {token && (
-        <div>
-          <FullHeaderToken token={token} pair_address={String(pair_address)} />
-          <div className="hidden lg:grid grid-cols-11 gap-4">
-            {/* <div className="col-span-12 md:col-span-3">
+      <FullHeaderToken pair_address={String(pair_address)} />
+      <div className="hidden lg:grid grid-cols-11 gap-4">
+        {/* <div className="col-span-12 md:col-span-3">
               <CompareTokenChainToken token={token} networks={networks} />
             </div> */}
         <div className="col-span-12 md:col-span-8">
@@ -160,7 +157,9 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
           pair_address={id}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={0} //TODO: Fix this
-          closeHandler={()=>{setShowEditOrderModal(false)}} //--//TODO: Fix this
+          closeHandler={() => {
+            setShowEditOrderModal(false);
+          }} //--//TODO: Fix this
         />
       )}
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
@@ -181,7 +180,5 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
         strategies={strategies!}
       />
     </div>
-  )}
-  </div>
-  )
+  );
 }

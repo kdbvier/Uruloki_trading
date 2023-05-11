@@ -46,13 +46,13 @@ export const HorizontalIconsToken: React.FC<HorizontalIconsTokenProps> = ({
     >
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mb-auto rounded-full`}
-        src={inputIcon}
+        src={hasInputError ? defaultIcon : inputIcon}
         alt={inputToken?.name}
         onError={handleImageInputError}
       />
       <img
         className={`${large ? "w-10 h-10" : "w-8 h-8"} mt-auto rounded-full`}
-        src={outputIcon}
+        src={hasOutputError ? defaultIcon : outputIcon}
         alt={outputToken?.name}
         onError={handleImageOutputError}
       />
