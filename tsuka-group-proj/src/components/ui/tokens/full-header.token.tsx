@@ -31,7 +31,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
           `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
         ));
 
-      if (result !== undefined) {
+      if (result) {
         result.json().then((res: any) => {
           setOrders(res.payload);
         });

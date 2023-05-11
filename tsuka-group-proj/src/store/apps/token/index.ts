@@ -15,17 +15,17 @@ const initialState: TokenState = {
     chain: {
       name: "Ethereum",
       code: "ETH",
-      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
+      address: "",
     },
     pair: {
       code: "BTC",
       name: "Bitcoin",
-      address: "0xce1f0626083a00eaef1d85dd2979abb5b1c3657c",
+      address: "",
     },
     price: {
-      value: "29,095.9888201",
+      value: "",
       operator: "+",
-      variationValue: 0.76,
+      variationValue: 0,
       variationValueDiference: 0.00523,
     },
     volume: {
