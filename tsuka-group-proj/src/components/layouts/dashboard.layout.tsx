@@ -158,8 +158,13 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                         height={40}
                         style={{ position: "relative" }}
                       />
-                      <div className="px-3 flex flex-col hidden sm:block" style={{ position: "relative" }}>
-                        <span className="text-[26px] tracking-widest font-Uruloki text-white stroke-transparent">URULOKI</span> 
+                      <div
+                        className="px-3 flex flex-col hidden sm:block"
+                        style={{ position: "relative" }}
+                      >
+                        <span className="text-[26px] tracking-widest font-Uruloki text-white stroke-transparent">
+                          URULOKI
+                        </span>
                         {/* <span className="font-Uruloki m-0 mt-[9px] tracking-[7px] stroke-transparent">DEJITARU</span> */}
                       </div>
                     </div>

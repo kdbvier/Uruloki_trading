@@ -1,7 +1,12 @@
 import { BitqueryData } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getBitqueryOHLCData } from "@/lib/bitquery/getBitqueryOHLCData";
-import { getBitqueryStreamData, transformData, transformStreamData, getAddData } from "@/lib/bitquery/getBitqueryStreamData"
+import {
+  getBitqueryStreamData,
+  transformData,
+  transformStreamData,
+  getAddData,
+} from "@/lib/bitquery/getBitqueryStreamData";
 
 export interface BitqueryDataState {
   value: BitqueryData[];
@@ -17,10 +22,10 @@ const initialState: BitqueryDataState = {
   status: "ok",
 };
 // After fetching the historical data and then fetch the subscription data
-// Send the data to the Store 
+// Send the data to the Store
 export const getBitqueryInitInfo = createAsyncThunk(
   "bitqueryInitInfo/get",
-  async (any,{dispatch}): Promise<any> => {
+  async (any, { dispatch }): Promise<any> => {
     const responsData = await getBitqueryOHLCData();
     const tranData = await transformData(responsData);
     dispatch(getBitqueryStreamInfo());
@@ -30,14 +35,14 @@ export const getBitqueryInitInfo = createAsyncThunk(
 // initialize the historical data in the Store
 export const initBitqueryData = createAsyncThunk(
   "bitqueryInitInfo/delete",
-  async (any,{dispatch}): Promise<any> => {
+  async (any, { dispatch }): Promise<any> => {
     return [];
   }
 );
 // initialize the sunscription data in the Store
 export const initBitqueryStreamData = createAsyncThunk(
   "bitqueryStreamInfo/delete",
-  async (any,{dispatch}): Promise<any> => {
+  async (any, { dispatch }): Promise<any> => {
     return [];
   }
 );
@@ -69,7 +74,8 @@ export const bitquerySlice = createSlice({
       .addCase(getBitqueryInitInfo.fulfilled, (state, action) => {
         state.status = "ok";
         state.value = [...state.value, ...action.payload];
-        state.forwardTime = action.payload[action.payload.length - 1].time + 2400000;
+        state.forwardTime =
+          action.payload[action.payload.length - 1]?.time + 2400000;
       })
       .addCase(getBitqueryInitInfo.rejected, (state) => {
         state.status = "failed";
@@ -113,11 +119,11 @@ export const bitquerySlice = createSlice({
         let temp = action.payload;
         // temp.time = state.forwardTime;
         state.streamValue = [...state.streamValue, temp];
-        if(action.payload.time > state.forwardTime){
+        if (action.payload.time > state.forwardTime) {
           state.forwardTime = state.forwardTime + 2400000;
-          if(action.payload.time > state.forwardTime + 2400000){
+          if (action.payload.time > state.forwardTime + 2400000) {
             // state.value = [...state.value, ...action.payload];
-          }else{
+          } else {
             // const addData = getAddData(state.forwardTime, state.streamValue);
             // state.value = [...state.value, addData];
           }

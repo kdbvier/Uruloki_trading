@@ -39,7 +39,7 @@ export const tokenData: Token = {
 
 export const tokensData: Array<Token> = [
   {
-    id: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+    id: "1",
     strategy_id: "1",
     token: "Ethereum",
     chain: {

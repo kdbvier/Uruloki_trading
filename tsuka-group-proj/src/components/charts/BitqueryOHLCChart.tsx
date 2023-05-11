@@ -1,6 +1,12 @@
-import { useEffect, useRef} from 'react';
-import { createChart, ISeriesApi, CandlestickData  } from 'lightweight-charts';
+import { useEffect, useRef, useState } from "react";
+import {
+  createChart,
+  ISeriesApi,
+  CandlestickData,
+  LineStyle,
+} from "lightweight-charts";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { Order } from "@/types";
 
 // price label bg color #f03349
 // time label bg color #363a45
@@ -9,104 +15,122 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 // average line color #199a82
 
 // To subscribe, get OHLC data from the Store
-const getUpdatedData = (forTime: string, datas:any) => {
-  if(datas[datas.length - 1].time > forTime){
-    const filterData = datas.filter((data:any) => data.time > forTime);
+const getUpdatedData = (forTime: string, datas: any) => {
+  if (datas[datas.length - 1].time > forTime) {
+    const filterData = datas.filter((data: any) => data.time > forTime);
     const time = forTime + 2400000;
     const open = filterData[0].open;
     const close = filterData[filterData.length - 1].close;
-    const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : 0;
-    const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : 0;
+    const high =
+      filterData.length !== 0
+        ? Math.max(...filterData.map((item: any) => item.high))
+        : 0;
+    const low =
+      filterData.length !== 0
+        ? Math.min(...filterData.map((item: any) => item.low))
+        : 0;
     return {
       time,
       open,
       high,
       low,
-      close
-    }
-  }else{
-    const filterData1 = datas.filter((data:any) => data.time < forTime);
-    const filterData = filterData1.filter((data:any) => parseInt(forTime) - 2400000 < data.time);
+      close,
+    };
+  } else {
+    const filterData1 = datas.filter((data: any) => data.time < forTime);
+    const filterData = filterData1.filter(
+      (data: any) => parseInt(forTime) - 2400000 < data.time
+    );
     const time = forTime;
-    const open = filterData[0].open;
-    const close = filterData[filterData.length - 1].close;
-    const high = filterData.length !== 0 ? Math.max(...filterData.map((item:any) => item.high)) : 0;
-    const low = filterData.length !== 0 ? Math.min(...filterData.map((item:any) => item.low)) : 0;
-  
+    const open = filterData[0]?.open;
+    const close = filterData[filterData.length - 1]?.close;
+    const high =
+      filterData.length !== 0
+        ? Math.max(...filterData.map((item: any) => item.high))
+        : 0;
+    const low =
+      filterData.length !== 0
+        ? Math.min(...filterData.map((item: any) => item.low))
+        : 0;
+
     return {
       time,
       open,
       high,
       low,
-      close
-    }
+      close,
+    };
   }
-}
+};
 
 // This is our lightweight chart
 const BitqueryOHLCChart = () => {
-  const chartRef = useRef<HTMLDivElement>(null)
-  const candleStickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const [showMarkers, setShowMarkers] = useState(true);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const candleStickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const dispatch = useAppDispatch();
   const firstBitquery = useAppSelector((state) => state.bitquery.value);
   const streamValue = useAppSelector((state) => state.bitquery.streamValue);
   const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
+  const activeOrdersByTokenpair = useAppSelector(
+    (state) => state.tokenpairOrders.value.orders
+  );
 
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
   }
-  
+
   // When the first data arrives
   useEffect(() => {
     if (!chartRef.current || !firstBitquery) return;
     // create lightweight-chart
     const chart = createChart(chartRef.current, {
-        width: 1300,
-        height: 400,
-        layout: {
-          background: {
-            color: '#151924',
-          },
-          textColor: '#abacb1',
+      width: 1300,
+      height: 400,
+      layout: {
+        background: {
+          color: "#151924",
         },
-        crosshair: {
-          vertLine: {
-            color: '#474a55',
-            labelBackgroundColor: '#474a55',
-          },
-          horzLine: {
-            color: '#363a45',
-            labelBackgroundColor: '#363a45',
-          },
+        textColor: "#abacb1",
+      },
+      crosshair: {
+        vertLine: {
+          color: "#474a55",
+          labelBackgroundColor: "#474a55",
         },
-        rightPriceScale: {
-          borderColor: 'rgba(197, 203, 206, 0.5)',
+        horzLine: {
+          color: "#363a45",
+          labelBackgroundColor: "#363a45",
         },
-        grid: {
-          vertLines: {
-            color: 'rgba(197, 203, 206, 0.1)',
-          },
-          horzLines: {
-            color: 'rgba(197, 203, 206, 0.1)',
-          },
+      },
+      rightPriceScale: {
+        borderColor: "rgba(197, 203, 206, 0.5)",
+      },
+      grid: {
+        vertLines: {
+          color: "rgba(197, 203, 206, 0.1)",
         },
-        localization: {
-          timeFormatter: (businessDayOrTimestamp: any) => {
-            return new Date(businessDayOrTimestamp).toLocaleString();
-          },
+        horzLines: {
+          color: "rgba(197, 203, 206, 0.1)",
         },
-        timeScale: {
-          tickMarkFormatter: (businessDayOrTimestamp: any) => {
-            const date = new Date(businessDayOrTimestamp * 1000);
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            const timeString = `${hours}:${minutes}`;
-            return timeString;
-          },
+      },
+      localization: {
+        timeFormatter: (businessDayOrTimestamp: any) => {
+          return new Date(businessDayOrTimestamp).toLocaleString();
         },
+      },
+      timeScale: {
+        tickMarkFormatter: (businessDayOrTimestamp: any) => {
+          const date = new Date(businessDayOrTimestamp * 1000);
+          const hours = date.getHours().toString().padStart(2, "0");
+          const minutes = date.getMinutes().toString().padStart(2, "0");
+          const timeString = `${hours}:${minutes}`;
+          return timeString;
+        },
+      },
     });
-    
-    // the historical data from the Bitquery 
+
+    // the historical data from the Bitquery
     let temp: MyCandlestickData[] = [];
     // the time of last historical data in Store
     let tempTime: any = [];
@@ -117,15 +141,15 @@ const BitqueryOHLCChart = () => {
         open: 0,
         high: 0,
         low: 0,
-        close: 0
+        close: 0,
       };
-    if (tempTime === value["time"]) {
-      return;
-    }
-    Object.keys(value).forEach((key: string) => {
-      tempItem[key] = value[key];
-    });
-    tempTime = tempItem["time"];
+      if (tempTime === value["time"]) {
+        return;
+      }
+      Object.keys(value).forEach((key: string) => {
+        tempItem[key] = value[key];
+      });
+      tempTime = tempItem["time"];
       temp.push(tempItem);
     });
 
@@ -136,22 +160,75 @@ const BitqueryOHLCChart = () => {
       // Compare the dates
       return dateA.getTime() - dateB.getTime();
     });
-    
+
     // Add the candlestick to the chart
     const candlestickSeries = chart.addCandlestickSeries({
-      upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-      wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+      upColor: "#26a69a",
+      downColor: "#ef5350",
+      borderVisible: false,
+      wickUpColor: "#26a69a",
+      wickDownColor: "#ef5350",
     });
-    candleStickSeriesRef.current=candlestickSeries;
+    candleStickSeriesRef.current = candlestickSeries;
     // Set data to the chart
     candlestickSeries.setData(temp);
+    if (showMarkers) {
+      activeOrdersByTokenpair?.map(
+        ({
+          budget,
+          price_type,
+          order_type,
+          baseTokenShortName,
+          single_price,
+          from_price,
+          to_price,
+        }: Order) => {
+          if (price_type === "single") {
+            candlestickSeries.createPriceLine({
+              price: single_price as number,
+              color: order_type === "sell" ? "red" : "green",
+              lineWidth: 1,
+              lineStyle: LineStyle.Dotted,
+              axisLabelVisible: true,
+              title: `${(
+                order_type as string
+              ).toUpperCase()} ${budget} ${baseTokenShortName}`,
+            });
+          } else {
+            candlestickSeries.createPriceLine({
+              price: from_price as number,
+              color: order_type === "sell" ? "yellow" : "purple",
+              lineWidth: 1,
+              lineStyle: LineStyle.Dotted,
+              axisLabelVisible: true,
+              title: `${(
+                order_type as string
+              ).toUpperCase()} ${budget} ${baseTokenShortName}`,
+            });
+            candlestickSeries.createPriceLine({
+              price: to_price as number,
+              color: order_type === "sell" ? "red" : "green",
+              lineWidth: 1,
+              lineStyle: LineStyle.Dotted,
+              axisLabelVisible: true,
+              title: `${(
+                order_type as string
+              ).toUpperCase()} ${budget} ${baseTokenShortName}`,
+            });
+          }
+        }
+      );
+    }
     chart.timeScale().fitContent();
 
     // Insert the resizing code here
     const updateChartSize = () => {
-
-      const containerWidth: number = chartRef.current?.clientWidth ?  chartRef.current?.clientWidth : 0;
-      const containerHeight:number = chartRef.current?.clientHeight ? chartRef.current?.clientHeight : 0;
+      const containerWidth: number = chartRef.current?.clientWidth
+        ? chartRef.current?.clientWidth
+        : 0;
+      const containerHeight: number = chartRef.current?.clientHeight
+        ? chartRef.current?.clientHeight
+        : 0;
 
       const newWidth = containerWidth * 1;
       const newHeight = containerHeight * 1;
@@ -161,18 +238,23 @@ const BitqueryOHLCChart = () => {
     updateChartSize();
 
     // Update size on window resize
-    window.addEventListener('resize', updateChartSize);
+    window.addEventListener("resize", updateChartSize);
     return () => {
       chart.remove();
-      window.removeEventListener('resize', updateChartSize);
+      window.removeEventListener("resize", updateChartSize);
     };
-  }, [dispatch, firstBitquery]);
+  }, [dispatch, firstBitquery, activeOrdersByTokenpair, showMarkers]);
 
   // When subscription data arrives
   useEffect(() => {
-    if (streamValue.length == 0 || typeof(streamValue.length) == "undefined" || !candleStickSeriesRef.current) return;
-    if(typeof(streamValue.length) == "undefined") return;
-    let updatedData: MyCandlestickData | null= null;
+    if (
+      streamValue.length == 0 ||
+      typeof streamValue.length == "undefined" ||
+      !candleStickSeriesRef.current
+    )
+      return;
+    if (typeof streamValue.length == "undefined") return;
+    let updatedData: MyCandlestickData | null = null;
 
     // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue);
@@ -180,8 +262,24 @@ const BitqueryOHLCChart = () => {
     candleStickSeriesRef.current.update(updatedData);
   }, [dispatch, streamValue, forwardTime]);
 
-  return <div ref={chartRef}  />;
+  return (
+    <>
+      <div ref={chartRef} />
+      <label className="relative inline-flex items-center cursor-pointer mt-3">
+        <input
+          type="checkbox"
+          value=""
+          className="sr-only peer"
+          onChange={({ target: { checked } }) => setShowMarkers(checked)}
+          checked={showMarkers}
+        />
+        <div className="w-11 h-6 bg-tsuka-300 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-tsuka-700"></div>
+        <span className="ml-3 text-sm font-medium text-tsuka-50 dark:text-tsuka-50">
+          Show markers
+        </span>
+      </label>
+    </>
+  );
 };
 
 export default BitqueryOHLCChart;
-

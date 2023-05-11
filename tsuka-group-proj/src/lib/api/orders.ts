@@ -29,8 +29,12 @@ export default class Orders {
     );
   };
 
-  static getOrdersbyTokenPair = async (tokenpair: string): Promise<Order> => {
-    return await httpRequest.get(`/orders/tokenpair/${tokenpair}`);
+  static getActiveOrdersbyTokenPair = async (
+    tokenpair: string
+  ): Promise<Array<Order>> => {
+    return await httpRequest.get(
+      `/orders/tokenpair/${tokenpair}?status=active`
+    );
   };
 
   static createOrder = async (data: PostOrder): Promise<Order> => {

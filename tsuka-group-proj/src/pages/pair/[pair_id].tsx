@@ -26,6 +26,7 @@ import {
 import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
+import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 
 interface InputToken {
   id: string;
@@ -90,46 +91,50 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
       {token && (
-        <>
+        <div>
           <FullHeaderToken token={token} pair_address={String(pair_address)} />
           <div className="hidden lg:grid grid-cols-11 gap-4">
             {/* <div className="col-span-12 md:col-span-3">
               <CompareTokenChainToken token={token} networks={networks} />
             </div> */}
-            <div className="col-span-12 md:col-span-8">
-              <LiveGraphToken token={token.chain?.code} />
-              <div className="hidden md:grid grid-cols-8 gap-4">
-                <div className="col-span-12 md:col-span-3">
-                  <PoolInfoToken token={token} />
-                </div>
-                <div className="col-span-12 md:col-span-5">
-                  <OrderBookToken token={token} />
-                </div>
+        <div className="col-span-12 md:col-span-8">
+          <LiveGraphToken />
+          {token && (
+            <div className="hidden md:grid grid-cols-8 gap-4">
+              <div className="col-span-12 md:col-span-3">
+                <PoolInfoToken token={token} />
+              </div>
+              <div className="col-span-12 md:col-span-5">
+                <OrderBookToken token={token} />
               </div>
             </div>
-            <div className="col-span-12 md:col-span-3">
-              {currentToken && compareToken && (
-                <>
-                  <DefaultButton
-                    label="Create an Order"
-                    callback={() => setShowEditOrderModal(true)}
-                    filled={true}
-                    Icon={FiPlusCircle}
-                  />
-                  <OrderWidgetToken
-                    name1={currentToken?.chain.name as string}
-                    code1={currentToken?.chain.code as string}
-                    name2={compareToken?.chain.name as string}
-                    code2={compareToken?.chain.code as string}
-                    status={statusOrder}
-                    orders={orders}
-                  />
-                </>
-              )}
-            </div>
-          </div>
-          <div className="block lg:hidden">
-            <LiveGraphToken token={token.chain?.code} />
+          )}
+        </div>
+        <div className="col-span-12 md:col-span-3">
+          {currentToken && compareToken && (
+            <>
+              <DefaultButton
+                label="Create an Order"
+                callback={() => setShowEditOrderModal(true)}
+                filled={true}
+                Icon={FiPlusCircle}
+              />
+              <OrderWidgetToken
+                name1={currentToken?.chain.name as string}
+                code1={currentToken?.chain.code as string}
+                name2={compareToken?.chain.name as string}
+                code2={compareToken?.chain.code as string}
+                status={statusOrder}
+                orders={orders}
+              />
+            </>
+          )}
+        </div>
+      </div>
+      <div className="block lg:hidden">
+        <LiveGraphToken />
+        {token && (
+          <>
             {currentToken && compareToken && orders && (
               <OrderWidgetToken
                 name1={currentToken?.chain.name as string}
@@ -142,9 +147,9 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
             )}
             <OrderBookToken token={token} />
             <PoolInfoToken token={token} />
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
       {showEditOrderModal && (
         <EditOrderToken
           isEdit={false}
@@ -171,5 +176,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
         strategies={strategies!}
       />
     </div>
-  );
+  )}
+  </div>
+  )
 }
