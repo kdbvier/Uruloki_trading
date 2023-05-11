@@ -18,10 +18,12 @@ export const G_QUERY_GetTokenPair = (pair_address: string) => {
           token0: baseCurrency {
             symbol
             address
+            name
           }
           token1: quoteCurrency {
             symbol
             address
+            name
           }
         }
       }
