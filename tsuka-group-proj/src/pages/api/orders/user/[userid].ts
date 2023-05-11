@@ -38,7 +38,6 @@ export default async function OrderByUserHandler(
         console.log(req.query);
         let { status } = req.query;
         let search = req.query.search as string;
-        console.log("params: ", status, " ", search);
         if (!search?.trim()) search = "";
         const orders = search
           ? await prisma.orders.findMany({
