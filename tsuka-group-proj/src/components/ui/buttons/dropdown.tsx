@@ -1,5 +1,5 @@
 // components/ui/buttons/dropdown.tsx
-import { getHomrPageTokens } from "@/store/apps/tokens";
+import { getHomePageTokens } from "@/store/apps/tokens";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
@@ -25,11 +25,11 @@ const Dropdown : React.FC<DropdownOption> = ({allTokenName}) => {
     const options : TokenCache[] = allTokenName;
 
     useEffect(() => {
-        console.log("hello");
+        console.log("hello"); 
       }, []);
 
     useEffect(() => {
-        dispatch(getHomrPageTokens());
+        dispatch(getHomePageTokens());
       }, [dispatch, value]);
 
     const toggleDropdown = () => {

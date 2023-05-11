@@ -1,13 +1,17 @@
-import { createSubscriptionClient } from './subscription-client';
-import { getBitqueryStream, initBitqueryData, initBitqueryStreamData } from '@/store/apps/bitquery-data';
-import { store } from '@/store';
+import { createSubscriptionClient } from "./subscription-client";
+import {
+  getBitqueryStream,
+  initBitqueryData,
+  initBitqueryStreamData,
+} from "@/store/apps/bitquery-data";
+import { store } from "@/store";
 
 const client = createSubscriptionClient();
 
 // manipulate the historical data
 export const transformData = async (data: any) => {
-  return data.map((item:any) => ({
-    time: (new Date(item.timeInterval.minute + " UTC")).getTime(),
+  return data.map((item: any) => ({
+    time: new Date(item.timeInterval.minute + " UTC").getTime(),
     open: parseFloat(item.open),
     high: parseFloat(item.high),
     low: parseFloat(item.low),
@@ -16,53 +20,77 @@ export const transformData = async (data: any) => {
 };
 // manipulate the subscription data
 export const transformStreamData = (data: any) => {
-  const buySide = data.data.EVM ?.buyside;
-  const sellSide = data.data.EVM ?.sellside;
+  const buySide = data.data.EVM?.buyside;
+  const sellSide = data.data.EVM?.sellside;
 
-  let buySideFiltered = buySide.length !== 0 ? buySide
-  .filter((item: any) => item.Trade.Sell.Currency.Symbol === "USDC") : [];
+  let buySideFiltered =
+    buySide.length !== 0
+      ? buySide.filter(
+          (item: any) => item.Trade.Sell.Currency.Symbol === "USDC"
+        )
+      : [];
 
-  let { buySidePrices, buySideTimes } = buySideFiltered.reduce((acc: any, item: any) => {
-    acc.buySidePrices.push(item.Trade.Buy.Price);
-    acc.buySideTimes.push(item.Block.Time);
-    return acc;
-  }, { buySidePrices: [], buySideTimes: [] });
-  let sellSideFiltered = sellSide.length !== 0 ? sellSide
-  .filter((item: any) => item.Trade.Sell.Currency.Symbol === "USDC") : [];
-  let { sellSidePrices, sellSideTimes } = sellSideFiltered.reduce((acc: any, item: any) => {
-    acc.sellSidePrices.push(item.Trade.Buy.Price);
-    acc.sellSideTimes.push(item.Block.Time);
-    return acc;
-  }, { sellSidePrices: [], sellSideTimes: [] });
+  let { buySidePrices, buySideTimes } = buySideFiltered.reduce(
+    (acc: any, item: any) => {
+      acc.buySidePrices.push(item.Trade.Buy.Price);
+      acc.buySideTimes.push(item.Block.Time);
+      return acc;
+    },
+    { buySidePrices: [], buySideTimes: [] }
+  );
+  let sellSideFiltered =
+    sellSide.length !== 0
+      ? sellSide.filter(
+          (item: any) => item.Trade.Sell.Currency.Symbol === "USDC"
+        )
+      : [];
+  let { sellSidePrices, sellSideTimes } = sellSideFiltered.reduce(
+    (acc: any, item: any) => {
+      acc.sellSidePrices.push(item.Trade.Buy.Price);
+      acc.sellSideTimes.push(item.Block.Time);
+      return acc;
+    },
+    { sellSidePrices: [], sellSideTimes: [] }
+  );
 
-  const buySideTime = buySideTimes.length !== 0 ? buySideTimes[buySideTimes.length-1] : ""; 
-  const buySideOpen = buySidePrices.length !== 0 ? buySidePrices[0] : "";  
-  const buySideHigh = buySidePrices.length !== 0 ? Math.max(...buySidePrices) : ""
-  const buySideLow = buySidePrices.length !== 0 ? Math.min(...buySidePrices) : ""; 
-  const buySideClose = buySidePrices.length !== 0 ? buySidePrices[buySidePrices.length -1] : ""; 
+  const buySideTime =
+    buySideTimes.length !== 0 ? buySideTimes[buySideTimes.length - 1] : "";
+  const buySideOpen = buySidePrices.length !== 0 ? buySidePrices[0] : "";
+  const buySideHigh =
+    buySidePrices.length !== 0 ? Math.max(...buySidePrices) : "";
+  const buySideLow =
+    buySidePrices.length !== 0 ? Math.min(...buySidePrices) : "";
+  const buySideClose =
+    buySidePrices.length !== 0 ? buySidePrices[buySidePrices.length - 1] : "";
 
-  const sellSideTime = sellSideTimes.length !== 0 ? sellSideTimes[sellSideTimes.length -1] : ""; 
-  const sellSideOpen = sellSidePrices.length !== 0 ? sellSidePrices[0] : "";  
-  const sellSideHigh = sellSidePrices.length !== 0 ? Math.max(...sellSidePrices) : "";
-  const sellSideLow = sellSidePrices.length !== 0 ? Math.min(...sellSidePrices) : "";
-  const sellSideClose = sellSidePrices.length !== 0 ? sellSidePrices[sellSidePrices.length -1] : ""; 
-  
-  const time = buySideTime !== "" ? buySideTime : sellSideTime; 
-  const open = buySideOpen !== "" ? buySideOpen : sellSideOpen; 
-  const high = buySideHigh !== "" ? buySideHigh : sellSideHigh; 
-  const low = buySideLow !== "" ? buySideLow : sellSideLow; 
-  const close = buySideClose !== "" ? buySideClose : sellSideClose; 
+  const sellSideTime =
+    sellSideTimes.length !== 0 ? sellSideTimes[sellSideTimes.length - 1] : "";
+  const sellSideOpen = sellSidePrices.length !== 0 ? sellSidePrices[0] : "";
+  const sellSideHigh =
+    sellSidePrices.length !== 0 ? Math.max(...sellSidePrices) : "";
+  const sellSideLow =
+    sellSidePrices.length !== 0 ? Math.min(...sellSidePrices) : "";
+  const sellSideClose =
+    sellSidePrices.length !== 0
+      ? sellSidePrices[sellSidePrices.length - 1]
+      : "";
+
+  const time = buySideTime !== "" ? buySideTime : sellSideTime;
+  const open = buySideOpen !== "" ? buySideOpen : sellSideOpen;
+  const high = buySideHigh !== "" ? buySideHigh : sellSideHigh;
+  const low = buySideLow !== "" ? buySideLow : sellSideLow;
+  const close = buySideClose !== "" ? buySideClose : sellSideClose;
 
   return {
-    time: (new Date(time)).getTime(),
+    time: new Date(time).getTime(),
     open,
     high,
     low,
-    close
+    close,
   };
-}
+};
 // Get OHLC data from the datas
-export const getAddData = (forwardTime: any, data:any) => {
+export const getAddData = (forwardTime: any, data: any) => {
   const filterData = data.filter((item: any) => item.time < forwardTime);
   const time = forwardTime;
   const open = filterData[0];
@@ -74,15 +102,16 @@ export const getAddData = (forwardTime: any, data:any) => {
     open,
     high,
     low,
-    close
-  }
-}
+    close,
+  };
+};
 
 // WETH / USDC trades
 const fetchStreamData = async () => {
-  if (typeof window !== 'undefined') {
-    const subscription = client.request({
-      query: `
+  if (typeof window !== "undefined") {
+    const subscription = client
+      .request({
+        query: `
         subscription RealTimeBlocks {
           EVM(network: eth, trigger_on: head) {
             buyside: DEXTrades(
@@ -163,30 +192,31 @@ const fetchStreamData = async () => {
             }
           }
         }
-      `
-    }).subscribe({
-      next: async (response: any) => {
-        // handle subscription data
-        console.log(response);
-        // const data = await response.json(); 
-        const transData = transformStreamData(response);
-        if(transData.open != "")
-          store.dispatch(getBitqueryStream(transData));
-        return transData;
-      },
-      error: (error: any) => {
-        // handle subscription errors
-        console.log(error);
-      },
-      complete: () => {
-        // handle subscription completion
-        console.log("complete");
-      },
-    })
-  };
+      `,
+      })
+      .subscribe({
+        next: async (response: any) => {
+          // handle subscription data
+          console.log(response);
+          // const data = await response.json();
+          const transData = transformStreamData(response);
+          if (transData.open != "")
+            store.dispatch(getBitqueryStream(transData));
+          return transData;
+        },
+        error: (error: any) => {
+          // handle subscription errors
+          console.log(error);
+        },
+        complete: () => {
+          // handle subscription completion
+          console.log("complete");
+        },
+      });
+  }
 };
 
-// Request the Bitquery to subscribe 
+// Request the Bitquery to subscribe
 export const getBitqueryStreamData = async () => {
   const streamData = await fetchStreamData();
 };
