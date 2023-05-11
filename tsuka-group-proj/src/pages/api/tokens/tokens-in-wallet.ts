@@ -14,12 +14,11 @@ export default async function tokensInWalletHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<TokensInWallet>>
 ) {
-  const { method, body } = req;
-
+  const { method, query } = req;
   switch (method) {
     case "GET":
       try {
-        const { value, error } = reqBodySchema.validate(body);
+        const { value, error } = reqBodySchema.validate(query);
         if (error) {
           res.status(404).json({
             payload: undefined,
@@ -28,17 +27,17 @@ export default async function tokensInWalletHandler(
           break;
         }
         const { walletAddress } = value;
-          const tokensInWallet = await getTokensInWallet(walletAddress);
-          res.status(200).json({
-            payload: {
-              tokenBalances: undefined,
-              chartData: undefined,
-              walletBalances: tokensInWallet,
-              
-            },
-            message: `Successfully tokens in wallet are fetched at ${walletAddress}`,
-          });
-          return;
+        const tokensInWallet = await getTokensInWallet(walletAddress);
+        res.status(200).json({
+          payload: {
+            tokenBalances: undefined,
+            chartData: undefined,
+            walletBalances: tokensInWallet,
+            
+          },
+          message: `Successfully tokens in wallet are fetched at ${walletAddress}`,
+        });
+        return;
       } catch (err) {
         res.status(400).json({
           payload: undefined,
