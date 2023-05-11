@@ -82,33 +82,33 @@ export const tokensData: Array<Token> = [
     chain: {
       name: "Bitcoin",
       code: "BTC",
-      address: "",
+      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
     },
     pair: {
       code: "ETH",
       name: "Ethereum",
-      address: "",
+      address: "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72",
     },
     price: {
-      value: "",
+      value: "59,521.23",
       operator: "-",
-      variationValue: 0,
+      variationValue: 1.27,
     },
     volume: {
-      value: "",
+      value: "59,113,042,114",
       currencyLabel: "Billions",
     },
     marketCap: {
-      value: "",
+      value: "1,114,666,008,295",
       currencyLabel: "Billions",
     },
     nOrders: {
-      value: "",
+      value: "28,371",
       currencyLabel: "Millions",
     },
     orderSplit: {
-      buy: 0,
-      sell: 0,
+      buy: 4578,
+      sell: 1432,
     },
   },
 ];
