@@ -226,8 +226,7 @@ export async function getServerSideProps() {
   // Fetch data from external API
   const getCardsData = await getCards();
   const chartData = await getChartData();
-  const walletAddress = await getConnectedAddress();
-  const tokensInWallet = await getTokensInWallet(walletAddress)
+  const tokensInWallet = await getTokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef")
 
   // Pass data to the page via props
   return { props: { tokenBalances: getCardsData, chartData: chartData, walletBalances: tokensInWallet } };
