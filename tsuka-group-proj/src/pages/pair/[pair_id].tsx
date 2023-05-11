@@ -62,6 +62,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     dispatch(getBitqueryInitInfo());
     dispatch(getStrategies());
   }, [dispatch]);
+  
   const {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);

@@ -12,23 +12,23 @@ export interface FullHeaderTokenProps {
     id: string;
     token: string;
   };
-  pair_address: string
+  pair_address: string;
 }
 
-export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token, pair_address }) => {
+export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
+  token,
+  pair_address,
+}) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
   const [orders, setOrders] = useState<Array<any>>([]);
 
   useEffect(() => {
-    dispatch(setPairAddress(pair_address as string));
     const getOrders = async () => {
       let result: any =
         value.pair?.address &&
         (await fetch(
-          `/api/orders/tokenpair/${encodeURIComponent(
-            pair_address
-          )}`
+          `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
         ));
 
       if (result !== undefined) {
@@ -38,6 +38,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token, pair_ad
       }
     };
     getOrders();
+    console.log("parir", pair_address);
+    
+    dispatch(setPairAddress(pair_address as string));
   }, [pair_address]);
 
   useEffect(() => {
@@ -45,14 +48,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token, pair_ad
     let total_buy: number = 0;
     let price: number = 0;
     if (orders) {
-      total_sell = orders.reduce(
-        (prev, curr, index, array) => prev + curr.to_price,
-        0
-      );
-      total_buy = orders.reduce(
-        (prev, curr, index, array) => prev + curr.from_price,
-        0
-      );
+      total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
+      total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(
         (prev, curr, index, array) => prev + curr.budget,
         0
