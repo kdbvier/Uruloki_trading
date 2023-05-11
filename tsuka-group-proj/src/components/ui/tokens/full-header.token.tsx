@@ -7,6 +7,7 @@ import { MdArrowBack } from "react-icons/md";
 import { HorizontalIconsToken } from "./horizontal-icons.token";
 import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
+import { ApiResponse, Order } from "@/types";
 export interface FullHeaderTokenProps {
   token: {
     id: string;
@@ -33,7 +34,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
 
       if (result !== undefined) {
         result.json().then((res: any) => {
-          setOrders(res.payload);
+          setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
         });
       }
     };

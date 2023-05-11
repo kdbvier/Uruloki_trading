@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function OrderByTokenPairHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Order>>
+  res: NextApiResponse<ApiResponse<Array<Order>>>
 ) {
   const { query, method } = req;
   const { tokenpair } = query;
