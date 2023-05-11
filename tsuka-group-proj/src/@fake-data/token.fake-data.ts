@@ -82,7 +82,7 @@ export const tokensData: Array<Token> = [
     chain: {
       name: "Bitcoin",
       code: "BTC",
-      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
+      address: "",
     },
     pair: {
       code: "ETH",

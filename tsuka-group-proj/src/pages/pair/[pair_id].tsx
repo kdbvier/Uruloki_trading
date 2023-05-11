@@ -71,7 +71,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
   useEffect(() => {
-    dispatch(getToken(pair_id as string));
+    // dispatch(getToken(pair_id as string));
   }, []);
 
   useEffect(() => {
