@@ -17,10 +17,11 @@ import {
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
 }) => {
+  console.log(topMovers)
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
+  useEffect(() => { 
     let tempArray: boolean[] = [];
     for (let i = 0; i < topMovers.length; i++) {
       tempArray[i] = true;
@@ -70,7 +71,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               <th className="py-2 hidden md:table-cell">ID</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
-              <th colSpan={2} className="py-2 text-right md:text-left">
+              <th colSpan={2} className="py-2 text-center md:text-left">
                 Price(USD)
               </th>
               {/* <th className="py-2 text-right md:text-left"></th> */}
@@ -108,7 +109,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                   <Fragment key={idx}>
                     <tr
                       onClick={() => {
-                        router.push("/pair/2");
+                        router.push(`/pair/${topMover.pair_address}`);
                       }}
                       className="cursor-pointer border-t border-t-tsuka-400"
                     >
@@ -149,12 +150,12 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                         {topMover.risingPercent > 0 ? (
                           <div className="flex text-custom-green">
                             <FiArrowUpRight className="mt-0.5" />
-                            <span>{`${topMover.risingPercent}%`}</span>
+                            <span>{`${topMover.risingPercent.toLocaleString("en-us")}%`}</span>
                           </div>
                         ) : (
                           <div className="flex text-custom-red">
                             <FiArrowDownRight className="mt-0.5" />
-                            <span>{`${0 - topMover.risingPercent}%`}</span>
+                            <span>{`${(0 - topMover.risingPercent).toLocaleString("en-us")}%`}</span>
                           </div>
                         )}
                         {/* </div> */}

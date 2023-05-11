@@ -6,7 +6,7 @@ import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-to
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getHomrPageTokens } from "@/store/apps/tokens";
+import { getHomePageTokens } from "@/store/apps/tokens";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
@@ -31,7 +31,7 @@ export default function Home() {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
   useEffect(() => {
-    dispatch(getHomrPageTokens());
+    dispatch(getHomePageTokens());
     dispatch(getStrategies());
   }, [dispatch]);
 

@@ -110,7 +110,9 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
                         )
                       )}
                       <td className="py-2 px-4 text-tsuka-50 text-sm font-normal whitespace-nowrap">
-                        {item.createdAt}
+                        {new Date(
+                          Number(item?.createdAt) * 1000
+                        ).toDateString()}
                       </td>
                       <td className="py-2 px-4 text-tsuka-50 text-sm font-normal whitespace-nowrap">
                         <div>

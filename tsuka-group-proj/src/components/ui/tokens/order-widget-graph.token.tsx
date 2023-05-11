@@ -34,10 +34,6 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   const [showEditOrDelete, setShowEditOrDelete] = useState<boolean>(false);
   const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log(showEditOrDelete);
-  }, [showEditOrDelete]);
-
   const percents = useMemo(() => {
     const range = max - min;
     const percent1 = ((value1 - min) / range) * 90 + 10;

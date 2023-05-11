@@ -9,7 +9,7 @@ import { FiRefreshCcw } from "react-icons/fi";
 export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
   mostBuyOrders,
 }) => {
-  const router = useRouter();
+  const router = useRouter(); 
 
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
@@ -41,7 +41,7 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
                 mostBuyOrder.token.name && (
                   <tr
                     onClick={() => {
-                      router.push("/pair/2");
+                      router.push(`/pair/${mostBuyOrder.token.pair_address}`);
                     }}
                     className="cursor-pointer border-t border-t-tsuka-400"
                     key={idx}

@@ -78,8 +78,8 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       path: "/my-orders",
     },
     {
-      title: "Settings",
-      path: "/#",
+      title: "Profile",
+      path: "/profile",
     },
   ];
 
@@ -141,14 +141,33 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center md:justify-start">
                 <div className="flex flex-shrink-0 items-center pl-2 xs:px-4 md:px-2">
-                  <p className="text-xl font-extrabold text-tsuka-100 ">
-                    <Image
+                  <div className="text-xl font-extrabold text-tsuka-100 ">
+                    {/* <Image
                       className="hidden sm:block"
                       src="/logos/logo.png"
                       alt="logo"
-                      width={111}
                       height={40}
-                    />
+                    /> */}
+                    <div className="flex justify-between items-center">
+                      <Image
+                        // src={icon.url}
+                        className="hidden sm:block"
+                        src="/logos/logo_icon.png"
+                        alt="logo__image"
+                        width={40}
+                        height={40}
+                        style={{ position: "relative" }}
+                      />
+                      <div
+                        className="px-3 flex flex-col hidden sm:block"
+                        style={{ position: "relative" }}
+                      >
+                        <span className="text-[26px] tracking-widest font-Uruloki text-white stroke-transparent">
+                          URULOKI
+                        </span>
+                        {/* <span className="font-Uruloki m-0 mt-[9px] tracking-[7px] stroke-transparent">DEJITARU</span> */}
+                      </div>
+                    </div>
                     <Image
                       className="sm:hidden"
                       src="/logos/logo_icon.png"
@@ -156,13 +175,16 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                       width={40}
                       height={40}
                     />
-                  </p>
+                  </div>
                 </div>
                 <div className="hidden lg:ml-6 lg:block">
                   <div className="flex px-10 space-x-4">
                     {navLinks?.map(({ path, title }, index) => {
                       let isActive = path === router.pathname;
-                      if(index===1 && router.pathname.indexOf("strategies")>=0){
+                      if (
+                        index === 1 &&
+                        router.pathname.indexOf("strategies") >= 0
+                      ) {
                         isActive = true;
                       }
 

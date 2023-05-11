@@ -1,25 +1,79 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
-import { getToken } from "@/store/apps/token";
+import { getToken, setOrderSplit } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdArrowBack } from "react-icons/md";
 import { HorizontalIconsToken } from "./horizontal-icons.token";
+import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
+import { ApiResponse, Order } from "@/types";
 export interface FullHeaderTokenProps {
   token: {
     id: string;
     token: string;
   };
+  pair_address: string;
 }
 
-export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
+export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
+  token,
+  pair_address,
+}) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
+  const [orders, setOrders] = useState<Array<any>>([]);
 
   useEffect(() => {
-    dispatch(getToken(token.id));
-  }, [dispatch, token]);
+    const getOrders = async () => {
+      let result: any =
+        value.pair?.address &&
+        (await fetch(
+          `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
+        ));
+
+      if (result) {
+        result.json().then((res: any) => {
+          setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
+        });
+      }
+    };
+    getOrders();
+    console.log("parir", pair_address);
+    
+    dispatch(setPairAddress(pair_address as string));
+  }, [pair_address]);
+
+  useEffect(() => {
+    let total_sell: number = 0;
+    let total_buy: number = 0;
+    let price: number = 0;
+    if (orders) {
+      total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
+      total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
+      price = orders.reduce(
+        (prev, curr, index, array) => prev + curr.budget,
+        0
+      );
+    }
+    dispatch(
+      setOrderSplit({
+        orderSplit: {
+          buy: total_buy,
+          sell: total_sell,
+        },
+        volume: {
+          value: String(price),
+          currencyLabel: "Billions",
+        },
+        price: {
+          value: String(price / 1000),
+          operator: "",
+          variationValue: 0,
+        },
+      })
+    );
+  }, [orders]);
 
   return (
     <div className="w-full text-tsuka-300 flex py-2 mb-4 sm:flex-col items-center sm:items-start lg:items-center lg:flex-row justify-between sm:justify-normal lg:justify-between">
@@ -34,7 +88,10 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
       {status === "ok" && value && (
         <>
           <div className="flex sm:mb-8 lg:mb-0 items-center">
-            <Link href="/" className="text-xl pr-2 xs:p-2 rounded-full cursor-pointer">
+            <Link
+              href="/"
+              className="text-xl pr-2 xs:p-2 rounded-full cursor-pointer"
+            >
               <MdArrowBack />
             </Link>
             <HorizontalIconsToken
@@ -51,29 +108,20 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({ token }) => {
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">
-                  Token:{" "}
-                  <label
-                    className={`${
-                      value.price?.operator === "+"
-                        ? "text-custom-green"
-                        : "text-custom-red"
-                    } text-xs`}
-                  >
-                    {splitAddress(value.chain?.address as string)}
-                  </label>
+                  Pair Address:{" "}
                 </label>
-                <label className="text-xs whitespace-nowrap md:ml-4">
-                  Token:{" "}
+                <div className="flex flex-col items-center justify-around ml-2">
                   <label className="text-xs text-tsuka-50">
                     {splitAddress(value.pair?.address as string)}
                   </label>
-                </label>
+                </div>
+                <label className="text-xs whitespace-nowrap md:ml-4"></label>
               </div>
             </div>
           </div>
           <div className=" lg:flex-1 flex w-full lg:w-auto justify-end sm:justify-between lg:justify-end items-center">
             <div className="hidden sm:flex text-sm mr-12">
-              <InfoSpanToken title={"TXS"} value={"189"} />
+              <InfoSpanToken title={"TXS"} value={orders ? orders.length : 0} />
               <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
                 <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
                   ORDERS

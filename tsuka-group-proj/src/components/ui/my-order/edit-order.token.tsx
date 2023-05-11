@@ -2,7 +2,10 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { commafy, unCommafy } from "@/helpers/calc.helper";
 import { Token } from "@/types/token.type";
 import { PostOrder } from "@/types";
+import { TokenCache } from "@/types";
 import Orders from "@/lib/api/orders";
+// import getTokenCache from '@/lib/api/tokens/'
+import Dropdown from "../buttons/dropdown";
 import { useEffect, useState } from "react";
 
 import { editUserOrder, setSelectedOrder, createOrder } from "@/store/apps/user-order";
@@ -14,6 +17,7 @@ import { FiX, FiPlusCircle } from "react-icons/fi";
 import { getTokenPairPrice } from "@/store/apps/user-order";
 import ToggleButton from "../buttons/toggle.button";
 import { FaClock, FaSync } from "react-icons/fa";
+import { getAllTokenCache } from "@/store/apps/token-cache"
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -62,16 +66,21 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   code2 = "ETH",
   pair_address = "2",
 }) => {
+  console.log("Create an order");
   const dispatch = useAppDispatch();
 
   const selectedOrder = useAppSelector(
     (state) => state.userOrder.selectedOrder
+  );
+  const tokenCache = useAppSelector(
+    (state) => state.tokencache.value
   );
   const token_price = useAppSelector(
     (state) => state.userOrder.selectedTokenPairPrice
   );
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
+  const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
   const [isBuy, setIsBuy] = useState(
     selectedOrder.order_type === OrderTypeEnum.BUY
   );
@@ -94,7 +103,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   useEffect(() => {
     dispatch(setSelectedOrder(selectedOrderId));
+    dispatch(getAllTokenCache());
+    
   }, []);
+
+  useEffect(() => {
+    setAllTokenName(tokenCache);
+  }, [tokenCache]);
 
   useEffect(() => {
     if (selectedOrder.pair_address) {
@@ -434,17 +449,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </div>
             </div>
           )}
-          <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
-            Amount
-          </span>
-          <div className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md">
-            <div className="w-full flex justify-between">
-              <div
-                className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
-                onClick={() => setSeletCollaped(!seletCollaped)}
-              >
-                <div className="flex items-center">
-                  <TokenIconsToken
+          {/* <div className="flex items-center"> */}
+                  {/* <TokenIconsToken
                     name={
                       isBuy
                         ? pairLongName ?? ""
@@ -457,14 +463,31 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                     }
                     width={16}
                     height={16}
-                  />
-                  <span className="ml-1 text-sm text-tsuka-100 mr-2">
+                  /> */}
+                  {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
                       ? pairLongName
                       : baseLongName}
                   </span>
                 </div>
               </div>
+                      ? selectedOrder.pairTokenLongName
+                      : selectedOrder.baseTokenLongName}
+                  </span> */}
+                {/* </div> */}
+          <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
+            Amount
+          </span>
+
+          <div className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md " onClick={() => setSeletCollaped(!seletCollaped)}>
+            <div className="w-full flex justify-between">
+              <Dropdown allTokenName={allTokenName}/>
+              {/* <div
+                className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
+                onClick={() => setSeletCollaped(!seletCollaped)}
+              >
+                
+              </div> */}
               <input
                 type="text"
                 className="grow min-w-[100px] bg-tsuka-500 outline-none text-right text-2xl font-medium"
@@ -472,15 +495,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 onChange={(e) => handleNumberInputChange("amount", e)}
                 onBlur={(e) => blurHandler("amount", e)}
               />
-              {/* <p className="relative grow min-w-[100px] text-tsuka-50 bg-tsuka-500 outline-none text-right text-2xl font-medium">
-                {commafy2(amount)}
-                <input
-                  type="number"
-                  className="absolute w-full h-full left-0 top-0 text-tsuka-50 bg-tsuka-500/0 outline-none text-right text-2xl font-medium"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-              </p> */}
+              
             </div>
             <div className="w-full flex justify-between mt-1">
               <p className="text-sm">

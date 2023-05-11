@@ -12,7 +12,7 @@ const initialState: TokensState = {
   status: "ok",
 };
 
-export const getHomrPageTokens = createAsyncThunk("tokens/get", async () => {
+export const getHomePageTokens = createAsyncThunk("tokens/get", async () => {
     return await HomePageTokens.getTokens();
   }
 );
@@ -23,14 +23,14 @@ export const homePageTokenSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getHomrPageTokens.pending, (state) => {
+      .addCase(getHomePageTokens.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getHomrPageTokens.fulfilled, (state, action) => {
+      .addCase(getHomePageTokens.fulfilled, (state, action) => {
         state.status = "ok";
         state.value = action.payload;
       })
-      .addCase(getHomrPageTokens.rejected, (state) => {
+      .addCase(getHomePageTokens.rejected, (state) => {
         state.status = "failed";
       });
   },

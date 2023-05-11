@@ -1,15 +1,16 @@
-import { gql } from 'graphql-request';
-import moment from 'moment';
+import { gql } from "graphql-request";
+import moment from "moment";
 
-const BITQUERY_API_ENDPOINT = 'https://graphql.bitquery.io/';
+const BITQUERY_API_ENDPOINT = "https://graphql.bitquery.io/";
 const BITQUERY_API_KEY = process.env.NEXT_PUBLIC_BITQUERY_API_KEY as string;
 const baseCurrencyAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
-const quoteCurrencyAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as string; 
+const quoteCurrencyAddress =
+  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as string;
 const interval = 40;
-// WETH = 1 WETH / USDC 
+// WETH = 1 WETH / USDC
 const fetchOHLCData = async () => {
-  const date = new Date(); // Replace this with your date object
-  const from = moment(date).format('YYYY-MM-DD');
+  const date = new Date(new Date().getTime() - 24 * 60 * 60 * 1000); // Replace this with your date object
+  const from = moment(date).format("YYYY-MM-DD");
   const query = gql`
   {
     ethereum(network: ethereum) {
@@ -47,14 +48,14 @@ const fetchOHLCData = async () => {
   const response = await fetch(BITQUERY_API_ENDPOINT, {
     method: "POST",
     headers: {
-        "Content-Type": "application/json",
-        "X-API-KEY": BITQUERY_API_KEY
+      "Content-Type": "application/json",
+      "X-API-KEY": BITQUERY_API_KEY,
     },
     body: JSON.stringify({
-        query: query
-    })
-  }); 
-  const data = await response.json(); 
+      query: query,
+    }),
+  });
+  const data = await response.json();
   return data.data.ethereum.dexTrades;
 };
 // fetch the historical data
