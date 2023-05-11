@@ -7,7 +7,9 @@ import Chart from "@/components/charts/ReactApexcharts";
 import { WithdrawAndDepositModal } from "@/components/ui/profile/modal";
 import { getChartData } from "@/@fake-data/chart.fake-data";
 import { ChartType } from "@/types/chart.type";
-import { getTokensInWallet } from "@/lib/bitquery/getTokensInWallet"
+import { getTokensInWallet } from "@/lib/bitquery/getTokensInWallet";
+
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
@@ -18,6 +20,7 @@ export default function Profile({ tokenBalances, chartData, walletBalances }: Pa
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
+  const [walletAddress, setWalletAddress] = useState<string>("");
 
   const handleOpenWidrawModal = () => {
     setShowModal(true);
@@ -28,7 +31,19 @@ export default function Profile({ tokenBalances, chartData, walletBalances }: Pa
     setIsDeposit(true);
     setShowModal(true);
   };
+  useEffect(() => {
+    console.log("useEffect");
+    const getAddress = async () => {
+      try {
+        const address: string | null = await getConnectedAddress();
+        setWalletAddress(address);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
+    getAddress();
+  }, []);
   const Cards = tokenBalances;
 
   const backgroundInfo = [
@@ -211,7 +226,8 @@ export async function getServerSideProps() {
   // Fetch data from external API
   const getCardsData = await getCards();
   const chartData = await getChartData();
-  const tokensInWallet = await getTokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef")
+  const walletAddress = await getConnectedAddress();
+  const tokensInWallet = await getTokensInWallet(walletAddress)
 
   // Pass data to the page via props
   return { props: { tokenBalances: getCardsData, chartData: chartData, walletBalances: tokensInWallet } };
