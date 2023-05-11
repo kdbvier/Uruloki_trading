@@ -22,6 +22,28 @@ const initialState: TokenState = {
       name: "Bitcoin",
       address: "",
     },
+    price: {
+      value: "",
+      operator: "+",
+      variationValue: 0,
+      variationValueDiference: 0,
+    },
+    volume: {
+      value: "0",
+      currencyLabel: "",
+    },
+    marketCap: {
+      value: "0",
+      currencyLabel: "",
+    },
+    nOrders: {
+      value: "0",
+      currencyLabel: "",
+    },
+    orderSplit: {
+      buy: 0,
+      sell: 0,
+    },
   } as Token,
   status: "ok",
 };
