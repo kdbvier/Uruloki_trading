@@ -7,18 +7,19 @@ import { MdArrowBack } from "react-icons/md";
 import { HorizontalIconsToken } from "./horizontal-icons.token";
 import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
-import { ApiResponse, Order } from "@/types";
+import { ApiResponse, Order, TokenPairInfo } from "@/types";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 export interface FullHeaderTokenProps {
   pair_address: string;
+  tokenPairInfo: TokenPairInfo;
 }
 
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   pair_address,
+  tokenPairInfo,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
-  const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
   const [orders, setOrders] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -37,7 +38,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
     };
     getOrders();
 
-    dispatch(getTokenPairInfo(pair_address as string));
     dispatch(setPairAddress(pair_address as string));
   }, [pair_address]);
 

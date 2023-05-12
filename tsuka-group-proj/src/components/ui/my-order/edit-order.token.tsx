@@ -8,25 +8,30 @@ import Orders from "@/lib/api/orders";
 import Dropdown from "../buttons/dropdown";
 import { useEffect, useState } from "react";
 
-import { editUserOrder, setSelectedOrder, createOrder } from "@/store/apps/user-order";
+import {
+  editUserOrder,
+  setSelectedOrder,
+  createOrder,
+  getTokenPairPrice,
+} from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
 import { FiX, FiPlusCircle } from "react-icons/fi";
-import { getTokenPairPrice } from "@/store/apps/user-order";
 import ToggleButton from "../buttons/toggle.button";
 import { FaClock, FaSync } from "react-icons/fa";
-import { getAllTokenCache } from "@/store/apps/token-cache"
+import { getAllTokenCache } from "@/store/apps/token-cache";
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
   setShowEditOrderModal: (a: any) => void;
-  name1?:string
-  code1?:string
-  name2?:string
-  code2?:string
-  pair_address?:string
+  name1?: string;
+  code1?: string;
+  name2?: string;
+  code2?: string;
+  pair_address?: string;
   selectedOrderId?: number;
   closeHandler: () => void;
 
@@ -60,11 +65,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowEditOrderModal,
   selectedOrderId = 0,
   closeHandler,
-  name1 = "Polkadot",
-  code1 = "DOT",
-  name2 = "Ethereum",
-  code2 = "ETH",
-  pair_address = "2",
+  name1,
+  code1,
+  name2,
+  code2,
+  pair_address,
 }) => {
   console.log("Create an order");
   const dispatch = useAppDispatch();
@@ -72,9 +77,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const selectedOrder = useAppSelector(
     (state) => state.userOrder.selectedOrder
   );
-  const tokenCache = useAppSelector(
-    (state) => state.tokencache.value
-  );
+  const tokenCache = useAppSelector((state) => state.tokencache.value);
   const token_price = useAppSelector(
     (state) => state.userOrder.selectedTokenPairPrice
   );
@@ -85,13 +88,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     selectedOrder.order_type === OrderTypeEnum.BUY
   );
   const [targetPrice, setTargetPrice] = useState(
-    handleNumberFormat(selectedOrder.single_price ?? -1)
+    handleNumberFormat(selectedOrder.single_price ?? 0)
   );
   const [minPrice, setMinPrice] = useState(
-    handleNumberFormat(selectedOrder.from_price ?? -1)
+    handleNumberFormat(selectedOrder.from_price ?? 0)
   );
   const [maxPrice, setMaxPrice] = useState(
-    handleNumberFormat(selectedOrder.to_price ?? -1)
+    handleNumberFormat(selectedOrder.to_price ?? 0)
   );
   const [amount, setAmount] = useState(
     handleNumberFormat(selectedOrder.budget ?? 0)
@@ -102,25 +105,32 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(setSelectedOrder(selectedOrderId));
+    if (isEdit) {
+      dispatch(setSelectedOrder(selectedOrderId));
+    } else {
+      dispatch(getTokenPairPrice(pair_address as string));
+    }
     dispatch(getAllTokenCache());
-    
   }, []);
 
   useEffect(() => {
-    setAllTokenName(tokenCache);
-  }, [tokenCache]);
+    const currentToken = isBuy ? pairShortName : baseShortName;
+    setAllTokenName([
+      { shortName: currentToken } as TokenCache,
+      ...tokenCache.filter(({ shortName }) => shortName !== currentToken),
+    ]);
+  }, [tokenCache, isBuy]);
 
   useEffect(() => {
-    if (selectedOrder.pair_address) {
+    if (JSON.stringify(selectedOrder) !== "{}" && isEdit) {
+      setTargetPrice(handleNumberFormat(selectedOrder.single_price ?? 0));
+      setMinPrice(handleNumberFormat(selectedOrder.from_price ?? 0));
+      setMaxPrice(handleNumberFormat(selectedOrder.to_price ?? 0));
+      setAmount(handleNumberFormat(selectedOrder.budget ?? 0));
+      setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
+      setIsContinuous(selectedOrder.is_continuous ?? false);
       dispatch(getTokenPairPrice(selectedOrder.pair_address as string));
     }
-    setTargetPrice(handleNumberFormat(selectedOrder.single_price ?? -1));
-    setMinPrice(handleNumberFormat(selectedOrder.from_price ?? -1));
-    setMaxPrice(handleNumberFormat(selectedOrder.to_price ?? -1));
-    setAmount(handleNumberFormat(selectedOrder.budget ?? -1));
-    setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
-    setIsContinuous(selectedOrder.is_continuous ?? false);
   }, [selectedOrder]);
 
   const closeClickHandler = () => {
@@ -145,8 +155,25 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     },
   ];
 
+  const convertLawPrice = (price: number) => {
+    let priceEle;
+    if (price >= 0.01) {
+      priceEle = `$${commafy(price)}`;
+    } else {
+      priceEle = (
+        <>
+          ${formatNumberToHtmlTag(price).integerPart}
+          .0
+          <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
+          {formatNumberToHtmlTag(price).remainingDecimal}
+        </>
+      );
+    }
+    return priceEle;
+  };
+
   const handleNumberInputChange = (name: string, event: any) => {
-    const value = event.target.value.replace(/,/g, "");
+    let value = event.target.value.replace(/,/g, "");
     const pattern = /^\d*\.?\d*$/;
     if (!pattern.test(value)) return;
     let newValue = "";
@@ -214,7 +241,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setIsContinuous((prevState) => !prevState);
   };
   const handleSubmit = () => {
-    if(isEdit){
+    if (isEdit) {
       const patchData = {} as PatchOrder;
       patchData.budget = toNumber(amount);
       patchData.order_type = isBuy ? "buy" : "sell";
@@ -242,12 +269,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         postData.single_price = toNumber(targetPrice);
       }
       postData.is_continuous = isContinuous;
-      postData.baseTokenLongName=name1;
-      postData.baseTokenShortName=code1;
-      postData.pairTokenLongName=name2;
-      postData.pairTokenShortName=code2;
-      postData.user_id = 1;////TODO:get it from server
-      postData.pair_address = pair_address;
+      postData.baseTokenLongName = name1 as string;
+      postData.baseTokenShortName = code1 as string;
+      postData.pairTokenLongName = name2 as string;
+      postData.pairTokenShortName = code2 as string;
+      postData.user_id = 1; ////TODO:get it from server
+      postData.pair_address = pair_address as string;
       console.log("before Submit(post)::");
       console.log(postData);
       dispatch(createOrder(postData));
@@ -255,10 +282,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
-  const baseLongName = isEdit?selectedOrder.baseTokenLongName:name1;
-  const baseShortName = isEdit?selectedOrder.baseTokenShortName:code1;
-  const pairLongName = isEdit?selectedOrder.pairTokenLongName:name2;
-  const pairShortName = isEdit?selectedOrder.baseTokenShortName:code2;
+  const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
+  const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
+  const pairLongName = isEdit ? selectedOrder.pairTokenLongName : name2;
+  const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
       <div className="w-full h-full flex justify-center items-center p-4 md:p-0">
@@ -273,7 +300,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              ${handleNumberFormat(Number(token_price.base_price?.toFixed(2)))}
+              {!!token_price.base_price &&
+                (token_price.base_price >= 0.01
+                  ? `$${handleNumberFormat(
+                      parseFloat(token_price.base_price.toFixed(2))
+                    )}`
+                  : convertLawPrice(token_price.base_price))}
             </span>
           </p>
           {/* <div className="w-full mt-4 flex gap-2 text-sm">
@@ -352,8 +384,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {pairShortName} with{" "}
-                {baseShortName}
+                {baseShortName} with {pairShortName}
               </p>
             </button>
             <button
@@ -366,12 +397,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                {pairShortName} for{" "}
-                {baseShortName}
+                {baseShortName} for {pairShortName}
               </p>
             </button>
           </div>
-          
+
           <div className="w-full mt-4 flex gap-2 text-sm">
             <button
               className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
@@ -450,7 +480,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             </div>
           )}
           {/* <div className="flex items-center"> */}
-                  {/* <TokenIconsToken
+          {/* <TokenIconsToken
                     name={
                       isBuy
                         ? pairLongName ?? ""
@@ -464,7 +494,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                     width={16}
                     height={16}
                   /> */}
-                  {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
+          {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
                       ? pairLongName
                       : baseLongName}
@@ -474,14 +504,17 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                       ? selectedOrder.pairTokenLongName
                       : selectedOrder.baseTokenLongName}
                   </span> */}
-                {/* </div> */}
+          {/* </div> */}
           <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
             Amount
           </span>
 
-          <div className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md " onClick={() => setSeletCollaped(!seletCollaped)}>
+          <div
+            className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md "
+            onClick={() => setSeletCollaped(!seletCollaped)}
+          >
             <div className="w-full flex justify-between">
-              <Dropdown allTokenName={allTokenName}/>
+              <Dropdown allTokenName={allTokenName} />
               {/* <div
                 className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
                 onClick={() => setSeletCollaped(!seletCollaped)}
@@ -495,26 +528,28 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 onChange={(e) => handleNumberInputChange("amount", e)}
                 onBlur={(e) => blurHandler("amount", e)}
               />
-              
             </div>
             <div className="w-full flex justify-between mt-1">
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {3.000493} {baseShortName ?? ""}
+                  {3.000493} {(isBuy ? pairShortName : baseShortName) ?? ""}
                 </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
               <span className="text-tsuka-50 text-sm">
-                $
-                {handleNumberFormat(
-                  parseFloat(
-                    (
-                      parseFloat(amount.split(",").join("")) *
-                      (isBuy ? token_price.quote_price : token_price.base_price)
-                    ).toFixed(2)
-                  )
-                )}
+                {(() => {
+                  let totalAmount =
+                    parseFloat(amount.split(",").join("")) *
+                    (isBuy ? token_price.quote_price : token_price.base_price);
+                  return totalAmount
+                    ? totalAmount >= 0.001
+                      ? `$${handleNumberFormat(
+                          parseFloat(totalAmount.toFixed(3))
+                        )}`
+                      : convertLawPrice(totalAmount)
+                    : "$0";
+                })()}
               </span>
             </div>
           </div>

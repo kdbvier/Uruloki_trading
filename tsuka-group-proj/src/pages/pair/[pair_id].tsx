@@ -5,7 +5,7 @@ import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { getToken, setPairAddress } from "@/store/apps/token";
-import { getUserOrder } from "@/store/apps/user-order";
+import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   OrderStatusEnum,
@@ -27,6 +27,7 @@ import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
+import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 
 interface InputToken {
   id: string;
@@ -37,6 +38,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const { value: userOrder } = useAppSelector((state) => state.userOrder);
+  const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
   const { value: bitquery } = useAppSelector((state) => state.bitquery);
   const router = useRouter();
   const [currentToken, setCurrentToken] = useState<Token>();
@@ -44,7 +46,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [pair_address, setPair_address] = useState<String>("");
+  const [pair_address, setPair_address] = useState<string>("");
 
   let pair_id = "2";
 
@@ -70,8 +72,8 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
   useEffect(() => {
-    // dispatch(getToken(pair_id as string));
-  }, []);
+    dispatch(getTokenPairInfo(pair_address as string));
+  }, [pair_address]);
 
   useEffect(() => {
     if (token) {
@@ -90,7 +92,10 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
 
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
-      <FullHeaderToken pair_address={String(pair_address)} />
+      <FullHeaderToken
+        tokenPairInfo={tokenPairInfo}
+        pair_address={String(pair_address)}
+      />
       <div className="hidden lg:grid grid-cols-11 gap-4">
         {/* <div className="col-span-12 md:col-span-3">
               <CompareTokenChainToken token={token} networks={networks} />
@@ -151,11 +156,11 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
       {showEditOrderModal && (
         <EditOrderToken
           isEdit={false}
-          name1={currentToken?.chain.name as string}
-          code1={currentToken?.chain.code as string}
-          name2={compareToken?.chain.name as string}
-          code2={compareToken?.chain.code as string}
-          pair_address={id}
+          name1={tokenPairInfo.baseToken.name as string}
+          code1={tokenPairInfo.baseToken.symbol as string}
+          name2={tokenPairInfo.pairedToken.name as string}
+          code2={tokenPairInfo.pairedToken.symbol as string}
+          pair_address={pair_address}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={0} //TODO: Fix this
           closeHandler={() => {
