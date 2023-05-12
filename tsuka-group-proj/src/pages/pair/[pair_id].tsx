@@ -27,6 +27,7 @@ import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
+import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 
 interface InputToken {
   id: string;
