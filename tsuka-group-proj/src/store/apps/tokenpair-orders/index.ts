@@ -16,7 +16,7 @@ const initialState: TokenpairOrders = {
 };
 
 export const getActiveOrdersbyTokenPair = createAsyncThunk(
-  "tokens/get",
+  "tokens/getActiveOrders",
   async (pair_address: string) => {
     const orders = await Orders.getActiveOrdersbyTokenPair(pair_address);
     return {
@@ -27,7 +27,7 @@ export const getActiveOrdersbyTokenPair = createAsyncThunk(
 );
 
 export const tokenpairOrders = createSlice({
-  name: "homePageTokens",
+  name: "tokenPairOrders",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
