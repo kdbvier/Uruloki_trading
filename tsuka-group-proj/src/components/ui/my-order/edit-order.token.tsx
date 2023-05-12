@@ -301,7 +301,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
               {!!token_price.base_price &&
-                convertLawPrice(token_price.base_price)}
+                (token_price.base_price >= 0.01
+                  ? `$${handleNumberFormat(
+                      parseFloat(token_price.base_price.toFixed(2))
+                    )}`
+                  : convertLawPrice(token_price.base_price))}
             </span>
           </p>
           {/* <div className="w-full mt-4 flex gap-2 text-sm">
