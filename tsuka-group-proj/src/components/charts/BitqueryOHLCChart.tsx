@@ -4,10 +4,12 @@ import {
   ISeriesApi,
   CandlestickData,
   LineStyle,
+  IChartApi
 } from "lightweight-charts";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Order } from "@/types";
-
+import { getBitqueryOHLCData } from "@/lib/bitquery/getBitqueryOHLCData";
+import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 // price label bg color #f03349
 // time label bg color #363a45
 // down color #d83045
@@ -15,10 +17,10 @@ import { Order } from "@/types";
 // average line color #199a82
 
 // To subscribe, get OHLC data from the Store
-const getUpdatedData = (forTime: string, datas: any) => {
+const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) => {
   if (datas[datas.length - 1].time > forTime) {
     const filterData = datas.filter((data: any) => data.time > forTime);
-    const time = forTime + 2400000;
+    const time = forTime + candleStickTime*60*1000;
     const open = filterData[0].open;
     const close = filterData[filterData.length - 1].close;
     const high =
@@ -39,7 +41,7 @@ const getUpdatedData = (forTime: string, datas: any) => {
   } else {
     const filterData1 = datas.filter((data: any) => data.time < forTime);
     const filterData = filterData1.filter(
-      (data: any) => parseInt(forTime) - 2400000 < data.time
+      (data: any) => parseInt(forTime) - candleStickTime*60*1000 < data.time
     );
     const time = forTime;
     const open = filterData[0]?.open;
@@ -65,12 +67,14 @@ const getUpdatedData = (forTime: string, datas: any) => {
 
 // This is our lightweight chart
 const BitqueryOHLCChart = () => {
+  const [chart, setChart] = useState<IChartApi | null>(null);
   const [showMarkers, setShowMarkers] = useState(true);
   const chartRef = useRef<HTMLDivElement>(null);
-  const candleStickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
+  let candleStickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const dispatch = useAppDispatch();
   const firstBitquery = useAppSelector((state) => state.bitquery.value);
   const streamValue = useAppSelector((state) => state.bitquery.streamValue);
+  const candleStickTime = useAppSelector((state) => state.bitquery.candleStickTime);
   const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
   const activeOrdersByTokenpair = useAppSelector(
     (state) => state.tokenpairOrders.value.orders
@@ -79,11 +83,15 @@ const BitqueryOHLCChart = () => {
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
   }
-
-  // When the first data arrives
+  
+  const candleStickClicked = (stick:number) => {
+    console.log(stick);
+    dispatch(getBitqueryInitInfo(stick));
+  }
+  
   useEffect(() => {
+    console.log("useEffect");
     if (!chartRef.current || !firstBitquery) return;
-    // create lightweight-chart
     const chart = createChart(chartRef.current, {
       width: 1300,
       height: 400,
@@ -129,6 +137,7 @@ const BitqueryOHLCChart = () => {
         },
       },
     });
+    // create lightweight-chart
 
     // the historical data from the Bitquery
     let temp: MyCandlestickData[] = [];
@@ -220,7 +229,7 @@ const BitqueryOHLCChart = () => {
       );
     }
     chart.timeScale().fitContent();
-
+    
     // Insert the resizing code here
     const updateChartSize = () => {
       const containerWidth: number = chartRef.current?.clientWidth
@@ -236,14 +245,14 @@ const BitqueryOHLCChart = () => {
       chart.resize(newWidth, newHeight);
     };
     updateChartSize();
-
+    setChart(chart);
     // Update size on window resize
     window.addEventListener("resize", updateChartSize);
     return () => {
       chart.remove();
       window.removeEventListener("resize", updateChartSize);
     };
-  }, [dispatch, firstBitquery, activeOrdersByTokenpair, showMarkers]);
+  }, [dispatch, firstBitquery, activeOrdersByTokenpair, showMarkers,candleStickTime]);
 
   // When subscription data arrives
   useEffect(() => {
@@ -255,29 +264,26 @@ const BitqueryOHLCChart = () => {
       return;
     if (typeof streamValue.length == "undefined") return;
     let updatedData: MyCandlestickData | null = null;
-
     // Get the OHLC data from subscription data in the Store
-    updatedData = getUpdatedData(forwardTime, streamValue);
+    updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
   }, [dispatch, streamValue, forwardTime]);
+  
+  // When subscription data arrives
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <>
       <div ref={chartRef} />
-      <label className="relative inline-flex items-center cursor-pointer mt-3">
-        <input
-          type="checkbox"
-          value=""
-          className="sr-only peer"
-          onChange={({ target: { checked } }) => setShowMarkers(checked)}
-          checked={showMarkers}
-        />
-        <div className="w-11 h-6 bg-tsuka-300 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-tsuka-700"></div>
-        <span className="ml-3 text-sm font-medium text-tsuka-50 dark:text-tsuka-50">
-          Show markers
-        </span>
-      </label>
+      <div className="mt-2">
+        <button onClick={() => candleStickClicked(15)} className="p-1 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md ">15M</button>
+        <button onClick={() => candleStickClicked(30)} className="p-1 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md">30M</button>
+        <button onClick={() => candleStickClicked(60)} className="p-1 px-2 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md">1H</button>
+        <button onClick={() => candleStickClicked(360)} className="p-1 px-2 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md">6H</button>
+      </div>
     </>
   );
 };

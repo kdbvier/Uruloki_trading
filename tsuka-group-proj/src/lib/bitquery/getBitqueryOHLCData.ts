@@ -6,11 +6,12 @@ const BITQUERY_API_KEY = process.env.NEXT_PUBLIC_BITQUERY_API_KEY as string;
 const baseCurrencyAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 const quoteCurrencyAddress =
   "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as string;
-const interval = 40;
+let interval = 15;
 // WETH = 1 WETH / USDC
-const fetchOHLCData = async () => {
+const fetchOHLCData = async (time:any) => {
   const date = new Date(new Date().getTime() - 24 * 60 * 60 * 1000); // Replace this with your date object
   const from = moment(date).format("YYYY-MM-DD");
+  interval = time;
   const query = gql`
   {
     ethereum(network: ethereum) {
@@ -59,7 +60,8 @@ const fetchOHLCData = async () => {
   return data.data.ethereum.dexTrades;
 };
 // fetch the historical data
-export const getBitqueryOHLCData = async () => {
-  const ohlcData = await fetchOHLCData();
+export const getBitqueryOHLCData = async (time:any) => {
+  console.log("getbitfdsa",time);
+  const ohlcData = await fetchOHLCData(time);
   return ohlcData;
 };
