@@ -26,7 +26,7 @@ import {
 import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
+import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 
 interface InputToken {
   id: string;
@@ -81,6 +81,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     const compareToken = tokensData.find((item) => item.id !== pair_id)!;
     setCurrentToken(currentToken);
     setCompareToken(compareToken);
+    dispatch(getActiveOrdersbyTokenPair(pair_address as string));
   }, [dispatch, pair_id, token]);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
