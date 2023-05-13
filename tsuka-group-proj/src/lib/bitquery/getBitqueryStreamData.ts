@@ -218,6 +218,7 @@ const fetchStreamData = async () => {
 
 // Request the Bitquery to subscribe
 export const getBitqueryStreamData = async () => {
+  client.unsubscribeAll();
   const streamData = await fetchStreamData();
 };
 
