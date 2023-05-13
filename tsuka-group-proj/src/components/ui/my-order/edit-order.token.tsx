@@ -3,7 +3,11 @@ import { TokenCache } from "@/types";
 import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-import { editUserOrder, setSelectedOrder, createOrder } from "@/store/apps/user-order";
+import {
+  createOrder,
+  editUserOrder,
+  setSelectedOrder,
+} from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
@@ -17,11 +21,11 @@ import ToggleButton from "../buttons/toggle.button";
 export interface EditOrderTokenProp {
   isEdit?: boolean;
   setShowEditOrderModal: (a: any) => void;
-  name1?:string
-  code1?:string
-  name2?:string
-  code2?:string
-  pair_address?:string
+  name1?: string;
+  code1?: string;
+  name2?: string;
+  code2?: string;
+  pair_address?: string;
   selectedOrderId?: number;
   closeHandler: () => void;
 
@@ -67,9 +71,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const selectedOrder = useAppSelector(
     (state) => state.userOrder.selectedOrder
   );
-  const tokenCache = useAppSelector(
-    (state) => state.tokencache.value
-  );
+  const tokenCache = useAppSelector((state) => state.tokencache.value);
   const token_price = useAppSelector(
     (state) => state.userOrder.selectedTokenPairPrice
   );
@@ -99,7 +101,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   useEffect(() => {
     dispatch(setSelectedOrder(selectedOrderId));
     dispatch(getAllTokenCache());
-    
   }, []);
 
   useEffect(() => {
@@ -209,7 +210,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setIsContinuous((prevState) => !prevState);
   };
   const handleSubmit = () => {
-    if(isEdit){
+    if (isEdit) {
       const patchData = {} as PatchOrder;
       patchData.budget = toNumber(amount);
       patchData.order_type = isBuy ? "buy" : "sell";
@@ -237,11 +238,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         postData.single_price = toNumber(targetPrice);
       }
       postData.is_continuous = isContinuous;
-      postData.baseTokenLongName=name1;
-      postData.baseTokenShortName=code1;
-      postData.pairTokenLongName=name2;
-      postData.pairTokenShortName=code2;
-      postData.user_id = 1;////TODO:get it from server
+      postData.baseTokenLongName = name1;
+      postData.baseTokenShortName = code1;
+      postData.pairTokenLongName = name2;
+      postData.pairTokenShortName = code2;
+      postData.user_id = 1; ////TODO:get it from server
       postData.pair_address = pair_address;
       console.log("before Submit(post)::");
       console.log(postData);
@@ -250,6 +251,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
+  const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
+  const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
+  const pairLongName = isEdit ? selectedOrder.pairTokenLongName : name2;
+  const pairShortName = isEdit ? selectedOrder.baseTokenShortName : code2;
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
       <div className="w-full h-full flex justify-center items-center p-4 md:p-0">
@@ -278,8 +283,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {selectedOrder.pairTokenShortName} with{" "}
-                {selectedOrder.baseTokenShortName}
+                {pairShortName} with {baseShortName}
               </p>
             </button>
             <button
@@ -292,8 +296,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                {selectedOrder.pairTokenShortName} for{" "}
-                {selectedOrder.baseTokenShortName}
+                {pairShortName} for {baseShortName}
               </p>
             </button>
           </div>
@@ -440,33 +443,36 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             </div>
           )}
           {/* <div className="flex items-center"> */}
-                  {/* <TokenIconsToken
+          {/* <TokenIconsToken
                     name={
                       isBuy
-                        ? selectedOrder.pairTokenLongName ?? ""
-                        : selectedOrder.baseTokenLongName ?? ""
+                        ? pairLongName ?? ""
+                        : baseLongName ?? ""
                     }
                     shortName={
                       isBuy
-                        ? selectedOrder.pairTokenShortName ?? ""
-                        : selectedOrder.baseTokenShortName ?? ""
+                        ? pairShortName ?? ""
+                        : baseShortName ?? ""
                     }
                     width={16}
                     height={16}
                   /> */}
-                  {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
+          {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
                       ? selectedOrder.pairTokenLongName
                       : selectedOrder.baseTokenLongName}
                   </span> */}
-                {/* </div> */}
+          {/* </div> */}
           <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
             Amount
           </span>
 
-          <div className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md " onClick={() => setSeletCollaped(!seletCollaped)}>
+          <div
+            className="w-full -mt-2.5 py-[11px] px-3 border border-tsuka-400 rounded-md "
+            onClick={() => setSeletCollaped(!seletCollaped)}
+          >
             <div className="w-full flex justify-between">
-              <Dropdown allTokenName={allTokenName}/>
+              <Dropdown allTokenName={allTokenName} />
               {/* <div
                 className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
                 onClick={() => setSeletCollaped(!seletCollaped)}
@@ -480,13 +486,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 onChange={(e) => handleNumberInputChange("amount", e)}
                 onBlur={(e) => blurHandler("amount", e)}
               />
-              
             </div>
             <div className="w-full flex justify-between mt-1">
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {3.000493} {selectedOrder.baseTokenShortName ?? ""}
+                  {3.000493} {baseShortName ?? ""}
                 </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
