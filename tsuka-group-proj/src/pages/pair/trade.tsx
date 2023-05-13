@@ -89,7 +89,7 @@ const client = createClient({
   webSocketImpl: WebSocketImpl,
   connectionParams: () => ({
     headers: {
-      "X-API-KEY": process.env.BIT_QUERY_API_KEY,
+      "X-API-KEY": process.env.BITQUERY_API_KEY,
     },
   }),
 });
