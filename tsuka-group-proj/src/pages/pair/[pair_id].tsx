@@ -43,9 +43,10 @@ export default function Pair() {
   const router = useRouter();
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
   const [pair_address, setPair_address] = useState<string>("");
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   // When this page becomes unmounted
   useEffect(() => {
@@ -73,9 +74,9 @@ export default function Pair() {
   }, [pair_address]);
 
   const handleEditModal = (show: boolean, id: number) => {
-    console.log("handleEditModal", show, id);
     setSelectedOrderId(id);
-    setShowEditOrderModal(show);
+    setShowEditOrderModal(show ? 1 : 0);
+    setIsEdit(true);
   };
 
   return (
@@ -104,7 +105,10 @@ export default function Pair() {
         <div className="col-span-12 md:col-span-3">
           <DefaultButton
             label="Create an Order"
-            callback={() => setShowEditOrderModal(true)}
+            callback={() => {
+              setShowEditOrderModal(2);
+              setIsEdit(false);
+            }}
             filled={true}
             Icon={FiPlusCircle}
           />
@@ -186,10 +190,16 @@ export default function Pair() {
       />
       {showEditOrderModal && (
         <EditOrderToken
+          name1={tokenPairInfo.baseToken.name as string}
+          code1={tokenPairInfo.baseToken.symbol as string}
+          name2={tokenPairInfo.pairedToken.name as string}
+          code2={tokenPairInfo.pairedToken.symbol as string}
+          pair_address={pair_address}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
+          isEdit={showEditOrderModal === 1}
           closeHandler={() => {
-            setShowEditOrderModal(false);
+            setShowEditOrderModal(0);
             setSelectedOrderId(-1);
           }}
         />
