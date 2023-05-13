@@ -6,6 +6,7 @@ export enum PriceTypeEnum {
   SINGLE = "single",
   RANGE = "range",
 }
+
 export enum OrderStatusEnum {
   ACTIVE = "Active",
   EXECUTED = "Executed",
@@ -18,6 +19,7 @@ export interface Order {
   price_type: PriceTypeEnum;
   order_type: OrderTypeEnum;
   status: OrderStatusEnum;
+  is_continuous: boolean;
   baseTokenShortName: string;
   baseTokenLongName: string;
   pairTokenShortName: string;

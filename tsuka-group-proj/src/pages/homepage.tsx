@@ -3,9 +3,10 @@ import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.t
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
 import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getHomrPageTokens } from "@/store/apps/tokens";
+import { getHomePageTokens } from "@/store/apps/tokens";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
@@ -15,14 +16,23 @@ import {
   TopGainersMapper,
   TopMoversMapper,
 } from "@/lib/mapper";
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { getStrategies } from "@/store/apps/strategies";
 
 let currentTranslateX: number = 0;
 
 export default function Home() {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
+  const [showSidebar, setShowSidebar] = useState(false);
+
   const dispatch = useAppDispatch();
+  const {
+    strategies: { value: strategies },
+  } = useAppSelector((state) => state);
   useEffect(() => {
-    dispatch(getHomrPageTokens());
+    dispatch(getHomePageTokens());
+    dispatch(getStrategies());
   }, [dispatch]);
 
   const { value, status } = useAppSelector((state) => state.homepageTokens);
@@ -101,7 +111,10 @@ export default function Home() {
     <>
       <ToastContainer />
       {(status === "loading" || _.isEmpty(value)) && (
-        <div className="text-white text-2xl">Loading...</div>
+        <LoadingBox
+          title="Loading data"
+          description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
+        />
       )}
       {status === "ok" && !_.isEmpty(value) && (
         <div className="px-4 md:px-10 pt-6 pb-8">
@@ -161,6 +174,23 @@ export default function Home() {
           <div className="mt-4">
             <TopMoversTokens topMovers={TopMoversMapper(value.topMovers)} />
           </div>
+          <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+            <button
+              type="button"
+              onClick={() => setShowSidebar(true)}
+              className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+            >
+              <label className="mr-2">
+                <HiOutlineArrowLongLeft size={24} />
+              </label>
+              Order & Strategies
+            </button>
+          </div>
+          <SidebarStrategies
+            open={showSidebar}
+            handleOpen={() => setShowSidebar(false)}
+            strategies={strategies!}
+          />
         </div>
       )}
     </>

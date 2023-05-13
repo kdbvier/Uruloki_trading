@@ -11,9 +11,9 @@ export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
 
   useEffect(() => {
     updateTokenPosition();
-    const intervalId = setInterval(updateTokenPosition, 2000);
+    // const intervalId = setInterval(updateTokenPosition, 2000);
     return () => {
-      clearInterval(intervalId);
+      // clearInterval(intervalId);
     };
   }, []);
 

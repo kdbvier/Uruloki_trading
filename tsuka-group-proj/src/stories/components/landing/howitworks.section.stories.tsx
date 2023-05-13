@@ -52,13 +52,13 @@ export default {
         },
         {
           descriptionHeader:
-            "Set up a trading strategy and select the assets you want",
+            "Set up a trading setup and select the assets you want",
           description:
-            "Create a trading strategy with Uruloki by grouping multiple orders on different assets into a single arbitrage strategy. Choose the assets you want to include and take advantage of market inefficiencies.",
+            "Create a trading setup with Uruloki by grouping multiple orders on different assets into a single arbitrage setup. Choose the assets you want to include and take advantage of market inefficiencies.",
           orientation: false,
           features: [
-            "Create a trading strategy that suits your needs with Uruloki's advanced tools.",
-            "Customize your strategy and make informed decisions with real-time monitoring and management.",
+            "Create a trading setup that suits your needs with Uruloki's advanced tools.",
+            "Customize your setup and make informed decisions with real-time monitoring and management.",
           ],
           image: {
             url: "https://images.ctfassets.net/imgksyjxr9j5/3VljpfEtnBN25ZqKM35W00/2b8544bff0ef66d0a9f7a481e8258ab7/3_2_screen_mockup.png",
@@ -70,7 +70,7 @@ export default {
           descriptionHeader:
             "Monitor and manage your trading activity in real-time",
           description:
-            "With Uruloki's real-time monitoring and management, you can stay up-to-date with your trading activity and make informed decisions based on advanced tools and analytics. Customize your trading strategy and maximize your profits with ease.",
+            "With Uruloki's real-time monitoring and management, you can stay up-to-date with your trading activity and make informed decisions based on advanced tools and analytics. Customize your trading setup and maximize your profits with ease.",
           orientation: true,
           features: [
             "Stay up-to-date with your trading activity with Uruloki's real-time monitoring and management.",

@@ -35,9 +35,9 @@ export default async function strategyHandler(
         if (!strategyExist) {
           res.status(404).json({
             payload: undefined,
-            message: `Strategy id ${strategyid} not found!`,
+            message: `Setup id ${strategyid} not found!`,
           });
-          break;
+          return;
         }
         const { orders } = value;
         const orderStrategies = orders.map((order: number[]) => ({
@@ -49,28 +49,15 @@ export default async function strategyHandler(
           data: orderStrategies,
           skipDuplicates: false,
         });
-        // await prisma.$transaction([
-        //   prisma.order_strategy.createMany({
-        //     data: orderStrategies,
-        //     // Add a unique constraint on the field that should be unique
-        //     // in order to prevent duplicates from being inserted
-        //     // and return an error if any duplicates are found
-        //     onError: ((error: any, record: OrderStrategy) => {
-        //       throw new Error(
-        //         `Duplicate record found: ${JSON.stringify(record)}`
-        //       );
-        //     }) as never,
-        //   }),
-        // ]);
         console.log("created");
         const orderStrategiesCreated = await prisma.order_strategy.findMany({
           where: {
-            strategyId: strategyExist.strategy_id,
+            strategyId: Number(strategyExist.strategy_id),
           },
         });
         res.status(200).json({
           payload: orderStrategiesCreated,
-          message: `Successfully added orders to strategy id ${strategyid}`,
+          message: `Successfully added orders to setup id ${strategyid}`,
         });
       } catch (err: any) {
         if (err.code == "P2002") {

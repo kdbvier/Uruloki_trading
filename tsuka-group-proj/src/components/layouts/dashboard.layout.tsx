@@ -1,6 +1,6 @@
+import React, { useEffect } from "react";
 import { HeaderMenuButton } from "@/components/ui/buttons/header-menu.button";
 import { HeaderNotificationButton } from "@/components/ui/buttons/header-notification.button";
-import { HeaderWalletButton } from "@/components/ui/buttons/header-wallet.button";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -8,10 +8,63 @@ import { PropsWithChildren, useState } from "react";
 import { HeaderLinkButton } from "../ui/buttons/header-link.button";
 import { Notifications } from "@/components/ui/tokens/notifications.token";
 import { INotification } from "@/global";
+import { DefaultButton } from "../ui/buttons/default.button";
+import { FiPlusCircle } from "react-icons/fi";
+import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
+
+import { Web3Button } from "@web3modal/react";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [showNotify, setShowNotify] = useState<boolean>(false);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+
+  const [network, setNetwork] = useState("");
+
+  const handleChainChanged = (chainId: any) => {
+    setNetwork(chainId);
+  };
+
+  const switchToEthereum = async () => {
+    try {
+      await window.ethereum?.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x1" }],
+      });
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError?.code === 4902) {
+        try {
+          await window.ethereum?.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: "0x1",
+                chainName: "ETH",
+                rpcUrls: ["https://eth.llamarpc.com"],
+              },
+            ],
+          });
+        } catch (addError) {
+          // handle "add" error
+        }
+      }
+      // handle other "switch" errors
+    }
+  };
+
+  // useEffects
+  useEffect(() => {
+    if (network && network !== "0x1") {
+      switchToEthereum();
+    }
+  }, [network]);
+
+  useEffect(() => {
+    if (window.ethereum !== undefined) {
+      window?.ethereum?.on?.("chainChanged", handleChainChanged);
+    }
+  }, []);
 
   const router = useRouter();
 
@@ -25,33 +78,37 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       path: "/my-orders",
     },
     {
-      title: "Settings",
-      path: "/#",
+      title: "Profile",
+      path: "/profile",
     },
   ];
-  
+
   let notifications: INotification[] = [
     {
       buy: true,
       amount: 1.8493004,
       asset: "ETH",
       executedAt: 45.23,
-    }, {
+    },
+    {
       buy: false,
       amount: 5.5393054,
       asset: "ETH",
       executedAt: 605.04,
-    }, {
+    },
+    {
       buy: true,
       amount: 2.8453044,
       asset: "ETH",
       executedAt: 403.244,
-    }, {
+    },
+    {
       buy: true,
       amount: 1.8493004,
       asset: "ETH",
       executedAt: 45.23,
-    }, {
+    },
+    {
       buy: true,
       amount: 2.8453044,
       asset: "ETH",
@@ -69,26 +126,93 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       </Head>
       <main>
         <nav>
-          <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500">
+          <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500 relative overflow-hidden">
+            <Image
+              className="absolute top-0 left-0"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to right, rgba(0,0,0,1) 90%, rgba(0,0,0,0))",
+              }}
+              src="/imgs/sky.jfif"
+              width={700}
+              height={200}
+              alt="header bgImg sky"
+            />
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center md:justify-start">
                 <div className="flex flex-shrink-0 items-center pl-2 xs:px-4 md:px-2">
-                  <p className="text-xl font-extrabold text-tsuka-100 ">
-                    <Image className="hidden sm:block" src="/logos/logo.png" alt="logo" width={111} height={40} />
-                    <Image className="sm:hidden" src="/logos/logo_icon.png" alt="logo" width={40} height={40} />
-                  </p>
-                </div>
-                <div className="hidden md:ml-6 md:block">
-                  <div className="flex px-10 space-x-4">
-                    {navLinks?.map(({ path, title }) => (
-                      <HeaderLinkButton
-                        key={path}
-                        path={path}
-                        title={title}
-                        active={path === router.pathname}
+                  <div className="text-xl font-extrabold text-tsuka-100 ">
+                    {/* <Image
+                      className="hidden sm:block"
+                      src="/logos/logo.png"
+                      alt="logo"
+                      height={40}
+                    /> */}
+                    <div className="flex justify-between items-center">
+                      <Image
+                        // src={icon.url}
+                        className="hidden sm:block"
+                        src="/logos/logo_icon.png"
+                        alt="logo__image"
+                        width={40}
+                        height={40}
+                        style={{ position: "relative" }}
                       />
-                    ))}
+                      <div
+                        className="px-3 flex flex-col hidden sm:block"
+                        style={{ position: "relative" }}
+                      >
+                        <span className="text-[26px] tracking-widest font-Uruloki text-white stroke-transparent">
+                          URULOKI
+                        </span>
+                        {/* <span className="font-Uruloki m-0 mt-[9px] tracking-[7px] stroke-transparent">DEJITARU</span> */}
+                      </div>
+                    </div>
+                    <Image
+                      className="sm:hidden"
+                      src="/logos/logo_icon.png"
+                      alt="logo"
+                      width={40}
+                      height={40}
+                    />
                   </div>
+                </div>
+                <div className="hidden lg:ml-6 lg:block">
+                  <div className="flex px-10 space-x-4">
+                    {navLinks?.map(({ path, title }, index) => {
+                      let isActive = path === router.pathname;
+                      if (
+                        index === 1 &&
+                        router.pathname.indexOf("strategies") >= 0
+                      ) {
+                        isActive = true;
+                      }
+
+                      return (
+                        <HeaderLinkButton
+                          key={path}
+                          path={path}
+                          title={title}
+                          active={isActive}
+                        />
+                      );
+                    })}
+                    <DefaultButton
+                      label="Create an Order"
+                      callback={() => setShowEditOrderModal(true)}
+                      filled={true}
+                      Icon={FiPlusCircle}
+                    />
+                  </div>
+
+                  {showEditOrderModal && (
+                    <EditOrderToken
+                      isEdit={false}
+                      setShowEditOrderModal={setShowEditOrderModal}
+                      selectedOrderId={0} //TODO: Fix this
+                      closeHandler={() => {}} //TODO: Fix this
+                    />
+                  )}
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex flex-row-reverse md:flex-row items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
@@ -101,20 +225,21 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   showNotify={showNotify}
                   setShowNotify={setShowNotify}
                 />
-                <HeaderWalletButton
-                  callback={() => console.log("wallet click")}
-                  wallet={{ label: "Darkdakgo.eth" }}
-                />
+                <Web3Button />
               </div>
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
-          {
-            !menuCollapsed &&
-            <div className="md:hidden" id="mobile-menu">
+          {!menuCollapsed && (
+            <div className="lg:hidden" id="mobile-menu">
               <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700">
                 {navLinks?.map(({ path, title }, idx) => (
-                  <div className={`flex justify-center${idx > 0 ? " border-t border-t-tsuka-400" : ""}`} key={idx}>
+                  <div
+                    className={`flex justify-center${
+                      idx > 0 ? " border-t border-t-tsuka-400" : ""
+                    }`}
+                    key={idx}
+                  >
                     <HeaderLinkButton
                       key={path}
                       path={path}
@@ -123,13 +248,21 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                     />
                   </div>
                 ))}
+                <DefaultButton
+                  label="Create an Order"
+                  callback={() => setShowEditOrderModal(true)}
+                  filled={true}
+                  Icon={FiPlusCircle}
+                />
               </div>
             </div>
-          }
-          {
-            showNotify &&
-            <Notifications notifications={notifications} closeNotification={() => setShowNotify(false)} />
-          }
+          )}
+          {showNotify && (
+            <Notifications
+              notifications={notifications}
+              closeNotification={() => setShowNotify(false)}
+            />
+          )}
         </nav>
         <div className="">{children}</div>
       </main>

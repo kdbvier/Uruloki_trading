@@ -28,7 +28,7 @@ export default {
         {
           title: "Take Advantage of Arbitrage Oppourtunities",
           description:
-            "Group multiple orders on different assets into a single strategy and take advantage of market inefficiencies.",
+            "Group multiple orders on different assets into a single setup and take advantage of market inefficiencies.",
           icon: {
             url: "https://images.ctfassets.net/imgksyjxr9j5/38MMDvsdyj0wktyScMWRiO/2c2ef14dcdfac5e5483ff65ea71e40fb/Icon.png",
             width: 42,

@@ -1,6 +1,5 @@
 import {
   LiveGraphToken,
-  LiveGraphTokenProps,
 } from "@/components/tokens/live-graph.token";
 import { store } from "@/store";
 import { Meta, StoryObj } from "@storybook/react";
@@ -13,10 +12,10 @@ export default {
     token: "ETH",
   },
   decorators: [
-    (Story) => {
+    (Story: any) => {
       return <Provider store={store}>{Story()}</Provider>;
     },
   ],
-} as Meta<LiveGraphTokenProps>;
+};
 
-export const FiltersButton: StoryObj<LiveGraphTokenProps> = {};
+export const FiltersButton = {};

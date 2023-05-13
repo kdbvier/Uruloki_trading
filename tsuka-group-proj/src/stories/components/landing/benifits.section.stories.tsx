@@ -27,12 +27,12 @@ export default {
         {
           title: "Maximize profits with arbitrage",
           description:
-            "Profit more with Uruloki's trading strategy by capitalizing on market inefficiencies.",
+            "Profit more with Uruloki's trading setup by capitalizing on market inefficiencies.",
         },
         {
-          title: "Customize your trading strategy",
+          title: "Customize your trading setup",
           description:
-            "Uruloki's advanced tools and analytics allow you to create a tailored trading strategy.",
+            "Uruloki's advanced tools and analytics allow you to create a tailored trading setup.",
         },
         {
           title: "Stay updated with real-time monitoring",
@@ -42,7 +42,7 @@ export default {
         {
           title: "Increased Efficiency",
           description:
-            "With Uruloki's automation and trading strategy features, you can execute trades quickly.",
+            "With Uruloki's automation and trading setup features, you can execute trades quickly.",
         },
       ],
     },

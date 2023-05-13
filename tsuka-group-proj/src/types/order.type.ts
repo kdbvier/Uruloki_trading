@@ -13,6 +13,7 @@ export type Order = {
   budget: number | null;
   order_type: "buy" | "sell" | null;
   price_type: "single" | "range" | null;
+  is_continuous: boolean | null;
 };
 
 export type PostOrder = {
@@ -25,6 +26,7 @@ export type PostOrder = {
   budget: number;
   order_type: "buy" | "sell";
   price_type: "single" | "range";
+  is_continuous: boolean | null;
   baseTokenShortName: string;
   baseTokenLongName: string;
   pairTokenShortName: string;
@@ -40,6 +42,7 @@ export type PatchOrder = {
   budget?: number;
   order_type?: "buy" | "sell";
   price_type?: "single" | "range";
+  is_continuous: boolean | null;
 };
 
 export type OrdersBook = {

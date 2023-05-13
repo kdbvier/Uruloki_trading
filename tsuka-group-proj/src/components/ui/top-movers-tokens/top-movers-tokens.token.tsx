@@ -2,6 +2,7 @@ import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
 import { ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import {
@@ -16,10 +17,11 @@ import {
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
 }) => {
+  console.log(topMovers)
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
+  useEffect(() => { 
     let tempArray: boolean[] = [];
     for (let i = 0; i < topMovers.length; i++) {
       tempArray[i] = true;
@@ -33,7 +35,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
     newArray[idx] = newValue;
     setCollapeds(newArray);
   };
-
+  
   return (
     <div className="w-full bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className={`md:flex justify-between items-center`}>
@@ -69,145 +71,176 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               <th className="py-2 hidden md:table-cell">ID</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
-              <th className="py-2">Price(USD)</th>
+              <th colSpan={2} className="py-2 text-center md:text-left">
+                Price(USD)
+              </th>
+              {/* <th className="py-2 text-right md:text-left"></th> */}
               <th className="py-2 hidden md:table-cell">Volume</th>
               <th className="py-2 hidden md:table-cell">Market Cap</th>
-              <th className="py-2 hidden md:table-cell">
-                Total Num. of Orders
-              </th>
+              <th className="py-2 hidden md:table-cell">Total Orders</th>
               <th className="py-2 hidden md:table-cell">Order Split</th>
               <th className="md:hidden"></th>
             </tr>
           </thead>
           <tbody>
             {topMovers.map((topMover, idx) => {
+              /// TODO: This is only for test
+              let shortName = "ETH";
+              let id = "ethereum";
+              let priceEle;
+              if (topMover.price >= 0.01) {
+                // console.log("topMover price >: ", topMover.price);
+                priceEle = `$${commafy(topMover.price)}`;
+              } else {
+                // console.log("topMover price <: ", topMover.price);
+
+                priceEle = (
+                  <>
+                    ${formatNumberToHtmlTag(topMover.price).integerPart}.0
+                    <sub>
+                      {formatNumberToHtmlTag(topMover.price).leadingZerosCount}
+                    </sub>
+                    {formatNumberToHtmlTag(topMover.price).remainingDecimal}
+                  </>
+                );
+              }
               return (
-                <Fragment key={idx}>
-                  <tr onClick={() => {router.push("/pair/2")}} className="cursor-pointer border-t border-t-tsuka-400">
-                    <td className="py-2 md:py-8">
-                      <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">
-                        #{idx + 1}
-                      </span>
-                    </td>
-                    <td className="hidden md:table-cell py-2 md:py-8">
-                      <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                        {topMover.id}
-                      </span>
-                    </td>
-                    <td className="hidden md:table-cell py-2 md:py-8">
-                      <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                        {topMover.token}
-                      </span>
-                    </td>
-                    <td className="py-2 md:py-8 flex items-center">
-                      <TokenIconsToken
-                        name={topMover.chain.id}
-                        shortName={topMover.chain.shortName}
-                      />
-                      <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                        <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                          {topMover.chain.name}
-                        </p>
-                        <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
+                topMover.token && topMover.token !== "-" && (
+                  <Fragment key={idx}>
+                    <tr
+                      onClick={() => {
+                        router.push(`/pair/${topMover.pair_address}`);
+                      }}
+                      className="cursor-pointer border-t border-t-tsuka-400"
+                    >
+                      <td className="py-2 md:py-8">
+                        <span className="ml-1 text-tsuka-200 text-[16px] leading-[20px] font-medium">
+                          #{idx + 1}
+                        </span>
+                      </td>
+                      <td className="hidden md:table-cell py-2 md:py-8">
+                        <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
+                          {topMover.id}
+                        </span>
+                      </td>
+                      <td className="hidden md:table-cell py-2 md:py-8">
+                        <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
+                          {topMover.token}
+                        </span>
+                      </td>
+                      <td className="py-2 md:py-8 flex items-center">
+                        <TokenIconsToken name={id} shortName={shortName} />
+                        <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
+                          <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
+                            {shortName}
+                          </p>
+                          {/* <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
                           {topMover.chain.shortName}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="py-2 md:py-8 text-right md:text-left">
-                      <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal">
-                        <span className="text-tsuka-200">{`$${commafy(
-                          topMover.price
-                        )}`}</span>
-                        {topMover.risingPercent > 0 ? (
-                          <div className="ml-2 flex text-custom-green">
-                            <FiArrowUpRight className="mt-0.5" />
-                            <span>{`${topMover.risingPercent}%`}</span>
-                          </div>
-                        ) : (
-                          <div className="ml-2 flex text-custom-red">
-                            <FiArrowDownRight className="mt-0.5" />
-                            <span>{`${0 - topMover.risingPercent}%`}</span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="hidden md:table-cell py-2 md:py-8">
-                      <span className="text-tsuka-200">{`$${commafy(
-                        topMover.volume
-                      )}`}</span>
-                    </td>
-                    <td className="hidden md:table-cell py-2 md:py-8">
-                      <span className="text-tsuka-200">{`$${commafy(
-                        topMover.marketCap
-                      )}`}</span>
-                    </td>
-                    <td className="hidden md:table-cell py-2 md:py-8">
-                      <span className="text-tsuka-200">{`${commafy(
-                        topMover.orderCount
-                      )}`}</span>
-                    </td>
-                    <td className="hidden md:table-cell">
-                      <OrderSplitBar
-                        buyOrderCount={topMover.buyOrderCount}
-                        sellOrderCount={topMover.sellOrderCount}
-                      />
-                    </td>
-                    <td className="md:hidden pl-2" onClick={() => toggle(idx)}>
-                      {collapeds[idx] ? <FiChevronDown /> : <FiChevronUp />}
-                    </td>
-                  </tr>
-                  {!collapeds[idx] && (
-                    <tr className="md:hidden">
-                      <td colSpan={4}>
-                        <div className="w-full bg-tsuka-400 rounded-lg p-3 mb-2">
-                          <div className="w-full flex justify-between">
-                            <span className="text-[14px] leading-[18px] text-tsuka-100">
-                              Chain
-                            </span>
-                            <span className="text-[14px] leading-[18px] text-tsuka-100">
-                              <span className="text-tsuka-50 mr-1">
-                                {topMover.chain.name}
-                              </span>
-                              <span>{topMover.chain.shortName}</span>
-                            </span>
-                          </div>
-                          <hr className="border-tsuka-300 my-2" />
-                          <div className="w-full flex justify-between">
-                            <span className="text-[14px] leading-[18px] text-tsuka-100">
-                              Volume
-                            </span>
-                            <span className="text-[14px] leading-[18px] text-tsuka-50">
-                              {`$${commafy2(topMover.volume)}`}
-                            </span>
-                          </div>
-                          <hr className="border-tsuka-300 my-2" />
-                          <div className="w-full flex justify-between">
-                            <span className="text-[14px] leading-[18px] text-tsuka-100">
-                              Market Cap
-                            </span>
-                            <span className="text-[14px] leading-[18px] text-tsuka-50">
-                              {`$${commafy2(topMover.marketCap)}`}
-                            </span>
-                          </div>
-                          <hr className="border-tsuka-300 my-2" />
-                          <div className="w-full flex justify-between">
-                            <span className="text-[14px] leading-[18px] text-tsuka-100">
-                              Total Num. of Orders
-                            </span>
-                            <span className="text-[14px] leading-[18px] text-tsuka-50">
-                              {`${commafy2(topMover.orderCount)}`}
-                            </span>
-                          </div>
-                          <div className="w-full mt-[11px]"></div>
-                          <OrderSplitBar
-                            buyOrderCount={topMover.buyOrderCount}
-                            sellOrderCount={topMover.sellOrderCount}
-                          />
+                        </p> */}
                         </div>
                       </td>
+                      <td className="py-2 md:py-8 w-16 text-right md:text-left">
+                        {/* <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal"> */}
+                        <span className="text-tsuka-200">{priceEle}</span>
+
+                        {/* </div> */}
+                      </td>
+                      <td className="py-2 md:py-8 text-right md:text-left">
+                        {/* <div className="flex gap-1 md:gap-0 flex-col md:flex-row items-end md:items-center text-[14px] leading-[18px] font-normal"> */}
+                        {topMover.risingPercent > 0 ? (
+                          <div className="flex text-custom-green">
+                            <FiArrowUpRight className="mt-0.5" />
+                            <span>{`${topMover.risingPercent.toLocaleString("en-us")}%`}</span>
+                          </div>
+                        ) : (
+                          <div className="flex text-custom-red">
+                            <FiArrowDownRight className="mt-0.5" />
+                            <span>{`${(0 - topMover.risingPercent).toLocaleString("en-us")}%`}</span>
+                          </div>
+                        )}
+                        {/* </div> */}
+                      </td>
+                      <td className="hidden md:table-cell py-2 md:py-8">
+                        <span className="text-tsuka-200">{`$${commafy(
+                          topMover.volume
+                        )}`}</span>
+                      </td>
+                      <td className="hidden md:table-cell py-2 md:py-8">
+                        <span className="text-tsuka-200">{`$${commafy(
+                          topMover.marketCap
+                        )}`}</span>
+                      </td>
+                      <td className="hidden md:table-cell py-2 md:py-8">
+                        <span className="text-tsuka-200">{`${commafy(
+                          topMover.orderCount
+                        )}`}</span>
+                      </td>
+                      <td className="hidden md:table-cell">
+                        <OrderSplitBar
+                          buyOrderCount={topMover.buyOrderCount}
+                          sellOrderCount={topMover.sellOrderCount}
+                        />
+                      </td>
+                      <td
+                        className="md:hidden pl-2"
+                        onClick={() => toggle(idx)}
+                      >
+                        {collapeds[idx] ? <FiChevronDown /> : <FiChevronUp />}
+                      </td>
                     </tr>
-                  )}
-                </Fragment>
+                    {!collapeds[idx] && (
+                      <tr className="md:hidden">
+                        <td colSpan={4}>
+                          <div className="w-full bg-tsuka-400 rounded-lg p-3 mb-2">
+                            <div className="w-full flex justify-between">
+                              <span className="text-[14px] leading-[18px] text-tsuka-100">
+                                Chain
+                              </span>
+                              <span className="text-[14px] leading-[18px] text-tsuka-100">
+                                <span className="text-tsuka-50 mr-1">
+                                  {topMover.chain.name}
+                                </span>
+                                <span>{topMover.chain.shortName}</span>
+                              </span>
+                            </div>
+                            <hr className="border-tsuka-300 my-2" />
+                            <div className="w-full flex justify-between">
+                              <span className="text-[14px] leading-[18px] text-tsuka-100">
+                                Volume
+                              </span>
+                              <span className="text-[14px] leading-[18px] text-tsuka-50">
+                                {`$${commafy2(topMover.volume)}`}
+                              </span>
+                            </div>
+                            <hr className="border-tsuka-300 my-2" />
+                            <div className="w-full flex justify-between">
+                              <span className="text-[14px] leading-[18px] text-tsuka-100">
+                                Market Cap
+                              </span>
+                              <span className="text-[14px] leading-[18px] text-tsuka-50">
+                                {`$${commafy2(topMover.marketCap)}`}
+                              </span>
+                            </div>
+                            <hr className="border-tsuka-300 my-2" />
+                            <div className="w-full flex justify-between">
+                              <span className="text-[14px] leading-[18px] text-tsuka-100">
+                                Total Orders
+                              </span>
+                              <span className="text-[14px] leading-[18px] text-tsuka-50">
+                                {`${commafy2(topMover.orderCount)}`}
+                              </span>
+                            </div>
+                            <div className="w-full mt-[11px]"></div>
+                            <OrderSplitBar
+                              buyOrderCount={topMover.buyOrderCount}
+                              sellOrderCount={topMover.sellOrderCount}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                )
               );
             })}
           </tbody>

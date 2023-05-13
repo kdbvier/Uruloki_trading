@@ -1,34 +1,49 @@
 import { userOrder } from "@/@fake-data/user-order.fake-data";
 
-import { getUserOrder, getUserOrderWithFilter } from '@/store/apps/user-order';
+import { getUserOrder, getUserOrderWithFilter } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { OrderStatusEnum, UserOrder } from "@/types/token-order.type";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
-import Orders from '../lib/api/orders';
+import Orders from "../lib/api/orders";
+import { getStrategies } from "@/store/apps/strategies";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 
 export default function MyOrder() {
   const [openMode, setOpenMode] = useState<boolean>(true);
-  const [searchValue, setSearchValue] = useState<string>('');
-  
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [showSidebar, setShowSidebar] = useState(false);
+
   const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const dispatch = useAppDispatch();
+  const { value, status } = useAppSelector((state) => state.userOrder);
   const {
-    value,
-    status,
-  } = useAppSelector((state)=> state.userOrder);
-  useEffect(()=>{
+    strategies: { value: strategies },
+  } = useAppSelector((state) => state);
+  useEffect(() => {
+    dispatch(getStrategies());
+  }, [dispatch]);
+  useEffect(() => {
     //TODO: change id to my id
-    dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
-  },[dispatch, openMode]);
+    dispatch(
+      getUserOrderWithFilter({
+        id: 1,
+        status: openMode ? "Open" : "Close",
+        search: searchValue,
+      })
+    );
+  }, [dispatch, openMode]);
   // useEffect(()=> {
   //   const fetchData =async () => {
   //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
@@ -36,25 +51,46 @@ export default function MyOrder() {
   //   }
   //   fetchData();
   // }, [])
-  const handleSearchChange = (e:any)=>{
-    console.log("changing")
+  const handleSearchChange = (e: any) => {
+    console.log("changing");
     setSearchValue(e.target.value);
-  }
-  const handleSearchSubmit = ()=>{
+  };
+  const handleSearchSubmit = () => {
     console.log("user pressed enter key");
     //TODO: change id to my id
-    dispatch(getUserOrderWithFilter({id:1, status:openMode?"Open":"Close", search: searchValue}));
-  }
-  const handleEditModal = (show:boolean, id:number)=>{
-    setSelectedOrderId(id)
+    dispatch(
+      getUserOrderWithFilter({
+        id: 1,
+        status: openMode ? "Open" : "Close",
+        search: searchValue,
+      })
+    );
+  };
+  const handleEditModal = (show: boolean, id: number) => {
+    setSelectedOrderId(id);
     setShowEditOrderModal(show);
-  }
+  };
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
       <div className={`w-full flex justify-between items-center`}>
-        <h1 className="hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50">
-          My Orders
+        <h1 className="hidden md:flex text-[40px] leading-[52px] font-medium text-tsuka-50 items-center flex-row gap-4">
+          <Link
+            href={"/strategies"}
+            className={
+              "hidden md:block text-[24px] leading-[52px] text-tsuka-200"
+            }
+          >
+            My Setups
+          </Link>
+          <Link
+            href={"/my-orders"}
+            className={
+              "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
+            }
+          >
+            My Orders
+          </Link>
         </h1>
         <div className="w-full md:w-auto flex flex-wrap">
           <div className="w-full md:w-auto flex md:gap-1">
@@ -88,8 +124,8 @@ export default function MyOrder() {
                 value={searchValue}
                 onChange={handleSearchChange}
                 onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    handleSearchSubmit()
+                  if (event.key === "Enter") {
+                    handleSearchSubmit();
                   }
                 }}
               />
@@ -110,16 +146,39 @@ export default function MyOrder() {
 
       {/* content */}
       <div className="grid grid-cols-12 gap-x-5">
-        {status==="loading"&&(<div className="w-screen h-screen">
-          <h1 className="text-white">Loading...</h1>
-        </div>)}
-        {status!=="loading"&&value.map((order, idx) => {
-          if (idx > 2)
+        {status === "loading" && (
+          <div className="w-screen h-screen">
+            <LoadingBox
+              title="Processing orders"
+              description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
+            />
+          </div>
+        )}
+        {status !== "loading" &&
+          value.map((order, idx) => {
+            if (idx > 2)
+              return (
+                <div
+                  className={`${
+                    showAll ? "" : "hidden md:block"
+                  } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
+                  key={idx}
+                >
+                  <OrderWidgetToken
+                    name1={order.orders[0].baseTokenLongName}
+                    code1={order.orders[0].baseTokenShortName}
+                    name2={order.orders[0].pairTokenLongName}
+                    code2={order.orders[0].pairTokenShortName}
+                    status={order.orders[0].status}
+                    orders={order.orders}
+                    setShowEditOrderModal={handleEditModal}
+                    setShowDeletedAlert={setShowDeletedAlert}
+                  />
+                </div>
+              );
             return (
               <div
-                className={`${
-                  showAll ? "" : "hidden md:block"
-                } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
+                className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition"
                 key={idx}
               >
                 <OrderWidgetToken
@@ -134,21 +193,24 @@ export default function MyOrder() {
                 />
               </div>
             );
-          return (
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition" key={idx}>
-              <OrderWidgetToken
-                name1={order.orders[0].baseTokenLongName}
-                code1={order.orders[0].baseTokenShortName}
-                name2={order.orders[0].pairTokenLongName}
-                code2={order.orders[0].pairTokenShortName}
-                status={order.orders[0].status}
-                orders={order.orders}
-                setShowEditOrderModal={handleEditModal}
-                setShowDeletedAlert={setShowDeletedAlert}
-              />
-            </div>
-          );
-        })}
+          })}
+                    <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+            <button
+              type="button"
+              onClick={() => setShowSidebar(true)}
+              className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+            >
+              <label className="mr-2">
+                <HiOutlineArrowLongLeft size={24} />
+              </label>
+              Order & Strategies
+            </button>
+          </div>
+          <SidebarStrategies
+            open={showSidebar}
+            handleOpen={() => setShowSidebar(false)}
+            strategies={strategies!}
+          />
       </div>
       {!showAll && (
         <div className="mt-4 flex justify-center">
@@ -164,17 +226,15 @@ export default function MyOrder() {
       {showEditOrderModal && (
         <EditOrderToken
           setShowEditOrderModal={setShowEditOrderModal}
-          selectedOrderId = {selectedOrderId}
-          closeHandler = {()=>{
+          selectedOrderId={selectedOrderId}
+          closeHandler={() => {
             setShowEditOrderModal(false);
             setSelectedOrderId(-1);
           }}
         />
       )}
       {showDeletedAlert && (
-        <DeletedAlertToken
-          setShowDeletedAlert={setShowDeletedAlert}
-        />
+        <DeletedAlertToken setShowDeletedAlert={setShowDeletedAlert} />
       )}
     </div>
   );

@@ -36,46 +36,53 @@ export default async function OrderByUserHandler(
         //////From Origin End?///
         //// Mine Own function Start////
         console.log(req.query);
-        let { status }  = req.query;
+        let { status } = req.query;
         let search = req.query.search as string;
-        console.log("params: ", status, " ", search);
-        if (!search.trim()) search = "";
-        const orders = search? await prisma.orders.findMany({
-          where: {
-            user_id: Number(userid),
-            NOT: {
-              token_cache: null,
-            },
-            status: status==="Open"?"Active":{
-              not: "Active"
-            },
-            OR: [
-              { pairTokenLongName: { contains: search } },
-              { pairTokenShortName: { contains: search } },
-              { baseTokenLongName: { contains: search } },
-              { baseTokenShortName: { contains: search } },
-            ],
-          },
-          include: {
-            token_cache: true,
-          },
-        }): await prisma.orders.findMany({
-          where: {
-            user_id: Number(userid),
-            // NOT: {
-            //   token_cache: null,
-            // },
-            status: status==="Open"?"Active":{
-              not: "Active"
-            },
-          },
-          include: {
-            token_cache: true,
-          },
-        });
+        if (!search?.trim()) search = "";
+        const orders = search
+          ? await prisma.orders.findMany({
+              where: {
+                user_id: Number(userid),
+                NOT: {
+                  token_cache: null,
+                },
+                status:
+                  status === "Open"
+                    ? "Active"
+                    : {
+                        not: "Active",
+                      },
+                OR: [
+                  { pairTokenLongName: { contains: search } },
+                  { pairTokenShortName: { contains: search } },
+                  { baseTokenLongName: { contains: search } },
+                  { baseTokenShortName: { contains: search } },
+                ],
+              },
+              include: {
+                token_cache: true,
+              },
+            })
+          : await prisma.orders.findMany({
+              where: {
+                user_id: Number(userid),
+                // NOT: {
+                //   token_cache: null,
+                // },
+                status:
+                  status === "Open"
+                    ? "Active"
+                    : {
+                        not: "Active",
+                      },
+              },
+              include: {
+                token_cache: true,
+              },
+            });
 
         const groupedOrders: { id: string; orders: any[] }[] = orders.reduce(
-          (result: { id: string; orders: any[] }[], order) => {
+          (result: { id: string; orders: any[] }[], order: any) => {
             // const tokenCacheId = order.token_cache?.pair_address ?? "";
             const tokenCacheId = order.pair_address;
             // if (!tokenCacheId) return result;
@@ -93,10 +100,11 @@ export default async function OrderByUserHandler(
               budget: order.budget,
               order_type: order.order_type,
               price_type: order.price_type,
-              baseTokenShortName: order.baseTokenShortName??"BTC",
-              baseTokenLongName: order.baseTokenLongName??"Bitcoin",
-              pairTokenShortName: order.pairTokenShortName??"ETH",
-              pairTokenLongName: order.pairTokenLongName??"Ethereum",
+              is_continuous: order.is_continuous,
+              baseTokenShortName: order.baseTokenShortName ?? "BTC",
+              baseTokenLongName: order.baseTokenLongName ?? "Bitcoin",
+              pairTokenShortName: order.pairTokenShortName ?? "ETH",
+              pairTokenLongName: order.pairTokenLongName ?? "Ethereum",
               status: order.status,
               price:
                 order.price_type === "single" ? order.single_price : undefined,
