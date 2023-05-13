@@ -33,26 +33,19 @@ interface InputToken {
   token: string;
 }
 
-export default function Pair({ tranData }: any) {
+export default function Pair() {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
-  const { value: userOrder } = useAppSelector((state) => state.userOrder);
   const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
   const activeOrders = useAppSelector(
     (state) => state.tokenpairOrders.value.orders
   );
-  const { value: bitquery } = useAppSelector((state) => state.bitquery);
   const router = useRouter();
-  const [currentToken, setCurrentToken] = useState<Token>();
-  const [compareToken, setCompareToken] = useState<Token>();
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-  const [statusOrder, setStatusOrder] = useState(OrderStatusEnum.ACTIVE);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [pair_address, setPair_address] = useState<string>("");
-
-  let pair_id = "2";
 
   // When this page becomes unmounted
   useEffect(() => {
@@ -72,27 +65,13 @@ export default function Pair({ tranData }: any) {
     dispatch(getStrategies());
   }, [dispatch]);
 
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
+  const strategies = useAppSelector((state) => state.strategies.value);
+
   useEffect(() => {
     dispatch(getTokenPairInfo(pair_address as string));
     dispatch(getActiveOrdersbyTokenPair(pair_address as string));
   }, [pair_address]);
 
-  useEffect(() => {
-    if (token) {
-      dispatch(getUserOrder(token.id));
-    }
-    const currentToken = tokensData.find((item) => item.id === pair_id)!;
-    const compareToken = tokensData.find((item) => item.id !== pair_id)!;
-    setCurrentToken(currentToken);
-    setCompareToken(compareToken);
-  }, [dispatch, pair_id, token]);
-
-  const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
-    return userOrder[0]?.orders;
-  }, [userOrder]);
   const handleEditModal = (show: boolean, id: number) => {
     console.log("handleEditModal", show, id);
     setSelectedOrderId(id);
@@ -123,6 +102,12 @@ export default function Pair({ tranData }: any) {
           )}
         </div>
         <div className="col-span-12 md:col-span-3">
+          <DefaultButton
+            label="Create an Order"
+            callback={() => setShowEditOrderModal(true)}
+            filled={true}
+            Icon={FiPlusCircle}
+          />
           <OrderWidgetToken
             name1={tokenPairInfo.baseToken.name as string}
             code1={tokenPairInfo.baseToken.symbol as string}
@@ -146,16 +131,6 @@ export default function Pair({ tranData }: any) {
             setShowEditOrderModal={handleEditModal}
             setShowDeletedAlert={setShowDeletedAlert}
           />
-          {currentToken && compareToken && (
-            <>
-              <DefaultButton
-                label="Create an Order"
-                callback={() => setShowEditOrderModal(true)}
-                filled={true}
-                Icon={FiPlusCircle}
-              />
-            </>
-          )}
         </div>
       </div>
       <div className="block lg:hidden">
