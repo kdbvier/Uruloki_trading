@@ -9,7 +9,9 @@ const prisma = new PrismaClient();
  * @param status 
  * @returns 
  */
-export async function getOrdersByPair(pair_address: string, status: string): Promise<Array<Order>> {
+export async function getOrdersByPair(pair_address: string, status?: string): Promise<Array<Order>> {
+    console.log("Pair address")
+    console.log(pair_address)
     const whereCondition: any = {pair_address};
     if (status) {
         whereCondition["status"] = status;

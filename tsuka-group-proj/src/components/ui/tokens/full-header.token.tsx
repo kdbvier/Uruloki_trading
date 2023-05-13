@@ -12,32 +12,18 @@ import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
+  orders: Order[];
 }
 
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   pair_address,
   tokenPairInfo,
+  orders
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
-  const [orders, setOrders] = useState<Array<any>>([]);
 
   useEffect(() => {
-    const getOrders = async () => {
-      let result: any =
-        value.pair?.address &&
-        (await fetch(
-          `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
-        ));
-
-      if (result) {
-        result.json().then((res: any) => {
-          setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
-        });
-      }
-    };
-    getOrders();
-
     dispatch(setPairAddress(pair_address as string));
   }, [pair_address]);
 
@@ -46,10 +32,12 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
     let total_buy: number = 0;
     let price: number = 0;
     if (orders) {
+      console.log("Orders:")
+      console.log((orders as any).orders)
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(
-        (prev, curr, index, array) => prev + curr.budget,
+        (prev, curr, index, array) => prev + (curr.budget ?? 0),
         0
       );
     }
@@ -172,25 +160,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               </div>
             </div>
           </div>
-
-          {/* <div className="hidden xs:flex md:hidden text-sm pt-6 mt-4 border-t border-tsuka-400">
-            <InfoSpanToken title={"TXS"} value={"189"} />
-            <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
-              <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
-                ORDERS
-              </label>
-              <InfoSpanToken title={"BUY"} value={value.orderSplit?.buy} />
-              <InfoSpanToken title={"SELL"} value={value.orderSplit?.sell} />
-            </div>
-            <InfoSpanToken
-              title={"VOL."}
-              value={`$${value.volume?.value}${value.volume?.currencyLabel[0]}`}
-            />
-            <InfoSpanToken
-              title={"24h"}
-              value={`${value.price?.operator}${value.price?.variationValue}%`}
-            />
-          </div> */}
         </>
       )}
     </div>

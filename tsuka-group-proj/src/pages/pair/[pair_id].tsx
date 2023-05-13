@@ -14,6 +14,7 @@ import {
   RangeOrder,
   SingleOrder,
 } from "@/types/token-order.type";
+import type { Order } from "@/types";
 import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -31,13 +32,15 @@ import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
+import { getOrdersByPair } from "@/lib/orders";
+import { GetServerSideProps } from "next/types";
 
 interface InputToken {
   id: string;
   token: string;
 }
 
-export default function Pair() {
+export default function Pair({orders}: {orders: Order[]}) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
@@ -88,6 +91,7 @@ export default function Pair() {
       <FullHeaderToken
         tokenPairInfo={tokenPairInfo}
         pair_address={String(pair_address)}
+        orders={orders}
       />
       <div className="hidden lg:grid grid-cols-11 gap-4">
         {/* <div className="col-span-12 md:col-span-3">
@@ -211,4 +215,19 @@ export default function Pair() {
       )}
     </div>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let orders: Order[];
+  try {
+    orders = await getOrdersByPair(context.query.pair_id as string, "Active");
+  } catch (e) {
+    orders = [];
+  }
+
+  return {
+    props: {
+      orders
+    },
+  };
 }

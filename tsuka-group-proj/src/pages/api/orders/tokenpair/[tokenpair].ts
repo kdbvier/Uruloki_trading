@@ -16,9 +16,6 @@ export default async function OrderByTokenPairHandler(
       try {
         const { status } = query;
         const orders = await getOrdersByPair(tokenpair as string, status as string)
-        if(!Array.isArray(orders) && orders == false) {
-          throw new Error("Unable to get orders for token pair")
-        }
         res
           .status(200)
           .json({ payload: orders, message: `Successfully found orders` });
