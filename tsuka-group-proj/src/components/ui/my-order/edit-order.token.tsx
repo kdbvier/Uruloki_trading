@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
+import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
