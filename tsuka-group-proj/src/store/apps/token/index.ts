@@ -22,28 +22,6 @@ const initialState: TokenState = {
       name: "Bitcoin",
       address: "",
     },
-    price: {
-      value: "",
-      operator: "+",
-      variationValue: 0,
-      variationValueDiference: 0.00523,
-    },
-    volume: {
-      value: "32,987.54",
-      currencyLabel: "Billions",
-    },
-    marketCap: {
-      value: "476,892,747,054",
-      currencyLabel: "Billions",
-    },
-    nOrders: {
-      value: "103,912",
-      currencyLabel: "Millions",
-    },
-    orderSplit: {
-      buy: 3782,
-      sell: 3154,
-    },
   } as Token,
   status: "ok",
 };
