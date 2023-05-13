@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
@@ -149,8 +150,25 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     },
   ];
 
+  const convertLawPrice = (price: number) => {
+    let priceEle;
+    if (price >= 0.01) {
+      priceEle = `$${commafy(price)}`;
+    } else {
+      priceEle = (
+        <>
+          ${formatNumberToHtmlTag(price).integerPart}
+          .0
+          <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
+          {formatNumberToHtmlTag(price).remainingDecimal}
+        </>
+      );
+    }
+    return priceEle;
+  };
+
   const handleNumberInputChange = (name: string, event: any) => {
-    const value = event.target.value.replace(/,/g, "");
+    let value = event.target.value.replace(/,/g, "");
     const pattern = /^\d*\.?\d*$/;
     if (!pattern.test(value)) return;
     let newValue = "";
@@ -162,7 +180,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     } else {
       newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-    newValue = newValue || "0";
     switch (name) {
       case "amount":
         setAmount(newValue);
@@ -278,7 +295,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              ${handleNumberFormat(Number(token_price.base_price?.toFixed(2)))}
+              {!!token_price.base_price &&
+                convertLawPrice(token_price.base_price)}
             </span>
           </p>
           {/* <div className="w-full mt-4 flex gap-2 text-sm">
@@ -506,15 +524,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
               <span className="text-tsuka-50 text-sm">
-                $
-                {handleNumberFormat(
-                  parseFloat(
-                    (
-                      parseFloat(amount.split(",").join("")) *
-                      (isBuy ? token_price.quote_price : token_price.base_price)
-                    ).toFixed(2)
-                  )
-                )}
+                {(() => {
+                  let totalAmount =
+                    parseFloat(amount.split(",").join("")) *
+                    (isBuy ? token_price.quote_price : token_price.base_price);
+                  return totalAmount
+                    ? totalAmount >= 0.001
+                      ? `$${handleNumberFormat(
+                          parseFloat(totalAmount.toFixed(3))
+                        )}`
+                      : convertLawPrice(totalAmount)
+                    : "$0";
+                })()}
               </span>
             </div>
           </div>
