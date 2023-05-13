@@ -3,6 +3,7 @@ import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar
 import { ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
+import { splitAddress } from "@/helpers/splitAddress.helper";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import {
@@ -17,11 +18,11 @@ import {
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
 }) => {
-  console.log(topMovers)
+  console.log(topMovers);
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
   const router = useRouter();
 
-  useEffect(() => { 
+  useEffect(() => {
     let tempArray: boolean[] = [];
     for (let i = 0; i < topMovers.length; i++) {
       tempArray[i] = true;
@@ -35,7 +36,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
     newArray[idx] = newValue;
     setCollapeds(newArray);
   };
-  
+
   return (
     <div className="w-full bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className={`md:flex justify-between items-center`}>
@@ -68,7 +69,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 pl-2">#</th>
-              <th className="py-2 hidden md:table-cell">ID</th>
+              <th className="py-2 hidden md:table-cell">Contract</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
               <th colSpan={2} className="py-2 text-center md:text-left">
@@ -105,7 +106,8 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                 );
               }
               return (
-                topMover.token && topMover.token !== "-" && (
+                topMover.token &&
+                topMover.token !== "-" && (
                   <Fragment key={idx}>
                     <tr
                       onClick={() => {
@@ -120,7 +122,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
                         <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                          {topMover.id}
+                          {splitAddress(topMover.pair_address as string)}
                         </span>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
@@ -150,12 +152,16 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                         {topMover.risingPercent > 0 ? (
                           <div className="flex text-custom-green">
                             <FiArrowUpRight className="mt-0.5" />
-                            <span>{`${topMover.risingPercent.toLocaleString("en-us")}%`}</span>
+                            <span>{`${topMover.risingPercent.toLocaleString(
+                              "en-us"
+                            )}%`}</span>
                           </div>
                         ) : (
                           <div className="flex text-custom-red">
                             <FiArrowDownRight className="mt-0.5" />
-                            <span>{`${(0 - topMover.risingPercent).toLocaleString("en-us")}%`}</span>
+                            <span>{`${(
+                              0 - topMover.risingPercent
+                            ).toLocaleString("en-us")}%`}</span>
                           </div>
                         )}
                         {/* </div> */}
