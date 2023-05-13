@@ -6,6 +6,7 @@ import Joi from "joi";
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
   status: Joi.string().optional().default('Active'),
+  is_continuous: Joi.boolean().required().default(false),
   single_price: Joi.number().optional(),
   from_price: Joi.number().optional(),
   to_price: Joi.number().optional(),
@@ -40,6 +41,7 @@ export default async function orderHandler(
           });
           break;
         }
+        console.log("value::", value);
         const order = await prisma.orders.create({
           data: value,
         });

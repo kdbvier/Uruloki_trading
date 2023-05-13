@@ -145,9 +145,14 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
       {showEditOrderModal && (
         <EditOrderToken
           isEdit={false}
+          name1={currentToken?.chain.name as string}
+          code1={currentToken?.chain.code as string}
+          name2={compareToken?.chain.name as string}
+          code2={compareToken?.chain.code as string}
+          pair_address={id}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={0} //TODO: Fix this
-          closeHandler={() => {}} //TODO: Fix this
+          closeHandler={()=>{setShowEditOrderModal(false)}} //--//TODO: Fix this
         />
       )}
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">

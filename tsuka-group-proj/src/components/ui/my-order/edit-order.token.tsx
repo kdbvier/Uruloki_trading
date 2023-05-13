@@ -3,7 +3,7 @@ import { TokenCache } from "@/types";
 import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-import { EditUserOrder, setSelectedOrder } from "@/store/apps/user-order";
+import { editUserOrder, setSelectedOrder, createOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
@@ -17,8 +17,12 @@ import ToggleButton from "../buttons/toggle.button";
 export interface EditOrderTokenProp {
   isEdit?: boolean;
   setShowEditOrderModal: (a: any) => void;
-
-  selectedOrderId: number;
+  name1?:string
+  code1?:string
+  name2?:string
+  code2?:string
+  pair_address?:string
+  selectedOrderId?: number;
   closeHandler: () => void;
 
   //  token?: Token;
@@ -49,8 +53,13 @@ const toNumber = (str: string): number => {
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   isEdit = true,
   setShowEditOrderModal,
-  selectedOrderId,
+  selectedOrderId = 0,
   closeHandler,
+  name1 = "Polkadot",
+  code1 = "DOT",
+  name2 = "Ethereum",
+  code2 = "ETH",
+  pair_address = "2",
 }) => {
   console.log("Create an order");
   const dispatch = useAppDispatch();
@@ -200,21 +209,45 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setIsContinuous((prevState) => !prevState);
   };
   const handleSubmit = () => {
-    const patchData = {} as PatchOrder;
-    patchData.budget = toNumber(amount);
-    patchData.order_type = isBuy ? "buy" : "sell";
-    patchData.price_type = isRange ? "range" : "single";
-    if (isRange) {
-      patchData.from_price = toNumber(minPrice);
-      patchData.to_price = toNumber(maxPrice);
+    if(isEdit){
+      const patchData = {} as PatchOrder;
+      patchData.budget = toNumber(amount);
+      patchData.order_type = isBuy ? "buy" : "sell";
+      patchData.price_type = isRange ? "range" : "single";
+      if (isRange) {
+        patchData.from_price = toNumber(minPrice);
+        patchData.to_price = toNumber(maxPrice);
+      } else {
+        patchData.single_price = toNumber(targetPrice);
+      }
+      patchData.is_continuous = isContinuous;
+      console.log("before submit(patch)::");
+      console.log(patchData);
+      dispatch(editUserOrder({ id: selectedOrderId, patchData }));
+      setShowEditOrderModal(false);
     } else {
-      patchData.single_price = toNumber(targetPrice);
+      const postData = {} as PostOrder;
+      postData.budget = toNumber(amount);
+      postData.order_type = isBuy ? "buy" : "sell";
+      postData.price_type = isRange ? "range" : "single";
+      if (isRange) {
+        postData.from_price = toNumber(minPrice);
+        postData.to_price = toNumber(maxPrice);
+      } else {
+        postData.single_price = toNumber(targetPrice);
+      }
+      postData.is_continuous = isContinuous;
+      postData.baseTokenLongName=name1;
+      postData.baseTokenShortName=code1;
+      postData.pairTokenLongName=name2;
+      postData.pairTokenShortName=code2;
+      postData.user_id = 1;////TODO:get it from server
+      postData.pair_address = pair_address;
+      console.log("before Submit(post)::");
+      console.log(postData);
+      dispatch(createOrder(postData));
+      setShowEditOrderModal(false);
     }
-    patchData.is_continuous = isContinuous;
-    console.log("before submit::");
-    console.log(patchData);
-    dispatch(EditUserOrder({ id: selectedOrderId, patchData }));
-    setShowEditOrderModal(false);
   };
 
   return (
