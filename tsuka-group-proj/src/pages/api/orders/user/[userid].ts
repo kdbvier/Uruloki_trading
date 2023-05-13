@@ -100,6 +100,7 @@ export default async function OrderByUserHandler(
               budget: order.budget,
               order_type: order.order_type,
               price_type: order.price_type,
+              is_continuous: order.is_continuous,
               baseTokenShortName: order.baseTokenShortName ?? "BTC",
               baseTokenLongName: order.baseTokenLongName ?? "Bitcoin",
               pairTokenShortName: order.pairTokenShortName ?? "ETH",

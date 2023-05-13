@@ -12,6 +12,7 @@
     "generate-types": "contentful-typescript-codegen --output src/@types/generated/contentful.types.ts"
   },
   "dependencies": {
+    "@ethersproject/providers": "^5.7.2",
     "@prisma/client": "^4.13.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/node": "^18.15.12",
@@ -52,7 +53,8 @@
     "react-ts-tradingview-widgets": "^1.0.14",
     "subscriptions-transport-ws": "^0.11.0",
     "typescript": "5.0.4",
-    "wagmi": "^0.12.12"
+    "wagmi": "^0.12.12",
+    "web3modal": "^1.9.12"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.0.6",

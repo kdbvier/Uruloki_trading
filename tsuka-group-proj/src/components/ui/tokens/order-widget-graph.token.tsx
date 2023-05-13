@@ -3,11 +3,13 @@ import { EditOrDeleteToken } from "@/components/ui/my-order/edit-or-delete.token
 import { ChartBound } from "@/types/chart-bound.type";
 import { OrderStatusEnum } from "@/types/token-order.type";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FaClock, FaSync } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 
 export interface OrderWidgetGraphProp {
   id: number;
   buy: boolean;
+  isContinuous: boolean;
   value1: number;
   value2?: number;
   budget: number;
@@ -20,6 +22,7 @@ export interface OrderWidgetGraphProp {
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   id,
   buy,
+  isContinuous,
   value1,
   value2,
   budget,
@@ -49,8 +52,9 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
 
   return (
     <div className="mb-2">
-      <div className="flex justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
-        <p>{buy ? "BUY" : "SELL"}</p>
+      <div className="flex items-center justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
+        <p className="flex items-center gap-2">{buy ? "BUY" : "SELL"} {isContinuous?(<FaSync className="text-custom-green mr-2" />):(<FaClock className="text-custom-red mr-2"/>)}</p>
+        
         <div className="relative">
           <span
             className="text-custom-primary flex items-center gap-2 cursor-pointer"

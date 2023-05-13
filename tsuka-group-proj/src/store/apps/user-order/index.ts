@@ -1,6 +1,6 @@
 import { userOrder } from "@/@fake-data/user-order.fake-data";
 import Orders from "@/lib/api/orders";
-import { Order, PatchOrder } from "@/types";
+import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
@@ -46,7 +46,7 @@ export const getTokenPairPrice = createAsyncThunk(
     return data;
   }
 );
-export const EditUserOrder = createAsyncThunk<
+export const editUserOrder = createAsyncThunk<
   unknown,
   updateEditOrderParams,
   { dispatch: any }
@@ -87,6 +87,14 @@ export const getUserOrder = createAsyncThunk(
     // const data = userOrder.find((item) => item.id === id)!;
     const data = await Orders.getOrdersbyUserId(id);
     return data;
+  }
+);
+export const createOrder = createAsyncThunk(
+  "userOrder/set",
+  async (postData:PostOrder, {dispatch}) => {
+    console.log("post lib::")
+    const data = await Orders.createOrder(postData);
+    return data
   }
 );
 export const deleteOrder = createAsyncThunk(
