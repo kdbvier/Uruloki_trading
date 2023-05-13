@@ -21,7 +21,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 2,
@@ -33,7 +34,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -50,7 +52,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -62,7 +65,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -79,7 +83,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -91,7 +96,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -108,7 +114,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -120,7 +127,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -137,7 +145,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -149,7 +158,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -166,7 +176,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -178,7 +189,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -195,7 +207,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -207,7 +220,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
@@ -224,7 +238,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
       {
         id: 4,
@@ -236,7 +251,8 @@ export const userOrder: Array<UserOrder> = [
         baseTokenShortName: "Test", 
         baseTokenLongName: "Test", 
         pairTokenShortName: "Test", 
-        pairTokenLongName: "Test"
+        pairTokenLongName: "Test",
+        is_continuous: false
       },
     ],
   },
