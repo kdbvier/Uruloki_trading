@@ -93,12 +93,14 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
       </div>
       <div className="md:h-[350px] md:overflow-scroll">
         {orders?.map((order) => {
+          console.log(order.id, " : ", order.is_continuous);
           if (isSingle(order)) {
             return (
               <OrderWidgetGraph
                 key={order.id}
                 id={order.id}
                 buy={order.order_type === "buy"}
+                isContinuous={order.is_continuous}
                 value1={order.price}
                 budget={order.budget}
                 bound={chartBound}
@@ -113,6 +115,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 key={order.id}
                 id={order.id}
                 buy={order.order_type === "buy"}
+                isContinuous={order.is_continuous}
                 value1={order.prices[0]}
                 value2={order.prices[1]}
                 budget={order.budget}
