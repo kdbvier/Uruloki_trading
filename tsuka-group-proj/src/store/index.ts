@@ -12,6 +12,7 @@ import homePageTokenSlice from "./apps/tokens";
 import bitquerySlice from "./apps/bitquery-data";
 import AllTokenCacheSlice from "./apps/token-cache";
 import TokenpairOrders from "./apps/tokenpair-orders";
+import TokenPairInfo from "./apps/tokenpair-info";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ export const store = configureStore({
     strategies: strategiesSlice,
     strategyDetails: strategyDetailsSlice,
     tokenpairOrders: TokenpairOrders,
+    tokenPairInfo: TokenPairInfo,
   },
 });
 

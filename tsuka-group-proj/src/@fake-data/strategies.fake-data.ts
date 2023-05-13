@@ -30,7 +30,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -42,7 +43,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -70,7 +72,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -82,7 +85,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -104,7 +108,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -116,7 +121,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -146,7 +152,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -158,7 +165,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -180,7 +188,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -192,7 +201,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -214,7 +224,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -226,7 +237,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -256,7 +268,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -268,7 +281,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -290,7 +304,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -302,7 +317,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -324,7 +340,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -336,7 +353,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -366,7 +384,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -378,7 +397,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -400,7 +420,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -412,7 +433,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -434,7 +456,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -446,7 +469,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -476,7 +500,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -488,7 +513,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -510,7 +536,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -522,7 +549,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -544,7 +572,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -556,7 +585,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -586,7 +616,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -598,7 +629,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -620,7 +652,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -632,7 +665,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -654,7 +688,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -666,7 +701,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -696,7 +732,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -708,7 +745,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -730,7 +768,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -742,7 +781,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -764,7 +804,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -776,7 +817,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -806,7 +848,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -818,7 +861,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -840,7 +884,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -852,7 +897,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -874,7 +920,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -886,7 +933,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -916,7 +964,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -928,7 +977,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -950,7 +1000,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -962,7 +1013,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -984,7 +1036,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -996,7 +1049,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -1026,7 +1080,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -1038,7 +1093,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -1060,7 +1116,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -1072,7 +1129,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },
@@ -1094,7 +1152,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
           {
             id: 4,
@@ -1106,7 +1165,8 @@ export const strategiesData: Array<Strategy> = [
             baseTokenShortName: "Test", 
             baseTokenLongName: "Test", 
             pairTokenShortName: "Test", 
-            pairTokenLongName: "Test"
+            pairTokenLongName: "Test",
+            is_continuous: false
           },
         ],
       },

@@ -7,18 +7,16 @@ import { MdArrowBack } from "react-icons/md";
 import { HorizontalIconsToken } from "./horizontal-icons.token";
 import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
-import { ApiResponse, Order } from "@/types";
+import { ApiResponse, Order, TokenPairInfo } from "@/types";
+import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 export interface FullHeaderTokenProps {
-  token: {
-    id: string;
-    token: string;
-  };
   pair_address: string;
+  tokenPairInfo: TokenPairInfo;
 }
 
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
-  token,
   pair_address,
+  tokenPairInfo,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
@@ -32,15 +30,14 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
           `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
         ));
 
-      if (result !== undefined) {
+      if (result) {
         result.json().then((res: any) => {
           setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
         });
       }
     };
     getOrders();
-    console.log("parir", pair_address);
-    
+
     dispatch(setPairAddress(pair_address as string));
   }, [pair_address]);
 
@@ -95,16 +92,22 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <MdArrowBack />
             </Link>
             <HorizontalIconsToken
-              inputToken={value.chain}
-              outputToken={value.pair as any}
+              inputToken={{
+                name: tokenPairInfo.baseToken.name,
+                code: tokenPairInfo.baseToken.symbol,
+              }}
+              outputToken={{
+                name: tokenPairInfo.pairedToken.name,
+                code: tokenPairInfo.pairedToken.symbol,
+              }}
               large={true}
             />
             <div className="px-2 flex-1 flex-col">
               <p className="text-sm xs:text-base">
                 <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
-                  {value.chain?.code}
+                  {tokenPairInfo.baseToken.symbol}
                 </label>
-                /{value.pair?.code}
+                /{tokenPairInfo.pairedToken.symbol}
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">
