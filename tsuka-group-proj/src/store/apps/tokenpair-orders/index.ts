@@ -15,7 +15,7 @@ const initialState: TokenpairOrders = {
   status: "ok",
 };
 
-export const getOrdersbyTokenPair = createAsyncThunk(
+export const getActiveOrdersbyTokenPair = createAsyncThunk(
   "tokens/get",
   async (pair_address: string) => {
     const orders = await Orders.getActiveOrdersbyTokenPair(pair_address);
@@ -32,14 +32,14 @@ export const tokenpairOrders = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getOrdersbyTokenPair.pending, (state) => {
+      .addCase(getActiveOrdersbyTokenPair.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getOrdersbyTokenPair.fulfilled, (state, action) => {
+      .addCase(getActiveOrdersbyTokenPair.fulfilled, (state, action) => {
         state.status = "ok";
         state.value = action.payload;
       })
-      .addCase(getOrdersbyTokenPair.rejected, (state) => {
+      .addCase(getActiveOrdersbyTokenPair.rejected, (state) => {
         state.status = "failed";
       });
   },

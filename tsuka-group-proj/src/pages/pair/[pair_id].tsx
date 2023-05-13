@@ -10,7 +10,7 @@ import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
 import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
 import { getToken } from "@/store/apps/token";
-import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
+import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getUserOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -66,7 +66,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   } = useAppSelector((state) => state);
   useEffect(() => {
     dispatch(getToken(pair_id as string));
-    dispatch(getOrdersbyTokenPair(pair_id as string));
+    dispatch(getActiveOrdersbyTokenPair(pair_id as string));
   }, [dispatch, pair_id]);
 
   useEffect(() => {
@@ -77,7 +77,8 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     const compareToken = tokensData.find((item) => item.id !== pair_id)!;
     setCurrentToken(currentToken);
     setCompareToken(compareToken);
-  }, [dispatch, pair_id, token]);
+    dispatch(getActiveOrdersbyTokenPair(pair_address as string));
+  }, [dispatch, pair_id, token, pair_address]);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
     return userOrder[0]?.orders;
