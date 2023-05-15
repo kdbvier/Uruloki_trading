@@ -6,7 +6,11 @@ import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { Token } from "@/types/token.type";
 
-export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
+export const OrderBookToken: React.FC<{
+  token: Token;
+  buyTrades?: any[];
+  sellTrades?: any[];
+}> = ({ token, buyTrades, sellTrades }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
@@ -22,8 +26,16 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
     },
   ];
 
-  const OrderComponent =
-    selectedPath === "order-book" ? OrderBookTokenUi : OrderHistoryBookTokenUi;
+  const orderComponent =
+    selectedPath === "order-book" ? (
+      <OrderBookTokenUi token={token} />
+    ) : (
+      <OrderHistoryBookTokenUi
+        token={token}
+        sellTrades={sellTrades}
+        buyTrades={buyTrades}
+      />
+    );
 
   useEffect(() => {
     dispatch(getTokenPosition(token.id));
@@ -41,7 +53,9 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
               )
             }
             className={`${
-              path === selectedPath ? "border-b-2 border-accent" : "border-b-2 border-transparent"
+              path === selectedPath
+                ? "border-b-2 border-accent"
+                : "border-b-2 border-transparent"
             } py-4 xs:p-4 text-center whitespace-nowrap mx-2 text-base sm:text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
@@ -51,9 +65,9 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
           <FiltersButton callback={() => console.log("filters button")} />
         </div>
       </div>
-      <div className="overflow-x-scroll">
-        {OrderComponent && <OrderComponent token={token} />}
-      </div>
+      {orderComponent && (
+        <div className="overflow-x-scroll">{orderComponent}</div>
+      )}
     </div>
   );
 };
