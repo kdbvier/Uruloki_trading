@@ -278,11 +278,13 @@ const BitqueryOHLCChart = () => {
   return (
     <>
       <div ref={chartRef} />
-      <div className="mt-2">
-        <button onClick={() => candleStickClicked(15)} className="p-1 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md ">15M</button>
-        <button onClick={() => candleStickClicked(30)} className="p-1 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md">30M</button>
-        <button onClick={() => candleStickClicked(60)} className="p-1 px-2 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md">1H</button>
-        <button onClick={() => candleStickClicked(360)} className="p-1 px-2 bg-slate-300 hover:bg-slate-500 mr-3 text-white rounded-md">6H</button>
+        <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[230px] flex flex-row justify-around">
+          <div className="-mr-[3px] -ml-[3px] w-full">
+            <button onClick={() => candleStickClicked(15)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md ">15M</button>
+            <button onClick={() => candleStickClicked(30)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">30M</button>
+            <button onClick={() => candleStickClicked(60)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">1H</button>
+            <button onClick={() => candleStickClicked(360)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">6H</button>
+          </div>
       </div>
     </>
   );
