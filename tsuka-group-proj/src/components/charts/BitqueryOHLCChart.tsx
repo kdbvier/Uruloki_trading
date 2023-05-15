@@ -79,6 +79,12 @@ const BitqueryOHLCChart = () => {
   const activeOrdersByTokenpair = useAppSelector(
     (state) => state.tokenpairOrders.value.orders
   );
+  const pairAddress = useAppSelector(
+    (state) => state.tokenpairOrders.value.pair_address
+  );
+  const tokenPairInfo = useAppSelector(
+    (state) => state.tokenPairInfo.value
+  );
 
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
@@ -86,7 +92,14 @@ const BitqueryOHLCChart = () => {
   
   const candleStickClicked = (stick:number) => {
     console.log(stick);
-    dispatch(getBitqueryInitInfo(stick));
+    const eachAddress = {
+      base: tokenPairInfo.baseToken.address,
+      quote: tokenPairInfo.pairedToken.address,
+      pairAddress: pairAddress,
+      time: stick
+    }
+    console.log(eachAddress);
+    dispatch(getBitqueryInitInfo(eachAddress));
   }
   
   useEffect(() => {

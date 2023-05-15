@@ -30,6 +30,7 @@ import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { number } from "joi";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+import HomePageTokens from "@/lib/api/tokens";
 
 interface InputToken {
   id: string;
@@ -65,19 +66,29 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   }, [router]);
 
   useEffect(() => {
-    console.log("useEffect");
-    const time = 15;
-    dispatch(getBitqueryInitInfo(time));
     dispatch(getStrategies());
   }, [dispatch]);
 
   const {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
+
   useEffect(() => {
     dispatch(getTokenPairInfo(pair_address as string));
   }, [pair_address]);
-
+  useEffect(() => {
+    console.log("tokenPairInfo", tokenPairInfo);
+    console.log("router.query.pair_id",router.query.pair_id);
+    const time = 15;
+    const pairAddress = router.query.pair_id;
+    const eachAddress = {
+      base: tokenPairInfo.baseToken.address,
+      quote: tokenPairInfo.pairedToken.address,
+      pairAddress: pairAddress,
+      time: time
+    }
+    dispatch(getBitqueryInitInfo(eachAddress));
+  }, [tokenPairInfo]);
   useEffect(() => {
     if (token) {
       dispatch(getUserOrder(token.id));

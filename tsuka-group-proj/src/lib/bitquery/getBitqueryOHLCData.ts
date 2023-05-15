@@ -8,18 +8,20 @@ const quoteCurrencyAddress =
   "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as string;
 let interval = 15;
 // WETH = 1 WETH / USDC
-const fetchOHLCData = async (time:any) => {
+const fetchOHLCData = async (eachAddress:any) => {
   const date = new Date(new Date().getTime() - 24 * 60 * 60 * 1000); // Replace this with your date object
   const from = moment(date).format("YYYY-MM-DD");
-  interval = time;
+  console.log("baseAddress", eachAddress.base);
+  console.log("quoteAddress", eachAddress.quote);
+  interval = eachAddress.time;
   const query = gql`
   {
     ethereum(network: ethereum) {
       dexTrades(
         options: {limit: 1000, asc: "timeInterval.minute"}
         date: {since: "${from}"}
-        baseCurrency: {is: "${baseCurrencyAddress}"}
-        quoteCurrency: {is: "${quoteCurrencyAddress}"}
+        baseCurrency: {is: "${eachAddress.base}"}
+        quoteCurrency: {is: "${eachAddress.quote}"}
         tradeAmountUsd: {gt: 20}
       ) {
         timeInterval {
@@ -60,8 +62,8 @@ const fetchOHLCData = async (time:any) => {
   return data.data.ethereum.dexTrades;
 };
 // fetch the historical data
-export const getBitqueryOHLCData = async (time:any) => {
-  console.log("getbitfdsa",time);
-  const ohlcData = await fetchOHLCData(time);
+export const getBitqueryOHLCData = async (eachAddress:any) => {
+  console.log("getbitfdsa",eachAddress);
+  const ohlcData = await fetchOHLCData(eachAddress);
   return ohlcData;
 };

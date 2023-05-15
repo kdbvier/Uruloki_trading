@@ -19,14 +19,14 @@ export const transformData = async (data: any) => {
   }));
 };
 // manipulate the subscription data
-export const transformStreamData = (data: any) => {
+export const transformStreamData = (data: any, compareTokenName: any) => {
   const buySide = data.data.EVM?.buyside;
   const sellSide = data.data.EVM?.sellside;
 
   let buySideFiltered =
     buySide.length !== 0
       ? buySide.filter(
-          (item: any) => item.Trade.Sell.Currency.Symbol === "USDC"
+          (item: any) => item.Trade.Sell.Currency.Symbol.toUpperCase() === compareTokenName.toUpperCase()
         )
       : [];
 
@@ -41,7 +41,7 @@ export const transformStreamData = (data: any) => {
   let sellSideFiltered =
     sellSide.length !== 0
       ? sellSide.filter(
-          (item: any) => item.Trade.Sell.Currency.Symbol === "USDC"
+          (item: any) => item.Trade.Sell.Currency.Symbol.toUpperCase() === compareTokenName.toUpperCase()
         )
       : [];
   let { sellSidePrices, sellSideTimes } = sellSideFiltered.reduce(
@@ -107,7 +107,8 @@ export const getAddData = (forwardTime: any, data: any) => {
 };
 
 // WETH / USDC trades
-const fetchStreamData = async () => {
+const fetchStreamData = async (pairAddress:any) => {
+  console.log("PairAddress",pairAddress)
   if (typeof window !== "undefined") {
     const subscription = client
       .request({
@@ -116,7 +117,7 @@ const fetchStreamData = async () => {
           EVM(network: eth, trigger_on: head) {
             buyside: DEXTrades(
               orderBy: {descending: Block_Time}
-              where: {Trade: {Buy: {Currency: {SmartContract: {is: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"}}}}}
+              where: {Trade: {Buy: {Currency: {SmartContract: {is: "${pairAddress}"}}}}}
             ) {
               Block {
                 Number
@@ -199,7 +200,9 @@ const fetchStreamData = async () => {
           // handle subscription data
           console.log(response);
           // const data = await response.json();
-          const transData = transformStreamData(response);
+          console.log("store.getState()",store.getState().tokenPairInfo.value.baseToken.symbol);
+          const compareTokenName = store.getState().tokenPairInfo.value.baseToken.symbol;
+          const transData = transformStreamData(response, compareTokenName);
           if (transData.open != "")
             store.dispatch(getBitqueryStream(transData));
           return transData;
@@ -217,9 +220,9 @@ const fetchStreamData = async () => {
 };
 
 // Request the Bitquery to subscribe
-export const getBitqueryStreamData = async () => {
+export const getBitqueryStreamData = async (pairAddress:any) => {
   client.unsubscribeAll();
-  const streamData = await fetchStreamData();
+  const streamData = await fetchStreamData(pairAddress);
 };
 
 // Stop subscribing when leaving the page and init the Store

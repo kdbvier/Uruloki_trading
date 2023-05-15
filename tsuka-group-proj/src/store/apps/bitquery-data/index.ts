@@ -8,6 +8,7 @@ import {
   getAddData,
 } from "@/lib/bitquery/getBitqueryStreamData";
 import { number } from "joi";
+import { store } from "@/store";
 
 export interface BitqueryDataState {
   value: BitqueryData[];
@@ -28,13 +29,14 @@ const initialState: BitqueryDataState = {
 // Send the data to the Store
 export const getBitqueryInitInfo = createAsyncThunk(
   "bitqueryInitInfo/get",
-  async (time:any, { dispatch }): Promise<any> => {
-    const responsData = await getBitqueryOHLCData(time);
+  async (eachAddress:any, { dispatch }): Promise<any> => {
+    const responsData = await getBitqueryOHLCData(eachAddress);
     console.log("responsData",responsData);
     const tranData = await transformData(responsData);
     console.log("responsData",tranData);
-    dispatch(setCandleStick(time));
-    dispatch(getBitqueryStreamInfo(time));
+    const time = 15;
+    dispatch(setCandleStick(eachAddress.time));
+    dispatch(getBitqueryStreamInfo(eachAddress.pairAddress));
     return tranData;
   }
 );
@@ -62,9 +64,11 @@ export const initBitqueryStreamData = createAsyncThunk(
 // fetch the subscription data from the Bitquery
 export const getBitqueryStreamInfo = createAsyncThunk(
   "bitqueryStreamInfo/get",
-  async (time:any): Promise<any> => {
-    const responsData = await getBitqueryStreamData();
-    const tranData = await transformStreamData(responsData);
+  async (pairAddress:any): Promise<any> => {
+    const responsData = await getBitqueryStreamData(pairAddress);
+    const compareTokenName = store.getState().tokenPairInfo.value.baseToken.symbol;
+
+    const tranData = await transformStreamData(responsData,compareTokenName);
   }
 );
 
