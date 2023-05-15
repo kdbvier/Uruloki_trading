@@ -20,7 +20,7 @@ import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) => {
   if (datas[datas.length - 1].time > forTime) {
     const filterData = datas.filter((data: any) => data.time > forTime);
-    const time = forTime + candleStickTime*60*1000;
+    const time = forTime + (candleStickTime*60*1000 - 900000);
     const open = filterData[0].open;
     const close = filterData[filterData.length - 1].close;
     const high =
@@ -64,7 +64,7 @@ const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) =>
     };
   }
 };
-
+const scaleFactor = 1e15;
 // This is our lightweight chart
 const BitqueryOHLCChart = () => {
   const [chart, setChart] = useState<IChartApi | null>(null);
@@ -85,12 +85,16 @@ const BitqueryOHLCChart = () => {
   const tokenPairInfo = useAppSelector(
     (state) => state.tokenPairInfo.value
   );
+  const [active, setActive] = useState(15);
+
+  
 
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
   }
   
   const candleStickClicked = (stick:number) => {
+    setActive(stick);
     console.log(stick);
     const eachAddress = {
       base: tokenPairInfo.baseToken.address,
@@ -139,12 +143,21 @@ const BitqueryOHLCChart = () => {
         timeFormatter: (businessDayOrTimestamp: any) => {
           return new Date(businessDayOrTimestamp).toLocaleString();
         },
+        priceFormatter: (price:any) => {
+          return (price / scaleFactor).toFixed(10); // Scale the price back down for display
+        },
       },
       timeScale: {
         tickMarkFormatter: (businessDayOrTimestamp: any) => {
-          const date = new Date(businessDayOrTimestamp * 1000);
+          console.log("businessDayOrTimestamp",businessDayOrTimestamp);
+          const date = new Date(businessDayOrTimestamp);
+          console.log("date", date);
           const hours = date.getHours().toString().padStart(2, "0");
+          console.log("hours", date);
+
           const minutes = date.getMinutes().toString().padStart(2, "0");
+          console.log("minutes", date);
+
           const timeString = `${hours}:${minutes}`;
           return timeString;
         },
@@ -192,8 +205,15 @@ const BitqueryOHLCChart = () => {
       wickDownColor: "#ef5350",
     });
     candleStickSeriesRef.current = candlestickSeries;
+    let scaledData = temp.map(item => ({
+      ...item,
+      open: item.open * scaleFactor,
+      high: item.high * scaleFactor,
+      low: item.low * scaleFactor,
+      close: item.close * scaleFactor,
+    }));
     // Set data to the chart
-    candlestickSeries.setData(temp);
+    candlestickSeries.setData(scaledData);
     if (showMarkers) {
       activeOrdersByTokenpair?.map(
         ({
@@ -293,10 +313,13 @@ const BitqueryOHLCChart = () => {
       <div ref={chartRef} />
         <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[230px] flex flex-row justify-around">
           <div className="-mr-[3px] -ml-[3px] w-full">
-            <button onClick={() => candleStickClicked(15)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md ">15M</button>
-            <button onClick={() => candleStickClicked(30)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">30M</button>
+          <button onClick={() => candleStickClicked(15)} className={`${active === 15 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>15M</button>
+          <button onClick={() => candleStickClicked(30)} className={`${active === 30 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>30M</button>
+          <button onClick={() => candleStickClicked(60)} className={`${active === 60 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>1H</button>
+            <button onClick={() => candleStickClicked(360)} className={`${active === 360 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>6H</button>
+            {/* <button onClick={() => candleStickClicked(30)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">30M</button>
             <button onClick={() => candleStickClicked(60)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">1H</button>
-            <button onClick={() => candleStickClicked(360)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">6H</button>
+            <button onClick={() => candleStickClicked(360)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">6H</button> */}
           </div>
       </div>
     </>

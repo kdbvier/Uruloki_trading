@@ -46,7 +46,7 @@ export const transformStreamData = (data: any, compareTokenName: any) => {
       : [];
   let { sellSidePrices, sellSideTimes } = sellSideFiltered.reduce(
     (acc: any, item: any) => {
-      acc.sellSidePrices.push(item.Trade.Buy.Price);
+      acc.sellSidePrices.push(item.Trade.Sell.Price);
       acc.sellSideTimes.push(item.Block.Time);
       return acc;
     },
@@ -203,6 +203,7 @@ const fetchStreamData = async (pairAddress:any) => {
           console.log("store.getState()",store.getState().tokenPairInfo.value.baseToken.symbol);
           const compareTokenName = store.getState().tokenPairInfo.value.baseToken.symbol;
           const transData = transformStreamData(response, compareTokenName);
+          console.log("transform",transData)
           if (transData.open != "")
             store.dispatch(getBitqueryStream(transData));
           return transData;
