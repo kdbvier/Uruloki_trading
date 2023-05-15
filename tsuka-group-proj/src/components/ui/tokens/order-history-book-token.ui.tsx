@@ -16,7 +16,7 @@ const TradeRow = ({ item }: any) => {
   return (
     <div
       className={`${
-        item.side === ("Buy" || "BUY") ? "text-green-400" : "text-red-400"
+        (item.side == "BUY" || item.side == "Buy") ? "text-green-400" : "text-red-400"
       } border-b border-tsuka-400 text-base relative w-full text-left flex flex-center`}
     >
       <span className=" py-2 w-[120px] ml-4 text-sm font-normal whitespace-nowrap">
