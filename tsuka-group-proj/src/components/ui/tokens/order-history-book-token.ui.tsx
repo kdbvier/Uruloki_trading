@@ -51,8 +51,8 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
 
   return (
     <div>
-      {status === "loading" && "Loading..."}
-      {status === "ok" && value && (
+      {/* {status === "loading" && "Loading..."}
+      {status === "ok" && value && ( */}
         <div className="p-4 flex">
           <div className="flex-1">
             <div className="h-96 overflow-auto">
@@ -73,7 +73,7 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
             </div>
           </div>
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 };

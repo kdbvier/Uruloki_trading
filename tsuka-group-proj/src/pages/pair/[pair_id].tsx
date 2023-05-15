@@ -55,35 +55,6 @@ interface Trade {
   };
 }
 
-const determineBaseAndQuote = (
-  token0Address: string,
-  token1Address: string
-): { baseAddress: string; quoteAddress: string } => {
-  const stablecoinAddresses = [
-    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // WETH
-    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
-    "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
-    "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
-  ];
-
-  let baseAddress, quoteAddress;
-  if (stablecoinAddresses.includes(token0Address)) {
-    baseAddress = token0Address;
-    quoteAddress = token1Address;
-  } else if (stablecoinAddresses.includes(token1Address)) {
-    baseAddress = token1Address;
-    quoteAddress = token0Address;
-  } else {
-    if (token0Address?.toLowerCase() < token1Address?.toLowerCase()) {
-      baseAddress = token0Address;
-      quoteAddress = token1Address;
-    } else {
-      baseAddress = token1Address;
-      quoteAddress = token0Address;
-    }
-  }
-  return { baseAddress, quoteAddress };
-};
 
 const getQuery = (
   tradeSide: string,
@@ -237,7 +208,7 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [baseAddress]);
 
   useEffect(() => {
     const onNext = (data: any) => {
@@ -284,7 +255,7 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [baseAddress]);
 
   const orders = useMemo((): Array<SingleOrder | RangeOrder> => {
     return userOrder[0]?.orders;
@@ -399,54 +370,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let baseAddress = "";
   let quoteAddress = "";
 
-  let data;
   try {
-    const res = await axios.post(
-      "https://graphql.bitquery.io/",
-      {
-        query: `{
-          ethereum {
-            arguments(smartContractAddress: {is: "${pair_id}"}, smartContractEvent: {is: "PairCreated"}, options: { limit: 3 }) {
-              block {
-                height
-              }
-              argument {
-                name
-              }
-              reference {
-                address
-              }
-            }
-          }
-        }`,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": "BQYYvTYy2UDpOqezZCl0NatKN7HKmtgc",
-        },
-      }
+    const res = await axios.get(
+      "http://localhost:3000/api/tokens/token-pair?pair_address=0xd101821c56b4405af4a376cbe81fa0dc90207dc2"
     );
-    data = res.data;
-  } catch (error) {}
-
-  if (data) {
-    const ethereum = data?.data?.ethereum;
-
-    const token0 = ethereum?.arguments?.find(
-      (el: any) => el.argument.name === "token0"
-    );
-    const token1 = ethereum?.arguments?.find(
-      (el: any) => el.argument.name === "token1"
-    );
-
-    const addresses = determineBaseAndQuote(
-      token0?.reference?.address,
-      token1?.reference?.address
-    );
-
-    baseAddress = addresses.baseAddress;
-    quoteAddress = addresses.quoteAddress;
+    baseAddress = res.data.payload.baseToken.address;
+    quoteAddress = res.data.payload.pairedToken.address;
+    } catch (error) {
+    console.log(error, 'error');
   }
 
   try {
@@ -466,7 +397,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                   time(format: "%Y-%m-%d %H:%M:%S")
                 }
               }
-              tradeAmount
+              tradeAmount(in: BTC)
               side
               sellAmount(in: USD)
               buyAmount(in: USD)
@@ -483,7 +414,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "X-API-KEY": "BQYYvTYy2UDpOqezZCl0NatKN7HKmtgc",
+          "X-API-KEY": "BQYedcj8q0acU4h8q0CmF2rfIVZp9VOe",
         },
       }
     );
