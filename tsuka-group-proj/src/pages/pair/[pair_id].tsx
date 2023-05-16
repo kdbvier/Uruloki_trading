@@ -5,10 +5,10 @@ import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
-import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
+import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token"; 
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { FullHeaderToken } from "@/components/ui/tokens/full-header.token;
-import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
+import { FullHeaderToken } from "@/components/ui/tokens/full-header.token; 
+import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";       
 import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
@@ -16,9 +16,9 @@ import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getUserOrder } from "@/store/apps/user-order";
 import { getToken, setPairAddress } from "@/store/apps/token";
 import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";     
 import {
-  OrderStatusEnum,
+  OrderStatusEnum,    
   OrderTypeEnum,
   PriceTypeEnum,
   RangeOrder,
