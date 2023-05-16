@@ -30,11 +30,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
       target: { value },
     } = ev;
     setSearchQuery(value);
-  };
-  const handleKeyDown = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    if (ev.key === "Enter") {
-      searchTopMovers();
-    }
+    searchTopMovers();
   };
 
   const searchTopMovers = () => {
@@ -83,7 +79,6 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               placeholder="Find tokens..."
               value={searchQuery}
               onChange={handleChange}
-              onKeyDown={handleKeyDown}
             />
           </div>
           <button
