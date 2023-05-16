@@ -13,7 +13,6 @@ import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { getUserOrder } from "@/store/apps/user-order";
 import { getToken, setPairAddress } from "@/store/apps/token";
 import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";     
@@ -30,10 +29,6 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
-import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { getOrdersByPair } from "@/lib/orders";
 import { GetServerSideProps } from "next/types";
 
