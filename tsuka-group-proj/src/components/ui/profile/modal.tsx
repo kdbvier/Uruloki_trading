@@ -1,8 +1,8 @@
-import { FiX } from "react-icons/fi";
-import { TokenIconsToken } from "../tokens/token-icons.token";
-import { useEffect, useState } from "react";
-import { TokenType } from "@/types/tokens.type";
 import { CardType } from "@/types/card.type";
+import { useState } from "react";
+import { FiX } from "react-icons/fi";
+import { TokenMovementInput } from "../inputs/token-movement.input";
+import { TokenIconsToken } from "../tokens/token-icons.token";
 export interface ModalProps {
   open: boolean;
   callback: () => void;
@@ -27,8 +27,8 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
     const asciiKeys = [];
     var totalIndex = 0;
     var index = 0;
-    for (var i = 0; i < token_name.length; i++) {
-      asciiKeys.push(token_name[i].charCodeAt(0));
+    for (var i = 0; i < token_name?.length; i++) {
+      asciiKeys.push(token_name[i]?.charCodeAt(0));
 
       totalIndex += asciiKeys[i];
       index = totalIndex % backgroundInfo.length;
@@ -54,35 +54,33 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                   <span className="text-[#676F84] font-Poppins-300 font-normal text-[14px] leading-[21px]">
                     Token
                   </span>
-                  {!!walletBalances.length && (
-                    <div
-                      className="flex w-[40%] justify-between py-[6px] px-[6.92px] rounded-md items-center bg-no-repeat bg-cover	"
-                      style={{
-                        color: "#FFFFFF",
-                        backgroundColor:
-                          backgroundInfo[
-                            getBackgroundIndex(walletBalances[index].name)
-                          ].color,
-                        backgroundImage:
-                          backgroundInfo[
-                            getBackgroundIndex(walletBalances[index].name)
-                          ]?.backgroundImage,
-                      }}
-                    >
-                      <TokenIconsToken
-                        name={walletBalances[index].name}
-                        shortName={walletBalances[index].shortName}
-                        width={24}
-                        height={24}
-                      ></TokenIconsToken>
-                      <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
-                        <span>{walletBalances[index].value}</span>
-                      </div>
-                      <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
-                        <span>{walletBalances[index].shortName}</span>
-                      </div>
+                  <div
+                    className="flex w-[40%] justify-between py-[6px] px-[6.92px] rounded-md items-center bg-no-repeat bg-cover	"
+                    style={{
+                      color: "#FFFFFF",
+                      backgroundColor:
+                        backgroundInfo[
+                          getBackgroundIndex(walletBalances[index]?.name)
+                        ].color,
+                      backgroundImage:
+                        backgroundInfo[
+                          getBackgroundIndex(walletBalances[index]?.name)
+                        ]?.backgroundImage,
+                    }}
+                  >
+                    <TokenIconsToken
+                      name={walletBalances[index]?.name}
+                      shortName={walletBalances[index]?.shortName}
+                      width={24}
+                      height={24}
+                    ></TokenIconsToken>
+                    <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
+                      <span>{walletBalances[index]?.value}</span>
                     </div>
-                  )}
+                    <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
+                      <span>{walletBalances[index]?.shortName}</span>
+                    </div>
+                  </div>
                 </div>
               )}
               {!isDeposit && (
@@ -186,25 +184,22 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                   </div>
                 </div>
               )}
-              <div className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md  px-[19px] py-[11px] mb-[9px]">
-                <span className="text-[#676F84] font-Poppins-300 font-normal text-[14px] leading-[21px]">
-                  Amount :
-                </span>{" "}
-                {!!walletBalances.length && (
-                  <>
-                    <span className="text-[BBC3D7] font-Poppins-300 font-normal text-[14px] leading-[21px] ">
-                      {isDeposit
-                        ? walletBalances[index].amount +
-                          " " +
-                          walletBalances[index].shortName
-                        : Cards[index].amount + " " + Cards[index].shortName}
-                    </span>{" "}
-                    <span className="text-[#E88326] font-Poppins-300 font-medium text-[12px] leading-[18px]">
-                      MAX
-                    </span>
-                  </>
-                )}
-              </div>
+              <TokenMovementInput
+                id={"amount"}
+                currentAmount={(isDeposit
+                  ? walletBalances[index]?.amount
+                  : Cards[index].amount
+                ).toString()}
+                maxAmount={(isDeposit
+                  ? walletBalances[index]?.amount
+                  : Cards[index].amount
+                ).toString()}
+                currentShortName={
+                  isDeposit
+                    ? walletBalances[index]?.shortName
+                    : Cards[index].shortName
+                }
+              />
               <button
                 onClick={callback}
                 className="w-full bg-custom-primary hover:bg-tsuka-400 text-white font-Poppins-300 leading-[24px] text-[16px] font-medium py-[11px] rounded-lg"
