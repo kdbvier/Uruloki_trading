@@ -30,7 +30,7 @@ const Dropdown: React.FC<DropdownOption> = ({ allTokenName }) => {
 
   useEffect(() => {
     dispatch(getHomePageTokens());
-  }, [dispatch, value]);
+  }, [dispatch]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
