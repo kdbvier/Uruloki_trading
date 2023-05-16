@@ -19,6 +19,13 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
   strategies,
 }) => {
   const [showExtraId, setShowExtraId] = useState<number | null>(null);
+
+  const auctoHideSideBar = (e: any) => {
+    if (e.target.classList.contains('backdrop-blur-sm')) {
+      handleOpen();
+    }
+  }
+
   return (
     <div
       className={
@@ -26,6 +33,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
           ? "w-full h-screen top-0 lef-0 bg-tsuka-700/60 fixed z-10 backdrop-blur-sm"
           : ""
       }
+      onClick={(e) => auctoHideSideBar(e)}
     >
       <div
         className={`${
