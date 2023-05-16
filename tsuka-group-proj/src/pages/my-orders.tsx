@@ -17,7 +17,7 @@ import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 
 export default function MyOrder() {
-  const [openMode, setOpenMode] = useState<boolean>(true);
+  const [openToogle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -39,11 +39,11 @@ export default function MyOrder() {
     dispatch(
       getUserOrderWithFilter({
         id: 1,
-        status: openMode ? "Open" : "Close",
+        status: openToogle ? "Open" : "Close",
         search: searchValue,
       })
     );
-  }, [dispatch, openMode]);
+  }, [dispatch, openToogle]);
   // useEffect(()=> {
   //   const fetchData =async () => {
   //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
@@ -61,7 +61,7 @@ export default function MyOrder() {
     dispatch(
       getUserOrderWithFilter({
         id: 1,
-        status: openMode ? "Open" : "Close",
+        status: openToogle ? "Open" : "Close",
         search: searchValue,
       })
     );
@@ -95,22 +95,12 @@ export default function MyOrder() {
         <div className="w-full md:w-auto flex flex-wrap">
           <div className="w-full md:w-auto flex md:gap-1">
             <button
-              className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${
-                openMode ? "bg-tsuka-500 text-custom-primary" : "text-tsuka-300"
+              className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none bg-tsuka-500 ${
+                openToogle ? "text-green-400" : "text-red-400"
               } rounded-md text-sm`}
-              onClick={() => setOpenMode(true)}
+              onClick={() => setOpenToggle(!openToogle) }
             >
-              Open Orders
-            </button>
-            <button
-              className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${
-                !openMode
-                  ? "bg-tsuka-500 text-custom-primary"
-                  : "text-tsuka-300"
-              } rounded-md text-sm`}
-              onClick={() => setOpenMode(false)}
-            >
-              Closed Orders
+              {openToogle ? "Open" : "Closed"} Orders
             </button>
           </div>
           <hr className="md:hidden w-full mt-3 mb-5 border-tsuka-500" />
