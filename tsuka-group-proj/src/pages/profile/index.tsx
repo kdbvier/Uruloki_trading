@@ -33,24 +33,26 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
   };
   useEffect(() => {
     console.log("useEffect");
-    const tokensInWallet = async(address: string) => {
+    const tokensInWallet = async (address: string) => {
       try {
-        const res = await fetch(`/api/tokens/tokens-in-wallet?walletAddress=${address}`);
+        const res = await fetch(
+          `/api/tokens/tokens-in-wallet?walletAddress=${address}`
+        );
         const data = await res.json();
         console.log(data);
-        return data
+        return data;
       } catch (err) {
         console.log(err);
       }
       return null;
-    }
+    };
     const getAddress = async () => {
       try {
         const address: string | null = await getConnectedAddress();
         setWalletAddress(address);
         // const data = await tokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef");
         const data = await tokensInWallet(address);
-        setWalletBalances(data.payload.walletBalances);
+        setWalletBalances(data.payload?.walletBalances ?? []);
       } catch (error) {
         console.log(error);
       }

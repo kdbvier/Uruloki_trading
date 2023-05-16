@@ -27,16 +27,28 @@ export default async function tokensInWalletHandler(
           break;
         }
         const { walletAddress } = value;
+        console.log("walletAddress", walletAddress);
         const tokensInWallet = await getTokensInWallet(walletAddress);
-        res.status(200).json({
-          payload: {
-            tokenBalances: undefined,
-            chartData: undefined,
-            walletBalances: tokensInWallet,
-            
-          },
-          message: `Successfully tokens in wallet are fetched at ${walletAddress}`,
-        });
+        console.log("tokensInWallet", tokensInWallet);
+        if (!tokensInWallet) {
+          res.status(404).json({
+            payload: {
+              tokenBalances: undefined,
+              chartData: undefined,
+              walletBalances: [],
+            },
+            message: `Wallet ${walletAddress} not found`,
+          });
+        } else {
+          res.status(200).json({
+            payload: {
+              tokenBalances: undefined,
+              chartData: undefined,
+              walletBalances: tokensInWallet,
+            },
+            message: `Successfully tokens in wallet are fetched at ${walletAddress}`,
+          });
+        }
         return;
       } catch (err) {
         res.status(400).json({
