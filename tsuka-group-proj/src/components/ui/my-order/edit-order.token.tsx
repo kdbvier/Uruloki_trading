@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
 import {
-  createOrder,
   editUserOrder,
-  getTokenPairPrice,
   setSelectedOrder,
+  createOrder,
+  getTokenPairPrice,
 } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
@@ -492,6 +492,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   /> */}
           {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
+                      ? pairLongName
+                      : baseLongName}
+                  </span>
+                </div>
+              </div>
                       ? selectedOrder.pairTokenLongName
                       : selectedOrder.baseTokenLongName}
                   </span> */}
