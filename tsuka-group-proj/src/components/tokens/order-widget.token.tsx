@@ -105,6 +105,8 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
+                tokenSymbol={order.baseTokenShortName}
+                pairedTokenSymbol={order.pairTokenShortName}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
@@ -121,6 +123,8 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
+                tokenSymbol={order.baseTokenShortName}
+                pairedTokenSymbol={order.pairTokenShortName}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
