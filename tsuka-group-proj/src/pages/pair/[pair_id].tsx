@@ -1,4 +1,3 @@
-import { tokensData } from "@/@fake-data/token.fake-data";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderBookToken } from "@/components/tokens/order-book.token";
@@ -7,33 +6,23 @@ import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { FullHeaderToken } from "@/components/ui/tokens/full-header.token;
+import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
 import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { getUserOrder } from "@/store/apps/user-order";
-import { getToken, setPairAddress } from "@/store/apps/token";
-import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
   PriceTypeEnum,
-  RangeOrder,
-  SingleOrder,
 } from "@/types/token-order.type";
 import type { Order } from "@/types";
-import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
-import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { getOrdersByPair } from "@/lib/orders";
 import { GetServerSideProps } from "next/types";
 
