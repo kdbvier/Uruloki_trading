@@ -26,7 +26,7 @@ import {
 import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
+// import { getOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { number } from "joi";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
@@ -55,6 +55,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
 
   // When this page becomes unmounted
   useEffect(() => {
+    
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
@@ -74,13 +75,25 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
   } = useAppSelector((state) => state);
 
   useEffect(() => {
+    console.log("getTokenPairInfo", pair_address);
+    console.log("pair_address.length)", (pair_address.length));
+    console.log("typeof(pair_address)", typeof(pair_address));
+    if(pair_address === "undefined" || pair_address.length === 0 ){
+      return;
+    }
     dispatch(getTokenPairInfo(pair_address as string));
-  }, [pair_address]);
+  }, [dispatch, pair_address]);
+
   useEffect(() => {
     console.log("tokenPairInfo", tokenPairInfo);
-    console.log("router.query.pair_id",router.query.pair_id);
+    console.log("router.query.pair_id--------------------------",router.query.pair_id);
+    // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
+    // console.log("pairInfo",pairInfo);
     const time = 15;
     const pairAddress = router.query.pair_id;
+    if(!pairAddress){
+      return;
+    }
     const eachAddress = {
       base: tokenPairInfo.baseToken.address,
       quote: tokenPairInfo.pairedToken.address,
@@ -89,6 +102,7 @@ export default function Pair({ tranData }: any, { id }: { id: string }) {
     }
     dispatch(getBitqueryInitInfo(eachAddress));
   }, [tokenPairInfo]);
+
   useEffect(() => {
     if (token) {
       dispatch(getUserOrder(token.id));
