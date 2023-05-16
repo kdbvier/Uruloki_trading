@@ -96,11 +96,19 @@ export default function MyOrder() {
           <div className="w-full md:w-auto flex md:gap-1">
             <button
               className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none bg-tsuka-500 ${
-                openToogle ? "text-green-400" : "text-red-400"
+                openToogle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
               } rounded-md text-sm`}
-              onClick={() => setOpenToggle(!openToogle) }
+              onClick={() => setOpenToggle(true) }
             >
-              {openToogle ? "Open" : "Closed"} Orders
+              Open Orders
+            </button>
+            <button
+              className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${
+                !openToogle ? "bg-tsuka-500 text-red-400" : "text-tsuka-300"
+              } rounded-md text-sm`}
+              onClick={() => setOpenToggle(false)}
+            >
+              Closed Orders
             </button>
           </div>
           <hr className="md:hidden w-full mt-3 mb-5 border-tsuka-500" />
