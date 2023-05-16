@@ -41,7 +41,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
     <div className="w-full bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className={`md:flex justify-between items-center`}>
         <h1 className="mb-3 md:mb-0text-[18px] md:text-[24px] leading-6 md:leading-8 font-medium text-tsuka-50">
-          Top Movers Tokens
+          Top Movers Tokens (24hr)
         </h1>
         <div className="flex w-full md:w-auto items-center gap-3">
           <div className="grow md:grow-0 flex items-center text-sm text-tsuka-100">
