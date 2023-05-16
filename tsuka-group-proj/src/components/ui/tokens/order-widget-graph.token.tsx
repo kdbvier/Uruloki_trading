@@ -120,8 +120,8 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span>Budget</span>
             <span>
               {budget >= 0.01
-                ? `$${handleNumberFormat(parseFloat(budget.toFixed(2)))}`
-                : convertLawPrice(budget)}{" "}
+                ? handleNumberFormat(parseFloat(budget.toFixed(2)))
+                : convertLawPrice(budget).toString().slice(1)}{" "}
               {buy ? pairedTokenSymbol : tokenSymbol}
             </span>
           </div>
