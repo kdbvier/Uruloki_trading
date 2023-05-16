@@ -1,4 +1,5 @@
 import { tokensData } from "@/@fake-data/token.fake-data";
+import HomePageTokens from "@/lib/api/tokens";
 import { RootState } from "@/store";
 import { Token } from "@/types/token.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -66,41 +67,52 @@ export const getTokenByStrategyId = createAsyncThunk(
 
 export const setOrderSplit = createAsyncThunk(
   "token/setOrderSplit",
-  async(Param: {
-    orderSplit: {
-      buy: number,
-      sell: number
+  async (
+    Param: {
+      orderSplit: {
+        buy: number;
+        sell: number;
+      };
+      volume: {
+        value: string;
+        currencyLabel: string;
+      };
+      price: {
+        value: string;
+        operator: string;
+        variationValue: number;
+      };
     },
-    volume: {
-      value: string,
-      currencyLabel: string
-    },
-    price: {
-      value: string,
-      operator: string,
-      variationValue: number,
-    }
-  }, { getState }): Promise<any> => {
-  const previousState = (getState() as RootState).token;
-  const data = {
-    ...previousState.value,
-    orderSplit: {
-      buy: Param.orderSplit.buy,
-      sell: Param.orderSplit.sell
-    },
-    volume: {
-      value: Param.volume.value,
-      currencyLabel: Param.volume.currencyLabel
-    },
-    price: {
-      value: Param.price.value,
-      operator: Param.price.operator,
-      variationValue: Param.price.variationValue,
-    }
+    { getState }
+  ): Promise<any> => {
+    const previousState = (getState() as RootState).token;
+    const data = {
+      ...previousState.value,
+      orderSplit: {
+        buy: Param.orderSplit.buy,
+        sell: Param.orderSplit.sell,
+      },
+      volume: {
+        value: Param.volume.value,
+        currencyLabel: Param.volume.currencyLabel,
+      },
+      price: {
+        value: Param.price.value,
+        operator: Param.price.operator,
+        variationValue: Param.price.variationValue,
+      },
+    };
+    return data;
   }
-  return data;
-}
-)
+);
+
+export const getTokenVolume = createAsyncThunk(
+  "token/getTokenVolume",
+  async (baseTokenAddress: string) => {
+    const tokenVolume = await HomePageTokens.getTokenVolume(baseTokenAddress);
+    return tokenVolume;
+  }
+);
 
 export const setPairAddress = createAsyncThunk(
   "token/setPairAddress",
@@ -110,11 +122,11 @@ export const setPairAddress = createAsyncThunk(
       ...previousState.value,
       pair: {
         ...previousState.value.pair,
-        address: pair
-      }
+        address: pair,
+      },
     };
     console.log("setPair", data);
-    
+
     return data;
   }
 );

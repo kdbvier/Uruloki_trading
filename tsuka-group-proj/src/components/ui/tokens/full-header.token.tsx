@@ -1,5 +1,5 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
-import { getToken, setOrderSplit } from "@/store/apps/token";
+import { getToken, getTokenVolume, setOrderSplit } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -9,6 +9,11 @@ import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
 import { ApiResponse, Order, TokenPairInfo } from "@/types";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+import { getTokenPairPrice } from "@/store/apps/user-order";
+import {
+  convertLawPrice,
+  handleNumberFormat,
+} from "../my-order/edit-order.token";
 export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
@@ -18,30 +23,27 @@ export interface FullHeaderTokenProps {
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   pair_address,
   tokenPairInfo,
-  orders
+  orders,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
-  const [orders, setOrders] = useState<Array<any>>([]);
+  const baseTokenAddress = useAppSelector(
+    (state) => state.tokenPairInfo.value.baseToken.address
+  );
+  const token_price = useAppSelector(
+    (state) => state.userOrder.selectedTokenPairPrice
+  );
 
   useEffect(() => {
-    const getOrders = async () => {
-      let result: any =
-        value.pair?.address &&
-        (await fetch(
-          `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
-        ));
-
-      if (result) {
-        result.json().then((res: any) => {
-          setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
-        });
-      }
-    };
-    getOrders();
-
     dispatch(setPairAddress(pair_address as string));
+    dispatch(getTokenPairPrice(pair_address as string));
   }, [pair_address]);
+
+  useEffect(() => {
+    if (baseTokenAddress) {
+      dispatch(getTokenVolume(baseTokenAddress));
+    }
+  }, [baseTokenAddress]);
 
   useEffect(() => {
     let total_sell: number = 0;
@@ -51,7 +53,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(
-        (prev, curr, index, array) => prev + curr.budget,
+        (prev, curr, index, array) => prev + (curr.budget ?? 0),
         0
       );
     }
@@ -145,31 +147,13 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             </div>
             <div className="text-sm justify-end">
               <div className="flex flex-col lg:flex-row items-end justify-end">
-                <div
-                  className={`${
-                    value.price?.operator === "+"
-                      ? "text-custom-green"
-                      : "text-custom-red"
-                  }`}
-                >
-                  {value.price?.variationValue}%
-                </div>
                 <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
-                  ${value.price?.value}
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row items-end md:items-center justify-end mt-1">
-                <div
-                  className={`${
-                    !(value.price?.operator === "+")
-                      ? "text-custom-green"
-                      : "text-custom-red"
-                  }`}
-                >
-                  {value.price?.variationValueDiference}
-                </div>
-                <div className="text-tsuka-50 text-xs xs:ml-2">
-                  {value.chain?.code} {value.price?.value}
+                  {token_price.base_price &&
+                    (token_price.base_price >= 0.01
+                      ? `$${handleNumberFormat(
+                          parseFloat(token_price.base_price.toFixed(2))
+                        )}`
+                      : convertLawPrice(token_price.base_price))}
                 </div>
               </div>
             </div>

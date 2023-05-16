@@ -24,4 +24,11 @@ export default class HomePageTokens {
       },
     });
   };
+  static getTokenVolume = async (baseTokenAddress: string) => {
+    return await httpRequest.get(`/tokens/token-volume`, {
+      params: {
+        baseTokenAddress,
+      },
+    });
+  };
 }
