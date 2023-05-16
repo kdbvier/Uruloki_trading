@@ -18,9 +18,8 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
   isDeposit,
   Cards,
   backgroundInfo,
-  walletBalances
+  walletBalances,
 }) => {
-  console.log(walletBalances)
   const [index, setIndex] = useState<any | number>(0);
 
   const getBackgroundIndex = (token_name: string) => {
@@ -55,31 +54,35 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                   <span className="text-[#676F84] font-Poppins-300 font-normal text-[14px] leading-[21px]">
                     Token
                   </span>
-                  <div
-                    className="flex w-[40%] justify-between py-[6px] px-[6.92px] rounded-md items-center bg-no-repeat bg-cover	"
-                    style={{
-                      color: "#FFFFFF",
-                      backgroundColor:
-                        backgroundInfo[getBackgroundIndex(walletBalances[index].name)]
-                          .color,
-                      backgroundImage:
-                        backgroundInfo[getBackgroundIndex(walletBalances[index].name)]
-                          ?.backgroundImage,
-                    }}
-                  >
-                    <TokenIconsToken
-                      name={walletBalances[index].name}
-                      shortName={walletBalances[index].shortName}
-                      width={24}
-                      height={24}
-                    ></TokenIconsToken>
-                    <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
-                      <span>{walletBalances[index].value}</span>
+                  {!!walletBalances.length && (
+                    <div
+                      className="flex w-[40%] justify-between py-[6px] px-[6.92px] rounded-md items-center bg-no-repeat bg-cover	"
+                      style={{
+                        color: "#FFFFFF",
+                        backgroundColor:
+                          backgroundInfo[
+                            getBackgroundIndex(walletBalances[index].name)
+                          ].color,
+                        backgroundImage:
+                          backgroundInfo[
+                            getBackgroundIndex(walletBalances[index].name)
+                          ]?.backgroundImage,
+                      }}
+                    >
+                      <TokenIconsToken
+                        name={walletBalances[index].name}
+                        shortName={walletBalances[index].shortName}
+                        width={24}
+                        height={24}
+                      ></TokenIconsToken>
+                      <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
+                        <span>{walletBalances[index].value}</span>
+                      </div>
+                      <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
+                        <span>{walletBalances[index].shortName}</span>
+                      </div>
                     </div>
-                    <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
-                      <span>{walletBalances[index].shortName}</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
               {!isDeposit && (
@@ -187,14 +190,20 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                 <span className="text-[#676F84] font-Poppins-300 font-normal text-[14px] leading-[21px]">
                   Amount :
                 </span>{" "}
-                <span className="text-[BBC3D7] font-Poppins-300 font-normal text-[14px] leading-[21px] ">
-                  {isDeposit
-                    ? walletBalances[index].amount + " " + walletBalances[index].shortName
-                    : Cards[index].amount + " " + Cards[index].shortName}
-                </span>{" "}
-                <span className="text-[#E88326] font-Poppins-300 font-medium text-[12px] leading-[18px]">
-                  MAX
-                </span>
+                {!!walletBalances.length && (
+                  <>
+                    <span className="text-[BBC3D7] font-Poppins-300 font-normal text-[14px] leading-[21px] ">
+                      {isDeposit
+                        ? walletBalances[index].amount +
+                          " " +
+                          walletBalances[index].shortName
+                        : Cards[index].amount + " " + Cards[index].shortName}
+                    </span>{" "}
+                    <span className="text-[#E88326] font-Poppins-300 font-medium text-[12px] leading-[18px]">
+                      MAX
+                    </span>
+                  </>
+                )}
               </div>
               <button
                 onClick={callback}
