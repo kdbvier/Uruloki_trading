@@ -13,12 +13,13 @@ export const TokenIconSpan: React.FC<TokenIconSpanProps> = ({ code, name }) => {
     setHasError(true);
   }
 
-  const inputIcon = `${coinMirrorUrl}/img/${code.toLowerCase()}-${name.toLowerCase()}.png`;
+  const inputIcon = `${coinMirrorUrl}/icon/${code.toLowerCase()}/200`;
+  const defaultIcon = "/imgs/empty-img6.png";
 
   return (
     <img
       className="w-7 h-7 mb-auto rounded-full"
-      src={hasError ? "/imgs/empty-img.png" : inputIcon}
+      src={hasError ? defaultIcon : inputIcon}
       alt={name}
       onError={handleImageInputError}
     />

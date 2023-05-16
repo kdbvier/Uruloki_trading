@@ -22,8 +22,24 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
+  const [orders, setOrders] = useState<Array<any>>([]);
 
   useEffect(() => {
+    const getOrders = async () => {
+      let result: any =
+        value.pair?.address &&
+        (await fetch(
+          `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
+        ));
+
+      if (result) {
+        result.json().then((res: any) => {
+          setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
+        });
+      }
+    };
+    getOrders();
+
     dispatch(setPairAddress(pair_address as string));
   }, [pair_address]);
 
@@ -32,12 +48,10 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
     let total_buy: number = 0;
     let price: number = 0;
     if (orders) {
-      console.log("Orders:")
-      console.log((orders as any).orders)
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(
-        (prev, curr, index, array) => prev + (curr.budget ?? 0),
+        (prev, curr, index, array) => prev + curr.budget,
         0
       );
     }
