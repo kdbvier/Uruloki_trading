@@ -164,7 +164,7 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
   useEffect(() => {
     const onNext = (data: any) => {
-      const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
+        const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
         const obj = el.Trade;
         const side = Object.keys(el.Trade)[0];
         return {
@@ -372,7 +372,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const res = await axios.get(
-      "http://localhost:3000/api/tokens/token-pair?pair_address=0xd101821c56b4405af4a376cbe81fa0dc90207dc2"
+      `http://localhost:3000/api/tokens/token-pair?pair_address=${pair_id}`
     );
     baseAddress = res.data.payload.baseToken.address;
     quoteAddress = res.data.payload.pairedToken.address;
