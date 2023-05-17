@@ -64,7 +64,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
         </div>
       </div>
 
-      <div className={`relative`}>
+      <div className={"scrollable w-full relative overflow-x-auto"}>
         <table className="w-full text-left mt-4">
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
