@@ -1,5 +1,10 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
-import { getToken, setOrderSplit } from "@/store/apps/token";
+import {
+  getToken,
+  getTokenVolume,
+  getYesterdayTokenPairPrice,
+  setOrderSplit,
+} from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -9,39 +14,93 @@ import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
 import { ApiResponse, Order, TokenPairInfo } from "@/types";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+import { TokenPairPrice, getTokenPairPrice } from "@/store/apps/user-order";
+import {
+  convertLawPrice,
+  handleNumberFormat,
+} from "../my-order/edit-order.token";
+import { GetServerSideProps } from "next";
+import Orders from "@/lib/api/orders";
+import HomePageTokens from "@/lib/api/tokens";
 export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
   orders: Order[];
+  token_price: TokenPairPrice;
+  oldTokenPrice: TokenPairPrice;
 }
+
+export const defaultNumberFormat = (num: number): any => {
+  const newNum = Math.abs(num);
+  let res;
+  if (newNum >= 0.01) {
+    res = handleNumberFormat(parseFloat(newNum.toFixed(2)));
+  } else {
+    res = Number(convertLawPrice(newNum));
+    if (isNaN(res)) {
+      res = "0";
+    } else {
+      res = res.toString().slice(1);
+    }
+  }
+  return num >= 0 ? res : `-${res}`;
+};
 
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   pair_address,
   tokenPairInfo,
-  orders
+  orders,
+  token_price,
+  oldTokenPrice,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
-  const [orders, setOrders] = useState<Array<any>>([]);
+  const baseTokenAddress = useAppSelector(
+    (state) => state.tokenPairInfo.value.baseToken.address
+  );
+  const [tokenVolume, setTokenVolume] = useState({
+    value: 0,
+    currencyLabel: "",
+  });
 
   useEffect(() => {
-    const getOrders = async () => {
-      let result: any =
-        value.pair?.address &&
-        (await fetch(
-          `/api/orders/tokenpair/${encodeURIComponent(pair_address)}`
-        ));
-
-      if (result) {
-        result.json().then((res: any) => {
-          setOrders(res?.payload?.filter((a: Order) => a.status == "Active"));
-        });
-      }
-    };
-    getOrders();
-
-    dispatch(setPairAddress(pair_address as string));
+    if (pair_address) {
+      dispatch(setPairAddress(pair_address as string));
+    }
   }, [pair_address]);
+
+  useEffect(() => {
+    if (baseTokenAddress) {
+      (async () => {
+        const volume = await HomePageTokens.getTokenVolume(baseTokenAddress);
+        let newTokenVolume: { value: number; currencyLabel: string } = {
+          value: 0,
+          currencyLabel: "",
+        };
+        const MILLION = 1e6,
+          BILLION = 1e9,
+          TRILLION = 1e12;
+        if (volume.tradeAmount > TRILLION) {
+          newTokenVolume.value = volume.tradeAmount / TRILLION;
+          newTokenVolume.currencyLabel = "Trillion";
+        } else if (volume.tradeAmount > BILLION) {
+          newTokenVolume.value = Number(
+            (volume.tradeAmount / BILLION).toString().slice(0, 4)
+          );
+          newTokenVolume.currencyLabel = "Billion";
+        } else if (volume.tradeAmount > MILLION) {
+          newTokenVolume.value = Number(
+            (volume.tradeAmount / MILLION).toString().slice(0, 4)
+          );
+          newTokenVolume.currencyLabel = "Million";
+        } else {
+          newTokenVolume.value = volume.tradeAmount;
+          newTokenVolume.currencyLabel = "";
+        }
+        setTokenVolume(newTokenVolume);
+      })();
+    }
+  }, [baseTokenAddress]);
 
   useEffect(() => {
     let total_sell: number = 0;
@@ -51,7 +110,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(
-        (prev, curr, index, array) => prev + curr.budget,
+        (prev, curr, index, array) => prev + (curr.budget ?? 0),
         0
       );
     }
@@ -60,15 +119,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
         orderSplit: {
           buy: total_buy,
           sell: total_sell,
-        },
-        volume: {
-          value: String(price),
-          currencyLabel: "Billions",
-        },
-        price: {
-          value: String(price / 1000),
-          operator: "",
-          variationValue: 0,
         },
       })
     );
@@ -136,40 +186,31 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               </div>
               <InfoSpanToken
                 title={"VOL."}
-                value={`$${value.volume?.value}${value.volume?.currencyLabel[0]}`}
+                value={`$${defaultNumberFormat(tokenVolume.value ?? 0)} ${
+                  tokenVolume.currencyLabel
+                }`}
               />
               <InfoSpanToken
                 title={"24h"}
-                value={`${value.price?.operator}${value.price?.variationValue}%`}
+                value={`${defaultNumberFormat(
+                  token_price?.base_price
+                    ? ((token_price.base_price -
+                        (oldTokenPrice?.base_price ?? 0)) /
+                        token_price.base_price) *
+                        100
+                    : 0
+                ).toString()}%`}
               />
             </div>
             <div className="text-sm justify-end">
               <div className="flex flex-col lg:flex-row items-end justify-end">
-                <div
-                  className={`${
-                    value.price?.operator === "+"
-                      ? "text-custom-green"
-                      : "text-custom-red"
-                  }`}
-                >
-                  {value.price?.variationValue}%
-                </div>
                 <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
-                  ${value.price?.value}
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row items-end md:items-center justify-end mt-1">
-                <div
-                  className={`${
-                    !(value.price?.operator === "+")
-                      ? "text-custom-green"
-                      : "text-custom-red"
-                  }`}
-                >
-                  {value.price?.variationValueDiference}
-                </div>
-                <div className="text-tsuka-50 text-xs xs:ml-2">
-                  {value.chain?.code} {value.price?.value}
+                  {token_price?.base_price &&
+                    (token_price.base_price >= 0.01
+                      ? `$${handleNumberFormat(
+                          parseFloat(token_price.base_price.toFixed(2))
+                        )}`
+                      : convertLawPrice(token_price.base_price))}
                 </div>
               </div>
             </div>

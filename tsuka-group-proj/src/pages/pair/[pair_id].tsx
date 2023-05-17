@@ -1,43 +1,48 @@
-import { tokensData } from "@/@fake-data/token.fake-data";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
+import { getOrdersByPair } from "@/lib/orders";
+import { getTokenPrice } from "@/lib/token-price";
 import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { getToken, setPairAddress } from "@/store/apps/token";
-import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
+import { TokenPairPrice } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import type { Order } from "@/types";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
   PriceTypeEnum,
-  RangeOrder,
-  SingleOrder,
 } from "@/types/token-order.type";
-import type { Order } from "@/types";
-import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { GetServerSideProps } from "next/types";
+import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { getOrdersByPair } from "@/lib/orders";
-import { GetServerSideProps } from "next/types";
 
 interface InputToken {
   id: string;
   token: string;
 }
 
-export default function Pair({orders}: {orders: Order[]}) {
+export default function Pair({
+  orders,
+  token_price,
+  oldTokenPrice,
+}: {
+  orders: Order[];
+  token_price: TokenPairPrice;
+  oldTokenPrice: TokenPairPrice;
+}) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
@@ -49,8 +54,13 @@ export default function Pair({orders}: {orders: Order[]}) {
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [pair_address, setPair_address] = useState<string>("");
+  const [pairAddress, setPairAddress] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    router.isReady && setIsLoading(false);
+  }, [router.isReady]);
 
   // When this page becomes unmounted
   useEffect(() => {
@@ -61,7 +71,7 @@ export default function Pair({orders}: {orders: Order[]}) {
   }, []);
 
   useEffect(() => {
-    setPair_address(String(router.query.pair_id));
+    setPairAddress(String(router.query.pair_id));
   }, [router]);
 
   useEffect(() => {
@@ -73,9 +83,9 @@ export default function Pair({orders}: {orders: Order[]}) {
   const strategies = useAppSelector((state) => state.strategies.value);
 
   useEffect(() => {
-    dispatch(getTokenPairInfo(pair_address as string));
-    dispatch(getActiveOrdersbyTokenPair(pair_address as string));
-  }, [pair_address]);
+    dispatch(getTokenPairInfo(pairAddress as string));
+    dispatch(getActiveOrdersbyTokenPair(pairAddress as string));
+  }, [pairAddress, dispatch]);
 
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
@@ -87,8 +97,10 @@ export default function Pair({orders}: {orders: Order[]}) {
     <div className="flex flex-col px-4 md:px-10 py-6">
       <FullHeaderToken
         tokenPairInfo={tokenPairInfo}
-        pair_address={String(pair_address)}
+        pair_address={String(pairAddress)}
         orders={orders}
+        token_price={token_price}
+        oldTokenPrice={oldTokenPrice}
       />
       <div className="hidden lg:grid grid-cols-11 gap-4">
         {/* <div className="col-span-12 md:col-span-3">
@@ -199,7 +211,7 @@ export default function Pair({orders}: {orders: Order[]}) {
           code1={tokenPairInfo.baseToken.symbol as string}
           name2={tokenPairInfo.pairedToken.name as string}
           code2={tokenPairInfo.pairedToken.symbol as string}
-          pair_address={pair_address}
+          pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
           isEdit={showEditOrderModal === 1}
@@ -212,6 +224,14 @@ export default function Pair({orders}: {orders: Order[]}) {
       {showDeletedAlert && (
         <DeletedAlertToken setShowDeletedAlert={setShowDeletedAlert} />
       )}
+      {isLoading && (
+        <div className="w-screen h-screen z-40">
+          <LoadingBox
+            title="Loading data"
+            description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -223,10 +243,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (e) {
     orders = [];
   }
+  const initialTokenPairPrice: TokenPairPrice = {
+    base_price: 0,
+    quote_price: 0,
+  };
+  let token_price: TokenPairPrice = { ...initialTokenPairPrice };
+  let oldTokenPrice: TokenPairPrice = { ...initialTokenPairPrice };
+  try {
+    token_price = (await getTokenPrice(
+      context.query.pair_id as string
+    )) as TokenPairPrice;
+  } catch (err) {
+    token_price = { ...initialTokenPairPrice };
+  }
+
+  try {
+    oldTokenPrice = (await getTokenPrice(
+      context.query.pair_id as string,
+      true
+    )) as TokenPairPrice;
+  } catch (err) {
+    oldTokenPrice = { ...initialTokenPairPrice };
+  }
 
   return {
     props: {
-      orders
+      orders,
+      token_price,
+      oldTokenPrice,
     },
   };
-}
+};
