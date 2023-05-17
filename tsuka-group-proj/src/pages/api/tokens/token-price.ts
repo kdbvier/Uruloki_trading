@@ -7,7 +7,10 @@ import { G_QUERY_GetQuotePrice, G_QUERY_GetTokenPair } from "./g_queries";
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
-});
+  yesterday: Joi.boolean().optional(),
+})
+  .min(1)
+  .max(2);
 
 const prisma = new PrismaClient();
 
@@ -28,7 +31,12 @@ export default async function tokenPriceInPairHandler(
           });
           break;
         }
-        const { pair_address } = value;
+        const { pair_address, yesterday } = value;
+        const timeBefore = (
+          yesterday
+            ? new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+            : new Date()
+        ).toISOString();
         const tokenPairResponse = await G_QUERY_GetTokenPair(pair_address);
         if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
           res.status(404).json({
@@ -59,8 +67,16 @@ export default async function tokenPriceInPairHandler(
 
         const quotePriceResponse = await G_QUERY_GetQuotePrice(
           tokenAddress,
-          pairedTokenAddress
+          pairedTokenAddress,
+          timeBefore
         );
+        if (!quotePriceResponse.data.data.ethereum.dexTrades[0]) {
+          res.status(400).json({
+            payload: undefined,
+            message: `Transaction for ${pair_address} not found yesterday`,
+          });
+          return;
+        }
         const { quotePrice: basePrice } =
           quotePriceResponse.data.data.ethereum.dexTrades[0];
         if (
@@ -75,8 +91,16 @@ export default async function tokenPriceInPairHandler(
               : process.env.USDT_ADDR;
           const baseQuotePriceResponse = await G_QUERY_GetQuotePrice(
             baseCurrency,
-            quoteCurrency as string
+            quoteCurrency as string,
+            timeBefore
           );
+          if (!baseQuotePriceResponse.data.data.ethereum.dexTrades[0]) {
+            res.status(400).json({
+              payload: undefined,
+              message: `Transaction for ${pair_address} not found yesterday`,
+            });
+            return;
+          }
           const { quotePrice: quoteQuotePrice } =
             baseQuotePriceResponse.data.data.ethereum.dexTrades[0];
           res.status(200).json({
@@ -88,7 +112,6 @@ export default async function tokenPriceInPairHandler(
           });
           return;
         }
-        console.log(basePrice, 1);
         res.status(200).json({
           payload: { base_price: basePrice, quote_price: 1 },
           message: `Successfully found price quote for pair address ${pair_address}`,
