@@ -180,18 +180,17 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   }, [selectedOrder]);
 
   useEffect(() => {
-    console.log(selectTokenName1,selectTokenName2 );
-    
-    if ((selectTokenName1 || selectTokenName2) && tokenCache) {
+    if ((selectTokenName1 || selectTokenName2) && tokenCache.length) {
       const currentToken = isBuy ? pairShortName : baseShortName;
+      
       const currentPrice = tokenCache.filter(
         (token) => token.shortName === currentToken
-      )[0].price;
+      )[0]!.price;
       const selectPrice = tokenCache.filter((token) =>
         isBuy
           ? token.shortName === selectTokenName1
           : token.shortName === selectTokenName2
-      )[0].price;
+      )[0]!.price;
       const newValue = (
         Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
       )
