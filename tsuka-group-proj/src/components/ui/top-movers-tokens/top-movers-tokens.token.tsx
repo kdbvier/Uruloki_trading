@@ -1,8 +1,9 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
-import { ITopMoversTokenProps } from "@/global";
+import { ITopMover, ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
+import { splitAddress } from "@/helpers/splitAddress.helper";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import {
@@ -17,13 +18,40 @@ import {
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
 }) => {
-  console.log(topMovers)
+  console.log(topMovers);
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<ITopMover[]>([]);
 
-  useEffect(() => { 
+  const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = ev;
+    setSearchQuery(value);
+    searchTopMovers();
+  };
+
+  const searchTopMovers = () => {
+    if (searchQuery !== "") {
+      const searchResults = topMovers.filter(
+        item => (
+          item.token.toLowerCase().includes(searchQuery.toLowerCase())
+          || item.pair_address.toLowerCase().includes(searchQuery.toLowerCase())
+          || item.chain.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+      setItems(searchResults);
+    } else {
+      setItems(topMovers);
+    }
+  }
+
+  useEffect(() => {
+    searchTopMovers();
     let tempArray: boolean[] = [];
-    for (let i = 0; i < topMovers.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       tempArray[i] = true;
     }
     setCollapeds(tempArray);
@@ -35,12 +63,12 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
     newArray[idx] = newValue;
     setCollapeds(newArray);
   };
-  
+
   return (
     <div className="w-full bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className={`md:flex justify-between items-center`}>
         <h1 className="mb-3 md:mb-0text-[18px] md:text-[24px] leading-6 md:leading-8 font-medium text-tsuka-50">
-          Top Movers Tokens
+          Top Movers Tokens (24hr)
         </h1>
         <div className="flex w-full md:w-auto items-center gap-3">
           <div className="grow md:grow-0 flex items-center text-sm text-tsuka-100">
@@ -49,6 +77,8 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               type="text"
               className="w-full md:w-[200px] border border-tsuka-400 bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
               placeholder="Find tokens..."
+              value={searchQuery}
+              onChange={handleChange}
             />
           </div>
           <button
@@ -68,7 +98,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 pl-2">#</th>
-              <th className="py-2 hidden md:table-cell">ID</th>
+              <th className="py-2 hidden md:table-cell">Contract</th>
               <th className="py-2 hidden md:table-cell">Token</th>
               <th className="py-2">Chain</th>
               <th colSpan={2} className="py-2 text-center md:text-left">
@@ -83,7 +113,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
             </tr>
           </thead>
           <tbody>
-            {topMovers.map((topMover, idx) => {
+            {items.map((topMover, idx) => {
               /// TODO: This is only for test
               let shortName = "ETH";
               let id = "ethereum";
@@ -105,7 +135,8 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                 );
               }
               return (
-                topMover.token && topMover.token !== "-" && (
+                topMover.token &&
+                topMover.token !== "-" && (
                   <Fragment key={idx}>
                     <tr
                       onClick={() => {
@@ -120,7 +151,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
                         <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                          {topMover.id}
+                          {splitAddress(topMover.pair_address as string)}
                         </span>
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
@@ -150,12 +181,16 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                         {topMover.risingPercent > 0 ? (
                           <div className="flex text-custom-green">
                             <FiArrowUpRight className="mt-0.5" />
-                            <span>{`${topMover.risingPercent.toLocaleString("en-us")}%`}</span>
+                            <span>{`${topMover.risingPercent.toLocaleString(
+                              "en-us"
+                            )}%`}</span>
                           </div>
                         ) : (
                           <div className="flex text-custom-red">
                             <FiArrowDownRight className="mt-0.5" />
-                            <span>{`${(0 - topMover.risingPercent).toLocaleString("en-us")}%`}</span>
+                            <span>{`${(
+                              0 - topMover.risingPercent
+                            ).toLocaleString("en-us")}%`}</span>
                           </div>
                         )}
                         {/* </div> */}

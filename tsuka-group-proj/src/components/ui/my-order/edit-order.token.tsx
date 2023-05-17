@@ -1,12 +1,7 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
-import { commafy, unCommafy } from "@/helpers/calc.helper";
-import { Token } from "@/types/token.type";
-import { PostOrder } from "@/types";
-import { TokenCache } from "@/types";
-import Orders from "@/lib/api/orders";
+import { PostOrder, TokenCache } from "@/types";
 // import getTokenCache from '@/lib/api/tokens/'
-import Dropdown from "../buttons/dropdown";
 import { useEffect, useState } from "react";
+import Dropdown from "../buttons/dropdown";
 
 import {
   editUserOrder,
@@ -18,11 +13,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
-import { FiX, FiPlusCircle } from "react-icons/fi";
-import ToggleButton from "../buttons/toggle.button";
-import { FaClock, FaSync } from "react-icons/fa";
-import { getAllTokenCache } from "@/store/apps/token-cache";
+import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
+import { getAllTokenCache } from "@/store/apps/token-cache";
+import { FaClock, FaSync } from "react-icons/fa";
+import { FiPlusCircle, FiX } from "react-icons/fi";
+import ToggleButton from "../buttons/toggle.button";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -37,7 +33,7 @@ export interface EditOrderTokenProp {
 
   //  token?: Token;
 }
-const handleNumberFormat = (num: number): string => {
+export const handleNumberFormat = (num: number): string => {
   let value = num.toString();
   const pattern = /^\d*\.?\d*$/;
   if (!pattern.test(value)) return "";
@@ -51,6 +47,22 @@ const handleNumberFormat = (num: number): string => {
     newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
   return newValue;
+};
+export const convertLawPrice = (price: number) => {
+  let priceEle;
+  if (price >= 0.01) {
+    priceEle = `$${commafy(price)}`;
+  } else {
+    priceEle = (
+      <>
+        ${formatNumberToHtmlTag(price).integerPart}
+        .0
+        <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
+        {formatNumberToHtmlTag(price).remainingDecimal}
+      </>
+    );
+  }
+  return priceEle;
 };
 const toNumber = (str: string): number => {
   const value = str.replace(/,/g, "");
@@ -154,23 +166,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       title: "Ethereum",
     },
   ];
-
-  const convertLawPrice = (price: number) => {
-    let priceEle;
-    if (price >= 0.01) {
-      priceEle = `$${commafy(price)}`;
-    } else {
-      priceEle = (
-        <>
-          ${formatNumberToHtmlTag(price).integerPart}
-          .0
-          <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
-          {formatNumberToHtmlTag(price).remainingDecimal}
-        </>
-      );
-    }
-    return priceEle;
-  };
 
   const handleNumberInputChange = (name: string, event: any) => {
     let value = event.target.value.replace(/,/g, "");

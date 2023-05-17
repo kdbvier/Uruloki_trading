@@ -5,6 +5,10 @@ import { OrderStatusEnum } from "@/types/token-order.type";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
+import {
+  convertLawPrice,
+  handleNumberFormat,
+} from "../my-order/edit-order.token";
 
 export interface OrderWidgetGraphProp {
   id: number;
@@ -17,6 +21,8 @@ export interface OrderWidgetGraphProp {
   status: string;
   setShowEditOrderModal: (a: any, b: any) => void;
   setShowDeletedAlert: (a: any) => void;
+  tokenSymbol: string;
+  pairedTokenSymbol: string;
 }
 
 export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
@@ -30,6 +36,8 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   status,
   setShowEditOrderModal,
   setShowDeletedAlert,
+  tokenSymbol,
+  pairedTokenSymbol,
 }) => {
   const [showEditOrDelete, setShowEditOrDelete] = useState<boolean>(false);
   const [showConfirmDlg, setShowConfirmDlg] = useState<boolean>(false);
@@ -53,8 +61,15 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between px-4 py-2 border border-b-0 border-tsuka-400 text-tsuka-50">
-        <p className="flex items-center gap-2">{buy ? "BUY" : "SELL"} {isContinuous?(<FaSync className="text-custom-green mr-2" />):(<FaClock className="text-custom-red mr-2"/>)}</p>
-        
+        <p className="flex items-center gap-2">
+          {buy ? "BUY" : "SELL"}{" "}
+          {isContinuous ? (
+            <FaSync className="text-custom-green mr-2" />
+          ) : (
+            <FaClock className="text-custom-red mr-2" />
+          )}
+        </p>
+
         <div className="relative">
           <span
             className="text-custom-primary flex items-center gap-2 cursor-pointer"
@@ -86,13 +101,29 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span className={buy ? "text-custom-green" : "text-custom-red"}>
               {value2 ? "Price range" : "Target price"}
             </span>
-            <span>{`$${value1.toLocaleString()}${
-              value2?.toLocaleString() ? " - $" + value2.toLocaleString() : ""
-            }`}</span>
+            <span>
+              {value1 >= 0.01
+                ? `$${handleNumberFormat(parseFloat(value1.toFixed(2)))}`
+                : convertLawPrice(value1)}
+              {!!value2 &&
+              (value2 >= 0.01
+                ? `$${handleNumberFormat(parseFloat(value2.toFixed(2)))}`
+                : convertLawPrice(value2))
+                ? " - $" +
+                  (value2 >= 0.01
+                    ? `$${handleNumberFormat(parseFloat(value2.toFixed(2)))}`
+                    : convertLawPrice(value2))
+                : ""}
+            </span>
           </div>
           <div className="flex justify-between">
             <span>Budget</span>
-            <span>${budget.toLocaleString()}</span>
+            <span>
+              {budget >= 0.01
+                ? handleNumberFormat(parseFloat(budget.toFixed(2)))
+                : convertLawPrice(budget).toString().slice(1)}{" "}
+              {buy ? pairedTokenSymbol : tokenSymbol}
+            </span>
           </div>
         </div>
         <div className="flex mt-4">
