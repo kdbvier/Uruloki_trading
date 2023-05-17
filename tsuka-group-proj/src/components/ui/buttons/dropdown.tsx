@@ -7,9 +7,10 @@ import { TokenCache } from "@/types";
 
 interface DropdownOption {
   allTokenName: TokenCache[];
+  setSelectTokenName: Function;
 }
 
-const Dropdown: React.FC<DropdownOption> = ({ allTokenName }) => {
+const Dropdown: React.FC<DropdownOption> = ({ allTokenName, setSelectTokenName }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.homepageTokens);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -38,6 +39,7 @@ const Dropdown: React.FC<DropdownOption> = ({ allTokenName }) => {
 
   const handleOptionClick = (option: TokenCache) => {
     setSelectedOption(option.shortName);
+    setSelectTokenName(option.shortName);
     console.log("Selected option:", option);
     setIsOpen(false);
   };

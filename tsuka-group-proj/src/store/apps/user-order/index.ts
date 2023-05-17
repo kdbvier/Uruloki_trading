@@ -53,11 +53,10 @@ export const editUserOrder = createAsyncThunk<
 >("userOrder/post", async ({ id, patchData }, { dispatch }): Promise<Order> => {
   // const data = userOrder.find((item) => item.id === id)!;
   const data = await Orders.editOrder(id, patchData);
-  console.log("data updated");
-
+  
   const user_id = 1;
   if (data) {
-    // dispatch(getUserOrder(user_id))
+    dispatch(getUserOrder(user_id.toString()))
     dispatch(
       getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
     );

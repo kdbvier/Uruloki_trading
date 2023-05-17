@@ -96,6 +96,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
+  const [selectTokenName1, setSelectTokenName1] = useState("");
+  const [selectTokenName2, setSelectTokenName2] = useState("");
   const [isBuy, setIsBuy] = useState(
     selectedOrder.order_type === OrderTypeEnum.BUY
   );
@@ -116,6 +118,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
 
+  const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
+  const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
+  const pairLongName = isEdit ? selectedOrder.pairTokenLongName : name2;
+  const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
+
   useEffect(() => {
     if (isEdit) {
       dispatch(setSelectedOrder(selectedOrderId));
@@ -126,12 +133,39 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   }, []);
 
   useEffect(() => {
+    const currentToken: any = isBuy ? pairShortName : baseShortName;
+    if(isBuy)
+      setSelectTokenName1(currentToken);
+      else
+      setSelectTokenName2(currentToken);
+      currentToken && setAllTokenName([
+        { shortName: currentToken } as TokenCache,
+        ...tokenCache.filter(({ shortName }) => shortName !== currentToken),
+      ]);
+    
+  }, [tokenCache, isBuy, pairShortName]);
+
+  useEffect(() => {
+    
     const currentToken = isBuy ? pairShortName : baseShortName;
-    setAllTokenName([
-      { shortName: currentToken } as TokenCache,
-      ...tokenCache.filter(({ shortName }) => shortName !== currentToken),
-    ]);
-  }, [tokenCache, isBuy]);
+
+    if (tokenCache && currentToken) {
+      const currentPrice = tokenCache.filter(
+        (token) => token.shortName === pairShortName
+      )[0].price;
+      const selectPrice = tokenCache.filter((token) =>
+        isBuy
+          ? token.shortName === pairShortName
+          : token.shortName === baseShortName
+      )[0].price;
+      const newValue = (
+        Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
+      )
+        .toFixed(2)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      setAmount(newValue);
+    }
+  }, [isBuy])
 
   useEffect(() => {
     if (JSON.stringify(selectedOrder) !== "{}" && isEdit) {
@@ -144,6 +178,28 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       dispatch(getTokenPairPrice(selectedOrder.pair_address as string));
     }
   }, [selectedOrder]);
+
+  useEffect(() => {
+    console.log(selectTokenName1,selectTokenName2 );
+    
+    if ((selectTokenName1 || selectTokenName2) && tokenCache) {
+      const currentToken = isBuy ? pairShortName : baseShortName;
+      const currentPrice = tokenCache.filter(
+        (token) => token.shortName === currentToken
+      )[0].price;
+      const selectPrice = tokenCache.filter((token) =>
+        isBuy
+          ? token.shortName === selectTokenName1
+          : token.shortName === selectTokenName2
+      )[0].price;
+      const newValue = (
+        Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
+      )
+        .toFixed(2)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      setAmount(newValue);
+    }
+  }, [selectTokenName1, selectTokenName2]);
 
   const closeClickHandler = () => {
     closeHandler();
@@ -247,9 +303,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       } else {
         patchData.single_price = toNumber(targetPrice);
       }
+      patchData.pairTokenShortName = selectTokenName1 as string;
+      patchData.baseTokenShortName = selectTokenName2 as string;
       patchData.is_continuous = isContinuous;
       console.log("before submit(patch)::");
-      console.log(patchData);
+      console.log(patchData, selectTokenName1);
       dispatch(editUserOrder({ id: selectedOrderId, patchData }));
       setShowEditOrderModal(false);
     } else {
@@ -265,9 +323,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       }
       postData.is_continuous = isContinuous;
       postData.baseTokenLongName = name1 as string;
-      postData.baseTokenShortName = code1 as string;
+      postData.baseTokenShortName = selectTokenName2 as string;
       postData.pairTokenLongName = name2 as string;
-      postData.pairTokenShortName = code2 as string;
+      postData.pairTokenShortName = selectTokenName1 as string;
       postData.user_id = 1; ////TODO:get it from server
       postData.pair_address = pair_address as string;
       console.log("before Submit(post)::");
@@ -277,10 +335,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
   };
 
-  const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
-  const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
-  const pairLongName = isEdit ? selectedOrder.pairTokenLongName : name2;
-  const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
       <div className="w-full h-full flex justify-center items-center p-4 md:p-0">
@@ -509,7 +563,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             onClick={() => setSeletCollaped(!seletCollaped)}
           >
             <div className="w-full flex justify-between">
-              <Dropdown allTokenName={allTokenName} />
+              <Dropdown
+                allTokenName={allTokenName}
+                setSelectTokenName={
+                  isBuy ? setSelectTokenName1 : setSelectTokenName2
+                }
+              />
               {/* <div
                 className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
                 onClick={() => setSeletCollaped(!seletCollaped)}

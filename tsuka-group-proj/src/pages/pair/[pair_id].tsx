@@ -7,7 +7,7 @@ import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token"; 
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { FullHeaderToken } from "@/components/ui/tokens/full-header.token; 
+import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";       
 import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
