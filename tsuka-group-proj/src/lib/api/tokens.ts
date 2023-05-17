@@ -24,7 +24,9 @@ export default class HomePageTokens {
       },
     });
   };
-  static getTokenVolume = async (baseTokenAddress: string) => {
+  static getTokenVolume = async (
+    baseTokenAddress: string
+  ): Promise<{ tradeAmount: number }> => {
     return await httpRequest.get(`/tokens/token-volume`, {
       params: {
         baseTokenAddress,

@@ -41,20 +41,50 @@ export const G_QUERY_GetTokenPair = (pair_address: string) => {
   );
 };
 
-export const G_QUERY_GetQuotePrice = (
+export const G_QUERY_GetTokenVolume = (baseTokenAddress: string) => {
+  return axios.post(
+    "https://graphql.bitquery.io",
+    {
+      query: `
+    query getPairTokenPrice($baseTokenAddress: String)
+    {
+      ethereum(network: ethereum) {
+        dexTrades(baseCurrency: {is: $baseTokenAddress}
+        ) {
+          tradeAmount(in: USD)
+        }
+      }
+    }
+    `,
+      variables: {
+        baseTokenAddress,
+      },
+    },
+    {
+      headers: {
+        "X-API-KEY": process.env.BITQUERY_API_KEY,
+      },
+    }
+  );
+};
+
+export const G_QUERY_GetQuotePrice = async (
   baseCurrency: string,
-  quoteCurrency: string
+  quoteCurrency: string,
+  timeBefore: string
 ) => {
   return axios.post(
     "https://graphql.bitquery.io",
     {
       query: `
-      query getQuotePrice($baseCurrency: String, $quoteCurrency: String){
+      query getQuotePrice($baseCurrency: String, $quoteCurrency: String, $timeBefore: ISO8601DateTime)
+      {
         ethereum(network: ethereum) {
           dexTrades(
             baseCurrency: {is: $baseCurrency}
             quoteCurrency: {is: $quoteCurrency}
             options: {desc: ["block.timestamp.time", "transaction.index"], limit: 1}
+            time: {before: $timeBefore}
           ) {
             block {
               height
@@ -79,6 +109,7 @@ export const G_QUERY_GetQuotePrice = (
       variables: {
         baseCurrency,
         quoteCurrency,
+        timeBefore,
       },
     },
     {

@@ -1,8 +1,10 @@
 import { tokensData } from "@/@fake-data/token.fake-data";
+import Orders from "@/lib/api/orders";
 import HomePageTokens from "@/lib/api/tokens";
 import { RootState } from "@/store";
 import { Token } from "@/types/token.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { TokenPairPrice, getTokenPairPrice } from "../user-order";
 
 export interface TokenState {
   value: Token;
@@ -24,13 +26,13 @@ const initialState: TokenState = {
       address: "",
     },
     price: {
-      value: "",
+      value: 0,
       operator: "+",
       variationValue: 0,
       variationValueDiference: 0,
     },
     volume: {
-      value: "0",
+      value: 0,
       currencyLabel: "",
     },
     marketCap: {
@@ -73,15 +75,6 @@ export const setOrderSplit = createAsyncThunk(
         buy: number;
         sell: number;
       };
-      volume: {
-        value: string;
-        currencyLabel: string;
-      };
-      price: {
-        value: string;
-        operator: string;
-        variationValue: number;
-      };
     },
     { getState }
   ): Promise<any> => {
@@ -92,15 +85,6 @@ export const setOrderSplit = createAsyncThunk(
         buy: Param.orderSplit.buy,
         sell: Param.orderSplit.sell,
       },
-      volume: {
-        value: Param.volume.value,
-        currencyLabel: Param.volume.currencyLabel,
-      },
-      price: {
-        value: Param.price.value,
-        operator: Param.price.operator,
-        variationValue: Param.price.variationValue,
-      },
     };
     return data;
   }
@@ -108,9 +92,17 @@ export const setOrderSplit = createAsyncThunk(
 
 export const getTokenVolume = createAsyncThunk(
   "token/getTokenVolume",
-  async (baseTokenAddress: string) => {
+  async (baseTokenAddress: string): Promise<{ tradeAmount: number }> => {
     const tokenVolume = await HomePageTokens.getTokenVolume(baseTokenAddress);
     return tokenVolume;
+  }
+);
+
+export const getYesterdayTokenPairPrice = createAsyncThunk(
+  "tokenPairPrice/getYesterdayPrice",
+  async (pair_address: string): Promise<TokenPairPrice> => {
+    const data = Orders.getYesterdayTokenPairPrice(pair_address);
+    return data;
   }
 );
 
@@ -142,7 +134,7 @@ export const tokenSlice = createSlice({
       })
       .addCase(getToken.fulfilled, (state, action) => {
         state.status = "ok";
-        state.value = action.payload;
+        // state.value = action.payload;
       })
       .addCase(getToken.rejected, (state) => {
         state.status = "failed";
@@ -176,7 +168,18 @@ export const tokenSlice = createSlice({
       })
       .addCase(setPairAddress.rejected, (state) => {
         state.status = "failed";
+      })
+      .addCase(getTokenVolume.fulfilled, (state, action) => {
+        state.value.volume.value = action.payload.tradeAmount;
+        state.value.volume.currencyLabel = " ";
+      })
+      .addCase(getYesterdayTokenPairPrice.fulfilled, (state, action) => {
+        console.log("getYesterdayTokenPairPrice fulfilled", action.payload);
+        state.value.price.variationValue = action.payload.base_price;
       });
+    // .addCase(getTokenPairPrice.fulfilled, (state, action) => {
+    //   state.value.price.value = action.payload.base_price.toLocaleString();
+    // });
   },
 });
 

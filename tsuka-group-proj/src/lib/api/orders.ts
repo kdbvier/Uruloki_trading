@@ -60,4 +60,14 @@ export default class Orders {
       pair_address,
     });
   };
+
+  static getYesterdayTokenPairPrice = async (
+    pair_address: string
+  ): Promise<TokenPairPrice> => {
+    console.log("getTokenPairPrice", pair_address);
+    return await httpRequest.post("/tokens/token-price", {
+      pair_address,
+      yesterday: true,
+    });
+  };
 }

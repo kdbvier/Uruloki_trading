@@ -1,5 +1,10 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
-import { getToken, getTokenVolume, setOrderSplit } from "@/store/apps/token";
+import {
+  getToken,
+  getTokenVolume,
+  getYesterdayTokenPairPrice,
+  setOrderSplit,
+} from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -20,6 +25,15 @@ export interface FullHeaderTokenProps {
   orders: Order[];
 }
 
+export const defaultNumberFormat = (num: number): any => {
+  const newNum = Math.abs(num);
+  const res =
+    newNum >= 0.01
+      ? handleNumberFormat(parseFloat(newNum.toFixed(2)))
+      : convertLawPrice(newNum).toString().slice(1);
+  return num > 0 ? res : `-${res}`;
+};
+
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   pair_address,
   tokenPairInfo,
@@ -35,8 +49,11 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   );
 
   useEffect(() => {
-    dispatch(setPairAddress(pair_address as string));
-    dispatch(getTokenPairPrice(pair_address as string));
+    if (pair_address) {
+      dispatch(setPairAddress(pair_address as string));
+      dispatch(getTokenPairPrice(pair_address as string));
+      dispatch(getYesterdayTokenPairPrice(pair_address as string));
+    }
   }, [pair_address]);
 
   useEffect(() => {
@@ -62,15 +79,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
         orderSplit: {
           buy: total_buy,
           sell: total_sell,
-        },
-        volume: {
-          value: String(price),
-          currencyLabel: "Billions",
-        },
-        price: {
-          value: String(price / 1000),
-          operator: "",
-          variationValue: 0,
         },
       })
     );
@@ -138,11 +146,18 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               </div>
               <InfoSpanToken
                 title={"VOL."}
-                value={`$${value.volume?.value}${value.volume?.currencyLabel[0]}`}
+                value={`$${defaultNumberFormat(value.volume?.value ?? 0)}`}
               />
               <InfoSpanToken
                 title={"24h"}
-                value={`${value.price?.operator}${value.price?.variationValue}%`}
+                value={`${defaultNumberFormat(
+                  token_price.base_price
+                    ? ((token_price.base_price -
+                        (value.price?.variationValue ?? 0)) /
+                        token_price.base_price) *
+                        100
+                    : 0
+                ).toString()}%`}
               />
             </div>
             <div className="text-sm justify-end">
