@@ -14,7 +14,11 @@ import { getStrategies } from "@/store/apps/strategies";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getToken, setPairAddress } from "@/store/apps/token";
-import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
+import {
+  TokenPairPrice,
+  getTokenPairPrice,
+  getUserOrder,
+} from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   OrderStatusEnum,
@@ -31,13 +35,23 @@ import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { getOrdersByPair } from "@/lib/orders";
 import { GetServerSideProps } from "next/types";
+import Orders from "@/lib/api/orders";
+import { getTokenPrice } from "@/lib/token-price";
 
 interface InputToken {
   id: string;
   token: string;
 }
 
-export default function Pair({ orders }: { orders: Order[] }) {
+export default function Pair({
+  orders,
+  token_price,
+  oldTokenPrice,
+}: {
+  orders: Order[];
+  token_price: TokenPairPrice;
+  oldTokenPrice: TokenPairPrice;
+}) {
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
@@ -89,6 +103,8 @@ export default function Pair({ orders }: { orders: Order[] }) {
         tokenPairInfo={tokenPairInfo}
         pair_address={String(pair_address)}
         orders={orders}
+        token_price={token_price}
+        oldTokenPrice={oldTokenPrice}
       />
       <div className="hidden lg:grid grid-cols-11 gap-4">
         {/* <div className="col-span-12 md:col-span-3">
@@ -223,10 +239,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (e) {
     orders = [];
   }
+  const initialTokenPairPrice: TokenPairPrice = {
+    base_price: 0,
+    quote_price: 0,
+  };
+  let token_price: TokenPairPrice = { ...initialTokenPairPrice };
+  let oldTokenPrice: TokenPairPrice = { ...initialTokenPairPrice };
+  try {
+    token_price = (await getTokenPrice(
+      context.query.pair_id as string
+    )) as TokenPairPrice;
+  } catch (err) {
+    token_price = { ...initialTokenPairPrice };
+  }
+
+  try {
+    oldTokenPrice = (await getTokenPrice(
+      context.query.pair_id as string,
+      true
+    )) as TokenPairPrice;
+  } catch (err) {
+    oldTokenPrice = { ...initialTokenPairPrice };
+  }
 
   return {
     props: {
       orders,
+      token_price,
+      oldTokenPrice,
     },
   };
 };

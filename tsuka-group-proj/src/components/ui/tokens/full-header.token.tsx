@@ -14,15 +14,20 @@ import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
 import { ApiResponse, Order, TokenPairInfo } from "@/types";
 import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
-import { getTokenPairPrice } from "@/store/apps/user-order";
+import { TokenPairPrice, getTokenPairPrice } from "@/store/apps/user-order";
 import {
   convertLawPrice,
   handleNumberFormat,
 } from "../my-order/edit-order.token";
+import { GetServerSideProps } from "next";
+import Orders from "@/lib/api/orders";
+import HomePageTokens from "@/lib/api/tokens";
 export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
   orders: Order[];
+  token_price: TokenPairPrice;
+  oldTokenPrice: TokenPairPrice;
 }
 
 export const defaultNumberFormat = (num: number): any => {
@@ -45,27 +50,55 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   pair_address,
   tokenPairInfo,
   orders,
+  token_price,
+  oldTokenPrice,
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
   const baseTokenAddress = useAppSelector(
     (state) => state.tokenPairInfo.value.baseToken.address
   );
-  const token_price = useAppSelector(
-    (state) => state.userOrder.selectedTokenPairPrice
-  );
+  const [tokenVolume, setTokenVolume] = useState({
+    value: 0,
+    currencyLabel: "",
+  });
 
   useEffect(() => {
     if (pair_address) {
       dispatch(setPairAddress(pair_address as string));
-      dispatch(getTokenPairPrice(pair_address as string));
-      dispatch(getYesterdayTokenPairPrice(pair_address as string));
     }
   }, [pair_address]);
 
   useEffect(() => {
     if (baseTokenAddress) {
-      dispatch(getTokenVolume(baseTokenAddress));
+      (async () => {
+        const volume = await HomePageTokens.getTokenVolume(baseTokenAddress);
+        let newTokenVolume: { value: number; currencyLabel: string } = {
+          value: 0,
+          currencyLabel: "",
+        };
+        const MILLION = 1e6,
+          BILLION = 1e9,
+          TRILLION = 1e12;
+        if (volume.tradeAmount > TRILLION) {
+          newTokenVolume.value = volume.tradeAmount / TRILLION;
+          newTokenVolume.currencyLabel = "Trillion";
+        } else if (volume.tradeAmount > BILLION) {
+          newTokenVolume.value = Number(
+            (volume.tradeAmount / BILLION).toString().slice(0, 4)
+          );
+          newTokenVolume.currencyLabel = "Billion";
+        } else if (volume.tradeAmount > MILLION) {
+          newTokenVolume.value = Number(
+            (volume.tradeAmount / MILLION).toString().slice(0, 4)
+          );
+          newTokenVolume.currencyLabel = "Million";
+        } else {
+          newTokenVolume.value = volume.tradeAmount;
+          newTokenVolume.currencyLabel = "";
+        }
+        setTokenVolume(newTokenVolume);
+      })();
     }
   }, [baseTokenAddress]);
 
@@ -153,16 +186,16 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               </div>
               <InfoSpanToken
                 title={"VOL."}
-                value={`$${defaultNumberFormat(value.volume.value ?? 0)} ${
-                  value.volume.currencyLabel
+                value={`$${defaultNumberFormat(tokenVolume.value ?? 0)} ${
+                  tokenVolume.currencyLabel
                 }`}
               />
               <InfoSpanToken
                 title={"24h"}
                 value={`${defaultNumberFormat(
-                  token_price.base_price
+                  token_price?.base_price
                     ? ((token_price.base_price -
-                        (value.price?.variationValue ?? 0)) /
+                        (oldTokenPrice?.base_price ?? 0)) /
                         token_price.base_price) *
                         100
                     : 0
@@ -172,7 +205,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             <div className="text-sm justify-end">
               <div className="flex flex-col lg:flex-row items-end justify-end">
                 <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
-                  {token_price.base_price &&
+                  {token_price?.base_price &&
                     (token_price.base_price >= 0.01
                       ? `$${handleNumberFormat(
                           parseFloat(token_price.base_price.toFixed(2))
