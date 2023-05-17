@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
 import { ITopMover, ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
@@ -160,7 +159,6 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                         </span>
                       </td>
                       <td className="py-2 md:py-8 flex items-center">
-                        <TokenIconsToken name={id} shortName={shortName} />
                         <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                           <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
                             {shortName}
