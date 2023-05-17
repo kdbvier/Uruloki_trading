@@ -9,7 +9,7 @@ import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
 
 export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
   const router = useRouter();
-  return ( 
+  return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
         <span className="text-tsuka-50 text-[18px] font-medium">
@@ -37,7 +37,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
             </tr>
           </thead>
           <tbody>
-            {topGainers.map((topGainer, idx) => {
+            {topGainers?.map((topGainer, idx) => {
               let priceEle;
               if (topGainer.price >= 0.01) {
                 // console.log("topgainer price >: ", topGainer.price);
@@ -56,7 +56,8 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                 );
               }
               return (
-                topGainer.token.name && topGainer.token.name!=="-" && (
+                topGainer.token.name &&
+                topGainer.token.name !== "-" && (
                   <tr
                     onClick={() => {
                       router.push(`/pair/${topGainer.token.pair_address}`);

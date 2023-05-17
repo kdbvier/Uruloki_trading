@@ -55,7 +55,6 @@ interface Trade {
   };
 }
 
-
 const getQuery = (
   tradeSide: string,
   baseAddress: string
@@ -97,7 +96,7 @@ const client = createClient({
   webSocketImpl: WebSocketImpl,
   connectionParams: () => ({
     headers: {
-      "X-API-KEY": process.env.BITQUERY_API_KEY,
+      "X-API-KEY": process.env.NEXT_PUBLIC_BITQUERY_API_KEY,
     },
   }),
 });
@@ -164,7 +163,9 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
   useEffect(() => {
     const onNext = (data: any) => {
-        const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
+      console.log("setSellTrades = ", data);
+
+      const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
         const obj = el.Trade;
         const side = Object.keys(el.Trade)[0];
         return {
@@ -178,7 +179,6 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
           },
         };
       });
-
       setSellTrades((prev) => [
         ...prev,
         ...updatedTrades.filter((el: any) => el.side.includes("Sell")),
@@ -212,6 +212,8 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
 
   useEffect(() => {
     const onNext = (data: any) => {
+      console.log("setBuyTrades = ", data);
+
       const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
         const obj = el.Trade;
         const side = Object.keys(el.Trade)[0];
@@ -268,22 +270,22 @@ const PairDetail: React.FC<TokenDetailsProps> = ({
         pair_address={String(pair_address)}
       />
       <div className="hidden lg:grid grid-cols-11 gap-4">
-          <div className="col-span-12 md:col-span-8">
-            {/*<LiveGraphToken token={token.chain?.code} />*/}
-            <LiveGraphToken/>
-            <div className="hidden md:grid grid-cols-8 gap-4">
-              <div className="col-span-12 md:col-span-3">
-                <PoolInfoToken token={token} />
-              </div>
-              <div className="col-span-12 md:col-span-5">
-                <OrderBookToken
-                  token={token}
-                  buyTrades={buyTrades}
-                  sellTrades={sellTrades}
-                />
-              </div>
+        <div className="col-span-12 md:col-span-8">
+          {/*<LiveGraphToken token={token.chain?.code} />*/}
+          <LiveGraphToken />
+          <div className="hidden md:grid grid-cols-8 gap-4">
+            <div className="col-span-12 md:col-span-3">
+              <PoolInfoToken token={token} />
+            </div>
+            <div className="col-span-12 md:col-span-5">
+              <OrderBookToken
+                token={token}
+                buyTrades={buyTrades}
+                sellTrades={sellTrades}
+              />
             </div>
           </div>
+        </div>
         <div className="col-span-12 md:col-span-3">
           {currentToken && compareToken && (
             <>
@@ -376,8 +378,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
     baseAddress = res.data.payload.baseToken.address;
     quoteAddress = res.data.payload.pairedToken.address;
-    } catch (error) {
-    console.log(error, 'error');
+  } catch (error) {
+    console.log(error, "error");
   }
 
   try {
