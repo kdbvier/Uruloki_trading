@@ -1,7 +1,10 @@
 import { tokensData } from "@/@fake-data/token.fake-data";
 import Orders from "@/lib/api/orders";
+import HomePageTokens from "@/lib/api/tokens";
+import { RootState } from "@/store";
 import { Token } from "@/types/token.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { TokenPairPrice, getTokenPairPrice } from "../user-order";
 
 export interface TokenState {
   value: Token;
@@ -10,39 +13,39 @@ export interface TokenState {
 
 const initialState: TokenState = {
   value: {
-    id: "1",
+    id: "",
     token: "Ethereum",
     chain: {
       name: "Ethereum",
       code: "ETH",
-      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
+      address: "",
     },
     pair: {
       code: "BTC",
       name: "Bitcoin",
-      address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
+      address: "",
     },
     price: {
-      value: "29,095.9888201",
+      value: 0,
       operator: "+",
-      variationValue: 0.76,
-      variationValueDiference: 0.00523,
+      variationValue: 0,
+      variationValueDiference: 0,
     },
     volume: {
-      value: "32,987.54",
-      currencyLabel: "Billions",
+      value: 0,
+      currencyLabel: "",
     },
     marketCap: {
-      value: "476,892,747,054",
-      currencyLabel: "Billions",
+      value: "0",
+      currencyLabel: "",
     },
     nOrders: {
-      value: "103,912",
-      currencyLabel: "Millions",
+      value: "0",
+      currencyLabel: "",
     },
     orderSplit: {
-      buy: 3782,
-      sell: 3154,
+      buy: 0,
+      sell: 0,
     },
   } as Token,
   status: "ok",
@@ -56,10 +59,66 @@ export const getToken = createAsyncThunk(
   }
 );
 
-export const getTokenPairPrice = createAsyncThunk(
-  "tokenPairPrice/get",
-  async (pair_address: string): Promise<{ quote_price: number }> => {
-    const data = Orders.getTokenPairPrice(pair_address);
+export const getTokenByStrategyId = createAsyncThunk(
+  "token/getByStrategyId",
+  async (id: string): Promise<Token> => {
+    const data = tokensData.find((item) => item?.strategy_id === id)!;
+    return data;
+  }
+);
+
+export const setOrderSplit = createAsyncThunk(
+  "token/setOrderSplit",
+  async (
+    Param: {
+      orderSplit: {
+        buy: number;
+        sell: number;
+      };
+    },
+    { getState }
+  ): Promise<any> => {
+    const previousState = (getState() as RootState).token;
+    const data = {
+      ...previousState.value,
+      orderSplit: {
+        buy: Param.orderSplit.buy,
+        sell: Param.orderSplit.sell,
+      },
+    };
+    return data;
+  }
+);
+
+export const getTokenVolume = createAsyncThunk(
+  "token/getTokenVolume",
+  async (baseTokenAddress: string): Promise<{ tradeAmount: number }> => {
+    const tokenVolume = await HomePageTokens.getTokenVolume(baseTokenAddress);
+    return tokenVolume;
+  }
+);
+
+export const getYesterdayTokenPairPrice = createAsyncThunk(
+  "tokenPairPrice/getYesterdayPrice",
+  async (pair_address: string): Promise<TokenPairPrice> => {
+    const data = Orders.getYesterdayTokenPairPrice(pair_address);
+    return data;
+  }
+);
+
+export const setPairAddress = createAsyncThunk(
+  "token/setPairAddress",
+  async (pair: string, { getState }): Promise<any> => {
+    const previousState = (getState() as RootState).token;
+    const data = {
+      ...previousState.value,
+      pair: {
+        ...previousState.value.pair,
+        address: pair,
+      },
+    };
+    console.log("setPair", data);
+
     return data;
   }
 );
@@ -80,18 +139,66 @@ export const tokenSlice = createSlice({
       .addCase(getToken.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(getTokenPairPrice.fulfilled, (state, action) => {
-        return {
-          ...state,
-          value: {
-            ...state.value,
-            price: {
-              ...state.value.price,
-              value: action.payload?.quote_price?.toString(),
-            },
-          },
-        };
+      .addCase(getTokenByStrategyId.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getTokenByStrategyId.fulfilled, (state, action) => {
+        state.status = "ok";
+        state.value = action.payload;
+      })
+      .addCase(getTokenByStrategyId.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(setOrderSplit.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(setOrderSplit.fulfilled, (state, action) => {
+        state.status = "ok";
+        state.value = action.payload;
+      })
+      .addCase(setOrderSplit.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(setPairAddress.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(setPairAddress.fulfilled, (state, action) => {
+        state.status = "ok";
+        state.value = action.payload;
+      })
+      .addCase(setPairAddress.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(getTokenVolume.fulfilled, (state, action) => {
+        // state.value.volume.value = action.payload.tradeAmount;
+        const MILLION = 1e6,
+          BILLION = 1e9,
+          TRILLION = 1e12;
+        if (action.payload.tradeAmount > TRILLION) {
+          state.value.volume.value = action.payload.tradeAmount / TRILLION;
+          state.value.volume.currencyLabel = "Trillion";
+        } else if (action.payload.tradeAmount > BILLION) {
+          state.value.volume.value = Number(
+            (action.payload.tradeAmount / BILLION).toString().slice(0, 4)
+          );
+          state.value.volume.currencyLabel = "Billion";
+        } else if (action.payload.tradeAmount > MILLION) {
+          state.value.volume.value = Number(
+            (action.payload.tradeAmount / MILLION).toString().slice(0, 4)
+          );
+          state.value.volume.currencyLabel = "Million";
+        } else {
+          state.value.volume.value = action.payload.tradeAmount;
+          state.value.volume.currencyLabel = "";
+        }
+      })
+      .addCase(getYesterdayTokenPairPrice.fulfilled, (state, action) => {
+        console.log("getYesterdayTokenPairPrice fulfilled", action.payload);
+        state.value.price.variationValue = action.payload.base_price;
       });
+    // .addCase(getTokenPairPrice.fulfilled, (state, action) => {
+    //   state.value.price.value = action.payload.base_price.toLocaleString();
+    // });
   },
 });
 

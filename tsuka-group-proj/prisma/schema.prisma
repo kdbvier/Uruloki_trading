@@ -45,29 +45,34 @@ model orders {
   budget             Float?
   order_type         orders_order_type?
   price_type         orders_price_type?
+  is_continuous      Boolean?           @default(false)
   user_id            Int
   baseTokenShortName String?            @db.VarChar(255)
   pairTokenShortName String?            @db.VarChar(255)
   baseTokenLongName  String?            @db.VarChar(255)
   pairTokenLongName  String?            @db.VarChar(255)
   token_cache        token_cache?       @relation(fields: [pair_address], references: [pair_address])
+  order_strategy     order_strategy[]
 
   @@index([user_id], map: "fk_user_id_idx")
   @@index([pair_address], map: "fk_pair_address_idx")
 }
 
 model strategies {
-  strategy_id BigInt           @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
-  name        String           @db.LongText
-  user_id     Int
-  createdAt   DateTime?        @db.Timestamp(0)
-  status      strategy_status?
+  strategy_id    Int              @unique(map: "strategy_id") @default(autoincrement())
+  name           String           @db.LongText
+  user_id        Int
+  createdAt      DateTime?        @db.Timestamp(0)
+  status         strategy_status?
+  order_strategy order_strategy[]
 }
 
 model order_strategy {
-  id         Int @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   orderId    Int
+  order      orders     @relation(fields: [orderId], references: [order_id])
   strategyId Int
+  strategy   strategies @relation(fields: [strategyId], references: [strategy_id])
 
   @@unique([orderId, strategyId], name: "order_strategy_unique", map: "order_strategy_unique")
 }

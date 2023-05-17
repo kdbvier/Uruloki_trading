@@ -1,7 +1,6 @@
 import { getTokenCompare } from "@/store/apps/token-compare";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
-import { HorizontalIconsToken } from "../tokens/horizontal-icons.token";
 import { FiltersSearch } from "@/components/ui/content-header/filters.search";
 import { FiltersButton } from "@/components/ui/content-header/filters.button";
 

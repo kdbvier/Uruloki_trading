@@ -34,6 +34,9 @@ body {
 .scrollable::-webkit-scrollbar-thumb:hover {
   background: #4d556a;
 }
+.scrollable::-webkit-scrollbar-corner {
+  background-color: #1f2333;
+}
 
 .landing-container {
   max-width: 1440px;
@@ -140,7 +143,10 @@ body {
   font-family: "Steradian-Light";
   src: url("../../public/fonts/steradian/EMT_Steradian_TRIAL/SteradianTRIAL-Lt.otf");
 }
-
+@font-face {
+  font-family: "Uruloki";
+  src: url("/fonts/landing/DejitaruTsuka-Regular.otf");
+}
 @keyframes rotation {
   from {
     transform: rotate(0deg);

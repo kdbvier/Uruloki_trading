@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        'xs':'375px',
+        xs: "375px",
       },
       colors: {
         tsuka: {
@@ -48,6 +48,9 @@ module.exports = {
       // "Steradian-600": ['Steradian-SemiBold', 'sans-serif'],
       "Steradian-600": ["Steradian-Bold", "sans-serif"],
       "Steradian-700": ["Steradian-ExtraBold", "sans-serif"],
+      Uruloki: ["Uruloki", "sans-serif"],
+
+      "Poppins-300": ["Poppins", "sans-serif"],
     },
   },
   plugins: [],

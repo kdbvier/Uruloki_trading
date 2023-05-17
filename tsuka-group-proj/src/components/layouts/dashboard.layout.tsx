@@ -78,8 +78,8 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       path: "/my-orders",
     },
     {
-      title: "Settings",
-      path: "/#",
+      title: "Profile",
+      path: "/profile",
     },
   ];
 
@@ -126,18 +126,48 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       </Head>
       <main>
         <nav>
-          <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500">
+          <div className="w-full px-2 md:px-6 lg:px-8 border-b border-tsuka-500 relative overflow-hidden">
+            <Image
+              className="absolute top-0 left-0"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to right, rgba(0,0,0,1) 90%, rgba(0,0,0,0))",
+              }}
+              src="/imgs/sky.jfif"
+              width={700}
+              height={200}
+              alt="header bgImg sky"
+            />
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center md:justify-start">
                 <div className="flex flex-shrink-0 items-center pl-2 xs:px-4 md:px-2">
-                  <p className="text-xl font-extrabold text-tsuka-100 ">
-                    <Image
+                  <div className="text-xl font-extrabold text-tsuka-100 ">
+                    {/* <Image
                       className="hidden sm:block"
                       src="/logos/logo.png"
                       alt="logo"
-                      width={111}
                       height={40}
-                    />
+                    /> */}
+                    <div className="flex justify-between items-center">
+                      <Image
+                        // src={icon.url}
+                        className="hidden sm:block"
+                        src="/logos/logo_icon.png"
+                        alt="logo__image"
+                        width={40}
+                        height={40}
+                        style={{ position: "relative" }}
+                      />
+                      <div
+                        className="px-3 flex flex-col hidden sm:block"
+                        style={{ position: "relative" }}
+                      >
+                        <span className="text-[26px] tracking-widest font-Uruloki text-white stroke-transparent">
+                          URULOKI
+                        </span>
+                        {/* <span className="font-Uruloki m-0 mt-[9px] tracking-[7px] stroke-transparent">DEJITARU</span> */}
+                      </div>
+                    </div>
                     <Image
                       className="sm:hidden"
                       src="/logos/logo_icon.png"
@@ -145,18 +175,28 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                       width={40}
                       height={40}
                     />
-                  </p>
+                  </div>
                 </div>
                 <div className="hidden lg:ml-6 lg:block">
                   <div className="flex px-10 space-x-4">
-                    {navLinks?.map(({ path, title }) => (
-                      <HeaderLinkButton
-                        key={path}
-                        path={path}
-                        title={title}
-                        active={path === router.pathname}
-                      />
-                    ))}
+                    {navLinks?.map(({ path, title }, index) => {
+                      let isActive = path === router.pathname;
+                      if (
+                        index === 1 &&
+                        router.pathname.indexOf("strategies") >= 0
+                      ) {
+                        isActive = true;
+                      }
+
+                      return (
+                        <HeaderLinkButton
+                          key={path}
+                          path={path}
+                          title={title}
+                          active={isActive}
+                        />
+                      );
+                    })}
                     <DefaultButton
                       label="Create an Order"
                       callback={() => setShowEditOrderModal(true)}

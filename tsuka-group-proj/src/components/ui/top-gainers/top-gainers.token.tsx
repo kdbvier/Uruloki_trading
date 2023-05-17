@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopGainersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
@@ -9,7 +8,7 @@ import { FiArrowUpRight, FiRefreshCcw } from "react-icons/fi";
 
 export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
   const router = useRouter();
-  return (
+  return ( 
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
       <div className="flex justify-between">
         <span className="text-tsuka-50 text-[18px] font-medium">
@@ -24,13 +23,13 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
         </Link>
       </div>
 
-      <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-hidden mt-5">
+      <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-auto mt-5">
         <table className="w-full text-left">
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
               <th className="py-2 text-center pr-2">#</th>
               <th className="py-2">Token</th>
-              <th colSpan={2} className="py-2 text-center md:text-left">
+              <th colSpan={2} className="py-2 text-center xl:text-left">
                 Price(USD)
               </th>
               {/* <th className="py-2 text-right md:text-center"></th> */}
@@ -56,15 +55,15 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                 );
               }
               return (
-                topGainer.token.name && (
+                topGainer.token.name && topGainer.token.name!=="-" && (
                   <tr
                     onClick={() => {
-                      router.push("/pair/2");
+                      router.push(`/pair/${topGainer.token.pair_address}`);
                     }}
                     className="cursor-pointer border-t border-t-tsuka-400"
                     key={idx}
                   >
-                    <td className="py-2 md:py-5">
+                    <td className="py-2 md:py-5 text-right md:text-left">
                       {topGainer.rank >= 1 && topGainer.rank <= 3 ? (
                         <Image
                           src={`/icons/medal${topGainer.rank}.png`}
@@ -79,26 +78,22 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                       )}
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <TokenIconsToken
-                        name={topGainer.token.id}
-                        shortName={topGainer.token.shortName}
-                      />
-                      <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
-                        <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
+                      <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0 flex-shrink">
+                        <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal hidden xl:block">
                           {topGainer.token.name}
                         </p>
-                        <p className="text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1">
+                        <p className="xl:text-tsuka-200 text-[14px] leading-[18px] font-normal ml-0 md:ml-1 text-tsuka-50">
                           {topGainer.token.shortName}
                         </p>
                       </div>
                     </td>
-                    <td className="py-2 md:py-5 w-16">
+                    <td className="py-2 md:py-5 w-16 text-right xl:text-left">
                       <span className="text-tsuka-200">{priceEle}</span>
                     </td>
-                    <td className="py-2 md:py-5">
+                    <td className="py-2 md:py-5 text-right xl:text-left">
                       <div className="ml-2 flex text-[#6FCF97]">
                         <FiArrowUpRight className="mt-0.5" />
-                        <span>{`${topGainer.risingPercent}%`}</span>
+                        <span>{`${topGainer.risingPercent.toLocaleString()}%`}</span>
                       </div>
                     </td>
                   </tr>

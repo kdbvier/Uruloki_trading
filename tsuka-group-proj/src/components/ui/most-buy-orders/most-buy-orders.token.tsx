@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { IMostBuyOrdersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
 import Image from "next/image";
@@ -9,7 +8,7 @@ import { FiRefreshCcw } from "react-icons/fi";
 export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
   mostBuyOrders,
 }) => {
-  const router = useRouter();
+  const router = useRouter(); 
 
   return (
     <div className="w-full md:w-1/3 bg-tsuka-500 p-6 rounded-2xl text-tsuka-300">
@@ -26,7 +25,7 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
         </Link>
       </div>
 
-      <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-hidden mt-5">
+      <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-auto mt-5">
         <table className="w-full text-left">
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
@@ -41,7 +40,7 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
                 mostBuyOrder.token.name && (
                   <tr
                     onClick={() => {
-                      router.push("/pair/2");
+                      router.push(`/pair/${mostBuyOrder.token.pair_address}`);
                     }}
                     className="cursor-pointer border-t border-t-tsuka-400"
                     key={idx}
@@ -61,10 +60,6 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
                       )}
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <TokenIconsToken
-                        name={mostBuyOrder.token.id}
-                        shortName={mostBuyOrder.token.shortName}
-                      />
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                         <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
                           {mostBuyOrder.token.name}

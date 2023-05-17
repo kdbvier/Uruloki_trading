@@ -23,7 +23,7 @@ export default function StrategyDetails() {
             "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
           }
         >
-          My Strategies
+          My Setups
         </Link>
         <Link
           href={"/my-orders"}

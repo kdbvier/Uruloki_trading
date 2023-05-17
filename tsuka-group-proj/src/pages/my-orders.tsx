@@ -1,21 +1,21 @@
-import { userOrder } from "@/@fake-data/user-order.fake-data";
-
-import { getUserOrder, getUserOrderWithFilter } from "@/store/apps/user-order";
+import { getUserOrderWithFilter } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { LoadingBox } from "@/components/ui/loading/loading-box";
-import { OrderStatusEnum, UserOrder } from "@/types/token-order.type";
-import { useState, useEffect } from "react";
+import { getStrategies } from "@/store/apps/strategies";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
-import Orders from "../lib/api/orders";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 
 export default function MyOrder() {
-  const [openMode, setOpenMode] = useState<boolean>(true);
+  const [openToogle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
@@ -24,16 +24,22 @@ export default function MyOrder() {
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.userOrder);
+  const {
+    strategies: { value: strategies },
+  } = useAppSelector((state) => state);
+  useEffect(() => {
+    dispatch(getStrategies());
+  }, [dispatch]);
   useEffect(() => {
     //TODO: change id to my id
     dispatch(
       getUserOrderWithFilter({
         id: 1,
-        status: openMode ? "Open" : "Close",
+        status: openToogle ? "Open" : "Close",
         search: searchValue,
       })
     );
-  }, [dispatch, openMode]);
+  }, [dispatch, openToogle]);
   // useEffect(()=> {
   //   const fetchData =async () => {
   //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
@@ -51,7 +57,7 @@ export default function MyOrder() {
     dispatch(
       getUserOrderWithFilter({
         id: 1,
-        status: openMode ? "Open" : "Close",
+        status: openToogle ? "Open" : "Close",
         search: searchValue,
       })
     );
@@ -71,7 +77,7 @@ export default function MyOrder() {
               "hidden md:block text-[24px] leading-[52px] text-tsuka-200"
             }
           >
-            My Strategies
+            My Setups
           </Link>
           <Link
             href={"/my-orders"}
@@ -85,20 +91,18 @@ export default function MyOrder() {
         <div className="w-full md:w-auto flex flex-wrap">
           <div className="w-full md:w-auto flex md:gap-1">
             <button
-              className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none ${
-                openMode ? "bg-tsuka-500 text-custom-primary" : "text-tsuka-300"
+              className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none bg-tsuka-500 ${
+                openToogle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
               } rounded-md text-sm`}
-              onClick={() => setOpenMode(true)}
+              onClick={() => setOpenToggle(true)}
             >
               Open Orders
             </button>
             <button
               className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${
-                !openMode
-                  ? "bg-tsuka-500 text-custom-primary"
-                  : "text-tsuka-300"
+                !openToogle ? "bg-tsuka-500 text-red-400" : "text-tsuka-300"
               } rounded-md text-sm`}
-              onClick={() => setOpenMode(false)}
+              onClick={() => setOpenToggle(false)}
             >
               Closed Orders
             </button>
@@ -120,16 +124,18 @@ export default function MyOrder() {
                 }}
               />
             </div>
-            <button
-              type="button"
-              onClick={() => console.log("clicked!")}
-              className={`px-3 py-[11px] focus:outline-none bg-tsuka-500 text-tsuka-100 rounded-md text-sm flex items-center`}
-            >
-              <label className="mr-1 text-tsuka-200 text-base">
-                <FiFilter />
-              </label>
-              Filters
-            </button>
+            <Link href={"/pair/1"}>
+              <button
+                type="button"
+                onClick={() => console.log("clicked!")}
+                className={`px-3 py-[11px] focus:outline-none bg-tsuka-500 text-tsuka-100 rounded-md text-sm flex items-center`}
+              >
+                <label className="mr-1 text-tsuka-200 text-base">
+                  <FiFilter />
+                </label>
+                Filters
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -184,6 +190,23 @@ export default function MyOrder() {
               </div>
             );
           })}
+        <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+          <button
+            type="button"
+            onClick={() => setShowSidebar(true)}
+            className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+          >
+            <label className="mr-2">
+              <HiOutlineArrowLongLeft size={24} />
+            </label>
+            Order & Strategies
+          </button>
+        </div>
+        <SidebarStrategies
+          open={showSidebar}
+          handleOpen={() => setShowSidebar(false)}
+          strategies={strategies!}
+        />
       </div>
       {!showAll && (
         <div className="mt-4 flex justify-center">

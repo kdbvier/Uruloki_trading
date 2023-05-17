@@ -1,4 +1,4 @@
-export function numberWithCommas(value: number) {
+export function numberWithCommas(value: number | string) {
   const options = {
     style: "currency",
     currency: "USD",

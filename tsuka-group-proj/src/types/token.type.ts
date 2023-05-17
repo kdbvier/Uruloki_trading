@@ -1,5 +1,6 @@
 export type Token = {
   id: string;
+  strategy_id?: string;
   token: string;
   chain: {
     name: string;
@@ -12,13 +13,13 @@ export type Token = {
     address: string;
   };
   price: {
-    value: string;
+    value: number;
     operator: "+" | "-";
     variationValue: number;
     variationValueDiference?: number;
   };
   volume: {
-    value: string;
+    value: number;
     currencyLabel: string;
   };
   marketCap: {

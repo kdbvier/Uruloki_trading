@@ -4,11 +4,12 @@ import { TopMoverItem } from "@/types";
 export function TopMoversMapper(objects: TopMoverItem[]):ITopMover[] {
     return objects?.map((item) =>
       Object.assign(
-        {},
+        {}, 
         {
           id: Number(item.id),
           rank:Number( item.rank),
           token: String(item.token_cache.name),
+          pair_address: String(item.token_cache.pair_address),
           chain: {
             id: String(item.token_cache.chain),
             name: String(item.token_cache.chain),

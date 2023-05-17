@@ -30,6 +30,7 @@ export type TopGainerItem = {
     chain: string | null;
     short_name: string | null;
     change_24hr: number | null;
+    pair_address: string | null;
   };
 };
 
@@ -59,6 +60,7 @@ export type MostBuyOrder = {
     name: string | null;
     chain: string | null;
     short_name: string | null;
+    pair_address: string | null;
   };
   buy_orders: number;
   total_orders: number;
@@ -72,6 +74,7 @@ export type MostSellOrder = {
     name: string | null;
     chain: string | null;
     short_name: string | null;
+    pair_address: string | null;
   };
   sell_orders: number;
   total_orders: number;

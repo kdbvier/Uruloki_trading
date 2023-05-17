@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ChartBound } from "@/types/chart-bound.type";
 import {
   OrderStatusEnum,
@@ -56,21 +55,8 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   }, [status]);
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
+    <div className="bg-tsuka-500 mt-4 p-4 md:pt-6 rounded-xl hover:border-4 hover:border-yellow-500 text-tsuka-100 transition-all duration-150">
       <div className="flex flex-row items-center mb-4">
-        <TokenIconsToken
-          name={name1}
-          shortName={code1}
-          width={32}
-          height={32}
-        />
-        <TokenIconsToken
-          className="-ml-1"
-          name={name2}
-          shortName={code2}
-          width={32}
-          height={32}
-        />
         <div className="px-2 flex-1 flex-col">
           <p className="text-tsuka-50 text-lg font-semibold uppercase">
             {code1}/{code2}
@@ -93,16 +79,20 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
       </div>
       <div className="md:h-[350px] md:overflow-scroll">
         {orders?.map((order) => {
+          console.log(order.id, " : ", order.is_continuous);
           if (isSingle(order)) {
             return (
               <OrderWidgetGraph
                 key={order.id}
-                id = {order.id}
+                id={order.id}
                 buy={order.order_type === "buy"}
+                isContinuous={order.is_continuous}
                 value1={order.price}
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
+                tokenSymbol={order.baseTokenShortName}
+                pairedTokenSymbol={order.pairTokenShortName}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
@@ -113,11 +103,14 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 key={order.id}
                 id={order.id}
                 buy={order.order_type === "buy"}
+                isContinuous={order.is_continuous}
                 value1={order.prices[0]}
                 value2={order.prices[1]}
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
+                tokenSymbol={order.baseTokenShortName}
+                pairedTokenSymbol={order.pairTokenShortName}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
