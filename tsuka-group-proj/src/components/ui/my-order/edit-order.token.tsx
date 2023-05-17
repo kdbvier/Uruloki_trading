@@ -1,12 +1,7 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
-import { commafy, unCommafy } from "@/helpers/calc.helper";
-import { Token } from "@/types/token.type";
-import { PostOrder } from "@/types";
-import { TokenCache } from "@/types";
-import Orders from "@/lib/api/orders";
+import { PostOrder, TokenCache } from "@/types";
 // import getTokenCache from '@/lib/api/tokens/'
-import Dropdown from "../buttons/dropdown";
 import { useEffect, useState } from "react";
+import Dropdown from "../buttons/dropdown";
 
 import {
   editUserOrder,
@@ -18,11 +13,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
-import { FiX, FiPlusCircle } from "react-icons/fi";
-import ToggleButton from "../buttons/toggle.button";
-import { FaClock, FaSync } from "react-icons/fa";
-import { getAllTokenCache } from "@/store/apps/token-cache";
+import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
+import { getAllTokenCache } from "@/store/apps/token-cache";
+import { FaClock, FaSync } from "react-icons/fa";
+import { FiPlusCircle, FiX } from "react-icons/fi";
+import ToggleButton from "../buttons/toggle.button";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;

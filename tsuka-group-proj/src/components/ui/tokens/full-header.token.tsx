@@ -24,16 +24,10 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   const { value, status } = useAppSelector((state) => state.token);
 
   useEffect(() => {
-    dispatch(setPairAddress(pair_address as string));
-  }, [pair_address]);
-
-  useEffect(() => {
     let total_sell: number = 0;
     let total_buy: number = 0;
     let price: number = 0;
     if (orders) {
-      console.log("Orders:")
-      console.log((orders as any).orders)
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(

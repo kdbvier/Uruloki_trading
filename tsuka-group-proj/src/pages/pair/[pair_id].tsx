@@ -1,14 +1,23 @@
 import { tokensData } from "@/@fake-data/token.fake-data";
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { PoolInfoToken } from "@/components/tokens/pool-info.token";
-import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
+import { DefaultButton } from "@/components/ui/buttons/default.button";
+import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token"; 
+import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
+import { FullHeaderToken } from "@/components/ui/tokens/full-header.token; 
+import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";       
+import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
+import { getStrategies } from "@/store/apps/strategies";
+import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { getToken, setPairAddress } from "@/store/apps/token";
 import { getTokenPairPrice, getUserOrder } from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";     
 import {
-  OrderStatusEnum,
+  OrderStatusEnum,    
   OrderTypeEnum,
   PriceTypeEnum,
   RangeOrder,
@@ -19,19 +28,7 @@ import { Token } from "@/types/token.type";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import { DefaultButton } from "@/components/ui/buttons/default.button";
-import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
-import {
-  getBitqueryInitInfo,
-  getBitqueryStreamInfo,
-} from "@/store/apps/bitquery-data";
-import { getStrategies } from "@/store/apps/strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
-import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { getOrdersByPair } from "@/lib/orders";
 import { GetServerSideProps } from "next/types";
 
@@ -176,6 +173,8 @@ export default function Pair({orders}: {orders: Order[]}) {
             <PoolInfoToken token={token} />
           </>
         )}
+        <OrderBookToken token={token} />
+        <PoolInfoToken token={token} />
       </div>
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
         <button

@@ -1,7 +1,6 @@
-import { strategiesData } from "@/@fake-data/strategies.fake-data";
+import Strategies from "@/lib/api/strategies";
 import { Strategy } from "@/types/strategy.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import Strategies from "@/lib/api/strategies";
 
 export interface StrategiesState {
   value: Array<Strategy>;
