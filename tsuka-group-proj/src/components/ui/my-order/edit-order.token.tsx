@@ -476,20 +476,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             </div>
           )}
           {/* <div className="flex items-center"> */}
-          {/* <TokenIconsToken
-                    name={
-                      isBuy
-                        ? pairLongName ?? ""
-                        : baseLongName ?? ""
-                    }
-                    shortName={
-                      isBuy
-                        ? pairShortName ?? ""
-                        : baseShortName ?? ""
-                    }
-                    width={16}
-                    height={16}
-                  /> */}
           {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
                       ? pairLongName

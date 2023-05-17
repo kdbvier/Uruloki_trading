@@ -26,12 +26,12 @@ export const CoinTypeLanding: React.FC<CoinTypeProps> = ({ coins }) => {
                 key={cointype.name}
                 className="flex text-white items-center "
               >
-                {/* <Image
+                <Image
                   src={cointype.url}
                   alt="cointype__image"
                   width={24}
                   height={24}
-                ></Image> */}
+                ></Image>
                 <h1 className="text-base font-normal font-Steradian-400 text-[#828AA0] pl-2">
                   {cointype.name}
                 </h1>
