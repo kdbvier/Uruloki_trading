@@ -56,7 +56,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   }, [status]);
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
+    <div className="bg-tsuka-500 mt-4 p-4 md:pt-6 rounded-xl hover:border-4 hover:border-yellow-500 text-tsuka-100 ">
       <div className="flex flex-row items-center mb-4">
         <TokenIconsToken
           name={name1}
