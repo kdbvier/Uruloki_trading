@@ -170,8 +170,27 @@ export const tokenSlice = createSlice({
         state.status = "failed";
       })
       .addCase(getTokenVolume.fulfilled, (state, action) => {
-        state.value.volume.value = action.payload.tradeAmount;
-        state.value.volume.currencyLabel = " ";
+        // state.value.volume.value = action.payload.tradeAmount;
+        const MILLION = 1e6,
+          BILLION = 1e9,
+          TRILLION = 1e12;
+        if (action.payload.tradeAmount > TRILLION) {
+          state.value.volume.value = action.payload.tradeAmount / TRILLION;
+          state.value.volume.currencyLabel = "Trillion";
+        } else if (action.payload.tradeAmount > BILLION) {
+          state.value.volume.value = Number(
+            (action.payload.tradeAmount / BILLION).toString().slice(0, 3)
+          );
+          state.value.volume.currencyLabel = "Billion";
+        } else if (action.payload.tradeAmount > MILLION) {
+          state.value.volume.value = Number(
+            (action.payload.tradeAmount / MILLION).toString().slice(0, 3)
+          );
+          state.value.volume.currencyLabel = "Million";
+        } else {
+          state.value.volume.value = action.payload.tradeAmount;
+          state.value.volume.currencyLabel = "";
+        }
       })
       .addCase(getYesterdayTokenPairPrice.fulfilled, (state, action) => {
         console.log("getYesterdayTokenPairPrice fulfilled", action.payload);

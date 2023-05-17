@@ -27,11 +27,18 @@ export interface FullHeaderTokenProps {
 
 export const defaultNumberFormat = (num: number): any => {
   const newNum = Math.abs(num);
-  const res =
-    newNum >= 0.01
-      ? handleNumberFormat(parseFloat(newNum.toFixed(2)))
-      : convertLawPrice(newNum).toString().slice(1);
-  return num > 0 ? res : `-${res}`;
+  let res;
+  if (newNum >= 0.01) {
+    res = handleNumberFormat(parseFloat(newNum.toFixed(2)));
+  } else {
+    res = Number(convertLawPrice(newNum));
+    if (isNaN(res)) {
+      res = "0";
+    } else {
+      res = res.toString().slice(1);
+    }
+  }
+  return num >= 0 ? res : `-${res}`;
 };
 
 export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
@@ -146,7 +153,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               </div>
               <InfoSpanToken
                 title={"VOL."}
-                value={`$${defaultNumberFormat(value.volume?.value ?? 0)}`}
+                value={`$${defaultNumberFormat(value.volume.value ?? 0)} ${
+                  value.volume.currencyLabel
+                }`}
               />
               <InfoSpanToken
                 title={"24h"}
