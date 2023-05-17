@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { TokenIconsToken } from "../tokens/token-icons.token";
 import HomePageTokens from "@/lib/api/tokens";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
@@ -27,13 +26,6 @@ const FilterSearchItem = ({
       className="flex items-center [&:not(:last-child)]:border-b-2 [&:not(:last-child)]:border-tsuka-300 py-2 bg-tsuka-500 hover:bg-tsuka-400 cursor-pointer"
       onClick={() => router.push(`/pair/${address}`)}
     >
-      <TokenIconsToken
-        className="min-w-[30px] mr-4"
-        name={name}
-        shortName={symbol}
-        width={30}
-        height={30}
-      />
       <div className="flex flex-col w-[calc(100%-46px)]">
         <div className="text-tsuka-50 text-lg w-full overflow-hidden text-ellipsis whitespace-nowrap">
           {name}

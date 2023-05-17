@@ -33,21 +33,7 @@ export interface EditOrderTokenProp {
 
   //  token?: Token;
 }
-export const handleNumberFormat = (num: number): string => {
-  let value = num.toString();
-  const pattern = /^\d*\.?\d*$/;
-  if (!pattern.test(value)) return "";
-  let newValue = "";
-  if (value.search("\\.") !== -1) {
-    let [integerPart, decimalPart] = value.split(".");
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
-    // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
-  } else {
-    newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-  return newValue;
-};
+
 export const convertLawPrice = (price: number) => {
   let priceEle;
   if (price >= 0.01) {
@@ -63,6 +49,22 @@ export const convertLawPrice = (price: number) => {
     );
   }
   return priceEle;
+};
+
+export const handleNumberFormat = (num: number): string => {
+  let value = num.toString();
+  const pattern = /^\d*\.?\d*$/;
+  if (!pattern.test(value)) return "";
+  let newValue = "";
+  if (value.search("\\.") !== -1) {
+    let [integerPart, decimalPart] = value.split(".");
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
+    // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
+  } else {
+    newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return newValue;
 };
 const toNumber = (str: string): number => {
   const value = str.replace(/,/g, "");
@@ -528,20 +530,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             </div>
           )}
           {/* <div className="flex items-center"> */}
-          {/* <TokenIconsToken
-                    name={
-                      isBuy
-                        ? pairLongName ?? ""
-                        : baseLongName ?? ""
-                    }
-                    shortName={
-                      isBuy
-                        ? pairShortName ?? ""
-                        : baseShortName ?? ""
-                    }
-                    width={16}
-                    height={16}
-                  /> */}
           {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
                     {isBuy
                       ? pairLongName
