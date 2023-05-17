@@ -1,6 +1,5 @@
 import { coinMirrorUrl } from "@/services/coin-mirror.service";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export interface TokenIconsTokenProps {
   name: string;
@@ -27,14 +26,13 @@ export const TokenIconsToken: React.FC<TokenIconsTokenProps> = ({
     setHasError(true);
   }
 
-  const img = `${coinMirrorUrl}/icon/${shortName.toLowerCase()}/200`;
+  const img = `${coinMirrorUrl}/icon/${shortName?.toLowerCase()}/200`;
   // const img1 = `${coinMirrorUrl}/img/${shortName.toLowerCase()}-${name
   //   .replace(" ", "-")
   //   .toLowerCase()}.png`;
 
   return (
     <div className={className + " rounded-full overflow-hidden bg-transparent"}>
-
       <img
         src={hasError ? "/imgs/empty-img6.png" : img}
         width={width}

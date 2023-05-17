@@ -26,7 +26,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
   ];
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100">
+    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 mb-16">
       <div className="w-full flex items-center justify-start px-2 pt-2">
         {options.map(({ title, path }, index) => (
           <span
@@ -45,7 +45,7 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
       <div>
         {strategies && (
           <div className="p-4 flex">
-            <div className="flex-1 overflow-x-auto">
+            <div className="flex-1 overflow-x-scroll scrollable">
               <table className="overflow-auto w-full">
                 <thead className="text-sm text-left font-normal text-tsuka-300 border-b border-tsuka-400">
                   <tr>

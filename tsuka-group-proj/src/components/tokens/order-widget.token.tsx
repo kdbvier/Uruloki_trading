@@ -55,7 +55,7 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   }, [status]);
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
+    <div className="bg-tsuka-500 mt-4 p-4 md:pt-6 rounded-xl hover:border-4 hover:border-yellow-500 text-tsuka-100 transition-all duration-150">
       <div className="flex flex-row items-center mb-4">
         <div className="px-2 flex-1 flex-col">
           <p className="text-tsuka-50 text-lg font-semibold uppercase">
@@ -91,6 +91,8 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
+                tokenSymbol={order.baseTokenShortName}
+                pairedTokenSymbol={order.pairTokenShortName}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />
@@ -107,6 +109,8 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
                 budget={order.budget}
                 bound={chartBound}
                 status={order.status}
+                tokenSymbol={order.baseTokenShortName}
+                pairedTokenSymbol={order.pairTokenShortName}
                 setShowEditOrderModal={setShowEditOrderModal}
                 setShowDeletedAlert={setShowDeletedAlert}
               />

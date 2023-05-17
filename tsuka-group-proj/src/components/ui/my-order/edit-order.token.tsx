@@ -33,7 +33,25 @@ export interface EditOrderTokenProp {
 
   //  token?: Token;
 }
-const handleNumberFormat = (num: number): string => {
+
+export const convertLawPrice = (price: number) => {
+  let priceEle;
+  if (price >= 0.01) {
+    priceEle = `$${commafy(price)}`;
+  } else {
+    priceEle = (
+      <>
+        ${formatNumberToHtmlTag(price).integerPart}
+        .0
+        <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
+        {formatNumberToHtmlTag(price).remainingDecimal}
+      </>
+    );
+  }
+  return priceEle;
+};
+
+export const handleNumberFormat = (num: number): string => {
   let value = num.toString();
   const pattern = /^\d*\.?\d*$/;
   if (!pattern.test(value)) return "";
@@ -150,23 +168,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       title: "Ethereum",
     },
   ];
-
-  const convertLawPrice = (price: number) => {
-    let priceEle;
-    if (price >= 0.01) {
-      priceEle = `$${commafy(price)}`;
-    } else {
-      priceEle = (
-        <>
-          ${formatNumberToHtmlTag(price).integerPart}
-          .0
-          <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
-          {formatNumberToHtmlTag(price).remainingDecimal}
-        </>
-      );
-    }
-    return priceEle;
-  };
 
   const handleNumberInputChange = (name: string, event: any) => {
     let value = event.target.value.replace(/,/g, "");
