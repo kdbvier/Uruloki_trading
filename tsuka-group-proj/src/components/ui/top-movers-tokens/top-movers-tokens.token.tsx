@@ -1,6 +1,6 @@
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
-import { ITopMoversTokenProps } from "@/global";
+import { ITopMover, ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { splitAddress } from "@/helpers/splitAddress.helper";
@@ -21,10 +21,37 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   console.log(topMovers);
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<ITopMover[]>([]);
+
+  const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = ev;
+    setSearchQuery(value);
+    searchTopMovers();
+  };
+
+  const searchTopMovers = () => {
+    if (searchQuery !== "") {
+      const searchResults = topMovers.filter(
+        item => (
+          item.token.toLowerCase().includes(searchQuery.toLowerCase())
+          || item.pair_address.toLowerCase().includes(searchQuery.toLowerCase())
+          || item.chain.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+      setItems(searchResults);
+    } else {
+      setItems(topMovers);
+    }
+  }
 
   useEffect(() => {
+    searchTopMovers();
     let tempArray: boolean[] = [];
-    for (let i = 0; i < topMovers.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       tempArray[i] = true;
     }
     setCollapeds(tempArray);
@@ -50,6 +77,8 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               type="text"
               className="w-full md:w-[200px] border border-tsuka-400 bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
               placeholder="Find tokens..."
+              value={searchQuery}
+              onChange={handleChange}
             />
           </div>
           <button
@@ -84,7 +113,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
             </tr>
           </thead>
           <tbody>
-            {topMovers.map((topMover, idx) => {
+            {items.map((topMover, idx) => {
               /// TODO: This is only for test
               let shortName = "ETH";
               let id = "ethereum";

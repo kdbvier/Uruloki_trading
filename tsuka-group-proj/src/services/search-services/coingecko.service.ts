@@ -19,21 +19,26 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       const response = await axios.get('https://api.coingecko.com/api/v3/coins/list?include_platform=true');
 
       cache.data = response.data;
-      cache.lastFetch = now;
+      cache.lastFetch = now;    
     }
     // const tokens = cache.data.filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()));
+    console.log("++++++");
     const tokens = cache.data
       .filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase()))
       .sort((a: any, b: any) => {
-        if (a.name.toLowerCase() === name.toLowerCase()) {
-          return -1; // move a to the front
-        }
-        if (b.name.toLowerCase() === name.toLowerCase()) {
-          return 1; // move b to the front
-        }
+        if(a.name.toLowerCase().startsWith(name.toLowerCase()))
+          return -1;
+        if(b.name.toLowerCase().startsWith(name.toLowerCase()))          
+          return 1;
+        // if (a.name.toLowerCase() === name.toLowerCase()) {
+        //   return -1; // move a to the front
+        // }
+        // if (b.name.toLowerCase() === name.toLowerCase()) {
+        //   return 1; // move b to the front
+        // }
         return 0; // keep the order of a and b unchanged
       });
-
+    
 
     const erc20Tokens: (SearchToken | null)[] = await Promise.all(tokens.map(async (coin: any) => {
       const id = coin.id;
@@ -41,24 +46,24 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       const symbol = coin.symbol;
       const address = coin.platforms.ethereum;
 
-      if (!address) {
-        return null;
-      }
+      // if (!address) {
+      //   return null;
+      // }
 
       const isErc20 = await checkIfTokenIsErc20(address);
       // const isErc20 = true;
       const isOnUniswap = await checkIfTokenIsOnUniswap(address);
 
-      if (isErc20 && isOnUniswap) {
+      // if (isErc20 && isOnUniswap) {
         return {
           id,
           name: tokenName,
           symbol,
           address,
         } as SearchToken;
-      }
+      // }
 
-      return null;
+      // return null;
     }));
 
     const erc20Tokens1: SearchToken[] = erc20Tokens.filter(isSearchToken);
