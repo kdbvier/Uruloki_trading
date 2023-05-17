@@ -15,52 +15,38 @@ import ERC20 from './abi/ERC20.json';
 
 export const useUrulokiAPI = () => {
     const chainId = 5;     // Goerli network
-    const [isLoading, setIsLoading] = useState(false);
+    const [isRunning, setIsRunning] = useState(false);
 
-    const parseError = (errorData: any) => {
-        if (errorData.startsWith('0x08c379a0')) { // decode Error(string)
-
-            const content = `0x${errorData.substring(10)}`;
-            const reason = ethers.utils.defaultAbiCoder.decode(["string"], content);
-
-            return reason[0]; // reason: string; for standard revert error string
-        }
-
-        if (errorData.startsWith('0x4e487b71')) { // decode Panic(uint)
-            const content = `0x${errorData.substring(10)}`;
-            const code = ethers.utils.defaultAbiCoder.decode(["uint"], content);
-
-            return code[0];
-        }
-
-        return '';
+    const parseUnits = (value: number, decimal: number) => {
+        return ethers.utils.parseUnits(value.toString(), decimal)
     }
 
     const addFunds = async (tokenAddress: string, amount: number) => {
         try {
             const signer = await fetchSigner();
+
             if (signer) {
                 const ERC20Contract = getContract({
                     address: tokenAddress,
                     abi: ERC20.abi,
                     signerOrProvider: signer
                 })
+                setIsRunning(true);
                 const decimals = await ERC20Contract.decimals();
-                setIsLoading(true);
-                await ERC20Contract.approve(`0x${Uruloki.address}`, ethers.utils.parseUnits(amount.toString(), decimals));
+                const tx = await ERC20Contract.approve(`0x${Uruloki.address}`, parseUnits(amount, decimals));
+                await tx.wait();
 
                 const config = await prepareWriteContract({
                     address: `0x${Uruloki.address}`,
                     abi: Uruloki.abi,
                     functionName: 'addFunds',
-                    args: [tokenAddress, ethers.utils.parseUnits(amount.toString(), decimals)],
+                    args: [tokenAddress, parseUnits(amount, decimals)],
                     chainId: chainId
                 });
 
                 const { hash, wait } = await writeContract(config);
                 await wait();
-
-                setIsLoading(false);
+                setIsRunning(false);
 
                 return { msg: 'success', hash: hash };
             }
@@ -73,25 +59,27 @@ export const useUrulokiAPI = () => {
     const withdrawFunds = async (tokenAddress: string, amount: number) => {
         try {
             const signer = await fetchSigner();
+
             if (signer) {
                 const ERC20Contract = getContract({
                     address: tokenAddress,
                     abi: ERC20.abi,
                     signerOrProvider: signer
                 })
-
+                setIsRunning(true);
                 const decimals = await ERC20Contract.decimals();
 
                 const config = await prepareWriteContract({
                     address: `0x${Uruloki.address}`,
                     abi: Uruloki.abi,
                     functionName: 'withdrawFunds',
-                    args: [tokenAddress, ethers.utils.parseUnits(amount.toString(), decimals)],
+                    args: [tokenAddress, parseUnits(amount, decimals)],
                     chainId: chainId
                 })
 
                 const { hash, wait } = await writeContract(config);
                 await wait();
+                setIsRunning(false);
 
                 return { msg: 'success', hash: hash };
             }
@@ -118,19 +106,21 @@ export const useUrulokiAPI = () => {
                     abi: ERC20.abi,
                     signerOrProvider: signer
                 })
-
+                setIsRunning(true);
                 const decimals = await ERC20Contract.decimals();
 
                 const config = await prepareWriteContract({
                     address: `0x${Uruloki.address}`,
                     abi: Uruloki.abi,
                     functionName: 'createNonContinuousPriceRangeOrder',
-                    args: [pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, ethers.utils.parseUnits(amount.toString(), decimals)],
+                    args: [pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, parseUnits(amount, decimals)],
                 })
-                const { hash } = await writeContract(config);
-                console.log(hash);
 
-                return hash;
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
             }
         } catch (err) {
             console.error('createNonContinuousPriceRangeOrder = ', err);
@@ -146,19 +136,33 @@ export const useUrulokiAPI = () => {
         amount: number,
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'createNonContinuousTargetPriceOrder',
-                args: [pairedTokenAddress, tokenAddress, isBuy, targetPrice, amount],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
 
-            return hash;
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'createNonContinuousTargetPriceOrder',
+                    args: [pairedTokenAddress, tokenAddress, isBuy, targetPrice, parseUnits(amount, decimals)],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('createNonContinuousTargetPriceOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
@@ -172,19 +176,33 @@ export const useUrulokiAPI = () => {
         resetPercentage: number
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'createContinuousPriceRangeOrder',
-                args: [pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, amount, resetPercentage],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
 
-            return hash;
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'createContinuousPriceRangeOrder',
+                    args: [pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, parseUnits(amount, decimals), resetPercentage],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('createContinuousPriceRangeOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
@@ -197,19 +215,34 @@ export const useUrulokiAPI = () => {
         resetPercentage: number
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'createContinuousTargetPriceOrder',
-                args: [pairedTokenAddress, tokenAddress, isBuy, targetPrice, amount, resetPercentage],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
 
-            return hash;
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
+
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'createContinuousTargetPriceOrder',
+                    args: [pairedTokenAddress, tokenAddress, isBuy, targetPrice, parseUnits(amount, decimals), resetPercentage],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('createContinuousTargetPriceOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
@@ -223,19 +256,34 @@ export const useUrulokiAPI = () => {
         amount: number,
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'editNonContinuousPriceRangeOrder',
-                args: [orderId, pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, amount],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
 
-            return hash;
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
+
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'editNonContinuousPriceRangeOrder',
+                    args: [orderId, pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, parseUnits(amount, decimals)],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('editNonContinuousPriceRangeOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
@@ -248,19 +296,33 @@ export const useUrulokiAPI = () => {
         amount: number,
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'editNonContinuousTargetPriceOrder',
-                args: [orderId, pairedTokenAddress, tokenAddress, isBuy, targetPrice, amount],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
 
-            return hash;
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'editNonContinuousTargetPriceOrder',
+                    args: [orderId, pairedTokenAddress, tokenAddress, isBuy, targetPrice, parseUnits(amount, decimals)],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('editNonContinuousTargetPriceOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
@@ -275,19 +337,33 @@ export const useUrulokiAPI = () => {
         resetPercentage: number
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'editContinuousPriceRangeOrder',
-                args: [orderId, pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, amount, resetPercentage],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
 
-            return hash;
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'editContinuousPriceRangeOrder',
+                    args: [orderId, pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, parseUnits(amount, decimals), resetPercentage],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('editContinuousPriceRangeOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
@@ -301,42 +377,64 @@ export const useUrulokiAPI = () => {
         resetPercentage: number
     ) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'editContinuousTargetPriceOrder',
-                args: [orderId, pairedTokenAddress, tokenAddress, isBuy, targetPrice, amount, resetPercentage],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                const ERC20Contract = getContract({
+                    address: tokenAddress,
+                    abi: ERC20.abi,
+                    signerOrProvider: signer
+                })
+                setIsRunning(true);
+                const decimals = await ERC20Contract.decimals();
 
-            return hash;
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'editContinuousTargetPriceOrder',
+                    args: [orderId, pairedTokenAddress, tokenAddress, isBuy, targetPrice, parseUnits(amount, decimals), resetPercentage],
+                })
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('editContinuousTargetPriceOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
     const cancelOrder = async (orderId: number) => {
         try {
-            const config = await prepareWriteContract({
-                address: `0x${Uruloki.address}`,
-                abi: Uruloki.abi,
-                functionName: 'cancelOrder',
-                args: [orderId],
-            })
+            const signer = await fetchSigner();
 
-            const { hash } = await writeContract(config);
-            console.log(hash);
+            if (signer) {
+                setIsRunning(true);
 
-            return hash;
+                const config = await prepareWriteContract({
+                    address: `0x${Uruloki.address}`,
+                    abi: Uruloki.abi,
+                    functionName: 'cancelOrder',
+                    args: [orderId],
+                });
+
+                const { hash, wait } = await writeContract(config);
+                await wait();
+                setIsRunning(false);
+
+                return { msg: 'success', hash: hash };
+            }
         } catch (err) {
             console.error('cancelOrder = ', err);
+            return { msg: 'failure' };
         }
     }
 
     return {
-        isLoading,
+        isRunning,
         addFunds,
         withdrawFunds,
         createContinuousPriceRangeOrder,
