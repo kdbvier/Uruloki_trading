@@ -23,7 +23,7 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
         </Link>
       </div>
 
-      <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-hidden mt-5">
+      <div className="scrollable pr-1 h-[270px] md:h-[294px] overflow-y-auto overflow-x-auto mt-5">
         <table className="w-full text-left">
           <thead className="">
             <tr className="text-tsuka-300 text-[14px] leading-[18px] font-medium">
