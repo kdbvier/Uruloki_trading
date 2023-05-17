@@ -46,10 +46,11 @@ export const G_QUERY_GetTokenVolume = (baseTokenAddress: string) => {
     "https://graphql.bitquery.io",
     {
       query: `
-    query getPairTokenPrice($baseTokenAddress: String)
+    query getTokenVolume($baseTokenAddress: String, $timeSince: ISO8601DateTime, $timeTill: ISO8601DateTime)
     {
       ethereum(network: ethereum) {
         dexTrades(baseCurrency: {is: $baseTokenAddress}
+        time: {since: $timeSince till: $timeTill}
         ) {
           tradeAmount(in: USD)
         }
@@ -58,6 +59,10 @@ export const G_QUERY_GetTokenVolume = (baseTokenAddress: string) => {
     `,
       variables: {
         baseTokenAddress,
+        timeSince: new Date(
+          new Date().getTime() - 24 * 60 * 60 * 1000
+        ).toISOString(),
+        timeTill: new Date().toISOString(),
       },
     },
     {

@@ -179,12 +179,12 @@ export const tokenSlice = createSlice({
           state.value.volume.currencyLabel = "Trillion";
         } else if (action.payload.tradeAmount > BILLION) {
           state.value.volume.value = Number(
-            (action.payload.tradeAmount / BILLION).toString().slice(0, 3)
+            (action.payload.tradeAmount / BILLION).toString().slice(0, 4)
           );
           state.value.volume.currencyLabel = "Billion";
         } else if (action.payload.tradeAmount > MILLION) {
           state.value.volume.value = Number(
-            (action.payload.tradeAmount / MILLION).toString().slice(0, 3)
+            (action.payload.tradeAmount / MILLION).toString().slice(0, 4)
           );
           state.value.volume.currencyLabel = "Million";
         } else {
