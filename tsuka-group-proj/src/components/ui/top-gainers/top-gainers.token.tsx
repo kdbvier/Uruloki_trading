@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ITopGainersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
@@ -79,10 +78,6 @@ export const TopGainers: React.FC<ITopGainersTokenProps> = ({ topGainers }) => {
                       )}
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <TokenIconsToken
-                        name={topGainer.token.id}
-                        shortName={topGainer.token.shortName}
-                      />
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0 flex-shrink">
                         <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal hidden xl:block">
                           {topGainer.token.name}

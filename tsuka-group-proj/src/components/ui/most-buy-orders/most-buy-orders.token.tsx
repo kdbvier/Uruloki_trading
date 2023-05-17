@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { IMostBuyOrdersTokenProps } from "@/global";
 import { commafy } from "@/helpers/calc.helper";
 import Image from "next/image";
@@ -61,10 +60,6 @@ export const MostBuyOrders: React.FC<IMostBuyOrdersTokenProps> = ({
                       )}
                     </td>
                     <td className="py-2 md:py-5 flex items-center">
-                      <TokenIconsToken
-                        name={mostBuyOrder.token.id}
-                        shortName={mostBuyOrder.token.shortName}
-                      />
                       <div className="ml-2 flex flex-col md:flex-row gap-1 md:gap-0">
                         <p className="text-tsuka-50 text-[16px] leading-[20px] font-normal">
                           {mostBuyOrder.token.name}

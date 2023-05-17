@@ -1,4 +1,3 @@
-import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { ChartBound } from "@/types/chart-bound.type";
 import {
   OrderStatusEnum,
@@ -58,19 +57,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-4 md:pt-6">
       <div className="flex flex-row items-center mb-4">
-        <TokenIconsToken
-          name={name1}
-          shortName={code1}
-          width={32}
-          height={32}
-        />
-        <TokenIconsToken
-          className="-ml-1"
-          name={name2}
-          shortName={code2}
-          width={32}
-          height={32}
-        />
         <div className="px-2 flex-1 flex-col">
           <p className="text-tsuka-50 text-lg font-semibold uppercase">
             {code1}/{code2}
