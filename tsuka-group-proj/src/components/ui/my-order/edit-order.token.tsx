@@ -453,36 +453,36 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <div className="w-full mt-4 flex gap-2 text-sm">
             <button
               className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
-                isRange ? "bg-tsuka-400" : ""
-              }`}
-              onClick={() => setIsRange(true)}
-            >
-              <div
-                className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${
-                  isRange ? "primary" : "tsuka-300"
-                }`}
-              />
-              <span className={isRange ? "text-tsuka-50" : "text-tsuka-300"}>
-                Price Range
-              </span>
-            </button>
-            <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
                 !isRange ? "bg-tsuka-400" : ""
               }`}
               onClick={() => setIsRange(false)}
             >
               <div
-                className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${
+                className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${
                   !isRange ? "primary" : "tsuka-300"
                 }`}
               />
               <span className={!isRange ? "text-tsuka-50" : "text-tsuka-300"}>
+                Price Range
+              </span>
+            </button>
+            <button
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                isRange ? "bg-tsuka-400" : ""
+              }`}
+              onClick={() => setIsRange(true)}
+            >
+              <div
+                className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${
+                  isRange ? "primary" : "tsuka-300"
+                }`}
+              />
+              <span className={isRange ? "text-tsuka-50" : "text-tsuka-300"}>
                 Single Price
               </span>
             </button>
           </div>
-          {!isRange && (
+          {isRange && (
             <div className="relative mt-4">
               <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
                 Target ($)
@@ -496,7 +496,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               />
             </div>
           )}
-          {isRange && (
+          {!isRange && (
             <div className="block md:flex justify-between items-center">
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
