@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  createChart,
-  ISeriesApi,
-  CandlestickData,
-  LineStyle,
-  IChartApi
-} from "lightweight-charts";
+import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Order } from "@/types";
-import { getBitqueryOHLCData } from "@/lib/bitquery/getBitqueryOHLCData";
-import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
+import {
+  CandlestickData,
+  IChartApi,
+  ISeriesApi,
+  LineStyle,
+  createChart,
+} from "lightweight-charts";
+import { useEffect, useRef, useState } from "react";
 // price label bg color #f03349
 // time label bg color #363a45
 // down color #d83045
@@ -17,10 +16,14 @@ import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 // average line color #199a82
 
 // To subscribe, get OHLC data from the Store
-const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) => {
+const getUpdatedData = (
+  forTime: string,
+  datas: any,
+  candleStickTime: number
+) => {
   if (datas[datas.length - 1].time > forTime) {
     const filterData = datas.filter((data: any) => data.time > forTime);
-    const time = forTime + (candleStickTime*60*1000 - 900000);
+    const time = forTime + (candleStickTime * 60 * 1000 - 900000);
     const open = filterData[0].open;
     const close = filterData[filterData.length - 1].close;
     const high =
@@ -41,7 +44,7 @@ const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) =>
   } else {
     const filterData1 = datas.filter((data: any) => data.time < forTime);
     const filterData = filterData1.filter(
-      (data: any) => parseInt(forTime) - candleStickTime*60*1000 < data.time
+      (data: any) => parseInt(forTime) - candleStickTime * 60 * 1000 < data.time
     );
     const time = forTime;
     const open = filterData[0]?.open;
@@ -65,8 +68,13 @@ const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) =>
   }
 };
 const scaleFactor = 1e15;
+
+interface Props {
+  onLoaded: () => void;
+}
+
 // This is our lightweight chart
-const BitqueryOHLCChart = () => {
+const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded }) => {
   const [chart, setChart] = useState<IChartApi | null>(null);
   const [showMarkers, setShowMarkers] = useState(true);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -74,7 +82,9 @@ const BitqueryOHLCChart = () => {
   const dispatch = useAppDispatch();
   const firstBitquery = useAppSelector((state) => state.bitquery.value);
   const streamValue = useAppSelector((state) => state.bitquery.streamValue);
-  const candleStickTime = useAppSelector((state) => state.bitquery.candleStickTime);
+  const candleStickTime = useAppSelector(
+    (state) => state.bitquery.candleStickTime
+  );
   const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
   const activeOrdersByTokenpair = useAppSelector(
     (state) => state.tokenpairOrders.value.orders
@@ -82,30 +92,26 @@ const BitqueryOHLCChart = () => {
   const pairAddress = useAppSelector(
     (state) => state.tokenpairOrders.value.pair_address
   );
-  const tokenPairInfo = useAppSelector(
-    (state) => state.tokenPairInfo.value
-  );
+  const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
   const [active, setActive] = useState(15);
-
-  
 
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
   }
-  
-  const candleStickClicked = (stick:number) => {
+
+  const candleStickClicked = (stick: number) => {
     setActive(stick);
     console.log(stick);
     const eachAddress = {
       base: tokenPairInfo.baseToken.address,
       quote: tokenPairInfo.pairedToken.address,
       pairAddress: pairAddress,
-      time: stick
-    }
+      time: stick,
+    };
     console.log(eachAddress);
     dispatch(getBitqueryInitInfo(eachAddress));
-  }
-  
+  };
+
   useEffect(() => {
     console.log("useEffect");
     if (!chartRef.current || !firstBitquery) return;
@@ -143,13 +149,13 @@ const BitqueryOHLCChart = () => {
         timeFormatter: (businessDayOrTimestamp: any) => {
           return new Date(businessDayOrTimestamp).toLocaleString();
         },
-        priceFormatter: (price:any) => {
+        priceFormatter: (price: any) => {
           return (price / scaleFactor).toFixed(10); // Scale the price back down for display
         },
       },
       timeScale: {
         tickMarkFormatter: (businessDayOrTimestamp: any) => {
-          console.log("businessDayOrTimestamp",businessDayOrTimestamp);
+          console.log("businessDayOrTimestamp", businessDayOrTimestamp);
           const date = new Date(businessDayOrTimestamp);
           console.log("date", date);
           const hours = date.getHours().toString().padStart(2, "0");
@@ -205,7 +211,7 @@ const BitqueryOHLCChart = () => {
       wickDownColor: "#ef5350",
     });
     candleStickSeriesRef.current = candlestickSeries;
-    let scaledData = temp.map(item => ({
+    let scaledData = temp.map((item) => ({
       ...item,
       open: item.open * scaleFactor,
       high: item.high * scaleFactor,
@@ -262,7 +268,7 @@ const BitqueryOHLCChart = () => {
       );
     }
     chart.timeScale().fitContent();
-    
+
     // Insert the resizing code here
     const updateChartSize = () => {
       const containerWidth: number = chartRef.current?.clientWidth
@@ -285,7 +291,13 @@ const BitqueryOHLCChart = () => {
       chart.remove();
       window.removeEventListener("resize", updateChartSize);
     };
-  }, [dispatch, firstBitquery, activeOrdersByTokenpair, showMarkers,candleStickTime]);
+  }, [
+    dispatch,
+    firstBitquery,
+    activeOrdersByTokenpair,
+    showMarkers,
+    candleStickTime,
+  ]);
 
   // When subscription data arrives
   useEffect(() => {
@@ -302,25 +314,51 @@ const BitqueryOHLCChart = () => {
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
   }, [dispatch, streamValue, forwardTime]);
-  
+
   // When subscription data arrives
-  useEffect(() => {
-    
-  }, []);
+  useEffect(onLoaded, []);
 
   return (
     <>
       <div ref={chartRef} />
-        <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[230px] flex flex-row justify-around">
-          <div className="-mr-[3px] -ml-[3px] w-full">
-          <button onClick={() => candleStickClicked(15)} className={`${active === 15 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>15M</button>
-          <button onClick={() => candleStickClicked(30)} className={`${active === 30 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>30M</button>
-          <button onClick={() => candleStickClicked(60)} className={`${active === 60 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>1H</button>
-            <button onClick={() => candleStickClicked(360)} className={`${active === 360 ? 'bg-[rgba(51,150,255,1)]' : ''} m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}>6H</button>
-            {/* <button onClick={() => candleStickClicked(30)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">30M</button>
+      <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[230px] flex flex-row justify-around">
+        <div className="-mr-[3px] -ml-[3px] w-full">
+          <button
+            onClick={() => candleStickClicked(15)}
+            className={`${
+              active === 15 ? "bg-[rgba(51,150,255,1)]" : ""
+            } m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}
+          >
+            15M
+          </button>
+          <button
+            onClick={() => candleStickClicked(30)}
+            className={`${
+              active === 30 ? "bg-[rgba(51,150,255,1)]" : ""
+            } m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}
+          >
+            30M
+          </button>
+          <button
+            onClick={() => candleStickClicked(60)}
+            className={`${
+              active === 60 ? "bg-[rgba(51,150,255,1)]" : ""
+            } m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}
+          >
+            1H
+          </button>
+          <button
+            onClick={() => candleStickClicked(360)}
+            className={`${
+              active === 360 ? "bg-[rgba(51,150,255,1)]" : ""
+            } m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] transition duration-300 text-white rounded-md `}
+          >
+            6H
+          </button>
+          {/* <button onClick={() => candleStickClicked(30)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">30M</button>
             <button onClick={() => candleStickClicked(60)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">1H</button>
             <button onClick={() => candleStickClicked(360)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">6H</button> */}
-          </div>
+        </div>
       </div>
     </>
   );
