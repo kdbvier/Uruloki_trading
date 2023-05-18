@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createChart, IChartApi, ISeriesApi, SeriesDataItemTypeMap, Time } from 'lightweight-charts';
+import { ColorType, createChart, IChartApi, ISeriesApi, SeriesDataItemTypeMap, Time } from 'lightweight-charts';
 
 type IntervalType = '1D' | '1W' | '1M' | '1Y';
 type SeriesData = { time: Time, value: number }[];
@@ -20,7 +20,7 @@ const ChartSwitcher: React.FC<ChartSwitcherProps> = ({ intervals, seriesesData }
       height: 300,
       layout: {
         background: {
-          type: 'solid',
+          type: ColorType.Solid,
           color: '#000000',
         },
         textColor: '#d1d4dc',
