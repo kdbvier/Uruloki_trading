@@ -18,7 +18,7 @@ import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { TokenPairPrice } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { createClient } from "graphql-ws";
-import type { Order } from "@/types";
+import type { Order, TokenPairInfo } from "@/types";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
@@ -29,7 +29,8 @@ import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import axios from "axios";
+import { getTokenNamesFromPair } from "@/lib/token-pair";
+import { HistoricalDexTrades, getHistoricalDexTrades } from "@/lib/token-activity-feed";
 
 interface InputToken {
   id: string;
@@ -473,75 +474,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const { pair_id } = context.query;
 
-  let sell24hrAgoTrades = [];
-  let buy24hrAgoTrades = [];
   let baseAddress = "";
   let quoteAddress = "";
 
+  let tokenPairInfo: TokenPairInfo;
+  let historicalDexTrades: HistoricalDexTrades;
+
   try {
-    const res = await axios.get(
-      `http://localhost:3000/api/tokens/token-pair?pair_address=${pair_id}`
-    );
-    baseAddress = res.data.payload.baseToken.address;
-    quoteAddress = res.data.payload.pairedToken.address;
+    const tokenPairNamesResult = await getTokenNamesFromPair(pair_id as string);
+    if(tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
+      tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
+
+      let historicalDexTradesResult = await getHistoricalDexTrades(tokenPairInfo.baseToken.name, tokenPairInfo.pairedToken.name);
+      if(historicalDexTradesResult.success && historicalDexTradesResult.historicalDexTrades) {
+        historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
+      }
+    }
   } catch (error) {
     console.log(error, "error");
-  }
-
-  try {
-    const { data } = await axios.post(
-      "https://graphql.bitquery.io/",
-      {
-        query: `{
-          ethereum(network: ethereum) {
-            dexTrades(
-              baseCurrency: {is: "${baseAddress}"}
-              quoteCurrency: {is: "${quoteAddress}"}
-              options: {desc: ["block.timestamp.time", "transaction.index"], limit: 10}
-            ) {
-              block {
-                height
-                timestamp {
-                  time(format: "%Y-%m-%d %H:%M:%S")
-                }
-              }
-              tradeAmount(in: BTC)
-              side
-              sellAmount(in: USD)
-              buyAmount(in: USD)
-              transaction {
-                index
-                txFrom {
-                  address
-                }
-              }
-            }
-          }
-      }`,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": "BQYedcj8q0acU4h8q0CmF2rfIVZp9VOe",
-        },
-      }
-    );
-
-    const dexTrades = data?.data?.ethereum?.dexTrades.map((el: any) => {
-      const amount = el.side === "SELL" ? el.sellAmount : el.buyAmount;
-      return {
-        tradeAmount: el.tradeAmount,
-        side: el.side,
-        price: amount,
-        transaction: el.transaction,
-      };
-    });
-
-    if (dexTrades && dexTrades.length) {
-      sell24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "SELL");
-      buy24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "BUY");
-    }
-  } catch (error) {}
+  }  
 
   return {
     props: {
