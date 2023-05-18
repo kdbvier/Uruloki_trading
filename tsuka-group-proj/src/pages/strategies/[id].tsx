@@ -135,7 +135,7 @@ export default function StrategyDetails({ id }: { id: string }) {
               }}
             />
           )}
-          {token && <OrderBookToken token={token} />}
+          {token && <OrderBookToken token={token} order={[]}/>}
         </div>
       )}
     </div>
