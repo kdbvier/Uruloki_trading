@@ -1,52 +1,41 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
-import { getTokenOrderBooks } from "@/store/apps/token-order-books";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppSelector } from "@/store/hooks";
 import { Order } from "@/types";
-import { TokenOrderBook, TokenOrderBooks } from "@/types/token-order-books.type";
-import { Token } from "@/types/token.type";
+import { OrderBookData } from "@/types/orderbook.type";
 import { useEffect, useState } from "react";
 
 export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const { status } = useAppSelector((state) => state.tokenOrderBooks);
   const [maxSum, setMaxSum] = useState(0);
-  const [value, setValue] = useState<TokenOrderBooks>();
-  useEffect(() => {
-    orders && setValue({
-      id: "1",
-      sell: orders.filter(order => order.order_type === "sell").map(order => ({price: Number(order.single_price), size: Number(order.budget)})),
-      buy: orders.filter(order => order.order_type === "buy").map(order => ({price: Number(order.single_price), size: Number(order.budget)}))
-    })
-  }, [])
+  const [orderBookData, setOrderBookData] = useState<OrderBookData>(new OrderBookData());
 
   useEffect(() => {
-    let sellSum: number = 0,
-      buySum: number = 0;
-    value?.sell?.forEach((item) => {
-      sellSum += item.size;
-    });
-    value?.buy?.forEach((item) => {
-      buySum += item.size;
-    });
+    let tempOrderBookData = orderBookData.fromOrders(orders)
+    setOrderBookData(tempOrderBookData);
+
+    let sellSum = tempOrderBookData.getSellSum();
+    let buySum = tempOrderBookData.getBuySum();
+
     setMaxSum(Math.max(sellSum, buySum));
-  }, [value]);
+  }, [orders])
 
   let sum: number;
 
   return (
     <div>
       {status === "loading" && "Loading..."}
-      {status === "ok" && value && (
+      {status === "ok" && orderBookData && (
         <div className="p-4 flex gap-2">
           <div className="flex-1">
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
-                <span className="flex-1 px-4 py-2">Price (USDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">SUM (USDT)</span>
+                <span className="flex-1 px-4 py-2">Price (USD)</span>
+                <span className="flex-1 px-4 py-2 text-end">Size (Tokens)</span>
+                <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
-              {[...(value?.sell ?? [])]
-                ?.sort((a, b) => b.price - a.price)
-                ?.map((item, index) => {
+              {[...(orderBookData.sell ?? [])]
+                .sort((a, b) => b.price - a.price)
+                .map((item, index) => {
                   if (!index) {
                     sum = item.size;
                   } else {
@@ -82,13 +71,13 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
           <div className="flex-1">
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
-                <span className="flex-1 px-4 py-2">Price (USDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
-                <span className="flex-1 px-4 py-2 text-end">SUM (USDT)</span>
+                <span className="flex-1 px-4 py-2">Price (USD)</span>
+                <span className="flex-1 px-4 py-2 text-end">Size (Tokens)</span>
+                <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
-              {[...(value?.buy ?? [])]
-                ?.sort((a, b) => a.price - b.price)
-                ?.map((item, index) => {
+              {[...(orderBookData.buy ?? [])]
+                .sort((a, b) => a.price - b.price)
+                .map((item, index) => {
                   if (!index) {
                     sum = item.size;
                   } else {

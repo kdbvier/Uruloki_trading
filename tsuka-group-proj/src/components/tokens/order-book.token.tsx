@@ -13,7 +13,7 @@ export const OrderBookToken: React.FC<{ token: Token, order: Order[] }> = ({ tok
   const [selectedPath, setSelectedPath] = useState("order-book");
 
   const options = [
-    {
+    { 
       title: "Order Book",
       path: "order-book",
     },
