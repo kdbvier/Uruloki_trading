@@ -28,10 +28,6 @@ import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { number } from "joi";
-import HomePageTokens from "@/lib/api/tokens";
-import { getOrdersByPair } from "@/lib/orders";
-import { GetServerSideProps } from "next/types";
 
 interface InputToken {
   id: string;
@@ -83,16 +79,6 @@ export default function Pair({
   useEffect(() => {
     dispatch(getStrategies());
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log("getTokenPairInfo", pair_address);
-    console.log("pair_address.length)", (pair_address.length));
-    console.log("typeof(pair_address)", typeof(pair_address));
-    if(pair_address === "undefined" || pair_address.length === 0 ){
-      return;
-    }
-    dispatch(getTokenPairInfo(pair_address as string));
-  }, [dispatch, pair_address]);
 
   useEffect(() => {
     console.log("tokenPairInfo", tokenPairInfo);
