@@ -8,6 +8,7 @@ type BitqueryBalancesResponseToken = {
   currency: {
     symbol: string;
     name: string;
+    address: string;
   };
   value: number;
 };
@@ -23,6 +24,7 @@ export const getTokensInWallet = async (
               currency {
                 symbol
                 name
+                address
               }
               value
             }
@@ -64,6 +66,7 @@ export const getTokensInWallet = async (
           amount: tokenBalance.value,
           name: tokenBalance.currency.name,
           shortName: tokenBalance.currency.symbol,
+          address: tokenBalance.currency.address,
         };
       }
     } else {
@@ -77,6 +80,7 @@ export const getTokensInWallet = async (
           amount: tokenBalance.value,
           name: tokenBalance.currency.name,
           shortName: tokenBalance.currency.symbol,
+          address: tokenBalance.currency.address,
         });
       }
     }
