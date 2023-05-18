@@ -13,13 +13,13 @@ export type Token = {
     address: string;
   };
   price: {
-    value: string;
+    value: number;
     operator: "+" | "-";
     variationValue: number;
     variationValueDiference?: number;
   };
   volume: {
-    value: string;
+    value: number;
     currencyLabel: string;
   };
   marketCap: {

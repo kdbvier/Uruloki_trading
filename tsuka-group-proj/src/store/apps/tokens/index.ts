@@ -13,9 +13,8 @@ const initialState: TokensState = {
 };
 
 export const getHomePageTokens = createAsyncThunk("tokens/get", async () => {
-    return await HomePageTokens.getTokens();
-  }
-);
+  return await HomePageTokens.getTokens();
+});
 
 export const homePageTokenSlice = createSlice({
   name: "homePageTokens",

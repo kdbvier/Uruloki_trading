@@ -1,20 +1,16 @@
-import { userOrder } from "@/@fake-data/user-order.fake-data";
-
-import { getUserOrder, getUserOrderWithFilter } from "@/store/apps/user-order";
+import { getUserOrderWithFilter } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { LoadingBox } from "@/components/ui/loading/loading-box";
-import { OrderStatusEnum, UserOrder } from "@/types/token-order.type";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
-import Orders from "../lib/api/orders";
 import { getStrategies } from "@/store/apps/strategies";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 
 export default function MyOrder() {
   const [openToogle, setOpenToggle] = useState<boolean>(true);
@@ -98,7 +94,7 @@ export default function MyOrder() {
               className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none bg-tsuka-500 ${
                 openToogle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
               } rounded-md text-sm`}
-              onClick={() => setOpenToggle(true) }
+              onClick={() => setOpenToggle(true)}
             >
               Open Orders
             </button>
@@ -128,16 +124,18 @@ export default function MyOrder() {
                 }}
               />
             </div>
-            <button
-              type="button"
-              onClick={() => console.log("clicked!")}
-              className={`px-3 py-[11px] focus:outline-none bg-tsuka-500 text-tsuka-100 rounded-md text-sm flex items-center`}
-            >
-              <label className="mr-1 text-tsuka-200 text-base">
-                <FiFilter />
-              </label>
-              Filters
-            </button>
+            <Link href={"/pair/1"}>
+              <button
+                type="button"
+                onClick={() => console.log("clicked!")}
+                className={`px-3 py-[11px] focus:outline-none bg-tsuka-500 text-tsuka-100 rounded-md text-sm flex items-center`}
+              >
+                <label className="mr-1 text-tsuka-200 text-base">
+                  <FiFilter />
+                </label>
+                Filters
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -192,23 +190,23 @@ export default function MyOrder() {
               </div>
             );
           })}
-                    <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
-            <button
-              type="button"
-              onClick={() => setShowSidebar(true)}
-              className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
-            >
-              <label className="mr-2">
-                <HiOutlineArrowLongLeft size={24} />
-              </label>
-              Order & Strategies
-            </button>
-          </div>
-          <SidebarStrategies
-            open={showSidebar}
-            handleOpen={() => setShowSidebar(false)}
-            strategies={strategies!}
-          />
+        <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+          <button
+            type="button"
+            onClick={() => setShowSidebar(true)}
+            className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+          >
+            <label className="mr-2">
+              <HiOutlineArrowLongLeft size={24} />
+            </label>
+            Order & Strategies
+          </button>
+        </div>
+        <SidebarStrategies
+          open={showSidebar}
+          handleOpen={() => setShowSidebar(false)}
+          strategies={strategies!}
+        />
       </div>
       {!showAll && (
         <div className="mt-4 flex justify-center">

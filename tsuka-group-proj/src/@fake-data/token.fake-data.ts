@@ -14,13 +14,13 @@ export const tokenData: Token = {
     address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
   },
   price: {
-    value: "4,095.98",
+    value: 4095.98,
     operator: "+",
     variationValue: 0.76,
     variationValueDiference: 0.00523,
   },
   volume: {
-    value: "32,987,497,674",
+    value: 32987497674,
     currencyLabel: "Billions",
   },
   marketCap: {
@@ -53,13 +53,13 @@ export const tokensData: Array<Token> = [
       address: "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
     },
     price: {
-      value: "",
+      value: 32987.54,
       operator: "+",
       variationValue: 0.76,
       variationValueDiference: 0.00523,
     },
     volume: {
-      value: "32,987.54",
+      value: 32987.54,
       currencyLabel: "Billions",
     },
     marketCap: {
@@ -90,12 +90,12 @@ export const tokensData: Array<Token> = [
       address: "",
     },
     price: {
-      value: "",
+      value: 32987.54,
       operator: "-",
       variationValue: 0,
     },
     volume: {
-      value: "",
+      value: 32987.54,
       currencyLabel: "Billions",
     },
     marketCap: {
