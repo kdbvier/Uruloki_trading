@@ -34,26 +34,6 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
     };
   }, [onOutsideClick]);
 
-  useEffect(() => {
-    console.log("came here!");
-    toast("delete confirm launched");
-    toast("delete confirm launched", {
-      type: "error",
-    });
-    toast("delete confirm launched", {
-      type: "success",
-    });
-    toast("delete confirm launched", {
-      type: "default",
-    });
-    toast("delete confirm launched", {
-      type: "info",
-    });
-    toast("delete confirm launched", {
-      type: "warning",
-    });
-  }, []);
-
   const handleClickInside = (event: any) => {
     setClickedInside(true);
   };
