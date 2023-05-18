@@ -90,10 +90,10 @@ export const getUserOrder = createAsyncThunk(
 );
 export const createOrder = createAsyncThunk(
   "userOrder/set",
-  async (postData:PostOrder, {dispatch}) => {
-    console.log("post lib::")
+  async (postData: PostOrder, { dispatch }) => {
+    console.log("post lib::");
     const data = await Orders.createOrder(postData);
-    return data
+    return data;
   }
 );
 export const deleteOrder = createAsyncThunk(
