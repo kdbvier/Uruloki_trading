@@ -28,6 +28,10 @@ import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { number } from "joi";
+import HomePageTokens from "@/lib/api/tokens";
+import { getOrdersByPair } from "@/lib/orders";
+import { GetServerSideProps } from "next/types";
 
 interface InputToken {
   id: string;
@@ -56,6 +60,7 @@ export default function Pair({
   const [showSidebar, setShowSidebar] = useState(false);
   const [pairAddress, setPairAddress] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const strategies = useAppSelector((state) => state.strategies.value);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -64,6 +69,7 @@ export default function Pair({
 
   // When this page becomes unmounted
   useEffect(() => {
+    
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
@@ -75,12 +81,38 @@ export default function Pair({
   }, [router]);
 
   useEffect(() => {
-    console.log("useEffect");
-    dispatch(getBitqueryInitInfo());
     dispatch(getStrategies());
   }, [dispatch]);
 
-  const strategies = useAppSelector((state) => state.strategies.value);
+  useEffect(() => {
+    console.log("getTokenPairInfo", pair_address);
+    console.log("pair_address.length)", (pair_address.length));
+    console.log("typeof(pair_address)", typeof(pair_address));
+    if(pair_address === "undefined" || pair_address.length === 0 ){
+      return;
+    }
+    dispatch(getTokenPairInfo(pair_address as string));
+  }, [dispatch, pair_address]);
+
+  useEffect(() => {
+    console.log("tokenPairInfo", tokenPairInfo);
+    console.log("router.query.pair_id--------------------------",router.query.pair_id);
+    // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
+    // console.log("pairInfo",pairInfo);
+    const time = 15;
+    const pairAddress = router.query.pair_id;
+    if(!pairAddress){
+      return;
+    }
+    const eachAddress = {
+      base: tokenPairInfo.baseToken.address,
+      quote: tokenPairInfo.pairedToken.address,
+      pairAddress: pairAddress,
+      time: time
+    }
+    dispatch(getBitqueryInitInfo(eachAddress));
+  }, [tokenPairInfo]);
+ 
 
   useEffect(() => {
     dispatch(getTokenPairInfo(pairAddress as string));

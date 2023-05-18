@@ -26,6 +26,7 @@ const initialState: TokenPairInfoState = {
 export const getTokenPairInfo = createAsyncThunk(
   "tokens/tokenPairInfo",
   async (pair_address: string) => {
+    console.log("getTokenPairInfo = createAsyncThunk",pair_address)
     return await HomePageTokens.getTokenPairInfo(pair_address);
   }
 );
@@ -40,6 +41,7 @@ export const tokePairInfoSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getTokenPairInfo.fulfilled, (state, action) => {
+        console.log("getTokenPairInfo.action.payload",action.payload)
         state.status = "ok";
         state.value = action.payload;
       })
