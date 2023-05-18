@@ -31,8 +31,6 @@ export const HorizontalIconsToken: React.FC<HorizontalIconsTokenProps> = ({
     setHasOutputError(false);
   }, [outputToken]);
 
-  // const inputIcon = `${coinMirrorUrl}/img/${inputToken?.code.toLowerCase()}-${inputToken?.name.toLowerCase()}.png`;
-  // const outputIcon = `${coinMirrorUrl}/img/${outputToken?.code.toLowerCase()}-${outputToken?.name.toLowerCase()}.png`;
   const inputIcon = `${coinMirrorUrl}/icon/${inputToken?.code.toLowerCase()}/200`;
   const outputIcon = `${coinMirrorUrl}/icon/${outputToken?.code.toLowerCase()}/200`;
   const defaultIcon = "/imgs/empty-img6.png";

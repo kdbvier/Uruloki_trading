@@ -13,6 +13,7 @@ export default async function tokenPriceInPairHandler(
   switch (method) {
     case "GET":
       try {
+        console.log("tokenPairResponse",pair_address);
         const tokenPairResponse = await G_QUERY_GetTokenPair(
           pair_address as string
         );

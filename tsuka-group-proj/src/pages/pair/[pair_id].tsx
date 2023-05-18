@@ -56,6 +56,7 @@ export default function Pair({
   const [showSidebar, setShowSidebar] = useState(false);
   const [pairAddress, setPairAddress] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const strategies = useAppSelector((state) => state.strategies.value);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -64,6 +65,7 @@ export default function Pair({
 
   // When this page becomes unmounted
   useEffect(() => {
+    
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
@@ -75,12 +77,28 @@ export default function Pair({
   }, [router]);
 
   useEffect(() => {
-    console.log("useEffect");
-    dispatch(getBitqueryInitInfo());
     dispatch(getStrategies());
   }, [dispatch]);
 
-  const strategies = useAppSelector((state) => state.strategies.value);
+  useEffect(() => {
+    console.log("tokenPairInfo", tokenPairInfo);
+    console.log("router.query.pair_id--------------------------",router.query.pair_id);
+    // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
+    // console.log("pairInfo",pairInfo);
+    const time = 15;
+    const pairAddress = router.query.pair_id;
+    if(!pairAddress){
+      return;
+    }
+    const eachAddress = {
+      base: tokenPairInfo.baseToken.address,
+      quote: tokenPairInfo.pairedToken.address,
+      pairAddress: pairAddress,
+      time: time
+    }
+    dispatch(getBitqueryInitInfo(eachAddress));
+  }, [tokenPairInfo]);
+ 
 
   useEffect(() => {
     dispatch(getTokenPairInfo(pairAddress as string));

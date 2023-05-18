@@ -14,13 +14,13 @@ export const tokenData: Token = {
     address: "0xD779BCA1E021aBF9C184d417c6339EAD850e10E6",
   },
   price: {
-    value: "4,095.98",
+    value: 4095.98,
     operator: "+",
     variationValue: 0.76,
     variationValueDiference: 0.00523,
   },
   volume: {
-    value: "32,987,497,674",
+    value: 32987497674,
     currencyLabel: "Billions",
   },
   marketCap: {
