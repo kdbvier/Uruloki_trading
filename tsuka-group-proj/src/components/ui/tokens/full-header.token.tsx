@@ -54,7 +54,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.token);
-  
+
   const baseTokenAddress = useAppSelector(
     (state) => state.tokenPairInfo.value.baseToken.address
   );
@@ -182,10 +182,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <InfoSpanToken
                 title={"24h"}
                 value={`${defaultNumberFormat(
-                  token_price?.base_price
-                    ? ((token_price.base_price -
-                        (oldTokenPrice?.base_price ?? 0)) /
-                        token_price.base_price) *
+                  oldTokenPrice?.base_price
+                    ? ((token_price.base_price - oldTokenPrice.base_price) /
+                        oldTokenPrice.base_price) *
                         100
                     : 0
                 ).toString()}%`}
