@@ -3,6 +3,7 @@ import { HeaderMenuButton } from "@/components/ui/buttons/header-menu.button";
 import { HeaderNotificationButton } from "@/components/ui/buttons/header-notification.button";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { PropsWithChildren, useState } from "react";
 import { HeaderLinkButton } from "../ui/buttons/header-link.button";
@@ -149,15 +150,17 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                       height={40}
                     /> */}
                     <div className="flex justify-between items-center">
-                      <Image
-                        // src={icon.url}
-                        className="hidden sm:block"
-                        src="/logos/logo_icon.png"
-                        alt="logo__image"
-                        width={40}
-                        height={40}
-                        style={{ position: "relative" }}
-                      />
+                      <Link href="/">
+                        <Image
+                          // src={icon.url}
+                          className="hidden sm:block"
+                          src="/logos/logo_icon.png"
+                          alt="logo__image"
+                          width={40}
+                          height={40}
+                          style={{ position: "relative" }}
+                        />
+                      </Link>
                       <div
                         className="px-3 flex flex-col hidden sm:block"
                         style={{ position: "relative" }}
