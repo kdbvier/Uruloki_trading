@@ -17,6 +17,7 @@ import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { TokenPairPrice } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { createClient } from "graphql-ws";
 import type { Order } from "@/types";
 import {
   OrderStatusEnum,
@@ -28,6 +29,7 @@ import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import axios from "axios";
 
 interface InputToken {
   id: string;
@@ -38,14 +40,79 @@ export default function Pair({
   orders,
   token_price,
   oldTokenPrice,
+  sell24hrAgoTrades,
+  buy24hrAgoTrades,
+  baseAddress,
 }: {
   orders: Order[];
   token_price: TokenPairPrice;
   oldTokenPrice: TokenPairPrice;
+  sell24hrAgoTrades: number;
+  buy24hrAgoTrades: number;
+  baseAddress: string;
 }) {
 
-  console.log("order", orders);
   
+  const [buyTrades, setBuyTrades] = useState<any>(sell24hrAgoTrades);
+  const [sellTrades, setSellTrades] = useState<any>(buy24hrAgoTrades);
+
+interface Trade {
+  side: string;
+  tradeAmount: number;
+  transaction: {
+    index: number;
+    txFrom: {
+      address: string;
+    };
+  };
+}
+
+const getQuery = (
+  tradeSide: string,
+  baseAddress: string
+): { query: string } => {
+  return {
+    query: `
+    subscription {
+      EVM(network: eth) {
+        DEXTrades(
+          where: {Trade: {Buy: {Currency: {SmartContract: {is: "${baseAddress}"}}}}}
+        ) {
+          Trade {
+            ${tradeSide} {
+              Currency {
+                Symbol
+                SmartContract
+              }
+              Price
+              Amount
+            }
+          }
+        }
+      }
+    }
+    `,
+  };
+};
+
+let WebSocketImpl: typeof WebSocket;
+
+if (typeof WebSocket === "undefined") {
+  WebSocketImpl = require("ws");
+} else {
+  WebSocketImpl = WebSocket;
+}
+
+const client = createClient({
+  url: "wss://streaming.bitquery.io/graphql",
+  webSocketImpl: WebSocketImpl,
+  connectionParams: () => ({
+    headers: {
+      "X-API-KEY": process.env.NEXT_PUBLIC_BITQUERY_API_KEY,
+    },
+  }),
+});
+
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
@@ -114,6 +181,105 @@ export default function Pair({
     setIsEdit(true);
   };
 
+  useEffect(() => {
+    const onNext = (data: any) => {
+      console.log("setSellTrades = ", data);
+
+      const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
+        const obj = el.Trade;
+        const side = Object.keys(el.Trade)[0];
+        return {
+          side,
+          tradeAmount: obj[side].Amount,
+          price: obj[side].Price,
+          transaction: {
+            txFrom: {
+              address: obj[side].Currency.SmartContract,
+            },
+          },
+        };
+      });
+
+      setSellTrades((prev: any) => [
+        ...prev,
+        ...updatedTrades.filter((el: any) => el.side.includes("Sell")),
+      ]);
+    };
+
+    let unsubscribe = () => {
+      /* complete the subscription */
+    };
+    
+    (async () => {
+      await new Promise<void>((resolve, reject) => {
+        unsubscribe = client.subscribe(getQuery("Sell", baseAddress), {
+          next: onNext,
+          error: (err: any) => {
+            console.log("Subscription error:", err);
+            reject(err);
+          },
+          complete: () => {
+            console.log("Subscription complete");
+            resolve();
+          },
+        });
+      });
+    })();
+
+    return () => {
+      unsubscribe();
+    };
+  }, [baseAddress]);
+
+  useEffect(() => {
+    const onNext = (data: any) => {
+      console.log("setBuyTrades = ", data);
+
+      const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
+        const obj = el.Trade;
+        const side = Object.keys(el.Trade)[0];
+        return {
+          side,
+          tradeAmount: obj[side].Amount,
+          price: obj[side].Price,
+          transaction: {
+            txFrom: {
+              address: obj[side].Currency.SmartContract,
+            },
+          },
+        };
+      });
+      setBuyTrades((prev: any) => [
+        ...prev,
+        ...updatedTrades.filter((el: any) => el.side.includes("Buy")),
+      ]);
+    };
+
+    let unsubscribe = () => {
+      /* complete the subscription */
+    };
+
+    (async () => {
+      await new Promise<void>((resolve, reject) => {
+        unsubscribe = client.subscribe(getQuery("Buy", baseAddress), {
+          next: onNext,
+          error: (err: any) => {
+            console.log("Subscription error:", err);
+            reject(err);
+          },
+          complete: () => {
+            console.log("Subscription complete");
+            resolve();
+          },
+        });
+      });
+    })();
+
+    return () => {
+      unsubscribe();
+    };
+  }, [baseAddress]);
+
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
       <FullHeaderToken
@@ -124,20 +290,39 @@ export default function Pair({
         oldTokenPrice={oldTokenPrice}
       />
       <div className="hidden lg:grid grid-cols-11 gap-4">
-        {/* <div className="col-span-12 md:col-span-3">
-              <CompareTokenChainToken token={token} networks={networks} />
-            </div> */}
         <div className="col-span-12 md:col-span-8">
+          {/*<LiveGraphToken token={token.chain?.code} />*/}
           <LiveGraphToken />
-          {token && (
-            <div className="hidden md:grid grid-cols-8 gap-4">
-              <div className="col-span-12 md:col-span-3">
-                <PoolInfoToken token={token} />
-              </div>
-              <div className="col-span-12 md:col-span-5">
-                <OrderBookToken token={token} orders={orders}/>
-              </div>
+          <div className="hidden md:grid grid-cols-8 gap-4">
+            <div className="col-span-12 md:col-span-3">
+              <PoolInfoToken token={token} />
             </div>
+            <div className="col-span-12 md:col-span-5">
+              <OrderBookToken
+                token={token}
+                orders={orders}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="col-span-12 md:col-span-3">
+          {currentToken && compareToken && (
+            <>
+              <DefaultButton
+                label="Create an Order"
+                callback={() => setShowEditOrderModal(true)}
+                filled={true}
+                Icon={FiPlusCircle}
+              />
+              <OrderWidgetToken
+                name1={currentToken?.chain.name as string}
+                code1={currentToken?.chain.code as string}
+                name2={compareToken?.chain.name as string}
+                code2={compareToken?.chain.code as string}
+                status={statusOrder}
+                orders={orders}
+              />
+            </>
           )}
         </div>
         <div className="col-span-12 md:col-span-3">
@@ -286,6 +471,77 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (err) {
     oldTokenPrice = { ...initialTokenPairPrice };
   }
+  const { pair_id } = context.query;
+
+  let sell24hrAgoTrades = [];
+  let buy24hrAgoTrades = [];
+  let baseAddress = "";
+  let quoteAddress = "";
+
+  try {
+    const res = await axios.get(
+      `http://localhost:3000/api/tokens/token-pair?pair_address=${pair_id}`
+    );
+    baseAddress = res.data.payload.baseToken.address;
+    quoteAddress = res.data.payload.pairedToken.address;
+  } catch (error) {
+    console.log(error, "error");
+  }
+
+  try {
+    const { data } = await axios.post(
+      "https://graphql.bitquery.io/",
+      {
+        query: `{
+          ethereum(network: ethereum) {
+            dexTrades(
+              baseCurrency: {is: "${baseAddress}"}
+              quoteCurrency: {is: "${quoteAddress}"}
+              options: {desc: ["block.timestamp.time", "transaction.index"], limit: 10}
+            ) {
+              block {
+                height
+                timestamp {
+                  time(format: "%Y-%m-%d %H:%M:%S")
+                }
+              }
+              tradeAmount(in: BTC)
+              side
+              sellAmount(in: USD)
+              buyAmount(in: USD)
+              transaction {
+                index
+                txFrom {
+                  address
+                }
+              }
+            }
+          }
+      }`,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": "BQYedcj8q0acU4h8q0CmF2rfIVZp9VOe",
+        },
+      }
+    );
+
+    const dexTrades = data?.data?.ethereum?.dexTrades.map((el: any) => {
+      const amount = el.side === "SELL" ? el.sellAmount : el.buyAmount;
+      return {
+        tradeAmount: el.tradeAmount,
+        side: el.side,
+        price: amount,
+        transaction: el.transaction,
+      };
+    });
+
+    if (dexTrades && dexTrades.length) {
+      sell24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "SELL");
+      buy24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "BUY");
+    }
+  } catch (error) {}
 
   return {
     props: {
