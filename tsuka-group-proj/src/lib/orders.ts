@@ -1,4 +1,5 @@
-import type { Order } from "@/types";
+import type { Order, OrdersBook, OrdersBookType } from "@/types";
+import { OrderBookData } from "@/types/orderbook.type";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

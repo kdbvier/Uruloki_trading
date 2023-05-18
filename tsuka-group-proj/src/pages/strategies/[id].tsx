@@ -20,43 +20,43 @@ export default function StrategyDetails({ id }: { id: string }) {
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const router = useRouter();
   const { id: strategyId = id || "" } = router.query;
-  const [token, setToken] = useState({
-    id: "",
-    token: "Ethereum",
-    chain: {
-      name: "Ethereum",
-      code: "ETH",
-      address: "",
-    },
-    pair: {
-      code: "BTC",
-      name: "Bitcoin",
-      address: "",
-    },
-    price: {
-      value: 0,
-      operator: "+",
-      variationValue: 0,
-      variationValueDiference: 0,
-    },
-    volume: {
-      value: 0,
-      currencyLabel: "",
-    },
-    marketCap: {
-      value: "0",
-      currencyLabel: "",
-    },
-    nOrders: {
-      value: "0",
-      currencyLabel: "",
-    },
-    orderSplit: {
-      buy: 0,
-      sell: 0,
-    },
-  });
-  //const { value: token } = useAppSelector((state) => state.token);
+  // const [token, setToken] = useState({
+  //   id: "",
+  //   token: "Ethereum",
+  //   chain: {
+  //     name: "Ethereum",
+  //     code: "ETH",
+  //     address: "",
+  //   },
+  //   pair: {
+  //     code: "BTC",
+  //     name: "Bitcoin",
+  //     address: "",
+  //   },
+  //   price: {
+  //     value: 0,
+  //     operator: "+",
+  //     variationValue: 0,
+  //     variationValueDiference: 0,
+  //   },
+  //   volume: {
+  //     value: 0,
+  //     currencyLabel: "",
+  //   },
+  //   marketCap: {
+  //     value: "0",
+  //     currencyLabel: "",
+  //   },
+  //   nOrders: {
+  //     value: "0",
+  //     currencyLabel: "",
+  //   },
+  //   orderSplit: {
+  //     buy: 0,
+  //     sell: 0,
+  //   },
+  // });
+  const { value: token } = useAppSelector((state) => state.token);
   const [strategyDetails] = useAppSelector((state) =>
     state.strategies.value.filter(({ id }) => id === strategyId)
   );
@@ -172,8 +172,7 @@ export default function StrategyDetails({ id }: { id: string }) {
               }}
             />
           )}
-          
-          {token && <OrderBookToken token={token} />}
+          {token && <OrderBookToken token={token} orders={[]}/>}
         </div>
       )}
     </div>
