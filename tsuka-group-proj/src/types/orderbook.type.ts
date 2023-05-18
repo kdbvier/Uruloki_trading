@@ -86,8 +86,8 @@ export class OrderBookData {
 
         for (const order of orders) {
             const price = OrderBookData.orderBookOrderToSinglePrice(order);
-            const size = (order.budget as number) * (price as number); //This is the number of tokens that the order is for
-            this.updateVolumeAtPrice(price, size, order.order_type === "sell");
+            //const size = (order.budget as number) * (price as number); //This is the number of tokens that the order is for
+            this.updateVolumeAtPrice(price, order.budget ?? 0, order.order_type === "sell");
         }
 
         return this;

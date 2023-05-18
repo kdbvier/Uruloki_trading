@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 
 export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const { status } = useAppSelector((state) => state.tokenOrderBooks);
-  const [maxSum, setMaxSum] = useState(0);
+  const [sellSum, setSellSum] = useState(0);
+  const [buySum, setBuySum] = useState(0);
   const [orderBookData, setOrderBookData] = useState<OrderBookData>(new OrderBookData());
 
   useEffect(() => {
@@ -15,8 +16,8 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
 
     let sellSum = tempOrderBookData.getSellSum();
     let buySum = tempOrderBookData.getBuySum();
-
-    setMaxSum(Math.max(sellSum, buySum));
+    console.log(orders)
+    console.log(tempOrderBookData)
   }, [orders])
 
   let sum: number;
@@ -30,7 +31,7 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size (Tokens)</span>
+                <span className="flex-1 px-4 py-2 text-end">Size ({orders[0].baseTokenShortName})</span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
               {[...(orderBookData.sell ?? [])]
@@ -50,7 +51,7 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
                         <div
                           className="bg-red-400/20 h-6 rounded text-start flex items-center px-2 ml-auto"
                           style={{
-                            width: `${(sum * 100) / maxSum}%`,
+                            width: `${(sum * 100) / sellSum}%`,
                           }}
                         ></div>
                       </div>
@@ -58,7 +59,7 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
                         {numberWithCommas(item.price)}
                       </span>
                       <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                        {item.size.toFixed(2)}
+                        {item.size.toLocaleString("en-us")}
                       </span>
                       <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                         {numberWithCommas(sum)}
@@ -72,7 +73,7 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size (Tokens)</span>
+                <span className="flex-1 px-4 py-2 text-end">Size ({orders[0].pairTokenShortName})</span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
               {[...(orderBookData.buy ?? [])]
@@ -92,7 +93,7 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
                         <div
                           className="bg-green-400/20 h-6 rounded text-start flex items-center px-2 mr-auto"
                           style={{
-                            width: `${(sum * 100) / maxSum}%`,
+                            width: `${(sum * 100) / buySum}%`,
                           }}
                         ></div>
                       </div>
@@ -100,7 +101,7 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
                         {numberWithCommas(item.price)}
                       </span>
                       <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                        {item.size.toFixed(2)}
+                        {item.size.toLocaleString("en-us")}
                       </span>
                       <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
                         {numberWithCommas(sum)}

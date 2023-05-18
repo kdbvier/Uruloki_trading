@@ -7,7 +7,7 @@ import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.u
 import { Token } from "@/types/token.type";
 import { Order } from "@/types";
 
-export const OrderBookToken: React.FC<{ token: Token, order: Order[] }> = ({ token, order }) => {
+export const OrderBookToken: React.FC<{ token: Token, orders: Order[] }> = ({ token, orders }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
@@ -53,7 +53,7 @@ export const OrderBookToken: React.FC<{ token: Token, order: Order[] }> = ({ tok
         </div>
       </div>
       <div className="overflow-x-scroll">
-        {OrderComponent && <OrderComponent orders={order} token={token}/>}
+        {OrderComponent && <OrderComponent orders={orders} token={token}/>}
       </div>
     </div>
   );

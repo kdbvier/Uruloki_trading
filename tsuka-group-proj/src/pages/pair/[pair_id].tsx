@@ -117,7 +117,7 @@ export default function Pair({
                 <PoolInfoToken token={token} />
               </div>
               <div className="col-span-12 md:col-span-5">
-                <OrderBookToken token={token} order={orders}/>
+                <OrderBookToken token={token} orders={orders}/>
               </div>
             </div>
           )}
@@ -184,11 +184,11 @@ export default function Pair({
         />
         {token && (
           <>
-            <OrderBookToken token={token} order={orders}/>
+            <OrderBookToken token={token} orders={orders}/>
             <PoolInfoToken token={token} />
           </>
         )}
-        <OrderBookToken token={token} order={orders}/>
+        <OrderBookToken token={token} orders={orders}/>
         <PoolInfoToken token={token} />
       </div>
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
