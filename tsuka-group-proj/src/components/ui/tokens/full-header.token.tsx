@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdArrowBack } from "react-icons/md";
-import { HorizontalIconsToken } from "./horizontal-icons.token";
 import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
 import { ApiResponse, Order, TokenPairInfo } from "@/types";
@@ -77,17 +76,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             >
               <MdArrowBack />
             </Link>
-            <HorizontalIconsToken
-              inputToken={{
-                name: tokenPairInfo.baseToken.name,
-                code: tokenPairInfo.baseToken.symbol,
-              }}
-              outputToken={{
-                name: tokenPairInfo.pairedToken.name,
-                code: tokenPairInfo.pairedToken.symbol,
-              }}
-              large={true}
-            />
             <div className="px-2 flex-1 flex-col">
               <p className="text-sm xs:text-base">
                 <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">

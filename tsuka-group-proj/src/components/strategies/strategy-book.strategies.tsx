@@ -6,7 +6,6 @@ import { MdArrowForward } from "react-icons/md";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { FiltersSearch } from "../ui/content-header/filters.search";
 import { StatusSpan } from "../ui/spans/status.span";
-import { HorizontalIconsToken } from "../ui/tokens/horizontal-icons.token";
 import { SidebarStrategies } from "./sidebar.strategies";
 
 export interface StrategyBookStrategiesProps {
@@ -91,10 +90,6 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
                             className="flex py-2 px-4 text-tsuka-50 text-sm font-normal whitespace-nowrap"
                           >
                             <div className="flex text-tsuka-200 items-center font-medium py-1">
-                              <HorizontalIconsToken
-                                inputToken={{ name: name1, code: code1 }}
-                                outputToken={{ name: name2, code: code2 }}
-                              />
                               <span className="text-tsuka-50 font-semibold text-base">
                                 {code1}/
                                 <span className="text-tsuka-200 text-sm">

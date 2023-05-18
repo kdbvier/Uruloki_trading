@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { MdArrowForward } from "react-icons/md";
 import { DefaultButton } from "../ui/buttons/default.button";
-import { TokenIconSpan } from "../ui/spans/token-icon.span";
 import { TokenPairStrategies } from "../ui/strategies/token-pair.strategies";
 
 export interface SidebarStrategiesProps {
@@ -57,19 +56,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
                 <Link href={`/strategies/${id}`}>
                   <div className="flex">
                     <div className="flex -space-x-3 mr-2">
-                      <TokenIconSpan
-                        code={orderTokens[0]?.code1}
-                        name={orderTokens[0]?.name1}
-                      />
-                      <TokenIconSpan
-                        code={orderTokens[0]?.code2}
-                        name={orderTokens[0]?.name2}
-                      />
-                      {orderTokens?.length >= 2 && (
-                        <span className="flex items-center justify-center w-7 h-7 text-xs font-medium text-tsuka-50 bg-tsuka-400 rounded-full">
-                          +{orderTokens?.length}
-                        </span>
-                      )}
+                     
                     </div>
                     <div className="flex flex-col">
                       <span className="text-tsuka-50 text-sm">
