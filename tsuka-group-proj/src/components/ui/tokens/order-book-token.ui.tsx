@@ -1,25 +1,22 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
 import { getTokenOrderBooks } from "@/store/apps/token-order-books";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { Order } from "@/types";
+import { TokenOrderBook, TokenOrderBooks } from "@/types/token-order-books.type";
 import { Token } from "@/types/token.type";
 import { useEffect, useState } from "react";
 
-export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.tokenOrderBooks);
+export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
+  const { status } = useAppSelector((state) => state.tokenOrderBooks);
   const [maxSum, setMaxSum] = useState(0);
-
+  const [value, setValue] = useState<TokenOrderBooks>();
   useEffect(() => {
-    updateTokenPosition();
-    // const intervalId = setInterval(updateTokenPosition, 2000);
-    return () => {
-      // clearInterval(intervalId);
-    };
-  }, []);
-
-  const updateTokenPosition = () => {
-    dispatch(getTokenOrderBooks(token?.pair?.address as string));
-  };
+    orders && setValue({
+      id: "1",
+      sell: orders.filter(order => order.order_type === "sell").map(order => ({price: Number(order.single_price), size: Number(order.budget)})),
+      buy: orders.filter(order => order.order_type === "buy").map(order => ({price: Number(order.single_price), size: Number(order.budget)}))
+    })
+  }, [])
 
   useEffect(() => {
     let sellSum: number = 0,

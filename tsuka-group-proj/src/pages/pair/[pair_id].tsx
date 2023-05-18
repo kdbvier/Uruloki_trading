@@ -43,6 +43,9 @@ export default function Pair({
   token_price: TokenPairPrice;
   oldTokenPrice: TokenPairPrice;
 }) {
+
+  console.log("order", orders);
+  
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
   const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
@@ -114,7 +117,7 @@ export default function Pair({
                 <PoolInfoToken token={token} />
               </div>
               <div className="col-span-12 md:col-span-5">
-                <OrderBookToken token={token} />
+                <OrderBookToken token={token} order={orders}/>
               </div>
             </div>
           )}
@@ -181,11 +184,11 @@ export default function Pair({
         />
         {token && (
           <>
-            <OrderBookToken token={token} />
+            <OrderBookToken token={token} order={orders}/>
             <PoolInfoToken token={token} />
           </>
         )}
-        <OrderBookToken token={token} />
+        <OrderBookToken token={token} order={orders}/>
         <PoolInfoToken token={token} />
       </div>
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">

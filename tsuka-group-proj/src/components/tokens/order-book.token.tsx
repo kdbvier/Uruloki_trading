@@ -5,8 +5,9 @@ import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { Token } from "@/types/token.type";
+import { Order } from "@/types";
 
-export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
+export const OrderBookToken: React.FC<{ token: Token, order: Order[] }> = ({ token, order }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
@@ -25,7 +26,7 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
   const OrderComponent =
     selectedPath === "order-book" ? OrderBookTokenUi : OrderHistoryBookTokenUi;
 
-  useEffect(() => {
+  useEffect(() => {    
     dispatch(getTokenPosition(token.id));
   }, [dispatch, token]);
 
@@ -52,7 +53,7 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
         </div>
       </div>
       <div className="overflow-x-scroll">
-        {OrderComponent && <OrderComponent token={token} />}
+        {OrderComponent && <OrderComponent orders={order} token={token}/>}
       </div>
     </div>
   );
