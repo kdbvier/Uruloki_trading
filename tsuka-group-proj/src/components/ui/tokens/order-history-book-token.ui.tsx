@@ -1,7 +1,8 @@
+import React, { useState, useEffect } from "react";
+import { OrderBookPosition } from "@/types/token-positions.type";
+import { tokenPositionsData } from "@/@fake-data/token-positions.fake-data";
+import { splitAddress } from "@/helpers/splitAddress.helper";
 import { numberWithCommas } from "@/helpers/comma.helper";
-import { getTokenHistoryPosition } from "@/store/apps/token-history-positions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
 
 export interface OrderBookTokenProps {
   token: {
@@ -13,14 +14,44 @@ export interface OrderBookTokenProps {
 export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
   token,
 }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector(
-    (state) => state.tokenHistoryPosition
-  );
+  const [status, setStatus] = useState<"ok" | "loading" | "failed">("loading");
+  const [value, setValue] = useState<Array<OrderBookPosition>>([]);
 
   useEffect(() => {
-    dispatch(getTokenHistoryPosition(token.id));
-  }, [dispatch, token]);
+    setStatus("loading");
+
+    const fetchData = async () => {
+      try {
+        const data = tokenPositionsData.find((item) => item.id === token.id);
+        if (!data) {
+          throw new Error("No data found");
+        }
+
+        const filteredData = [
+          ...data.buy.positions.map((item) => {
+            return {
+              ...item,
+              address: splitAddress(item.address),
+            };
+          }),
+          ...data.sell.positions.map((item) => {
+            return {
+              ...item,
+              address: splitAddress(item.address),
+            };
+          }),
+        ].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+        setValue(filteredData);
+        setStatus("ok");
+      } catch (error) {
+        console.error(error);
+        setStatus("failed");
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   return (
     <div>
