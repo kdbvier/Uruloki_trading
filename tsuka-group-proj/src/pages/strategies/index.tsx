@@ -1,18 +1,27 @@
 import { StrategyBookStrategies } from "@/components/strategies/strategy-book.strategies";
+import Strategies from "@/lib/api/strategies";
 import { getStrategies } from "@/store/apps/strategies";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { Strategy } from "@/types";
 import Link from "next/link";
 import { useEffect } from "react";
 
-export default function StrategyDetails() {
-  const dispatch = useAppDispatch();
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
+export const getServerSideProps = async () => {
+  const response = await Strategies.getStrategiesData();
+  return { props: response }
+}
 
-  useEffect(() => {
-    dispatch(getStrategies());
-  }, [dispatch]);
+export default function StrategyDetails({response}:{response: Strategy[]}) {
+  console.log("response by serverside props: ", response);
+  // const dispatch = useAppDispatch();
+  // const {
+  //   strategies: { value: strategies },
+  // } = useAppSelector((state) => state);
+
+  // useEffect(() => {
+  //   dispatch(getStrategies());
+  // }, [dispatch]);
+  const strategies = response;
 
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
