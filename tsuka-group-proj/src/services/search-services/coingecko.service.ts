@@ -15,7 +15,6 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
     const now = Date.now();
     // Check if data is cached and still valid
     if (cache.data.length === 0 || now - cache.lastFetch > cache.expiresIn) {
-      console.log("New api request going:::::::")
       const response = await axios.get('https://api.coingecko.com/api/v3/coins/list?include_platform=true');
       cache.data = response.data;
       cache.lastFetch = now;    
@@ -38,7 +37,6 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       const tokenName = coin.name;
       const symbol = coin.symbol;
       const address = coin.platforms.ethereum;
-
       
       const isErc20 = await checkIfTokenIsErc20(address);
       // const isErc20 = true;
