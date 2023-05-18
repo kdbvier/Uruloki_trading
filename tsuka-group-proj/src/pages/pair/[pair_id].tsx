@@ -307,6 +307,7 @@ const client = createClient({
           </div>
         </div>
         <div className="col-span-12 md:col-span-3">
+          {/*
           {currentToken && compareToken && (
             <>
               <DefaultButton
@@ -325,6 +326,7 @@ const client = createClient({
               />
             </>
           )}
+          */}
         </div>
         <div className="col-span-12 md:col-span-3">
           <DefaultButton
