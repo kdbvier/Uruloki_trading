@@ -176,8 +176,10 @@ export default function Pair({
   }, [tokenPairInfo]);
 
   useEffect(() => {
-    dispatch(getTokenPairInfo(pairAddress as string));
-    dispatch(getActiveOrdersbyTokenPair(pairAddress as string));
+    if (pairAddress) {
+      dispatch(getTokenPairInfo(pairAddress as string));
+      dispatch(getActiveOrdersbyTokenPair(pairAddress as string));
+    }
   }, [pairAddress, dispatch]);
 
   const handleEditModal = (show: boolean, id: number) => {

@@ -45,7 +45,7 @@ export const convertLawPrice = (price: number) => {
   } else {
     priceEle = (
       <>
-        ${formatNumberToHtmlTag(price).integerPart}
+        {formatNumberToHtmlTag(price).integerPart}
         .0
         <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
         {formatNumberToHtmlTag(price).remainingDecimal}
@@ -342,11 +342,19 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 }
               });
             } else {
+              console.log("--------------------------------");
+              console.log(payload.order_id);
+              console.log(tokenPairInfo?.pairedToken?.address as string);
+              console.log(tokenPairInfo?.baseToken?.address as string);
+              console.log(isBuy);
+              console.log(Number(targetPrice.split(",").join("")));
+              console.log(Number(amount.split(",").join("")));
+              console.log("--------------------------------");
               editNonContinuousTargetPriceOrder(
-                payload.order_id,
+                payload.order_id as number,
                 tokenPairInfo?.pairedToken?.address as string,
                 tokenPairInfo?.baseToken?.address as string,
-                isBuy,
+                isBuy as boolean,
                 Number(targetPrice.split(",").join("")),
                 Number(amount.split(",").join(""))
               ).then((res) => {
@@ -474,12 +482,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              {!!token_price.base_price &&
-                (token_price.base_price >= 0.01
-                  ? `$${handleNumberFormat(
-                      parseFloat(token_price.base_price.toFixed(2))
-                    )}`
-                  : convertLawPrice(token_price.base_price))}
+              {!!token_price.base_price && (
+                <>
+                  $
+                  {token_price.base_price >= 0.01
+                    ? handleNumberFormat(
+                        parseFloat(token_price.base_price.toFixed(2))
+                      )
+                    : convertLawPrice(token_price.base_price)}
+                </>
+              )}
             </span>
           </p>
           {/* <div className="w-full mt-4 flex gap-2 text-sm">
@@ -702,13 +714,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   let totalAmount =
                     parseFloat(amount.split(",").join("")) *
                     (isBuy ? token_price.quote_price : token_price.base_price);
-                  return totalAmount
-                    ? totalAmount >= 0.001
-                      ? `$${handleNumberFormat(
-                          parseFloat(totalAmount.toFixed(3))
-                        )}`
-                      : convertLawPrice(totalAmount)
-                    : "$0";
+                  return (
+                    <>
+                      $
+                      {totalAmount
+                        ? totalAmount >= 0.001
+                          ? handleNumberFormat(
+                              parseFloat(totalAmount.toFixed(3))
+                            )
+                          : convertLawPrice(totalAmount)
+                        : 0}
+                    </>
+                  );
                 })()}
               </span>
             </div>
