@@ -50,20 +50,30 @@ export const editUserOrder = createAsyncThunk<
   unknown,
   updateEditOrderParams,
   { dispatch: any }
->("userOrder/post", async ({ id, patchData }, { dispatch }): Promise<Order> => {
-  // const data = userOrder.find((item) => item.id === id)!;
-  const data = await Orders.editOrder(id, patchData);
-  console.log("data updated");
+>(
+  "userOrder/post",
+  async (
+    { id, patchData },
+    { dispatch, rejectWithValue }
+  ): Promise<Order | any> => {
+    // const data = userOrder.find((item) => item.id === id)!;
+    try {
+      const data = await Orders.editOrder(id, patchData);
+      console.log("data updated");
 
-  const user_id = 1;
-  if (data) {
-    // dispatch(getUserOrder(user_id))
-    dispatch(
-      getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
-    );
+      const user_id = 1;
+      if (data) {
+        // dispatch(getUserOrder(user_id))
+        dispatch(
+          getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
+        );
+      }
+      return data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
   }
-  return data;
-});
+);
 interface getUserOrderWithFilterParams {
   id: number;
   status: string;
@@ -91,10 +101,14 @@ export const getUserOrder = createAsyncThunk(
 );
 export const createOrder = createAsyncThunk(
   "userOrder/set",
-  async (postData: PostOrder, { dispatch }) => {
+  async (postData: PostOrder, { dispatch, rejectWithValue }) => {
     console.log("post lib::");
-    const data = await Orders.createOrder(postData);
-    return data;
+    try {
+      const data = await Orders.createOrder(postData);
+      return data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 export const deleteOrder = createAsyncThunk(

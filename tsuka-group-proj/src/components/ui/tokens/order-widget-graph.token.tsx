@@ -102,16 +102,21 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
               {value2 ? "Price range" : "Target price"}
             </span>
             <span>
+              $
               {value1 >= 0.01
-                ? `$${handleNumberFormat(parseFloat(value1.toFixed(2)))}`
+                ? handleNumberFormat(parseFloat(value1.toFixed(2)))
                 : convertLawPrice(value1)}
-              {!!value2 &&
-              (value2 >= 0.01
-                ? `$${handleNumberFormat(parseFloat(value2.toFixed(2)))}`
-                : convertLawPrice(value2))
+              {!!value2 && (
+                <>
+                  $
+                  {value2 >= 0.01
+                    ? handleNumberFormat(parseFloat(value2.toFixed(2)))
+                    : convertLawPrice(value2)}
+                </>
+              )
                 ? " - $" +
                   (value2 >= 0.01
-                    ? `$${handleNumberFormat(parseFloat(value2.toFixed(2)))}`
+                    ? handleNumberFormat(parseFloat(value2.toFixed(2)))
                     : convertLawPrice(value2))
                 : ""}
             </span>
@@ -121,7 +126,7 @@ export const OrderWidgetGraph: React.FC<OrderWidgetGraphProp> = ({
             <span>
               {budget >= 0.01
                 ? handleNumberFormat(parseFloat(budget.toFixed(2)))
-                : convertLawPrice(budget).toString().slice(1)}{" "}
+                : convertLawPrice(budget)}{" "}
               {buy ? pairedTokenSymbol : tokenSymbol}
             </span>
           </div>
