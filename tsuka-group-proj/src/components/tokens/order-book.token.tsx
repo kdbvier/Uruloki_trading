@@ -1,14 +1,10 @@
-import { getTokenPosition } from "@/store/apps/token-positions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { Token } from "@/types/token.type";
 
 export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
 
   const options = [
@@ -24,10 +20,6 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
 
   const OrderComponent =
     selectedPath === "order-book" ? OrderBookTokenUi : OrderHistoryBookTokenUi;
-
-  useEffect(() => {
-    dispatch(getTokenPosition(token.id));
-  }, [dispatch, token]);
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 px-2">
