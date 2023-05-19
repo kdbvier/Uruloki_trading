@@ -62,18 +62,14 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
         onClick={async () => {
           setShowConfirmDlg(false);
           dispatch(deleteOrder(deleteID));
-          cancelOrder(deleteID)
-            .then((res) => {
-              console.log("then before toast");
+          cancelOrder(deleteID).then((res) => {
+            if (res?.msg === "success") {
               toast(res?.msg, { type: "success" });
-              console.log("then after toast");
-            })
-            .catch((err) => {
-              console.log("catch before toast");
-              toast(err.msg, { type: "error" });
-              console.log("catch after toast");
-            });
-          setShowDeletedAlert(true);
+            } else {
+              toast(res?.msg, { type: "error" });
+            }
+            setShowDeletedAlert(true);
+          });
         }}
       >
         Yes, Delete

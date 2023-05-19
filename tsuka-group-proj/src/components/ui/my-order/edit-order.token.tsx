@@ -300,13 +300,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 Number(maxPrice.split(",").join("")),
                 Number(amount.split(",").join("")),
                 Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             } else {
               editNonContinuousPriceRangeOrder(
                 payload.order_id,
@@ -316,13 +316,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 Number(minPrice.split(",").join("")),
                 Number(maxPrice.split(",").join("")),
                 Number(amount.split(",").join(""))
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             }
           } else {
             if (payload.is_continuous === true) {
@@ -334,13 +334,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 Number(targetPrice.split(",").join("")),
                 Number(amount.split(",").join("")),
                 Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             } else {
               editNonContinuousTargetPriceOrder(
                 payload.order_id,
@@ -349,13 +349,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 isBuy,
                 Number(targetPrice.split(",").join("")),
                 Number(amount.split(",").join(""))
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             }
           }
         }
@@ -395,13 +395,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 Number(maxPrice.split(",").join("")),
                 Number(amount.split(",").join("")),
                 Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             } else {
               createNonContinuousPriceRangeOrder(
                 tokenPairInfo?.pairedToken?.address as string,
@@ -410,13 +410,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 Number(minPrice.split(",").join("")),
                 Number(maxPrice.split(",").join("")),
                 Number(amount.split(",").join(""))
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             }
           } else {
             if (payload.is_continuous === true) {
@@ -427,13 +427,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 Number(targetPrice.split(",").join("")),
                 Number(amount.split(",").join("")),
                 Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             } else {
               createNonContinuousTargetPriceOrder(
                 tokenPairInfo?.pairedToken?.address as string,
@@ -441,13 +441,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 isBuy,
                 Number(targetPrice.split(",").join("")),
                 Number(amount.split(",").join(""))
-              )
-                .then((res) => {
+              ).then((res) => {
+                if (res?.msg === "success") {
                   toast(res?.msg, { type: "success" });
-                })
-                .catch((err) => {
-                  toast(err.msg, { type: "error" });
-                });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
             }
           }
         }
