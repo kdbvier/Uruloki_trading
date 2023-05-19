@@ -19,6 +19,7 @@ import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
+import Orders from "@/lib/api/orders";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -119,6 +120,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     selectedOrder.price_type === PriceTypeEnum.RANGE
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
+  const [basePrice, setBasePrice] = useState<number>(0);
 
   const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
   const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
@@ -132,6 +134,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       dispatch(getTokenPairPrice(pair_address as string));
     }
     dispatch(getAllTokenCache());
+    Orders.getTokenPairPrice(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res.base_price * selectedOrder.budget : 0)))
   }, []);
 
   useEffect(() => {
@@ -154,12 +157,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (tokenCache && currentToken) {
       const currentPrice = tokenCache.filter(
         (token) => token.shortName === pairShortName
-      )[0].price;
+      )[0]!.price;
       const selectPrice = tokenCache.filter((token) =>
         isBuy
           ? token.shortName === pairShortName
           : token.shortName === baseShortName
-      )[0].price;
+      )[0]!.price;
       const newValue = (
         Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
       )
