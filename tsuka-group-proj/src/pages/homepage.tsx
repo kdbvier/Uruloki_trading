@@ -5,8 +5,6 @@ import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getHomePageTokens } from "@/store/apps/tokens";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
@@ -18,24 +16,38 @@ import {
 } from "@/lib/mapper";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { getStrategies } from "@/store/apps/strategies";
+import HomePageTokens from "@/lib/api/tokens";
+import Strategies from "@/lib/api/strategies";
+import { Strategy, Tokens } from "@/types";
 
 let currentTranslateX: number = 0;
 
-export default function Home() {
+export async function getServerSideProps(){
+  const tokens = await HomePageTokens.getTokens();
+  const strategies = await Strategies.getStrategiesData();
+
+  return {
+    props: {tokens, strategies}
+  }
+}
+
+export default function Home({tokens, strategies}:{tokens:Tokens, strategies:Strategy[]}) {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const dispatch = useAppDispatch();
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
-  useEffect(() => {
-    dispatch(getHomePageTokens());
-    dispatch(getStrategies());
-  }, [dispatch]);
+  const [value, setValue] = useState(tokens);
+  const [status, setStatus] = useState(!tokens);
 
-  const { value, status } = useAppSelector((state) => state.homepageTokens);
+  useEffect(()=> {
+    if(!tokens) {
+      setStatus(true);
+      HomePageTokens.getTokens().then(tokens_data => {
+        setValue(tokens_data);
+        setStatus(false);
+      })
+    }
+  }, [tokens])
+
   let content: any = useRef();
   let x1: number = 0;
   let x2: number = 0;
@@ -110,13 +122,13 @@ export default function Home() {
   return (
     <>
       <ToastContainer />
-      {(status === "loading" || _.isEmpty(value)) && (
+      {(status === true || _.isEmpty(value)) && (
         <LoadingBox
           title="Loading data"
           description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
         />
       )}
-      {status === "ok" && !_.isEmpty(value) && (
+      {status === false && !_.isEmpty(value) && (
         <div className="px-4 md:px-10 pt-6 pb-8">
           <ContentHeader title="Homepage" className="w-full mb-6" />
           <div className="hidden md:flex md:gap-5">

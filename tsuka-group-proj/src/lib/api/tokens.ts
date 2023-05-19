@@ -2,9 +2,12 @@ import { TokenPairInfo, Tokens } from "@/types";
 import { httpRequest } from "./http";
 import { FilterSearchItemType } from "@/components/ui/content-header/filters.search";
 
+const API_URL = process.env.NODE_ENV === 'production' ? 'https://live-site-url': 'http://localhost:3000';
+
 export default class HomePageTokens {
   static getTokens = async (): Promise<Tokens> => {
-    return await httpRequest.get("/tokens");
+    // return await httpRequest.get("/tokens");
+    return await httpRequest.get(`${API_URL}/api/tokens`);
   };
   static searchTokens = async (
     name: string
