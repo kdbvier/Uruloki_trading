@@ -1,44 +1,47 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
-import { getTokenOrderBooks } from "@/store/apps/token-order-books";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Orders from "@/lib/api/orders";
+import { TokenOrderBooks } from "@/types/token-order-books.type";
 import { Token } from "@/types/token.type";
 import { useEffect, useState } from "react";
 
 export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.tokenOrderBooks);
   const [maxSum, setMaxSum] = useState(0);
 
+  const [tokenOrdersBooks, setTokenOrdersBooks] = useState<TokenOrderBooks>();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    updateTokenPosition();
-    // const intervalId = setInterval(updateTokenPosition, 2000);
-    return () => {
-      // clearInterval(intervalId);
+    const fetchTokenOrderBooks = async () => {
+      try {
+        setLoading(true);
+        const res = await Orders.getOrderBooks(token?.pair?.address as string);
+        setTokenOrdersBooks(res);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+      }
     };
-  }, []);
 
-  const updateTokenPosition = () => {
-    dispatch(getTokenOrderBooks(token?.pair?.address as string));
-  };
+    fetchTokenOrderBooks();
+  }, []);
 
   useEffect(() => {
     let sellSum: number = 0,
       buySum: number = 0;
-    value?.sell?.forEach((item) => {
+    tokenOrdersBooks?.sell?.forEach((item) => {
       sellSum += item.size;
     });
-    value?.buy?.forEach((item) => {
+    tokenOrdersBooks?.buy?.forEach((item) => {
       buySum += item.size;
     });
     setMaxSum(Math.max(sellSum, buySum));
-  }, [value]);
+  }, [tokenOrdersBooks]);
 
   let sum: number;
 
   return (
     <div>
-      {status === "loading" && "Loading..."}
-      {status === "ok" && value && (
+      {loading && "Loading..."}
+      {!loading && tokenOrdersBooks && (
         <div className="p-4 flex gap-2">
           <div className="flex-1">
             <div className="h-96">
@@ -47,7 +50,7 @@ export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
                 <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USDT)</span>
               </div>
-              {[...(value?.sell ?? [])]
+              {[...(tokenOrdersBooks?.sell ?? [])]
                 ?.sort((a, b) => b.price - a.price)
                 ?.map((item, index) => {
                   if (!index) {
@@ -89,7 +92,7 @@ export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
                 <span className="flex-1 px-4 py-2 text-end">Size (UDT)</span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USDT)</span>
               </div>
-              {[...(value?.buy ?? [])]
+              {[...(tokenOrdersBooks?.buy ?? [])]
                 ?.sort((a, b) => a.price - b.price)
                 ?.map((item, index) => {
                   if (!index) {
