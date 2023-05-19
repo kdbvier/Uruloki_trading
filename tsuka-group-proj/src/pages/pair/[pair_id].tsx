@@ -30,7 +30,12 @@ import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { getTokenNamesFromPair } from "@/lib/token-pair";
-import { HistoricalDexTrades, getHistoricalDexTrades } from "@/lib/token-activity-feed";
+import {
+  HistoricalDexTrades,
+  getHistoricalDexTrades,
+} from "@/lib/token-activity-feed";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface InputToken {
   id: string;
@@ -52,28 +57,26 @@ export default function Pair({
   buy24hrAgoTrades: number;
   baseAddress: string;
 }) {
-
-  
   const [buyTrades, setBuyTrades] = useState<any>(sell24hrAgoTrades);
   const [sellTrades, setSellTrades] = useState<any>(buy24hrAgoTrades);
 
-interface Trade {
-  side: string;
-  tradeAmount: number;
-  transaction: {
-    index: number;
-    txFrom: {
-      address: string;
+  interface Trade {
+    side: string;
+    tradeAmount: number;
+    transaction: {
+      index: number;
+      txFrom: {
+        address: string;
+      };
     };
-  };
-}
+  }
 
-const getQuery = (
-  tradeSide: string,
-  baseAddress: string
-): { query: string } => {
-  return {
-    query: `
+  const getQuery = (
+    tradeSide: string,
+    baseAddress: string
+  ): { query: string } => {
+    return {
+      query: `
     subscription {
       EVM(network: eth) {
         DEXTrades(
@@ -93,26 +96,26 @@ const getQuery = (
       }
     }
     `,
+    };
   };
-};
 
-let WebSocketImpl: typeof WebSocket;
+  let WebSocketImpl: typeof WebSocket;
 
-if (typeof WebSocket === "undefined") {
-  WebSocketImpl = require("ws");
-} else {
-  WebSocketImpl = WebSocket;
-}
+  if (typeof WebSocket === "undefined") {
+    WebSocketImpl = require("ws");
+  } else {
+    WebSocketImpl = WebSocket;
+  }
 
-const client = createClient({
-  url: "wss://streaming.bitquery.io/graphql",
-  webSocketImpl: WebSocketImpl,
-  connectionParams: () => ({
-    headers: {
-      "X-API-KEY": process.env.NEXT_PUBLIC_BITQUERY_API_KEY,
-    },
-  }),
-});
+  const client = createClient({
+    url: "wss://streaming.bitquery.io/graphql",
+    webSocketImpl: WebSocketImpl,
+    connectionParams: () => ({
+      headers: {
+        "X-API-KEY": process.env.NEXT_PUBLIC_BITQUERY_API_KEY,
+      },
+    }),
+  });
 
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
@@ -136,7 +139,6 @@ const client = createClient({
 
   // When this page becomes unmounted
   useEffect(() => {
-    
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
@@ -153,23 +155,25 @@ const client = createClient({
 
   useEffect(() => {
     console.log("tokenPairInfo", tokenPairInfo);
-    console.log("router.query.pair_id--------------------------",router.query.pair_id);
+    console.log(
+      "router.query.pair_id--------------------------",
+      router.query.pair_id
+    );
     // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
     // console.log("pairInfo",pairInfo);
     const time = 15;
     const pairAddress = router.query.pair_id;
-    if(!pairAddress){
+    if (!pairAddress) {
       return;
     }
     const eachAddress = {
       base: tokenPairInfo.baseToken.address,
       quote: tokenPairInfo.pairedToken.address,
       pairAddress: pairAddress,
-      time: time
-    }
+      time: time,
+    };
     dispatch(getBitqueryInitInfo(eachAddress));
   }, [tokenPairInfo]);
- 
 
   useEffect(() => {
     dispatch(getTokenPairInfo(pairAddress as string));
@@ -210,7 +214,7 @@ const client = createClient({
     let unsubscribe = () => {
       /* complete the subscription */
     };
-    
+
     (async () => {
       await new Promise<void>((resolve, reject) => {
         unsubscribe = client.subscribe(getQuery("Sell", baseAddress), {
@@ -283,6 +287,7 @@ const client = createClient({
 
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
+      <ToastContainer />
       <FullHeaderToken
         tokenPairInfo={tokenPairInfo}
         pair_address={String(pairAddress)}
@@ -299,10 +304,7 @@ const client = createClient({
               <PoolInfoToken token={token} />
             </div>
             <div className="col-span-12 md:col-span-5">
-              <OrderBookToken
-                token={token}
-                orders={orders}
-              />
+              <OrderBookToken token={token} orders={orders} />
             </div>
           </div>
         </div>
@@ -390,11 +392,11 @@ const client = createClient({
         />
         {token && (
           <>
-            <OrderBookToken token={token} orders={orders}/>
+            <OrderBookToken token={token} orders={orders} />
             <PoolInfoToken token={token} />
           </>
         )}
-        <OrderBookToken token={token} orders={orders}/>
+        <OrderBookToken token={token} orders={orders} />
         <PoolInfoToken token={token} />
       </div>
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
@@ -484,17 +486,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const tokenPairNamesResult = await getTokenNamesFromPair(pair_id as string);
-    if(tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
+    if (tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
       tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
 
-      let historicalDexTradesResult = await getHistoricalDexTrades(tokenPairInfo.baseToken.name, tokenPairInfo.pairedToken.name);
-      if(historicalDexTradesResult.success && historicalDexTradesResult.historicalDexTrades) {
+      let historicalDexTradesResult = await getHistoricalDexTrades(
+        tokenPairInfo.baseToken.name,
+        tokenPairInfo.pairedToken.name
+      );
+      if (
+        historicalDexTradesResult.success &&
+        historicalDexTradesResult.historicalDexTrades
+      ) {
         historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
       }
     }
   } catch (error) {
     console.log(error, "error");
-  }  
+  }
 
   return {
     props: {
