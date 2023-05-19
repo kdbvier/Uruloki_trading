@@ -13,7 +13,7 @@ import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 
 export default function MyOrder() {
-  const [openToogle, setOpenToggle] = useState<boolean>(true);
+  const [openToggle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -35,11 +35,11 @@ export default function MyOrder() {
     dispatch(
       getUserOrderWithFilter({
         id: 1,
-        status: openToogle ? "Open" : "Close",
+        status: openToggle ? "Open" : "Close",
         search: searchValue,
       })
     );
-  }, [dispatch, openToogle]);
+  }, [dispatch, openToggle]);
   // useEffect(()=> {
   //   const fetchData =async () => {
   //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
@@ -57,7 +57,7 @@ export default function MyOrder() {
     dispatch(
       getUserOrderWithFilter({
         id: 1,
-        status: openToogle ? "Open" : "Close",
+        status: openToggle ? "Open" : "Close",
         search: searchValue,
       })
     );
@@ -92,7 +92,7 @@ export default function MyOrder() {
           <div className="w-full md:w-auto flex md:gap-1">
             <button
               className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none bg-tsuka-500 ${
-                openToogle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
+                openToggle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
               } rounded-md text-sm`}
               onClick={() => setOpenToggle(true)}
             >
@@ -100,7 +100,7 @@ export default function MyOrder() {
             </button>
             <button
               className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${
-                !openToogle ? "bg-tsuka-500 text-red-400" : "text-tsuka-300"
+                !openToggle ? "bg-tsuka-500 text-red-400" : "text-tsuka-300"
               } rounded-md text-sm`}
               onClick={() => setOpenToggle(false)}
             >
