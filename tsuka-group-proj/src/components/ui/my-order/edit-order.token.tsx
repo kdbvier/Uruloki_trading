@@ -157,12 +157,19 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (tokenCache && currentToken) {
       const currentPrice = tokenCache.filter(
         (token) => token.shortName === pairShortName
-      )[0]!.price;
+      ).length ? tokenCache.filter(
+        (token) => token.shortName === pairShortName
+      )[0]!.price : 0;
+      
       const selectPrice = tokenCache.filter((token) =>
         isBuy
           ? token.shortName === pairShortName
           : token.shortName === baseShortName
-      )[0]!.price;
+      ).length ?  tokenCache.filter((token) =>
+      isBuy
+        ? token.shortName === pairShortName
+        : token.shortName === baseShortName
+    )[0]!.price : 0;
       const newValue = (
         Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
       )
@@ -187,15 +194,20 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   useEffect(() => {
     if ((token1Symbol || token2Symbol) && tokenCache.length) {
       const currentToken = isBuy ? pairShortName : baseShortName;
-      
       const currentPrice = tokenCache.filter(
         (token) => token.shortName === currentToken
-      )[0]!.price;
+      ).length ? tokenCache.filter(
+        (token) => token.shortName === currentToken
+      )[0]!.price : 0;
       const selectPrice = tokenCache.filter((token) =>
         isBuy
           ? token.shortName === token1Symbol
           : token.shortName === token2Symbol
-      )[0]!.price;
+      ).length ? tokenCache.filter((token) =>
+      isBuy
+        ? token.shortName === token1Symbol
+        : token.shortName === token2Symbol
+    )[0]!.price : 0;
       const newValue = (
         Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
       )
