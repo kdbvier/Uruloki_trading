@@ -1,5 +1,5 @@
-import { getTokenCompare } from "@/store/apps/token-compare";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { compareTokenData } from "@/@fake-data/compare-token.fake-data";
+import { Compare } from "@/types/compare.type";
 import { useEffect, useState } from "react";
 import { HorizontalIconsToken } from "../ui/tokens/horizontal-icons.token";
 
@@ -15,13 +15,17 @@ export const CompareTokenChainToken: React.FC<CompareTokenChainTokenProps> = ({
   token,
   networks,
 }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.tokenCompare);
   const [focusNetwork, setFocusNetwork] = useState(networks[0]);
+  const [value, setValue] = useState<Compare[]>([]);
+  const [status, setStatus] = useState<"ok" | "loading">("ok");
 
   useEffect(() => {
-    dispatch(getTokenCompare(token.token));
-  }, [dispatch, token]);
+    // TODO: from fake data, set loading
+    const data = compareTokenData.filter(
+      (item) => item.inputToken.code === token.token
+    );
+    setValue([...data]);
+  }, [token])
 
   return (
     <div className="bg-tsuka-500 rounded-xl text-tsuka-100 px-6 pt-6">
