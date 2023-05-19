@@ -55,10 +55,8 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
       try {
         const address: string | null = await getConnectedAddress();
         setWalletAddress(address as string);
-        const data = await tokensInWallet(
-          "0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef"
-        );
-        // const data = await tokensInWallet(address);
+        // const data = await tokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef");
+        const data = await tokensInWallet(address);
         setWalletBalances(data.payload?.walletBalances ?? []);
       } catch (error) {
         console.log(error);

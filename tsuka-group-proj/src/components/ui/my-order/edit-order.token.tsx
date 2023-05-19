@@ -138,8 +138,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   useEffect(() => {
     if (isEdit) {
       dispatch(setSelectedOrder(selectedOrderId));
-    } else {
-      dispatch(getTokenPairPrice(pair_address as string));
     }
     if (!pairInfo) {
       void (async () => {
@@ -153,6 +151,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
     dispatch(getAllTokenCache());
   }, []);
+
+  useEffect(() => {
+    if (pair_address) {
+      dispatch(getTokenPairPrice(pair_address as string));
+    }
+  }, [pair_address]);
 
   useEffect(() => {
     const currentToken = isBuy ? pairShortName : baseShortName;
