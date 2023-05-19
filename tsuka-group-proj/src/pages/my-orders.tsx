@@ -165,12 +165,12 @@ export default function MyOrder() {
                     key={idx}
                   >
                     <OrderWidgetToken
-                      name1={order.orders[0].baseTokenLongName}
-                      code1={order.orders[0].baseTokenShortName}
-                      name2={order.orders[0].pairTokenLongName}
-                      code2={order.orders[0].pairTokenShortName}
-                      status={order.orders[0].status}
-                      orders={order.orders}
+                      name1={order?.orders[0].baseTokenLongName}
+                      code1={order?.orders[0].baseTokenShortName}
+                      name2={order?.orders[0].pairTokenLongName}
+                      code2={order?.orders[0].pairTokenShortName}
+                      status={order?.orders[0].status}
+                      orders={order?.orders}
                       setShowEditOrderModal={handleEditModal}
                       setShowDeletedAlert={setShowDeletedAlert}
                     />
@@ -182,12 +182,12 @@ export default function MyOrder() {
                   key={idx}
                 >
                   <OrderWidgetToken
-                    name1={order.orders[0].baseTokenLongName}
-                    code1={order.orders[0].baseTokenShortName}
-                    name2={order.orders[0].pairTokenLongName}
-                    code2={order.orders[0].pairTokenShortName}
-                    status={order.orders[0].status}
-                    orders={order.orders}
+                    name1={order?.orders[0].baseTokenLongName}
+                    code1={order?.orders[0].baseTokenShortName}
+                    name2={order?.orders[0].pairTokenLongName}
+                    code2={order?.orders[0].pairTokenShortName}
+                    status={order?.orders[0].status}
+                    orders={order?.orders}
                     setShowEditOrderModal={handleEditModal}
                     setShowDeletedAlert={setShowDeletedAlert}
                   />

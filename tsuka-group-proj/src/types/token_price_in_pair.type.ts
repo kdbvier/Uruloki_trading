@@ -4,12 +4,12 @@ export type TokenPriceInPair = {
 };
 
 export interface TokenInfo {
-  name: string;
-  address: string;
-  symbol: string;
+  name?: string;
+  address?: string;
+  symbol?: string;
 }
 
 export type TokenPairInfo = {
-  baseToken: TokenInfo;
-  pairedToken: TokenInfo;
+  baseToken?: TokenInfo;
+  pairedToken?: TokenInfo;
 };

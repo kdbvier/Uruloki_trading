@@ -8,17 +8,19 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const { status } = useAppSelector((state) => state.tokenOrderBooks);
   const [sellSum, setSellSum] = useState(0);
   const [buySum, setBuySum] = useState(0);
-  const [orderBookData, setOrderBookData] = useState<OrderBookData>(new OrderBookData());
+  const [orderBookData, setOrderBookData] = useState<OrderBookData>(
+    new OrderBookData()
+  );
 
   useEffect(() => {
-    let tempOrderBookData = orderBookData.fromOrders(orders)
+    let tempOrderBookData = orderBookData.fromOrders(orders);
     setOrderBookData(tempOrderBookData);
 
     let sellSum = tempOrderBookData.getSellSum();
     let buySum = tempOrderBookData.getBuySum();
-    console.log(orders)
-    console.log(tempOrderBookData)
-  }, [orders])
+    console.log(orders);
+    console.log(tempOrderBookData);
+  }, [orders]);
 
   let sum: number;
 
@@ -31,7 +33,9 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size ({orders[0].baseTokenShortName})</span>
+                <span className="flex-1 px-4 py-2 text-end">
+                  Size ({orders[0]?.baseTokenShortName})
+                </span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
               {[...(orderBookData.sell ?? [])]
@@ -73,7 +77,9 @@ export const OrderBookTokenUi: React.FC<{ orders: Order[] }> = ({ orders }) => {
             <div className="h-96">
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
-                <span className="flex-1 px-4 py-2 text-end">Size ({orders[0].pairTokenShortName})</span>
+                <span className="flex-1 px-4 py-2 text-end">
+                  Size ({orders[0]?.pairTokenShortName})
+                </span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
               {[...(orderBookData.buy ?? [])]

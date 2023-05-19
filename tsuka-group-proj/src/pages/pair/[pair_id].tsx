@@ -46,19 +46,21 @@ export default function Pair({
   orders,
   token_price,
   oldTokenPrice,
-  sell24hrAgoTrades,
-  buy24hrAgoTrades,
+  historicalDexTrades,
   baseAddress,
 }: {
   orders: Order[];
   token_price: TokenPairPrice;
   oldTokenPrice: TokenPairPrice;
-  sell24hrAgoTrades: number;
-  buy24hrAgoTrades: number;
+  historicalDexTrades: HistoricalDexTrades;
   baseAddress: string;
 }) {
-  const [buyTrades, setBuyTrades] = useState<any>(sell24hrAgoTrades);
-  const [sellTrades, setSellTrades] = useState<any>(buy24hrAgoTrades);
+  const [buyTrades, setBuyTrades] = useState<any>(
+    historicalDexTrades.buyTrades
+  );
+  const [sellTrades, setSellTrades] = useState<any>(
+    historicalDexTrades.sellTrades
+  );
 
   interface Trade {
     side: string;
@@ -192,9 +194,9 @@ export default function Pair({
     const onNext = (data: any) => {
       console.log("setSellTrades = ", data);
 
-      const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
-        const obj = el.Trade;
-        const side = Object.keys(el.Trade)[0];
+      const updatedTrades = data.data.EVM.DEXTrades.map((trade: any) => {
+        const obj = trade.Trade;
+        const side = Object.keys(trade.Trade)[0];
         return {
           side,
           tradeAmount: obj[side].Amount,
@@ -209,14 +211,11 @@ export default function Pair({
 
       setSellTrades((prev: any) => [
         ...prev,
-        ...updatedTrades.filter((el: any) => el.side.includes("Sell")),
+        ...updatedTrades.filter((trade: any) => trade.side.includes("Sell")),
       ]);
     };
 
-    let unsubscribe = () => {
-      /* complete the subscription */
-    };
-
+    let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
         unsubscribe = client.subscribe(getQuery("Sell", baseAddress), {
@@ -242,9 +241,9 @@ export default function Pair({
     const onNext = (data: any) => {
       console.log("setBuyTrades = ", data);
 
-      const updatedTrades = data.data.EVM.DEXTrades.map((el: any) => {
-        const obj = el.Trade;
-        const side = Object.keys(el.Trade)[0];
+      const updatedTrades = data.data.EVM.DEXTrades.map((trade: any) => {
+        const obj = trade.Trade;
+        const side = Object.keys(trade.Trade)[0];
         return {
           side,
           tradeAmount: obj[side].Amount,
@@ -256,16 +255,14 @@ export default function Pair({
           },
         };
       });
+
       setBuyTrades((prev: any) => [
         ...prev,
-        ...updatedTrades.filter((el: any) => el.side.includes("Buy")),
+        ...updatedTrades.filter((trade: any) => trade.side.includes("Buy")),
       ]);
     };
 
-    let unsubscribe = () => {
-      /* complete the subscription */
-    };
-
+    let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
         unsubscribe = client.subscribe(getQuery("Buy", baseAddress), {
@@ -372,12 +369,15 @@ export default function Pair({
         />
         {token && (
           <>
-            <OrderBookToken token={token} orders={orders} />
+            <OrderBookToken
+              buyTrades={buyTrades}
+              sellTrades={sellTrades}
+              token={token}
+              orders={orders}
+            />
             <PoolInfoToken token={token} />
           </>
         )}
-        <OrderBookToken token={token} orders={orders} />
-        <PoolInfoToken token={token} />
       </div>
       <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
         <button
@@ -429,6 +429,8 @@ export default function Pair({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let orders: Order[];
+  let tokenPairInfo: TokenPairInfo;
+  let historicalDexTrades: HistoricalDexTrades = {};
   try {
     orders = await getOrdersByPair(context.query.pair_id as string, "Active");
   } catch (e) {
@@ -458,21 +460,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const { pair_id } = context.query;
 
-  let baseAddress = "";
-  let quoteAddress = "";
-
-  let tokenPairInfo: TokenPairInfo;
-  let historicalDexTrades: HistoricalDexTrades;
-
   try {
     const tokenPairNamesResult = await getTokenNamesFromPair(pair_id as string);
+
     if (tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
       tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
 
       let historicalDexTradesResult = await getHistoricalDexTrades(
-        tokenPairInfo.baseToken.name,
-        tokenPairInfo.pairedToken.name
+        tokenPairInfo.baseToken.address,
+        tokenPairInfo.pairedToken.address
       );
+
       if (
         historicalDexTradesResult.success &&
         historicalDexTradesResult.historicalDexTrades
@@ -489,6 +487,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       orders,
       token_price,
       oldTokenPrice,
+      baseAddress: tokenPairInfo.baseToken.address,
+      historicalDexTrades,
     },
   };
 };

@@ -5,15 +5,19 @@ import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { Token } from "@/types/token.type";
-import { Order } from "@/types";
 
-export const OrderBookToken: React.FC<{ token: Token, orders: Order[] }> = ({ token, orders }) => {
+export const OrderBookToken: React.FC<{ token: Token; orders: Order[] }> = ({
+  token,
+  orders,
+  buyTrades,
+  sellTrades,
+}) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
 
   const options = [
-    { 
+    {
       title: "Order Book",
       path: "order-book",
     },
@@ -23,10 +27,18 @@ export const OrderBookToken: React.FC<{ token: Token, orders: Order[] }> = ({ to
     },
   ];
 
-  const OrderComponent =
-    selectedPath === "order-book" ? OrderBookTokenUi : OrderHistoryBookTokenUi;
+  const orderComponent =
+    selectedPath === "order-book" ? (
+      <OrderBookTokenUi orders={orders} />
+    ) : (
+      <OrderHistoryBookTokenUi
+        token={token}
+        sellTrades={sellTrades}
+        buyTrades={buyTrades}
+      />
+    );
 
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(getTokenPosition(token.id));
   }, [dispatch, token]);
 
@@ -42,7 +54,9 @@ export const OrderBookToken: React.FC<{ token: Token, orders: Order[] }> = ({ to
               )
             }
             className={`${
-              path === selectedPath ? "border-b-2 border-accent" : "border-b-2 border-transparent"
+              path === selectedPath
+                ? "border-b-2 border-accent"
+                : "border-b-2 border-transparent"
             } py-4 xs:p-4 text-center whitespace-nowrap mx-2 text-base sm:text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
@@ -52,9 +66,9 @@ export const OrderBookToken: React.FC<{ token: Token, orders: Order[] }> = ({ to
           <FiltersButton callback={() => console.log("filters button")} />
         </div>
       </div>
-      <div className="overflow-x-scroll">
-        {OrderComponent && <OrderComponent orders={orders} token={token}/>}
-      </div>
+      {orderComponent && (
+        <div className="overflow-x-scroll">{orderComponent}</div>
+      )}
     </div>
   );
 };
