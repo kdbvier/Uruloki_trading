@@ -2,9 +2,8 @@ import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderStrategies } from "@/components/ui/strategies/full-header.strategies";
-import { getStrategies } from "@/store/apps/strategies";
-import { getTokenByStrategyId } from "@/store/apps/token";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Strategies from "@/lib/api/strategies";
+import { Strategy } from "@/types";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -13,7 +12,6 @@ import {
 } from "react-icons/hi2";
 
 export default function StrategyDetails({ id }: { id: string }) {
-  const dispatch = useAppDispatch();
   const [showIndex, setShowIndex] = useState(0);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
@@ -21,9 +19,24 @@ export default function StrategyDetails({ id }: { id: string }) {
   const router = useRouter();
   const { id: strategyId = id || "" } = router.query;
   const [token, setToken] = useState(null);
-  const [strategyDetails] = useAppSelector((state) =>
-    state.strategies.value.filter(({ id }) => id === strategyId)
-  );
+
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
+  const [strategyDetails, setStrategyDetails] = useState<Strategy>();
+  useEffect(() => {
+    const fetchStrategies = async () => {
+      try {
+        const res = await Strategies.getStrategiesData();
+        setStrategies(res);
+        const [strategy_details] = res.filter(({id}) => id === strategyId);
+        setStrategyDetails(strategy_details);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchStrategies();
+  }, [strategyId]);
+
 
   const settings = {
     dots: true,
@@ -46,18 +59,6 @@ export default function StrategyDetails({ id }: { id: string }) {
     setSelectedOrderId(id);
     setShowEditOrderModal(show);
   };
-
-  useEffect(() => {
-    dispatch(getTokenByStrategyId(strategyId as string));
-  }, [dispatch, strategyId]);
-
-  useEffect(() => {
-    dispatch(getStrategies());
-  }, [dispatch, strategyId]);
-
-  useEffect(() => {
-    dispatch(getStrategies());
-  }, []);
 
   return (
     <div className="flex flex-col">
