@@ -1,66 +1,59 @@
-import { getUserOrderWithFilter } from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { getStrategies } from "@/store/apps/strategies";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { UserOrder } from "@/types/token-order.type";
+import Strategies from "@/lib/api/strategies";
+import { Strategy } from "@/types";
+import Orders from "@/lib/api/orders";
 
 export default function MyOrder() {
   const [openToggle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.userOrder);
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
-  useEffect(() => {
-    dispatch(getStrategies());
-  }, [dispatch]);
-  useEffect(() => {
-    //TODO: change id to my id
-    dispatch(
-      getUserOrderWithFilter({
-        id: 1,
-        status: openToggle ? "Open" : "Close",
-        search: searchValue,
-      })
-    );
-  }, [dispatch, openToggle]);
-  // useEffect(()=> {
-  //   const fetchData =async () => {
-  //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
-  //     setUserOrderData([...userOrder_1]);
-  //   }
-  //   fetchData();
-  // }, [])
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
+  const [value, setValue] = useState<UserOrder[]>([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(()=>{
+    const fetchStrategies = async () => {
+      try {
+        setLoading(true);
+        const res = await Strategies.getStrategiesData();
+        setStrategies(res);
+        const res_1 = await Orders.getOrdersbyUserIdandFilters(1, openToggle ? "Open" : "Close", searchValue);
+        setValue(res_1);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchStrategies();
+  }, [openToggle])
+
   const handleSearchChange = (e: any) => {
     console.log("changing");
     setSearchValue(e.target.value);
   };
   const handleSearchSubmit = () => {
     console.log("user pressed enter key");
-    //TODO: change id to my id
-    dispatch(
-      getUserOrderWithFilter({
-        id: 1,
-        status: openToggle ? "Open" : "Close",
-        search: searchValue,
-      })
-    );
+    setLoading(true);
+    Orders.getOrdersbyUserIdandFilters(1, openToggle ? "Open" : "Close", searchValue).then(res=>{
+      setValue(res);
+      setLoading(false);
+    }).catch(err=>{
+      setLoading(false);
+    });
   };
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
@@ -114,7 +107,7 @@ export default function MyOrder() {
               <input
                 type="text"
                 className="w-full md:max-w-[140px] lg:max-w-[200px] bg-tsuka-500 rounded-md pl-8 pr-3 py-[11px] focus:outline-0 placeholder-tsuka-300"
-                placeholder="Find tokens..."
+                placeholder="Find tokens......"
                 value={searchValue}
                 onChange={handleSearchChange}
                 onKeyDown={(event) => {
@@ -142,7 +135,7 @@ export default function MyOrder() {
 
       {/* content */}
       <div className="grid grid-cols-12 gap-x-5">
-        {status === "loading" && (
+        {loading && (
           <div className="w-screen h-screen">
             <LoadingBox
               title="Processing orders"
@@ -150,7 +143,7 @@ export default function MyOrder() {
             />
           </div>
         )}
-        {status !== "loading" &&
+        {!loading &&
           value.map((order, idx) => {
             if (idx > 2)
               return (
