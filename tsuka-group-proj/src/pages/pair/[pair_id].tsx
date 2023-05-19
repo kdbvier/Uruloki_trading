@@ -307,28 +307,6 @@ const client = createClient({
           </div>
         </div>
         <div className="col-span-12 md:col-span-3">
-          {/*
-          {currentToken && compareToken && (
-            <>
-              <DefaultButton
-                label="Create an Order"
-                callback={() => setShowEditOrderModal(true)}
-                filled={true}
-                Icon={FiPlusCircle}
-              />
-              <OrderWidgetToken
-                name1={currentToken?.chain.name as string}
-                code1={currentToken?.chain.code as string}
-                name2={compareToken?.chain.name as string}
-                code2={compareToken?.chain.code as string}
-                status={statusOrder}
-                orders={orders}
-              />
-            </>
-          )}
-          */}
-        </div>
-        <div className="col-span-12 md:col-span-3">
           <DefaultButton
             label="Create an Order"
             callback={() => {
