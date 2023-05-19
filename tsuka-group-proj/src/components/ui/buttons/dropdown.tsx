@@ -1,6 +1,4 @@
 // components/ui/buttons/dropdown.tsx
-import { getHomePageTokens } from "@/store/apps/tokens";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { TokenCache } from "@/types";
@@ -10,8 +8,6 @@ interface DropdownOption {
 }
 
 const Dropdown: React.FC<DropdownOption> = ({ allTokenName }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.homepageTokens);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [selectedOption, setSelectedOption] = useState<string>(
@@ -28,9 +24,6 @@ const Dropdown: React.FC<DropdownOption> = ({ allTokenName }) => {
     setSelectedOption(allTokenName[0]?.shortName);
   }, [allTokenName]);
 
-  useEffect(() => {
-    dispatch(getHomePageTokens());
-  }, [dispatch]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
