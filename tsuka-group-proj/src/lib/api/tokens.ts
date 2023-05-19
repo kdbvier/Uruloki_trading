@@ -1,15 +1,15 @@
 import { TokenPairInfo, Tokens } from "@/types";
 import { httpRequest } from "./http";
 import { FilterSearchItemType } from "@/components/ui/content-header/filters.search";
-
+import { SearchPair } from "@/types";
 export default class HomePageTokens {
   static getTokens = async (): Promise<Tokens> => {
     return await httpRequest.get("/tokens");
   };
   static searchTokens = async (
     name: string
-  ): Promise<FilterSearchItemType[]> => {
-    return await httpRequest.get("/search/token", {
+  ): Promise<SearchPair[]> => {
+    return await httpRequest.get("/search/addresses", {
       params: {
         name,
       },
