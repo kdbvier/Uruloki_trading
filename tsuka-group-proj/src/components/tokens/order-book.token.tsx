@@ -18,20 +18,6 @@ export const OrderBookToken: React.FC<{
   buyTrades?: any;
   sellTrades?: any;
 }> = ({ orders, tokens, buyTrades, sellTrades }) => {
-
-interface Props {
-  token: Token;
-  orders: Order[];
-  sellTrades?: any[];
-  buyTrades?: any[];
-}
-
-export const OrderBookToken: React.FC<Props> = ({
-  token,
-  orders,
-  buyTrades,
-  sellTrades,
-}) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MdArrowForward } from "react-icons/md";
 import { DefaultButton } from "../ui/buttons/default.button";
 import { TokenPairStrategies } from "../ui/strategies/token-pair.strategies";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 export interface SidebarStrategiesProps {
   open: boolean;
@@ -21,7 +22,10 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
   } = useAppSelector((state) => state);
 
   useEffect(() => {
-    dispatch(getStrategies());
+    void (async () => {
+      const walletAddress = await getConnectedAddress();
+      dispatch(getStrategies(walletAddress));
+    })();
   }, [dispatch]);
 
   const [showExtraId, setShowExtraId] = useState<number | null>(null);

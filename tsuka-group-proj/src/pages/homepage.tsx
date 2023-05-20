@@ -17,6 +17,7 @@ import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 let currentTranslateX: number = 0;
 
@@ -29,8 +30,11 @@ export default function Home() {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
   useEffect(() => {
-    dispatch(getHomePageTokens());
-    dispatch(getStrategies());
+    void (async () => {
+      const walletAddress = await getConnectedAddress();
+      dispatch(getHomePageTokens());
+      dispatch(getStrategies(walletAddress as string));
+    })();
   }, [dispatch]);
 
   const { value, status } = useAppSelector((state) => state.homepageTokens);

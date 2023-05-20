@@ -22,7 +22,7 @@ export default async function strategyHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Strategy>>
 ) {
-  const { method, body } = req;
+  const { query, method, body } = req;
   switch (method) {
     case "POST":
       try {
@@ -72,7 +72,11 @@ export default async function strategyHandler(
       break;
     case "GET":
       try {
+        const { wallet_address } = query;
         const strategies = await prisma.strategies.findMany({
+          where: {
+            creator_address: wallet_address as string,
+          },
           include: {
             order_strategy: {
               select: {

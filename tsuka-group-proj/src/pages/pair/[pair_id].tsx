@@ -36,6 +36,7 @@ import { FiPlusCircle } from "react-icons/fi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ModifiedOrder } from "@/lib/setups";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 interface InputToken {
   id: string;
@@ -141,7 +142,10 @@ export default function Pair({
   }, [router]);
 
   useEffect(() => {
-    dispatch(getStrategies());
+    void (async () => {
+      const address = await getConnectedAddress();
+      dispatch(getStrategies(address as string));
+    })();
   }, [dispatch]);
 
   useEffect(() => {
@@ -168,8 +172,16 @@ export default function Pair({
 
   useEffect(() => {
     if (pairAddress) {
-      dispatch(getTokenPairInfo(pairAddress as string));
-      dispatch(getActiveOrdersbyTokenPair(pairAddress as string));
+      void (async () => {
+        const walletAddress = await getConnectedAddress();
+        dispatch(getTokenPairInfo(pairAddress as string));
+        dispatch(
+          getActiveOrdersbyTokenPair({
+            pair_address: pairAddress,
+            walletAddress,
+          })
+        );
+      })();
     }
   }, [pairAddress, dispatch]);
 

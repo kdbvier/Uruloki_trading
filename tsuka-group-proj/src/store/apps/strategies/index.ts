@@ -14,8 +14,8 @@ const initialState: StrategiesState = {
 
 export const getStrategies = createAsyncThunk(
   "strategies/getAll",
-  async (): Promise<Array<Strategy>> => {
-    const data = await Strategies.getStrategiesData();
+  async (walletAddress: string): Promise<Array<Strategy>> => {
+    const data = await Strategies.getStrategiesData(walletAddress);
     return data;
   }
 );

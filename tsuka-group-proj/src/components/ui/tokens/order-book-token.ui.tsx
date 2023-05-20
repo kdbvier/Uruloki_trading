@@ -55,7 +55,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
                 <span className="flex-1 px-4 py-2 text-end">
-                  Size ({orders[0]?.baseTokenShortName})
+                  Size ({orders[0]?.orders[0]?.baseTokenShortName})
                 </span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
@@ -145,7 +145,7 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
               <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
                 <span className="flex-1 px-4 py-2">Price (USD)</span>
                 <span className="flex-1 px-4 py-2 text-end">
-                  Size ({orders[0]?.pairTokenShortName})
+                  Size ({orders[0]?.orders[0]?.pairTokenShortName})
                 </span>
                 <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
               </div>
