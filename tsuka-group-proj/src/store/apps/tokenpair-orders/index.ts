@@ -17,8 +17,17 @@ const initialState: TokenpairOrders = {
 
 export const getActiveOrdersbyTokenPair = createAsyncThunk(
   "tokens/getActiveOrders",
-  async (pair_address: string) => {
-    const orders = await Orders.getActiveOrdersbyTokenPair(pair_address);
+  async ({
+    pair_address,
+    walletAddress,
+  }: {
+    pair_address: string;
+    walletAddress: string;
+  }) => {
+    const orders = await Orders.getActiveOrdersbyTokenPair({
+      tokenpair: pair_address,
+      walletAddress,
+    });
     return {
       pair_address,
       orders,

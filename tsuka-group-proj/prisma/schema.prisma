@@ -45,12 +45,13 @@ model orders {
   budget             Float?
   order_type         orders_order_type?
   price_type         orders_price_type?
-  is_continuous      Boolean?           @default(false)
   user_id            Int
   baseTokenShortName String?            @db.VarChar(255)
   pairTokenShortName String?            @db.VarChar(255)
   baseTokenLongName  String?            @db.VarChar(255)
   pairTokenLongName  String?            @db.VarChar(255)
+  is_continuous      Boolean?           @default(false)
+  creator_address    String?            @db.Text
   token_cache        token_cache?       @relation(fields: [pair_address], references: [pair_address])
   order_strategy     order_strategy[]
 
@@ -59,19 +60,20 @@ model orders {
 }
 
 model strategies {
-  strategy_id    Int              @unique(map: "strategy_id") @default(autoincrement())
-  name           String           @db.LongText
-  user_id        Int
-  createdAt      DateTime?        @db.Timestamp(0)
-  status         strategy_status?
-  order_strategy order_strategy[]
+  strategy_id     Int              @unique(map: "id") @default(autoincrement())
+  name            String           @db.LongText
+  user_id         Int
+  createdAt       DateTime?        @db.Timestamp(0)
+  status          String?          @db.VarChar(100)
+  creator_address String?          @db.Text
+  order_strategy  order_strategy[]
 }
 
 model order_strategy {
   id         Int        @id @default(autoincrement())
   orderId    Int
-  order      orders     @relation(fields: [orderId], references: [order_id])
   strategyId Int
+  order      orders     @relation(fields: [orderId], references: [order_id])
   strategy   strategies @relation(fields: [strategyId], references: [strategy_id])
 
   @@unique([orderId, strategyId], name: "order_strategy_unique", map: "order_strategy_unique")
@@ -121,6 +123,84 @@ model users {
   password String @db.VarChar(1000)
 }
 
+model af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl {
+  order_id           Int                                                              @id @unique(map: "order_id") @default(autoincrement())
+  pair_address       String                                                           @db.VarChar(255)
+  status             String?                                                          @db.VarChar(100)
+  single_price       Float?
+  from_price         Float?
+  to_price           Float?
+  budget             Float?
+  order_type         af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl_order_type?
+  price_type         af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl_price_type?
+  user_id            Int
+  baseTokenShortName String?                                                          @db.VarChar(255)
+  pairTokenShortName String?                                                          @db.VarChar(255)
+  baseTokenLongName  String?                                                          @db.VarChar(255)
+  pairTokenLongName  String?                                                          @db.VarChar(255)
+  is_continuous      Boolean?                                                         @default(false)
+
+  @@index([pair_address], map: "fk_pair_address_idx")
+  @@index([user_id], map: "fk_user_id_idx")
+  @@map("_45437af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl")
+}
+
+model ef320f5_57cd_555d_b10c_8da4edef3cf2_20230520002148_vrepl {
+  id          Int     @id @default(autoincrement())
+  timestamp   Int
+  data_key    String? @db.LongText
+  cached_data String? @db.LongText
+
+  @@map("_5ef320f5_57cd_555d_b10c_8da4edef3cf2_20230520002148_vrepl")
+}
+
+model aed0189f_649b_53b8_9db1_0057c248390f_20230520164648_vrepl {
+  id         Int @id @default(autoincrement())
+  orderId    Int
+  strategyId Int
+
+  @@unique([orderId, strategyId], map: "order_strategy_unique")
+  @@map("_aed0189f_649b_53b8_9db1_0057c248390f_20230520164648_vrepl")
+}
+
+model f89539f3_d394_555a_8f0f_98053986354d_20230520155644_vrepl {
+  strategy_id BigInt    @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  name        String    @db.LongText
+  user_id     Int
+  createdAt   DateTime? @db.Timestamp(0)
+  status      String?   @db.VarChar(100)
+
+  @@map("_f89539f3_d394_555a_8f0f_98053986354d_20230520155644_vrepl")
+}
+
+model cache {
+  id          Int     @id @default(autoincrement())
+  timestamp   Int
+  data_key    String? @db.LongText
+  cached_data String? @db.LongText
+  ttl         Int
+}
+
+model ac849ca_91a2_5742_bdc3_7bd6dba274d1_20230520180440_vrepl {
+  strategy_id     BigInt    @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  name            String    @db.LongText
+  user_id         Int
+  createdAt       DateTime? @db.Timestamp(0)
+  status          String?   @db.VarChar(100)
+  creator_address String?   @db.Text
+
+  @@map("_0ac849ca_91a2_5742_bdc3_7bd6dba274d1_20230520180440_vrepl")
+}
+
+model a45bcede_ac62_5969_9364_3be60c5c5e97_20230520180434_vrepl {
+  id         Int    @id @default(autoincrement())
+  orderId    Int
+  strategyId BigInt
+
+  @@unique([orderId, strategyId], map: "order_strategy_unique")
+  @@map("_a45bcede_ac62_5969_9364_3be60c5c5e97_20230520180434_vrepl")
+}
+
 enum orders_order_type {
   buy
   sell
@@ -131,8 +211,16 @@ enum orders_price_type {
   single
 }
 
-enum strategy_status {
-  Active
-  Executed
-  Cancelled
+enum af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl_order_type {
+  buy
+  sell
+
+  @@map("_45437af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl_order_type")
+}
+
+enum af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl_price_type {
+  range
+  single
+
+  @@map("_45437af0_2d80_51a2_b8f0_dd5bbca3e228_20230520155639_vrepl_price_type")
 }

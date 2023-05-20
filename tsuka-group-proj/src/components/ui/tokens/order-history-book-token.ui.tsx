@@ -1,15 +1,8 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
-import { getTokenHistoryPosition } from "@/store/apps/token-history-positions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
 
 export interface OrderBookTokenProps {
-  token: {
-    id: string;
-    token: string;
-    sellTrades?: any[];
-    buyTrades?: any[];
-  };
+  sellTrades?: any[];
+  buyTrades?: any[];
 }
 
 interface TradeRowProps {
@@ -42,19 +35,9 @@ const TradeRow: React.FC<TradeRowProps> = ({ item }) => {
 };
 
 export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
-  token,
   sellTrades,
   buyTrades,
 }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector(
-    (state) => state.tokenHistoryPosition
-  );
-
-  useEffect(() => {
-    dispatch(getTokenHistoryPosition(token.id));
-  }, [dispatch, token]);
-
   return (
     <div>
       {/* {status === "loading" && "Loading..."}

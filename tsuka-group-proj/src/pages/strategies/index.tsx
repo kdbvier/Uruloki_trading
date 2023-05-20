@@ -1,4 +1,5 @@
 import { StrategyBookStrategies } from "@/components/strategies/strategy-book.strategies";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 import { getStrategies } from "@/store/apps/strategies";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
@@ -11,7 +12,10 @@ export default function StrategyDetails() {
   } = useAppSelector((state) => state);
 
   useEffect(() => {
-    dispatch(getStrategies());
+    void (async () => {
+      const walletAddress = await getConnectedAddress();
+      dispatch(getStrategies(walletAddress as string));
+    })();
   }, [dispatch]);
 
   return (

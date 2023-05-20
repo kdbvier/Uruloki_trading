@@ -29,11 +29,11 @@ const initialState: BitqueryDataState = {
 // Send the data to the Store
 export const getBitqueryInitInfo = createAsyncThunk(
   "bitqueryInitInfo/get",
-  async (eachAddress:any, { dispatch }): Promise<any> => {
+  async (eachAddress: any, { dispatch }): Promise<any> => {
     const responsData = await getBitqueryOHLCData(eachAddress);
-    console.log("responsData",responsData);
+    console.log("responsData", responsData);
     const tranData = await transformData(responsData);
-    console.log("responsData",tranData);
+    console.log("responsData", tranData);
     const time = 15;
     dispatch(setCandleStick(eachAddress.time));
     dispatch(getBitqueryStreamInfo(eachAddress.pairAddress));
@@ -64,11 +64,12 @@ export const initBitqueryStreamData = createAsyncThunk(
 // fetch the subscription data from the Bitquery
 export const getBitqueryStreamInfo = createAsyncThunk(
   "bitqueryStreamInfo/get",
-  async (pairAddress:any): Promise<any> => {
+  async (pairAddress: any): Promise<any> => {
     const responsData = await getBitqueryStreamData(pairAddress);
-    const compareTokenName = store.getState().tokenPairInfo.value.baseToken.symbol;
+    const compareTokenName =
+      store.getState().tokenPairInfo.value.baseToken?.symbol;
 
-    const tranData = await transformStreamData(responsData,compareTokenName);
+    const tranData = await transformStreamData(responsData, compareTokenName);
   }
 );
 
@@ -90,11 +91,11 @@ export const bitquerySlice = createSlice({
       })
       .addCase(getBitqueryInitInfo.fulfilled, (state, action) => {
         state.status = "ok";
-        console.log("action.py",action.payload);
+        console.log("action.py", action.payload);
         // state.value = [...state.value, ...action.payload];
         state.value = action.payload;
         state.forwardTime =
-          action.payload[action.payload.length - 1]?.time + 15*60*1000;
+          action.payload[action.payload.length - 1]?.time + 15 * 60 * 1000;
       })
       .addCase(getBitqueryInitInfo.rejected, (state) => {
         state.status = "failed";
@@ -149,10 +150,14 @@ export const bitquerySlice = createSlice({
         let temp = action.payload;
         // temp.time = state.forwardTime;
         state.streamValue = [...state.streamValue, temp];
-        console.log("state.candleStickTime*60*1000",state.candleStickTime);
+        console.log("state.candleStickTime*60*1000", state.candleStickTime);
         if (action.payload.time > state.forwardTime) {
-          state.forwardTime = state.forwardTime + state.candleStickTime*60*1000;
-          if (action.payload.time > state.forwardTime + state.candleStickTime*60*1000) {
+          state.forwardTime =
+            state.forwardTime + state.candleStickTime * 60 * 1000;
+          if (
+            action.payload.time >
+            state.forwardTime + state.candleStickTime * 60 * 1000
+          ) {
             // state.value = [...state.value, ...action.payload];
           } else {
             // const addData = getAddData(state.forwardTime, state.streamValue);
