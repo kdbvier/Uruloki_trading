@@ -286,21 +286,21 @@ export default function Pair({
                     value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
                     // value: orders[0].pair_address as string,
                     label:
-                      orders[0].baseTokenShortName == "USDT" ||
-                      orders[0].baseTokenShortName == "USDC" ||
-                      orders[0].baseTokenShortName == "WETH" ||
-                      orders[0].baseTokenShortName == "DAI"
-                        ? `${orders[0].pairTokenShortName}/${orders[0].baseTokenShortName}`
-                        : `${orders[0].baseTokenShortName}/${orders[0].pairTokenShortName}`,
+                      orders[0]?.baseTokenShortName == "USDT" ||
+                      orders[0]?.baseTokenShortName == "USDC" ||
+                      orders[0]?.baseTokenShortName == "WETH" ||
+                      orders[0]?.baseTokenShortName == "DAI"
+                        ? `${orders[0]?.pairTokenShortName}/${orders[0]?.baseTokenShortName}`
+                        : `${orders[0]?.baseTokenShortName}/${orders[0]?.pairTokenShortName}`,
                   },
                 ]}
                 orders={[
                   {
                     network: "Ethereum",
-                    name1: orders[0].baseTokenLongName ?? "",
-                    code1: orders[0].baseTokenShortName ?? "",
-                    name2: orders[0].pairTokenLongName ?? "",
-                    code2: orders[0].pairTokenShortName ?? "",
+                    name1: orders[0]?.baseTokenLongName ?? "",
+                    code1: orders[0]?.baseTokenShortName ?? "",
+                    name2: orders[0]?.pairTokenLongName ?? "",
+                    code2: orders[0]?.pairTokenShortName ?? "",
                     pair_address: pairAddress,
                     orders: orders.map(
                       (order) =>
@@ -384,23 +384,23 @@ export default function Pair({
               sellTrades={sellTrades}
               tokens={[
                 {
-                  value: orders[0].pair_address as string,
+                  value: orders[0]?.pair_address as string,
                   label:
-                    orders[0].baseTokenShortName == "USDT" ||
-                    orders[0].baseTokenShortName == "USDC" ||
-                    orders[0].baseTokenShortName == "WETH" ||
-                    orders[0].baseTokenShortName == "DAI"
-                      ? `${orders[0].pairTokenShortName}/${orders[0].baseTokenShortName}`
-                      : `${orders[0].baseTokenShortName}/${orders[0].pairTokenShortName}`,
+                    orders[0]?.baseTokenShortName == "USDT" ||
+                    orders[0]?.baseTokenShortName == "USDC" ||
+                    orders[0]?.baseTokenShortName == "WETH" ||
+                    orders[0]?.baseTokenShortName == "DAI"
+                      ? `${orders[0]?.pairTokenShortName}/${orders[0]?.baseTokenShortName}`
+                      : `${orders[0]?.baseTokenShortName}/${orders[0]?.pairTokenShortName}`,
                 },
               ]}
               orders={[
                 {
                   network: "Ethereum",
-                  name1: orders[0].baseTokenLongName ?? "",
-                  code1: orders[0].baseTokenShortName ?? "",
-                  name2: orders[0].pairTokenLongName ?? "",
-                  code2: orders[0].pairTokenShortName ?? "",
+                  name1: orders[0]?.baseTokenLongName ?? "",
+                  code1: orders[0]?.baseTokenShortName ?? "",
+                  name2: orders[0]?.pairTokenLongName ?? "",
+                  code2: orders[0]?.pairTokenShortName ?? "",
                   pair_address: pairAddress,
                   orders: orders.map(
                     (order) =>
