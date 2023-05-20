@@ -12,6 +12,7 @@ import { FiPlusCircle } from "react-icons/fi";
 import { DefaultButton } from "../ui/buttons/default.button";
 import { HeaderLinkButton } from "../ui/buttons/header-link.button";
 
+import { fetchTestnet } from "@/helpers/fetch-testnet";
 import { Web3Button } from "@web3modal/react";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "../strategies/sidebar.strategies";
@@ -21,11 +22,17 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [showNotify, setShowNotify] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [providerUrl, setProviderUrl] = useState(
+    process.env.PROVIDER_TESTNET_URL as string
+  );
 
   const [network, setNetwork] = useState("");
 
-  const handleChainChanged = (chainId: any) => {
+  const handleChainChanged = async (chainId: any) => {
     setNetwork(chainId);
+    const { provider } = await fetchTestnet({ chainId, providerUrl });
+
+    // TODO new methods with provider
   };
 
   const switchToEthereum = async () => {
