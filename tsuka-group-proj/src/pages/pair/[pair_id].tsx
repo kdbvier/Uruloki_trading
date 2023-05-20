@@ -30,6 +30,7 @@ import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { getTokenNamesFromPair } from "@/lib/token-pair";
+import { getLiveDexTrades } from "@/lib/bitquery/dexTradesLiveStream";
 import {
   HistoricalDexTrades,
   getHistoricalDexTrades,
@@ -73,34 +74,6 @@ export default function Pair({
     };
   }
 
-  const getQuery = (
-    tradeSide: string,
-    baseAddress: string
-  ): { query: string } => {
-    return {
-      query: `
-    subscription {
-      EVM(network: eth) {
-        DEXTrades(
-          where: {Trade: {Buy: {Currency: {SmartContract: {is: "${baseAddress}"}}}}}
-        ) {
-          Trade {
-            ${tradeSide} {
-              Currency {
-                Symbol
-                SmartContract
-              }
-              Price
-              Amount
-            }
-          }
-        }
-      }
-    }
-    `,
-    };
-  };
-
   let WebSocketImpl: typeof WebSocket;
 
   if (typeof WebSocket === "undefined") {
@@ -118,6 +91,23 @@ export default function Pair({
       },
     }),
   });
+
+  const extractTrades = (data: any): any[] => {
+    return data.data.EVM.DEXTrades.map((trade: any) => {
+      const obj = trade.Trade;
+      const side = Object.keys(trade.Trade)[0];
+      return {
+        side,
+        tradeAmount: obj[side].Amount,
+        price: obj[side].Price,
+        transaction: {
+          txFrom: {
+            address: obj[side].Currency.SmartContract,
+          },
+        },
+      };
+    });
+  };
 
   const dispatch = useAppDispatch();
   const { value: token } = useAppSelector((state) => state.token);
@@ -194,20 +184,7 @@ export default function Pair({
     const onNext = (data: any) => {
       console.log("setSellTrades = ", data);
 
-      const updatedTrades = data.data.EVM.DEXTrades.map((trade: any) => {
-        const obj = trade.Trade;
-        const side = Object.keys(trade.Trade)[0];
-        return {
-          side,
-          tradeAmount: obj[side].Amount,
-          price: obj[side].Price,
-          transaction: {
-            txFrom: {
-              address: obj[side].Currency.SmartContract,
-            },
-          },
-        };
-      });
+      const updatedTrades = extractTrades(data);
 
       setSellTrades((prev: any) => [
         ...prev,
@@ -218,7 +195,7 @@ export default function Pair({
     let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getQuery("Sell", baseAddress), {
+        unsubscribe = client.subscribe(getLiveDexTrades("Sell", baseAddress), {
           next: onNext,
           error: (err: any) => {
             console.log("Subscription error:", err);
@@ -241,20 +218,7 @@ export default function Pair({
     const onNext = (data: any) => {
       console.log("setBuyTrades = ", data);
 
-      const updatedTrades = data.data.EVM.DEXTrades.map((trade: any) => {
-        const obj = trade.Trade;
-        const side = Object.keys(trade.Trade)[0];
-        return {
-          side,
-          tradeAmount: obj[side].Amount,
-          price: obj[side].Price,
-          transaction: {
-            txFrom: {
-              address: obj[side].Currency.SmartContract,
-            },
-          },
-        };
-      });
+      const updatedTrades = extractTrades(data);
 
       setBuyTrades((prev: any) => [
         ...prev,
@@ -265,7 +229,7 @@ export default function Pair({
     let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getQuery("Buy", baseAddress), {
+        unsubscribe = client.subscribe(getLiveDexTrades("Buy", baseAddress), {
           next: onNext,
           error: (err: any) => {
             console.log("Subscription error:", err);
