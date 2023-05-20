@@ -62,6 +62,7 @@ export default class Orders {
   ): Promise<TokenPairPrice> => {
     return await httpRequest.post("/tokens/token-price", {
       pair_address,
+      yesterday: true,
     });
   };
 

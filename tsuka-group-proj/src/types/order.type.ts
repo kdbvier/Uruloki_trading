@@ -43,6 +43,8 @@ export type PatchOrder = {
   order_type?: "buy" | "sell";
   price_type?: "single" | "range";
   is_continuous: boolean | null;
+  baseTokenShortName: string;
+  pairTokenShortName: string;
 };
 
 export type OrdersBook = {

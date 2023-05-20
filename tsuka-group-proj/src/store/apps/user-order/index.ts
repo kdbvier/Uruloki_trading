@@ -51,34 +51,16 @@ export const editUserOrder = createAsyncThunk<
   unknown,
   updateEditOrderParams,
   { dispatch: any }
->(
-  "userOrder/post",
-  async (
-    { id, patchData },
-    { dispatch, rejectWithValue }
-  ): Promise<Order | any> => {
-    // const data = userOrder.find((item) => item.id === id)!;
-    try {
-      const data = await Orders.editOrder(id, patchData);
-      console.log("data updated");
-
-      const user_id = 1;
-      if (data) {
-        // dispatch(getUserOrder(user_id))
-        const address = await getConnectedAddress();
-        dispatch(
-          getUserOrderWithFilter({
-            id: user_id,
-            status: "Open",
-            search: "",
-            walletAddress: address,
-          })
-        );
-      }
-      return data;
-    } catch (err: any) {
-      return rejectWithValue(err.response.data);
-    }
+>("userOrder/post", async ({ id, patchData }, { dispatch }): Promise<Order> => {
+  // const data = userOrder.find((item) => item.id === id)!;
+  const data = await Orders.editOrder(id, patchData);
+  
+  const user_id = 1;
+  if (data) {
+    dispatch(getUserOrder(user_id.toString()))
+    dispatch(
+      getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
+    );
   }
 );
 interface getUserOrderWithFilterParams {
