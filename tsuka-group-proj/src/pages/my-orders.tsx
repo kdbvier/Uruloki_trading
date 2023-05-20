@@ -13,11 +13,13 @@ import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 export default function MyOrder() {
   const [openToogle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string>("");
 
   const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
@@ -30,18 +32,33 @@ export default function MyOrder() {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
   useEffect(() => {
-    dispatch(getStrategies());
-  }, [dispatch]);
+    void (async () => {
+      const address = await getConnectedAddress();
+      setWalletAddress(address);
+      dispatch(getStrategies(address as string));
+      dispatch(
+        getUserOrderWithFilter({
+          id: 1,
+          status: openToogle ? "Open" : "Close",
+          search: searchValue,
+          walletAddress: address,
+        })
+      );
+    })();
+  }, []);
   useEffect(() => {
     //TODO: change id to my id
-    dispatch(
-      getUserOrderWithFilter({
-        id: 1,
-        status: openToogle ? "Open" : "Close",
-        search: searchValue,
-      })
-    );
-  }, [dispatch, openToogle]);
+    if (walletAddress) {
+      dispatch(
+        getUserOrderWithFilter({
+          id: 1,
+          status: openToogle ? "Open" : "Close",
+          search: searchValue,
+          walletAddress,
+        })
+      );
+    }
+  }, [openToogle]);
   // useEffect(()=> {
   //   const fetchData =async () => {
   //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
@@ -56,13 +73,16 @@ export default function MyOrder() {
   const handleSearchSubmit = () => {
     console.log("user pressed enter key");
     //TODO: change id to my id
-    dispatch(
-      getUserOrderWithFilter({
-        id: 1,
-        status: openToogle ? "Open" : "Close",
-        search: searchValue,
-      })
-    );
+    if (walletAddress) {
+      dispatch(
+        getUserOrderWithFilter({
+          id: 1,
+          status: openToogle ? "Open" : "Close",
+          search: searchValue,
+          walletAddress,
+        })
+      );
+    }
   };
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
@@ -73,22 +93,17 @@ export default function MyOrder() {
       <ToastContainer />
       <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
         {/* header */}
-        <div className={`w-full flex flex-col md:flex-row justify-between items-center`}>
+        <div
+          className={`w-full flex flex-col md:flex-row justify-between items-center`}
+        >
           <h1 className=" md:flex text-[24px] mt-3 mb-5 md:mt-0 md:mb-0 leading-[36px] md:text-[40px] md:leading-[52px] font-medium text-tsuka-50 items-center flex-row gap-4">
             <Link
               href={"/strategies"}
-              className={
-                "text-tsuka-200 mr-4 md:mr-0"
-              }
+              className={"text-tsuka-200 mr-4 md:mr-0"}
             >
               My Setups
             </Link>
-            <Link
-              href={"/my-orders"}
-              className={
-                "md:text-[40px] text-[32px]"
-              }
-            >
+            <Link href={"/my-orders"} className={"md:text-[40px] text-[32px]"}>
               My Orders
             </Link>
           </h1>

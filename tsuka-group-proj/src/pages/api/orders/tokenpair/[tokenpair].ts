@@ -10,22 +10,24 @@ export default async function OrderByTokenPairHandler(
   res: NextApiResponse<ApiResponse<Array<Order>>>
 ) {
   const { query, method } = req;
-  const { tokenpair } = query;
+  const { tokenpair, wallet_address } = query;
   switch (method) {
     case "GET":
       try {
         const { status } = query;
-        const orders = await getOrdersByPair(tokenpair as string, status as string)
+        const orders = await getOrdersByPair(
+          tokenpair as string,
+          wallet_address as string,
+          status as string
+        );
         res
           .status(200)
           .json({ payload: orders, message: `Successfully found orders` });
       } catch (err) {
-        res
-          .status(400)
-          .json({
-            payload: undefined,
-            message: `Something went wrong! Please read the error message '${err}'`,
-          });
+        res.status(400).json({
+          payload: undefined,
+          message: `Something went wrong! Please read the error message '${err}'`,
+        });
       }
       break;
     default:

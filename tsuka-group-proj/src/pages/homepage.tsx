@@ -19,6 +19,7 @@ import {
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { getStrategies } from "@/store/apps/strategies";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 let currentTranslateX: number = 0;
 
@@ -31,8 +32,11 @@ export default function Home() {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
   useEffect(() => {
-    dispatch(getHomePageTokens());
-    dispatch(getStrategies());
+    void (async () => {
+      const walletAddress = await getConnectedAddress();
+      dispatch(getHomePageTokens());
+      dispatch(getStrategies(walletAddress as string));
+    })();
   }, [dispatch]);
 
   const { value, status } = useAppSelector((state) => state.homepageTokens);
