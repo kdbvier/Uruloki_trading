@@ -1,12 +1,11 @@
-import { getTokenPosition } from "@/store/apps/token-positions";
+import { TokenPairOrders } from "@/lib/setups";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect, useState } from "react";
+import { Order } from "@/types";
+import { Token } from "@/types/token.type";
+import { useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
-import { Token } from "@/types/token.type";
-import { Order } from "@/types";
-import { TokenPairOrders } from "@/lib/setups";
 
 export interface OrderBookTokens {
   value: string;
@@ -19,6 +18,22 @@ export const OrderBookToken: React.FC<{
   buyTrades?: any;
   sellTrades?: any;
 }> = ({ orders, tokens, buyTrades, sellTrades }) => {
+
+interface Props {
+  token: Token;
+  orders: Order[];
+  sellTrades?: any[];
+  buyTrades?: any[];
+}
+
+export const OrderBookToken: React.FC<Props> = ({
+  token,
+  orders,
+  buyTrades,
+  sellTrades,
+}) => {
+  const dispatch = useAppDispatch();
+  const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
 
   const options = [

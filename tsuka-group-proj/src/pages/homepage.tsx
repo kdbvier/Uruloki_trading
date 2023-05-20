@@ -1,24 +1,22 @@
 import { ContentHeader } from "@/components/ui/content-header/content-header.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.token";
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
 import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
-import { LoadingBox } from "@/components/ui/loading/loading-box";
-import { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getHomePageTokens } from "@/store/apps/tokens";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import _ from "lodash";
 import {
   MostBuyOrdersMapper,
   MostSellOrdersMapper,
   TopGainersMapper,
   TopMoversMapper,
 } from "@/lib/mapper";
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { getStrategies } from "@/store/apps/strategies";
+import { getHomePageTokens } from "@/store/apps/tokens";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import _ from "lodash";
+import { useEffect, useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 let currentTranslateX: number = 0;
 
@@ -174,23 +172,6 @@ export default function Home() {
           <div className="mt-4">
             <TopMoversTokens topMovers={TopMoversMapper(value.topMovers)} />
           </div>
-          <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
-            <button
-              type="button"
-              onClick={() => setShowSidebar(true)}
-              className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
-            >
-              <label className="mr-2">
-                <HiOutlineArrowLongLeft size={24} />
-              </label>
-              Order & Strategies
-            </button>
-          </div>
-          <SidebarStrategies
-            open={showSidebar}
-            handleOpen={() => setShowSidebar(false)}
-            strategies={strategies!}
-          />
         </div>
       )}
     </>
