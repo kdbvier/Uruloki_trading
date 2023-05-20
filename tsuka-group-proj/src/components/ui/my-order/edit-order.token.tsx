@@ -93,6 +93,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 }) => {
   console.log("Create an order");
   const dispatch = useAppDispatch();
+  const walletAddress = "0xtest"
 
   const selectedOrder = useAppSelector(
     (state) => state.userOrder.selectedOrder
@@ -356,10 +357,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       patchData.is_continuous = isContinuous;
       console.log("before submit(patch)::");
       console.log(patchData, token1Symbol);
-      dispatch(editUserOrder({ id: selectedOrderId, patchData }));
+      dispatch(editUserOrder({ id: selectedOrderId, patchData, walletAddress }));
       console.log(patchData);
       const action = await dispatch(
-        editUserOrder({ id: selectedOrderId, patchData })
+        editUserOrder({ id: selectedOrderId, patchData, walletAddress })
       );
       if (action.meta.requestStatus === "fulfilled") {
         if (action.payload) {

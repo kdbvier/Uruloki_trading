@@ -38,6 +38,7 @@ export const setSelectedOrder = createAsyncThunk(
 interface updateEditOrderParams {
   id: number;
   patchData: PatchOrder;
+  walletAddress: string;
 }
 
 export const getTokenPairPrice = createAsyncThunk(
@@ -51,7 +52,7 @@ export const editUserOrder = createAsyncThunk<
   unknown,
   updateEditOrderParams,
   { dispatch: any }
->("userOrder/post", async ({ id, patchData }, { dispatch }): Promise<Order> => {
+>("userOrder/post", async ({ id, patchData, walletAddress }, { dispatch }) => {
   // const data = userOrder.find((item) => item.id === id)!;
   const data = await Orders.editOrder(id, patchData);
   
@@ -59,10 +60,12 @@ export const editUserOrder = createAsyncThunk<
   if (data) {
     dispatch(getUserOrder(user_id.toString()))
     dispatch(
-      getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
+      getUserOrderWithFilter({ id: user_id, status: "Open", search: "", walletAddress })
     );
   }
-);
+
+});
+
 interface getUserOrderWithFilterParams {
   id: number;
   status: string;
