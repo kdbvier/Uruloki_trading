@@ -1,21 +1,24 @@
 import axios from "axios";
 
 export type HistoricalDexTrades = {
-    sellTrades: Array<any>;
-    buyTrades: Array<any>;
-}
+  sellTrades?: Array<any>;
+  buyTrades?: Array<any>;
+};
 
 export type HistoricalDexTradesResult = {
-    success: boolean;
-    historicalDexTrades?: HistoricalDexTrades;
-}
+  success: boolean;
+  historicalDexTrades?: HistoricalDexTrades;
+};
 
-export async function getHistoricalDexTrades(baseAddress: string, quoteAddress: string): Promise<HistoricalDexTradesResult> {
-    try {
-        const { data } = await axios.post(
-          "https://graphql.bitquery.io/",
-          {
-            query: `{
+export async function getHistoricalDexTrades(
+  baseAddress: string,
+  quoteAddress: string
+): Promise<HistoricalDexTradesResult> {
+  try {
+    const { data } = await axios.post(
+      "https://graphql.bitquery.io/",
+      {
+        query: `{
               ethereum(network: ethereum) {
                 dexTrades(
                   baseCurrency: {is: "${baseAddress}"}
@@ -41,45 +44,49 @@ export async function getHistoricalDexTrades(baseAddress: string, quoteAddress: 
                 }
               }
           }`,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-KEY": "BQYedcj8q0acU4h8q0CmF2rfIVZp9VOe",
-            },
-          }
-        );
-    
-        const dexTrades = data?.data?.ethereum?.dexTrades.map((el: any) => {
-          const amount = el.side === "SELL" ? el.sellAmount : el.buyAmount;
-          return {
-            tradeAmount: el.tradeAmount,
-            side: el.side,
-            price: amount,
-            transaction: el.transaction,
-          };
-        });
-    
-        if (dexTrades && dexTrades.length) {
-          let sell24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "SELL");
-          let buy24hrAgoTrades = dexTrades?.filter((el: any) => el.side === "BUY");
-
-          return {
-            success: true,
-            historicalDexTrades: {
-                sellTrades: sell24hrAgoTrades,
-                buyTrades: buy24hrAgoTrades
-            }
-          }
-        } else {
-            return {
-                success: false
-            }
-        }
-      } catch (error) {
-        console.log("Unable to fetch historical dex trades for activity feed")
-        return {
-            success: false
-        }
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": "BQYedcj8q0acU4h8q0CmF2rfIVZp9VOe",
+        },
       }
+    );
+
+    const dexTrades = data?.data?.ethereum?.dexTrades.map((trade: any) => {
+      const amount = trade.side === "SELL" ? trade.sellAmount : trade.buyAmount;
+      return {
+        tradeAmount: trade.tradeAmount,
+        side: trade.side,
+        price: amount,
+        transaction: trade.transaction,
+      };
+    });
+
+    if (dexTrades && dexTrades.length) {
+      let sell24hrAgoTrades = dexTrades?.filter(
+        (trade: any) => trade.side === "SELL"
+      );
+      let buy24hrAgoTrades = dexTrades?.filter(
+        (trade: any) => trade.side === "BUY"
+      );
+
+      return {
+        success: true,
+        historicalDexTrades: {
+          sellTrades: sell24hrAgoTrades,
+          buyTrades: buy24hrAgoTrades,
+        },
+      };
+    } else {
+      return {
+        success: false,
+      };
+    }
+  } catch (error) {
+    console.log("Unable to fetch historical dex trades for activity feed");
+    return {
+      success: false,
+    };
+  }
 }

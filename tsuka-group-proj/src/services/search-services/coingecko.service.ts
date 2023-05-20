@@ -19,6 +19,7 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       cache.data = response.data;
       cache.lastFetch = now;    
     }
+    // console.log("cache.data",cache.data);
     const tokens = cache.data
       .filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase())||coin.symbol.toLowerCase().includes(name.toLowerCase()))
       .sort((a: any, b: any) => {
@@ -38,21 +39,22 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       const symbol = coin.symbol;
       const address = coin.platforms.ethereum;
       
-      const isErc20 = await checkIfTokenIsErc20(address);
-      // const isErc20 = true;
+      // const isErc20 = await checkIfTokenIsErc20(address);
+      const isErc20 = true;
       const isOnUniswap = await checkIfTokenIsOnUniswap(address);
 
-      return {
+      if(isErc20 && isOnUniswap)
+        return {
           id,
           name: tokenName,
           symbol,
           address,
         } as SearchToken;
-
-      // return null;
+      else
+       return null;
     }));
 
-    const erc20Tokens1: SearchToken[] = erc20Tokens.filter(isSearchToken);
+    const erc20Tokens1: SearchToken[] = erc20Tokens.filter(isSearchToken).filter(token=>token.address);
     return erc20Tokens1;
   } catch (error) {
     console.error(`Error searching tokens by name: ${error}`);

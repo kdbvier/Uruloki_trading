@@ -4,6 +4,7 @@ import HomePageTokens from "@/lib/api/tokens";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SearchPair } from "@/types";
 export interface FiltersSearchProps {
   // callback: () => void;
 }
@@ -16,22 +17,24 @@ export type FilterSearchItemType = {
 };
 
 const FilterSearchItem = ({
-  item: { id, name, symbol, address },
+  item: { id, token0, token1 },
 }: {
-  item: FilterSearchItemType;
+  // item: FilterSearchItemType;
+  item:SearchPair
 }) => {
   const router = useRouter();
+  console.log(id);
   return (
     <div
       className="flex items-center [&:not(:last-child)]:border-b-2 [&:not(:last-child)]:border-tsuka-300 py-2 bg-tsuka-500 hover:bg-tsuka-400 cursor-pointer"
-      onClick={() => router.push(`/pair/${address}`)}
+      onClick={() => router.push(`/pair/${id}`)}
     >
       <div className="flex flex-col w-[calc(100%-46px)]">
         <div className="text-tsuka-50 text-lg w-full overflow-hidden text-ellipsis whitespace-nowrap">
-          {name}
+          {token0.symbol} - {token1.symbol}
         </div>
-        <div className="text-tsuka-300 w-full overflow-hidden text-ellipsis whitespace-nowrap">
-          {address}
+        <div className="text-tsuka-100 w-full overflow-hidden text-ellipsis whitespace-nowrap">
+          {id}
         </div>
       </div>
     </div>
@@ -42,7 +45,7 @@ export const FiltersSearch: React.FC<FiltersSearchProps> = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [items, setItems] = useState<FilterSearchItemType[]>([]);
+  const [items, setItems] = useState<SearchPair[]>([]);
   const [showDropDownMenu, setShowDropDownMenu] = useState(false);
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const {

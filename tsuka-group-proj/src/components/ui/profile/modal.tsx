@@ -5,7 +5,8 @@ import { TokenMovementInput } from "../inputs/token-movement.input";
 import { TokenIconsToken } from "../tokens/token-icons.token";
 export interface ModalProps {
   open: boolean;
-  callback: () => void;
+  callback: (arg: number) => void;
+  handleClose: () => void;
   isDeposit: boolean;
   Cards: CardType[];
   backgroundInfo: any[];
@@ -15,12 +16,13 @@ export interface ModalProps {
 export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
   open,
   callback,
+  handleClose,
   isDeposit,
   Cards,
   backgroundInfo,
   walletBalances,
 }) => {
-  const [index, setIndex] = useState<any | number>(0);
+  const [index, setIndex] = useState<number>(0);
 
   const getBackgroundIndex = (token_name: string) => {
     //console.log(token_name)
@@ -44,7 +46,7 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
             <div className="relative w-full md:w-[440px] bg-tsuka-500 border rounded-2xl border-[#343C4F] text-tsuka-50 p-[24px]">
               <FiX
                 className="absolute top-3 right-3 text-tsuka-300 text-lg cursor-pointer"
-                onClick={callback}
+                onClick={handleClose}
               />
               <h2 className="text-xl font-Poppins-300 font-medium mb-[22px] text-[24px] leading-[36px] text-['#BBC3D7]">
                 {isDeposit ? "Deposit" : "Withdraw"}
@@ -184,24 +186,26 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                   </div>
                 </div>
               )}
-              <TokenMovementInput
-                id={"amount"}
-                currentAmount={(isDeposit
-                  ? walletBalances[index]?.amount
-                  : Cards[index].amount
-                ).toString()}
-                maxAmount={(isDeposit
-                  ? walletBalances[index]?.amount
-                  : Cards[index].amount
-                ).toString()}
-                currentShortName={
-                  isDeposit
-                    ? walletBalances[index]?.shortName
-                    : Cards[index].shortName
-                }
-              />
+              {!!walletBalances.length && (
+                <TokenMovementInput
+                  id={"amount"}
+                  currentAmount={(isDeposit
+                    ? walletBalances[index]?.amount
+                    : Cards[index].amount
+                  ).toString()}
+                  maxAmount={(isDeposit
+                    ? walletBalances[index]?.amount
+                    : Cards[index].amount
+                  ).toString()}
+                  currentShortName={
+                    isDeposit
+                      ? walletBalances[index]?.shortName
+                      : Cards[index].shortName
+                  }
+                />
+              )}
               <button
-                onClick={callback}
+                onClick={() => callback(index)}
                 className="w-full bg-custom-primary hover:bg-tsuka-400 text-white font-Poppins-300 leading-[24px] text-[16px] font-medium py-[11px] rounded-lg"
               >
                 Submit
