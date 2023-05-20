@@ -78,45 +78,47 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
         </div>
       </div>
       <div className="md:h-[350px] md:overflow-scroll">
-        {orders?.map((order) => {
-          console.log(order.id, " : ", order.is_continuous);
-          if (isSingle(order)) {
-            return (
-              <OrderWidgetGraph
-                key={order.id}
-                id={order.id}
-                buy={order.order_type === "buy"}
-                isContinuous={order.is_continuous}
-                value1={order.price}
-                budget={order.budget}
-                bound={chartBound}
-                status={order.status}
-                tokenSymbol={order.baseTokenShortName}
-                pairedTokenSymbol={order.pairTokenShortName}
-                setShowEditOrderModal={setShowEditOrderModal}
-                setShowDeletedAlert={setShowDeletedAlert}
-              />
-            );
-          } else {
-            return (
-              <OrderWidgetGraph
-                key={order.id}
-                id={order.id}
-                buy={order.order_type === "buy"}
-                isContinuous={order.is_continuous}
-                value1={order.prices[0]}
-                value2={order.prices[1]}
-                budget={order.budget}
-                bound={chartBound}
-                status={order.status}
-                tokenSymbol={order.baseTokenShortName}
-                pairedTokenSymbol={order.pairTokenShortName}
-                setShowEditOrderModal={setShowEditOrderModal}
-                setShowDeletedAlert={setShowDeletedAlert}
-              />
-            );
-          }
-        })}
+        {orders[0]
+          ? orders.map((order) => {
+              console.log(order.id, " : ", order.is_continuous);
+              if (isSingle(order)) {
+                return (
+                  <OrderWidgetGraph
+                    key={order.id}
+                    id={order.id}
+                    buy={order.order_type === "buy"}
+                    isContinuous={order.is_continuous}
+                    value1={order.price}
+                    budget={order.budget}
+                    bound={chartBound}
+                    status={order.status}
+                    tokenSymbol={order.baseTokenShortName}
+                    pairedTokenSymbol={order.pairTokenShortName}
+                    setShowEditOrderModal={setShowEditOrderModal}
+                    setShowDeletedAlert={setShowDeletedAlert}
+                  />
+                );
+              } else {
+                return (
+                  <OrderWidgetGraph
+                    key={order.id}
+                    id={order.id}
+                    buy={order.order_type === "buy"}
+                    isContinuous={order.is_continuous}
+                    value1={order.prices[0]}
+                    value2={order.prices[1]}
+                    budget={order.budget}
+                    bound={chartBound}
+                    status={order.status}
+                    tokenSymbol={order.baseTokenShortName}
+                    pairedTokenSymbol={order.pairTokenShortName}
+                    setShowEditOrderModal={setShowEditOrderModal}
+                    setShowDeletedAlert={setShowDeletedAlert}
+                  />
+                );
+              }
+            })
+          : "No orders provided"}
       </div>
       {/* <div className="relative flex justify-center">
         <button className="text-custom-primary font-medium" onClick={(e) => {manageHandler(e)}}>Manage</button>

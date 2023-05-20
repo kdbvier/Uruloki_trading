@@ -36,13 +36,14 @@ export default async function OrderByUserHandler(
         //////From Origin End?///
         //// Mine Own function Start////
         console.log(req.query);
-        let { status } = req.query;
+        let { status, wallet_address } = req.query;
         let search = req.query.search as string;
         if (!search?.trim()) search = "";
         const orders = search
           ? await prisma.orders.findMany({
               where: {
                 user_id: Number(userid),
+                creator_address: wallet_address as string,
                 NOT: {
                   token_cache: null,
                 },
@@ -66,6 +67,7 @@ export default async function OrderByUserHandler(
           : await prisma.orders.findMany({
               where: {
                 user_id: Number(userid),
+                creator_address: wallet_address as string,
                 // NOT: {
                 //   token_cache: null,
                 // },

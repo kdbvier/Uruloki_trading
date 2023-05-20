@@ -1,12 +1,10 @@
 import { Strategy } from "@/types/strategy.type";
 import Link from "next/link";
 import { useState } from "react";
-import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { MdArrowForward } from "react-icons/md";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { FiltersSearch } from "../ui/content-header/filters.search";
 import { StatusSpan } from "../ui/spans/status.span";
-import { SidebarStrategies } from "./sidebar.strategies";
 
 export interface StrategyBookStrategiesProps {
   strategies: Array<Strategy>;
@@ -16,7 +14,6 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
   strategies,
 }) => {
   const [selectedPath, setSelectedPath] = useState("strategies-list");
-  const [showSidebar, setShowSidebar] = useState(false);
 
   const options = [
     {
@@ -133,23 +130,6 @@ export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
           </div>
         )}
       </div>
-      <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
-        <button
-          type="button"
-          onClick={() => setShowSidebar(true)}
-          className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
-        >
-          <label className="mr-2">
-            <HiOutlineArrowLongLeft size={24} />
-          </label>
-          Order & Setups
-        </button>
-      </div>
-      <SidebarStrategies
-        open={showSidebar}
-        handleOpen={() => setShowSidebar(false)}
-        strategies={strategies!}
-      />
     </div>
   );
 };

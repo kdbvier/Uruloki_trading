@@ -1,4 +1,5 @@
 import { userOrder } from "@/@fake-data/user-order.fake-data";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 import Orders from "@/lib/api/orders";
 import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
@@ -61,12 +62,12 @@ export const editUserOrder = createAsyncThunk<
       getUserOrderWithFilter({ id: user_id, status: "Open", search: "" })
     );
   }
-  return data;
-});
+);
 interface getUserOrderWithFilterParams {
   id: number;
   status: string;
   search: string;
+  walletAddress: string;
 }
 export const getUserOrderWithFilter = createAsyncThunk<
   UserOrder[],
@@ -74,9 +75,14 @@ export const getUserOrderWithFilter = createAsyncThunk<
   { dispatch: any }
 >(
   "userOrder/getwithfilter",
-  async ({ id, status, search }): Promise<UserOrder[]> => {
+  async ({ id, status, search, walletAddress }): Promise<UserOrder[]> => {
     // const data = userOrder.find((item) => item.id === id)!;
-    const data = await Orders.getOrdersbyUserIdandFilters(id, status, search);
+    const data = await Orders.getOrdersbyUserIdandFilters(
+      id,
+      status,
+      search,
+      walletAddress
+    );
     return data;
   }
 );
@@ -90,10 +96,14 @@ export const getUserOrder = createAsyncThunk(
 );
 export const createOrder = createAsyncThunk(
   "userOrder/set",
-  async (postData: PostOrder, { dispatch }) => {
+  async (postData: PostOrder, { dispatch, rejectWithValue }) => {
     console.log("post lib::");
-    const data = await Orders.createOrder(postData);
-    return data;
+    try {
+      const data = await Orders.createOrder(postData);
+      return data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 export const deleteOrder = createAsyncThunk(
@@ -101,7 +111,15 @@ export const deleteOrder = createAsyncThunk(
   async (id: number, { dispatch }) => {
     const data = await Orders.deleteOrder(id);
     if (data) {
-      dispatch(getUserOrderWithFilter({ id: 1, status: "Open", search: "" }));
+      const address = await getConnectedAddress();
+      dispatch(
+        getUserOrderWithFilter({
+          id: 1,
+          status: "Open",
+          search: "",
+          walletAddress: address,
+        })
+      );
     }
     return data;
   }

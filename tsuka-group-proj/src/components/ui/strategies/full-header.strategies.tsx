@@ -6,9 +6,10 @@ import { useEffect, useMemo } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { MdArrowBack } from "react-icons/md";
 import { DefaultButton } from "../buttons/default.button";
+import { Setup } from "@/lib/setups";
 
 export interface FullHeaderStrategiesProps {
-  strategyDetails: Strategy;
+  strategyDetails: Setup;
 }
 
 export const FullHeaderStrategies: React.FC<FullHeaderStrategiesProps> = ({

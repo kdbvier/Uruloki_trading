@@ -1,4 +1,4 @@
-import { PostOrder, TokenCache } from "@/types";
+import { Order, PostOrder, TokenCache, TokenPairInfo } from "@/types";
 // import getTokenCache from '@/lib/api/tokens/'
 import { useEffect, useMemo, useState } from "react";
 import Dropdown from "../buttons/dropdown";
@@ -20,6 +20,9 @@ import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
 import Orders from "@/lib/api/orders";
+import HomePageTokens from "@/lib/api/tokens";
+import { useUrulokiAPI } from "@/blockchain";
+import { toast } from "react-toastify";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -31,6 +34,7 @@ export interface EditOrderTokenProp {
   pair_address?: string;
   selectedOrderId?: number;
   closeHandler: () => void;
+  pairInfo?: TokenPairInfo;
 
   //  token?: Token;
 }
@@ -42,7 +46,7 @@ export const convertLawPrice = (price: number) => {
   } else {
     priceEle = (
       <>
-        ${formatNumberToHtmlTag(price).integerPart}
+        {formatNumberToHtmlTag(price).integerPart}
         .0
         <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
         {formatNumberToHtmlTag(price).remainingDecimal}
@@ -85,6 +89,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   name2,
   code2,
   pair_address,
+  pairInfo,
 }) => {
   console.log("Create an order");
   const dispatch = useAppDispatch();
@@ -120,6 +125,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     selectedOrder.price_type === PriceTypeEnum.RANGE
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
+
   const [basePrice, setBasePrice] = useState<number>(0);
 
   const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
@@ -127,11 +133,32 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const pairLongName = isEdit ? selectedOrder.pairTokenLongName : name2;
   const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
 
+  const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
+
+  const {
+    editContinuousPriceRangeOrder,
+    editContinuousTargetPriceOrder,
+    editNonContinuousPriceRangeOrder,
+    editNonContinuousTargetPriceOrder,
+    createContinuousPriceRangeOrder,
+    createContinuousTargetPriceOrder,
+    createNonContinuousPriceRangeOrder,
+    createNonContinuousTargetPriceOrder,
+  } = useUrulokiAPI();
+  
   useEffect(() => {
     if (isEdit) {
       dispatch(setSelectedOrder(selectedOrderId));
+    }
+    if (!pairInfo) {
+      void (async () => {
+        const info = await HomePageTokens.getTokenPairInfo(
+          pair_address as string
+        );
+        setTokenPairInfo(info);
+      })();
     } else {
-      dispatch(getTokenPairPrice(pair_address as string));
+      setTokenPairInfo(pairInfo);
     }
     dispatch(getAllTokenCache());
     Orders.getTokenPairPrice(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res.base_price * selectedOrder.budget : 0)))
@@ -151,7 +178,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   }, [tokenCache, isBuy, pairShortName, baseShortName]);
 
   useEffect(() => {
-    
+    if (pair_address) {
+      dispatch(getTokenPairPrice(pair_address as string));
+    }
+  }, [pair_address]);
+
+  useEffect(() => {
     const currentToken = isBuy ? pairShortName : baseShortName;
 
     if (tokenCache && currentToken) {
@@ -307,7 +339,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const toggle = () => {
     setIsContinuous((prevState) => !prevState);
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isEdit) {
       const patchData = {} as PatchOrder;
       patchData.budget = toNumber(amount);
@@ -325,6 +357,92 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       console.log("before submit(patch)::");
       console.log(patchData, token1Symbol);
       dispatch(editUserOrder({ id: selectedOrderId, patchData }));
+      console.log(patchData);
+      const action = await dispatch(
+        editUserOrder({ id: selectedOrderId, patchData })
+      );
+      if (action.meta.requestStatus === "fulfilled") {
+        if (action.payload) {
+          const payload = action.payload as Order;
+          if (payload.price_type === "range") {
+            if (payload.is_continuous === true) {
+              editContinuousPriceRangeOrder(
+                payload.order_id,
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(minPrice.split(",").join("")),
+                Number(maxPrice.split(",").join("")),
+                Number(amount.split(",").join("")),
+                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            } else {
+              editNonContinuousPriceRangeOrder(
+                payload.order_id,
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(minPrice.split(",").join("")),
+                Number(maxPrice.split(",").join("")),
+                Number(amount.split(",").join(""))
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            }
+          } else {
+            if (payload.is_continuous === true) {
+              editContinuousTargetPriceOrder(
+                payload.order_id,
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(targetPrice.split(",").join("")),
+                Number(amount.split(",").join("")),
+                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            } else {
+              console.log("--------------------------------");
+              console.log(payload.order_id);
+              console.log(tokenPairInfo?.pairedToken?.address as string);
+              console.log(tokenPairInfo?.baseToken?.address as string);
+              console.log(isBuy);
+              console.log(Number(targetPrice.split(",").join("")));
+              console.log(Number(amount.split(",").join("")));
+              console.log("--------------------------------");
+              editNonContinuousTargetPriceOrder(
+                payload.order_id as number,
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy as boolean,
+                Number(targetPrice.split(",").join("")),
+                Number(amount.split(",").join(""))
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            }
+          }
+        }
+      }
       setShowEditOrderModal(false);
     } else {
       const postData = {} as PostOrder;
@@ -346,7 +464,77 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       postData.pair_address = pair_address as string;
       console.log("before Submit(post)::");
       console.log(postData);
-      dispatch(createOrder(postData));
+      const action = await dispatch(createOrder(postData));
+      if (action.meta.requestStatus === "fulfilled") {
+        if (action.payload) {
+          const payload = action.payload as Order;
+          if (payload.price_type === "range") {
+            if (payload.is_continuous === true) {
+              createContinuousPriceRangeOrder(
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(minPrice.split(",").join("")),
+                Number(maxPrice.split(",").join("")),
+                Number(amount.split(",").join("")),
+                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            } else {
+              createNonContinuousPriceRangeOrder(
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(minPrice.split(",").join("")),
+                Number(maxPrice.split(",").join("")),
+                Number(amount.split(",").join(""))
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            }
+          } else {
+            if (payload.is_continuous === true) {
+              createContinuousTargetPriceOrder(
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(targetPrice.split(",").join("")),
+                Number(amount.split(",").join("")),
+                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            } else {
+              createNonContinuousTargetPriceOrder(
+                tokenPairInfo?.pairedToken?.address as string,
+                tokenPairInfo?.baseToken?.address as string,
+                isBuy,
+                Number(targetPrice.split(",").join("")),
+                Number(amount.split(",").join(""))
+              ).then((res) => {
+                if (res?.msg === "success") {
+                  toast(res?.msg, { type: "success" });
+                } else {
+                  toast(res?.msg, { type: "error" });
+                }
+              });
+            }
+          }
+        }
+      }
       setShowEditOrderModal(false);
     }
   };
@@ -365,12 +553,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              {!!token_price.base_price &&
-                (token_price.base_price >= 0.01
-                  ? `$${handleNumberFormat(
-                      parseFloat(token_price.base_price.toFixed(2))
-                    )}`
-                  : convertLawPrice(token_price.base_price))}
+              {!!token_price.base_price && (
+                <>
+                  $
+                  {token_price.base_price >= 0.01
+                    ? handleNumberFormat(
+                        parseFloat(token_price.base_price.toFixed(2))
+                      )
+                    : convertLawPrice(token_price.base_price)}
+                </>
+              )}
             </span>
           </p>
           {/* <div className="w-full mt-4 flex gap-2 text-sm">
@@ -598,13 +790,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   let totalAmount =
                     parseFloat(amount.split(",").join("")) *
                     (isBuy ? token_price.quote_price : token_price.base_price);
-                  return totalAmount
-                    ? totalAmount >= 0.001
-                      ? `$${handleNumberFormat(
-                          parseFloat(totalAmount.toFixed(3))
-                        )}`
-                      : convertLawPrice(totalAmount)
-                    : "$0";
+                  return (
+                    <>
+                      $
+                      {totalAmount
+                        ? totalAmount >= 0.001
+                          ? handleNumberFormat(
+                              parseFloat(totalAmount.toFixed(3))
+                            )
+                          : convertLawPrice(totalAmount)
+                        : 0}
+                    </>
+                  );
                 })()}
               </span>
             </div>

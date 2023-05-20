@@ -1,12 +1,23 @@
-import { getTokenPosition } from "@/store/apps/token-positions";
+import { TokenPairOrders } from "@/lib/setups";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect, useState } from "react";
+import { Order } from "@/types";
+import { Token } from "@/types/token.type";
+import { useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
-import { Token } from "@/types/token.type";
 
-export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
+export interface OrderBookTokens {
+  value: string;
+  label: string;
+}
+
+export const OrderBookToken: React.FC<{
+  orders: TokenPairOrders[];
+  tokens?: OrderBookTokens[];
+  buyTrades?: any;
+  sellTrades?: any;
+}> = ({ orders, tokens, buyTrades, sellTrades }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
@@ -22,12 +33,12 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
     },
   ];
 
-  const OrderComponent =
-    selectedPath === "order-book" ? OrderBookTokenUi : OrderHistoryBookTokenUi;
-
-  useEffect(() => {
-    dispatch(getTokenPosition(token.id));
-  }, [dispatch, token]);
+  const orderComponent =
+    selectedPath === "order-book" ? (
+      <OrderBookTokenUi orders={orders} tokens={tokens as OrderBookTokens[]} />
+    ) : (
+      <OrderHistoryBookTokenUi sellTrades={sellTrades} buyTrades={buyTrades} />
+    );
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 px-2">
@@ -41,7 +52,9 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
               )
             }
             className={`${
-              path === selectedPath ? "border-b-2 border-accent" : "border-b-2 border-transparent"
+              path === selectedPath
+                ? "border-b-2 border-accent"
+                : "border-b-2 border-transparent"
             } py-4 xs:p-4 text-center whitespace-nowrap mx-2 text-base sm:text-lg font-semibold text-tsuka-50 cursor-pointer`}
           >
             {title}
@@ -51,9 +64,9 @@ export const OrderBookToken: React.FC<{ token: Token }> = ({ token }) => {
           <FiltersButton callback={() => console.log("filters button")} />
         </div>
       </div>
-      <div className="overflow-x-scroll">
-        {OrderComponent && <OrderComponent token={token} />}
-      </div>
+      {orderComponent && (
+        <div className="overflow-x-scroll">{orderComponent}</div>
+      )}
     </div>
   );
 };

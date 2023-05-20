@@ -22,18 +22,23 @@ export default class Orders {
   static getOrdersbyUserIdandFilters = async (
     userId: number,
     status: string,
-    search: string
+    search: string,
+    walletAddress: string
   ): Promise<UserOrder[]> => {
     return await httpRequest.get(
-      `orders/user/${userId}?status=${status}&search=${search}`
+      `orders/user/${userId}?status=${status}&search=${search}&wallet_address=${walletAddress}`
     );
   };
 
-  static getActiveOrdersbyTokenPair = async (
-    tokenpair: string
-  ): Promise<Array<Order>> => {
+  static getActiveOrdersbyTokenPair = async ({
+    tokenpair,
+    walletAddress,
+  }: {
+    tokenpair: string;
+    walletAddress: string;
+  }): Promise<Array<Order>> => {
     return await httpRequest.get(
-      `/orders/tokenpair/${tokenpair}?status=active`
+      `/orders/tokenpair/${tokenpair}?status=active&wallet_address=${walletAddress}`
     );
   };
 
