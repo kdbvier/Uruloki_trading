@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { getTokenNamesFromPair } from "@/lib/token-pair";
-import { getLiveDexTrades } from "@/lib/bitquery/dexTradesLiveStream";
+import  getLiveDexTrades from "@/lib/bitquery/dexTradesLiveStream";
 import {
   HistoricalDexTrades,
   getHistoricalDexTrades,
