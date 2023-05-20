@@ -56,7 +56,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   const { value, status } = useAppSelector((state) => state.token);
 
   const baseTokenAddress = useAppSelector(
-    (state) => state.tokenPairInfo.value.baseToken.address
+    (state) => state.tokenPairInfo.value.baseToken?.address
   );
   const [tokenVolume, setTokenVolume] = useState({
     value: 0,
@@ -146,9 +146,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             <div className="px-2 flex-1 flex-col">
               <p className="text-sm xs:text-base">
                 <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
-                  {tokenPairInfo.baseToken.symbol}
+                  {tokenPairInfo.baseToken?.symbol}
                 </label>
-                /{tokenPairInfo.pairedToken.symbol}
+                /{tokenPairInfo.pairedToken?.symbol}
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">

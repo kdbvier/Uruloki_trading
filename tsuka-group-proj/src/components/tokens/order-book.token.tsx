@@ -5,15 +5,20 @@ import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { Token } from "@/types/token.type";
+import { Order } from "@/types";
+import { TokenPairOrders } from "@/lib/setups";
 
-export const OrderBookToken: React.FC<{ token: Token; orders: Order[] }> = ({
-  token,
-  orders,
-  buyTrades,
-  sellTrades,
-}) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.tokenPosition);
+export interface OrderBookTokens {
+  value: string;
+  label: string;
+}
+
+export const OrderBookToken: React.FC<{
+  orders: TokenPairOrders[];
+  tokens?: OrderBookTokens[];
+  buyTrades?: any;
+  sellTrades?: any;
+}> = ({ orders, tokens, buyTrades, sellTrades }) => {
   const [selectedPath, setSelectedPath] = useState("order-book");
 
   const options = [
@@ -29,18 +34,10 @@ export const OrderBookToken: React.FC<{ token: Token; orders: Order[] }> = ({
 
   const orderComponent =
     selectedPath === "order-book" ? (
-      <OrderBookTokenUi orders={orders} />
+      <OrderBookTokenUi orders={orders} tokens={tokens as OrderBookTokens[]} />
     ) : (
-      <OrderHistoryBookTokenUi
-        token={token}
-        sellTrades={sellTrades}
-        buyTrades={buyTrades}
-      />
+      <OrderHistoryBookTokenUi sellTrades={sellTrades} buyTrades={buyTrades} />
     );
-
-  useEffect(() => {
-    dispatch(getTokenPosition(token.id));
-  }, [dispatch, token]);
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 px-2">

@@ -103,8 +103,8 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded }) => {
     setActive(stick);
     console.log(stick);
     const eachAddress = {
-      base: tokenPairInfo.baseToken.address,
-      quote: tokenPairInfo.pairedToken.address,
+      base: tokenPairInfo.baseToken?.address,
+      quote: tokenPairInfo.pairedToken?.address,
       pairAddress: pairAddress,
       time: stick,
     };
