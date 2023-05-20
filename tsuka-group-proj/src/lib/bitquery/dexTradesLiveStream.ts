@@ -1,4 +1,4 @@
-const getLiveDexTrades = (
+export const getLiveDexTrades = (
   tradeSide: string,
   baseAddress: string
 ): { query: string } => {

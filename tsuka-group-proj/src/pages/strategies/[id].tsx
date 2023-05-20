@@ -2,12 +2,16 @@ import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderStrategies } from "@/components/ui/strategies/full-header.strategies";
-import { Setup, TokenPairOrders, getSetups } from "@/lib/setups";
+import { ModifiedOrder, Setup, TokenPairOrders, getSetups } from "@/lib/setups";
 import { getStrategies } from "@/store/apps/strategies";
 import { getTokenByStrategyId } from "@/store/apps/token";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Strategy } from "@/types";
-import { OrderStatusEnum, OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
+import { Order, Strategy } from "@/types";
+import {
+  OrderStatusEnum,
+  OrderTypeEnum,
+  PriceTypeEnum,
+} from "@/types/token-order.type";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -16,7 +20,21 @@ import {
   HiOutlineArrowLongRight,
 } from "react-icons/hi2";
 
-export default function StrategyDetails({ id, orders, currentSetup }: { id: string, orders: Array<TokenPairOrders>, currentSetup: Setup }) {
+export const mapModifiedOrderToOrder = (modifiedOrder: ModifiedOrder) =>
+  ({
+    ...modifiedOrder,
+    order_id: modifiedOrder.id,
+  } as unknown as Order);
+
+export default function StrategyDetails({
+  id,
+  orders,
+  currentSetup,
+}: {
+  id: string;
+  orders: Array<TokenPairOrders>;
+  currentSetup: Setup;
+}) {
   const dispatch = useAppDispatch();
   const [showIndex, setShowIndex] = useState(0);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
@@ -60,7 +78,13 @@ export default function StrategyDetails({ id, orders, currentSetup }: { id: stri
                   code1={item.code1}
                   name2={item.name2}
                   code2={item.code2}
-                  status={item.orders.filter(a => a.status === "Canceled" || a.status === "Closed").length > 0 ? OrderStatusEnum.CANCELLED : OrderStatusEnum.ACTIVE}
+                  status={
+                    item.orders.filter(
+                      (a) => a.status === "Canceled" || a.status === "Closed"
+                    ).length > 0
+                      ? OrderStatusEnum.CANCELLED
+                      : OrderStatusEnum.ACTIVE
+                  }
                   orders={item.orders.map((order) => ({
                     id: order.id as number,
                     budget: order.budget as number,
@@ -103,7 +127,14 @@ export default function StrategyDetails({ id, orders, currentSetup }: { id: stri
                       code1={item.code1}
                       name2={item.name2}
                       code2={item.code2}
-                      status={item.orders.filter(a => a.status === "Canceled" || a.status === "Closed").length > 0 ? OrderStatusEnum.CANCELLED : OrderStatusEnum.ACTIVE}
+                      status={
+                        item.orders.filter(
+                          (a) =>
+                            a.status === "Canceled" || a.status === "Closed"
+                        ).length > 0
+                          ? OrderStatusEnum.CANCELLED
+                          : OrderStatusEnum.ACTIVE
+                      }
                       orders={item.orders.map((order) => ({
                         id: order.id as number,
                         budget: order.budget as number,
@@ -149,7 +180,19 @@ export default function StrategyDetails({ id, orders, currentSetup }: { id: stri
               }}
             />
           )}
-          {token && <OrderBookToken token={token} orders={[]}/>}
+          <OrderBookToken
+            tokens={currentSetup.orderTokens.map((order) => ({
+              value: order.pair_address,
+              label:
+                order.code1 == "USDT" ||
+                order.code1 == "USDC" ||
+                order.code1 == "WETH" ||
+                order.code1 == "DAI"
+                  ? `${order.code2}/${order.code1}`
+                  : `${order.code1}/${order.code2}`,
+            }))}
+            orders={currentSetup.orderTokens}
+          />
         </div>
       )}
     </div>
@@ -160,25 +203,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   //Get all orders in strategy
   const allSetups = (await getSetups()).setups;
-  const currentSetup = allSetups.filter(a => a.id === id)[0];
+  const currentSetup = allSetups.filter((a) => a.id === id)[0];
   const orders = currentSetup.orderTokens;
 
   //Get list pair addresses
   const pairAddresses: Array<string> = [];
-  orders.map(a => {
-    if(!pairAddresses.includes(a.pair_address)) {
+  orders.map((a) => {
+    if (!pairAddresses.includes(a.pair_address)) {
       pairAddresses.push(a.pair_address);
     }
   });
 
   //Get activity feed & order book info for each pair
 
-
   return {
     props: {
       id,
       orders,
-      currentSetup
+      currentSetup,
     },
   };
-}
+};

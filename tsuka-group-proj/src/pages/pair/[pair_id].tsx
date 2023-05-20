@@ -37,6 +37,7 @@ import {
 } from "@/lib/token-activity-feed";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ModifiedOrder } from "@/lib/setups";
 
 interface InputToken {
   id: string;
@@ -159,8 +160,8 @@ export default function Pair({
       return;
     }
     const eachAddress = {
-      base: tokenPairInfo.baseToken.address,
-      quote: tokenPairInfo.pairedToken.address,
+      base: tokenPairInfo.baseToken?.address,
+      quote: tokenPairInfo.pairedToken?.address,
       pairAddress: pairAddress,
       time: time,
     };
@@ -267,7 +268,42 @@ export default function Pair({
               <PoolInfoToken token={token} />
             </div>
             <div className="col-span-12 md:col-span-5">
-              <OrderBookToken token={token} orders={orders} />
+              <OrderBookToken
+                buyTrades={buyTrades}
+                sellTrades={sellTrades}
+                tokens={[
+                  {
+                    value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+                    // value: orders[0].pair_address as string,
+                    label:
+                      orders[0].baseTokenShortName == "USDT" ||
+                      orders[0].baseTokenShortName == "USDC" ||
+                      orders[0].baseTokenShortName == "WETH" ||
+                      orders[0].baseTokenShortName == "DAI"
+                        ? `${orders[0].pairTokenShortName}/${orders[0].baseTokenShortName}`
+                        : `${orders[0].baseTokenShortName}/${orders[0].pairTokenShortName}`,
+                  },
+                ]}
+                orders={[
+                  {
+                    network: "Ethereum",
+                    name1: orders[0].baseTokenLongName ?? "",
+                    code1: orders[0].baseTokenShortName ?? "",
+                    name2: orders[0].pairTokenLongName ?? "",
+                    code2: orders[0].pairTokenShortName ?? "",
+                    pair_address: pairAddress,
+                    orders: orders.map(
+                      (order) =>
+                        ({
+                          ...order,
+                          id: order.order_id,
+                          price: order.single_price ?? 0,
+                          prices: [order.from_price ?? 0, order.to_price ?? 0],
+                        } as ModifiedOrder)
+                    ),
+                  },
+                ]}
+              />
             </div>
           </div>
         </div>
@@ -282,10 +318,10 @@ export default function Pair({
             Icon={FiPlusCircle}
           />
           <OrderWidgetToken
-            name1={tokenPairInfo.baseToken.name as string}
-            code1={tokenPairInfo.baseToken.symbol as string}
-            name2={tokenPairInfo.pairedToken.name as string}
-            code2={tokenPairInfo.pairedToken.symbol as string}
+            name1={tokenPairInfo.baseToken?.name as string}
+            code1={tokenPairInfo.baseToken?.symbol as string}
+            name2={tokenPairInfo.pairedToken?.name as string}
+            code2={tokenPairInfo.pairedToken?.symbol as string}
             status={"Active" as OrderStatusEnum}
             orders={activeOrders.map((order) => ({
               id: order.order_id as number,
@@ -309,10 +345,10 @@ export default function Pair({
       <div className="block lg:hidden">
         <LiveGraphToken />
         <OrderWidgetToken
-          name1={tokenPairInfo.baseToken.name as string}
-          code1={tokenPairInfo.baseToken.symbol as string}
-          name2={tokenPairInfo.pairedToken.name as string}
-          code2={tokenPairInfo.pairedToken.symbol as string}
+          name1={tokenPairInfo.baseToken?.name as string}
+          code1={tokenPairInfo.baseToken?.symbol as string}
+          name2={tokenPairInfo.pairedToken?.name as string}
+          code2={tokenPairInfo.pairedToken?.symbol as string}
           status={"Active" as OrderStatusEnum}
           orders={activeOrders.map((order) => ({
             id: order.order_id as number,
@@ -336,8 +372,37 @@ export default function Pair({
             <OrderBookToken
               buyTrades={buyTrades}
               sellTrades={sellTrades}
-              token={token}
-              orders={orders}
+              tokens={[
+                {
+                  value: orders[0].pair_address as string,
+                  label:
+                    orders[0].baseTokenShortName == "USDT" ||
+                    orders[0].baseTokenShortName == "USDC" ||
+                    orders[0].baseTokenShortName == "WETH" ||
+                    orders[0].baseTokenShortName == "DAI"
+                      ? `${orders[0].pairTokenShortName}/${orders[0].baseTokenShortName}`
+                      : `${orders[0].baseTokenShortName}/${orders[0].pairTokenShortName}`,
+                },
+              ]}
+              orders={[
+                {
+                  network: "Ethereum",
+                  name1: orders[0].baseTokenLongName ?? "",
+                  code1: orders[0].baseTokenShortName ?? "",
+                  name2: orders[0].pairTokenLongName ?? "",
+                  code2: orders[0].pairTokenShortName ?? "",
+                  pair_address: pairAddress,
+                  orders: orders.map(
+                    (order) =>
+                      ({
+                        ...order,
+                        id: order.order_id,
+                        price: order.single_price ?? 0,
+                        prices: [order.from_price ?? 0, order.to_price ?? 0],
+                      } as ModifiedOrder)
+                  ),
+                },
+              ]}
             />
             <PoolInfoToken token={token} />
           </>
@@ -362,10 +427,10 @@ export default function Pair({
       />
       {showEditOrderModal && (
         <EditOrderToken
-          name1={tokenPairInfo.baseToken.name as string}
-          code1={tokenPairInfo.baseToken.symbol as string}
-          name2={tokenPairInfo.pairedToken.name as string}
-          code2={tokenPairInfo.pairedToken.symbol as string}
+          name1={tokenPairInfo.baseToken?.name as string}
+          code1={tokenPairInfo.baseToken?.symbol as string}
+          name2={tokenPairInfo.pairedToken?.name as string}
+          code2={tokenPairInfo.pairedToken?.symbol as string}
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
@@ -393,7 +458,7 @@ export default function Pair({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let orders: Order[];
-  let tokenPairInfo: TokenPairInfo;
+  let tokenPairInfo: TokenPairInfo = {};
   let historicalDexTrades: HistoricalDexTrades = {};
   try {
     orders = await getOrdersByPair(context.query.pair_id as string, "Active");
@@ -431,8 +496,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
 
       let historicalDexTradesResult = await getHistoricalDexTrades(
-        tokenPairInfo.baseToken.address,
-        tokenPairInfo.pairedToken.address
+        tokenPairInfo.baseToken?.address as string,
+        tokenPairInfo.pairedToken?.address as string
       );
 
       if (
@@ -451,7 +516,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       orders,
       token_price,
       oldTokenPrice,
-      baseAddress: tokenPairInfo.baseToken.address,
+      baseAddress: tokenPairInfo.baseToken?.address as string,
       historicalDexTrades,
     },
   };

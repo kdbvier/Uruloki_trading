@@ -154,23 +154,27 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
   const handleDepositWithdraw = (index: number) => {
     const { address, amount } = walletBalances[index];
     if (isDeposit) {
-      addFunds(address, amount).then((res) => {
-        if (res?.msg === "success") {
-          toast(res?.msg, { type: "success" });
-        } else {
-          toast(res?.msg, { type: "error" });
-        }
-        setShowModal(false);
-      });
+      if (address) {
+        addFunds(address, amount).then((res) => {
+          if (res?.msg === "success") {
+            toast(res?.msg, { type: "success" });
+          } else {
+            toast(res?.msg, { type: "error" });
+          }
+          setShowModal(false);
+        });
+      }
     } else {
-      withdrawFunds(address, amount).then((res) => {
-        if (res?.msg === "success") {
-          toast(res?.msg, { type: "success" });
-        } else {
-          toast(res?.msg, { type: "error" });
-        }
-        setShowModal(false);
-      });
+      if (address) {
+        withdrawFunds(address, amount).then((res) => {
+          if (res?.msg === "success") {
+            toast(res?.msg, { type: "success" });
+          } else {
+            toast(res?.msg, { type: "error" });
+          }
+          setShowModal(false);
+        });
+      }
     }
   };
 
