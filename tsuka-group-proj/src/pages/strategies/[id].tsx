@@ -155,7 +155,6 @@ export default function StrategyDetails({ id, orders, currentSetup }: { id: stri
     </div>
   );
 }
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
 
