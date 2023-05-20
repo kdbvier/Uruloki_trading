@@ -73,12 +73,12 @@ export default function MyOrder() {
       <ToastContainer />
       <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
         {/* header */}
-        <div className={`w-full flex justify-between items-center`}>
-          <h1 className="hidden md:flex text-[40px] leading-[52px] font-medium text-tsuka-50 items-center flex-row gap-4">
+        <div className={`w-full flex flex-col md:flex-row justify-between items-center`}>
+          <h1 className=" md:flex text-[24px] mt-3 mb-5 md:mt-0 md:mb-0 leading-[36px] md:text-[40px] md:leading-[52px] font-medium text-tsuka-50 items-center flex-row gap-4">
             <Link
               href={"/strategies"}
               className={
-                "hidden md:block text-[24px] leading-[52px] text-tsuka-200"
+                "text-tsuka-200 mr-4 md:mr-0"
               }
             >
               My Setups
@@ -86,7 +86,7 @@ export default function MyOrder() {
             <Link
               href={"/my-orders"}
               className={
-                "hidden md:block text-[40px] leading-[52px] font-medium text-tsuka-50"
+                "md:text-[40px] text-[32px]"
               }
             >
               My Orders
