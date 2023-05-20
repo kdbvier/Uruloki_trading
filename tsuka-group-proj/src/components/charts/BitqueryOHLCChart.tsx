@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { useEffect, useRef, useState } from "react";
 import {
   createChart,
@@ -6,10 +7,14 @@ import {
   LineStyle,
   IChartApi
 } from "lightweight-charts";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Order } from "@/types";
+// import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { BitqueryData, Order, TokenPairInfo } from "@/types";
 import { getBitqueryOHLCData } from "@/lib/bitquery/getBitqueryOHLCData";
-import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
+// import { getBitqueryInitInfo, getBitqueryStreamInfo } from "@/store/apps/bitquery-data";
+import { useRouter } from "next/router";
+import HomePageTokens from "@/lib/api/tokens";
+import { getBitqueryStreamData, getBitqueryStreamData1, stopBitqueryStream, transformData, transformStreamData } from '@/lib/bitquery/getBitqueryStreamData';
+import Orders from '@/lib/api/orders';
 // price label bg color #f03349
 // time label bg color #363a45
 // down color #d83045
@@ -65,29 +70,119 @@ const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) =>
   }
 };
 const scaleFactor = 1e15;
+
+// export interface BitqueryOHLCChartProps {
+//   tokenPairInfo: TokenPairInfo;
+//   pairAddress: string;
+// }
+
 // This is our lightweight chart
 const BitqueryOHLCChart = () => {
+  const [pairAddress, setPairAddress] = useState("");
+  const router = useRouter();
+  useEffect(() => {
+    setPairAddress(String(router.query.pair_id));
+  }, [router]);
+  const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
+  const [activeOrdersByTokenpair, setActiveOrdersByTokenpair] = useState<Order[]>([]);
+  useEffect(()=>{
+    const fetchTokenPairInfo_ActiveOrders = async () => {
+      try {
+        if(!pairAddress || _.isEmpty(pairAddress))
+          return;
+        const res = await HomePageTokens.getTokenPairInfo(pairAddress);
+        setTokenPairInfo({...res});
+        const res_1 = await Orders.getActiveOrdersbyTokenPair(pairAddress);
+        setActiveOrdersByTokenpair(res_1);
+      } catch (err) {
+        console.log("errors");
+        console.error(err);
+      }
+    };
+    fetchTokenPairInfo_ActiveOrders();
+  }, [pairAddress])
   const [chart, setChart] = useState<IChartApi | null>(null);
   const [showMarkers, setShowMarkers] = useState(true);
   const chartRef = useRef<HTMLDivElement>(null);
   let candleStickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
-  const dispatch = useAppDispatch();
-  const firstBitquery = useAppSelector((state) => state.bitquery.value);
-  const streamValue = useAppSelector((state) => state.bitquery.streamValue);
-  const candleStickTime = useAppSelector((state) => state.bitquery.candleStickTime);
-  const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
-  const activeOrdersByTokenpair = useAppSelector(
-    (state) => state.tokenpairOrders.value.orders
-  );
-  const pairAddress = useAppSelector(
-    (state) => state.tokenpairOrders.value.pair_address
-  );
-  const tokenPairInfo = useAppSelector(
-    (state) => state.tokenPairInfo.value
-  );
+
+  const [firstBitquery, setFirstBitquery] = useState<BitqueryData[]>([]);
+  const [streamValue, setStreamValue] = useState<BitqueryData[]>([]);
+  const [candleStickTime, setCandleStickTime] = useState<number>(15);
+  const [forwardTime, setForwardTime] = useState<any>();
+
+  // const dispatch = useAppDispatch();
+  // const firstBitquery = useAppSelector((state) => state.bitquery.value);
+  // const streamValue = useAppSelector((state) => state.bitquery.streamValue);
+  // const candleStickTime = useAppSelector((state) => state.bitquery.candleStickTime);
+  // const forwardTime = useAppSelector((state) => state.bitquery.forwardTime);
+  // const activeOrdersByTokenpair = useAppSelector(
+  //   (state) => state.tokenpairOrders.value.orders
+  // );
+  // const pairAddress = useAppSelector(
+  //   (state) => state.tokenpairOrders.value.pair_address
+  // );
+  // const tokenPairInfo = useAppSelector(
+  //   (state) => state.tokenPairInfo.value
+  // );
   const [active, setActive] = useState(15);
 
-  
+  const setDatas = (transData: {
+    time: number;
+    open: any;
+    high: string | number;
+    low: string | number;
+    close: any;
+  }) => {
+    let a = streamValue;
+    setStreamValue([...a, transData]);
+    if(transData.time>forwardTime) {
+      setForwardTime(forwardTime+candleStickTime*60*1000);
+    }
+  }
+  const fetchData = async (time:number = 15) => {
+    try{
+      const pairAddress = router.query.pair_id;
+      if(!pairAddress){
+        return;
+      }
+      if(!tokenPairInfo || _.isEmpty(tokenPairInfo)){
+        return;
+      }
+      const eachAddress = {
+        base: tokenPairInfo.baseToken.address,
+        quote: tokenPairInfo.pairedToken.address,
+        pairAddress: pairAddress,
+        time: time
+      }
+      const responseData = await getBitqueryOHLCData(eachAddress);
+      const tranData = await transformData(responseData);
+      setCandleStickTime(eachAddress.time);
+      // getBitqueryStreamInfo(eachAddress.pairAddress);//////
+      const resData = await getBitqueryStreamData1(eachAddress.pairAddress, setDatas);
+      // const resData = await getBitqueryStreamData(eachAddress.pairAddress);
+      // const compareTokenName = tokenPairInfo.baseToken.symbol;
+      // const resTranData = await transformStreamData(resData, compareTokenName);
+
+
+      setFirstBitquery(tranData);
+      setForwardTime(tranData[tranData.length - 1]?.time + 15*60*1000)
+
+    } catch(err){
+      console.error(err);
+    }
+  }
+  useEffect(()=>{
+    fetchData();
+
+  }, [tokenPairInfo])
+  // When this page becomes unmounted
+  useEffect(() => {
+    return () => {
+      // Stop subscribing from the Bitquery
+      stopBitqueryStream();
+    };
+  }, []);
 
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
@@ -95,15 +190,18 @@ const BitqueryOHLCChart = () => {
   
   const candleStickClicked = (stick:number) => {
     setActive(stick);
+    if(!tokenPairInfo)
+      return;
     console.log(stick);
-    const eachAddress = {
-      base: tokenPairInfo.baseToken.address,
-      quote: tokenPairInfo.pairedToken.address,
-      pairAddress: pairAddress,
-      time: stick
-    }
-    console.log(eachAddress);
-    dispatch(getBitqueryInitInfo(eachAddress));
+    // const eachAddress = {
+    //   base: tokenPairInfo.baseToken.address,
+    //   quote: tokenPairInfo.pairedToken.address,
+    //   pairAddress: pairAddress,
+    //   time: stick
+    // }
+    // console.log(eachAddress);
+    // dispatch(getBitqueryInitInfo(eachAddress));
+    fetchData(active);
   }
   
   useEffect(() => {
@@ -285,7 +383,7 @@ const BitqueryOHLCChart = () => {
       chart.remove();
       window.removeEventListener("resize", updateChartSize);
     };
-  }, [dispatch, firstBitquery, activeOrdersByTokenpair, showMarkers,candleStickTime]);
+  }, [ firstBitquery, activeOrdersByTokenpair, showMarkers,candleStickTime]);
 
   // When subscription data arrives
   useEffect(() => {
@@ -301,7 +399,7 @@ const BitqueryOHLCChart = () => {
     updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
-  }, [dispatch, streamValue, forwardTime]);
+  }, [ streamValue, forwardTime]);
   
   // When subscription data arrives
   useEffect(() => {

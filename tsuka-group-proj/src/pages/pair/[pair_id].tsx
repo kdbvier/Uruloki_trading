@@ -15,12 +15,12 @@ import HomePageTokens from "@/lib/api/tokens";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
 import { getOrdersByPair } from "@/lib/orders";
 import { getTokenPrice } from "@/lib/token-price";
-import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
-import { getStrategies } from "@/store/apps/strategies";
-import tokenpairInfo, { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+// import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
+// import { getStrategies } from "@/store/apps/strategies";
+// import tokenpairInfo, { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { TokenPairPrice } from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import type { BitqueryData, Order, Strategy, TokenPairInfo } from "@/types";
 import {
   OrderStatusEnum,
@@ -32,6 +32,8 @@ import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { Token } from '@/types/token.type';
+import { tokensData } from '@/@fake-data/token.fake-data';
 
 interface InputToken {
   id: string;
@@ -47,12 +49,13 @@ export default function Pair({
   token_price: TokenPairPrice;
   oldTokenPrice: TokenPairPrice;
 }) {
-  const dispatch = useAppDispatch();
-  const { value: token } = useAppSelector((state) => state.token);
+  // const dispatch = useAppDispatch();
+  // const { value: token } = useAppSelector((state) => state.token);
   // const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
   // const activeOrders = useAppSelector(
   //   (state) => state.tokenpairOrders.value.orders
   // );
+  
   const router = useRouter();
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
@@ -101,36 +104,46 @@ export default function Pair({
     router.isReady && setIsLoading(false);
   }, [router.isReady]);
 
-  // When this page becomes unmounted
-  useEffect(() => {
+  const [token, setToken] = useState<Token>();
+  useEffect(()=>{ 
+    const fetchToken = async ()=>{
+      try{
+        const res = await tokensData.find((item) => item?.strategy_id === pairAddress)!;
+      }catch(err){  
+        console.error(err);
+      }
+    }
+  },[pairAddress])
+  // // When this page becomes unmounted
+  // useEffect(() => {
     
-    return () => {
-      // Stop subscribing from the Bitquery
-      stopBitqueryStream();
-    };
-  }, []);
+  //   return () => {
+  //     // Stop subscribing from the Bitquery
+  //     stopBitqueryStream();
+  //   };
+  // }, []);
 
   useEffect(() => {
     setPairAddress(String(router.query.pair_id));
   }, [router]);
 
-  useEffect(()=>{
-    const time = 15;
-    const pairAddress = router.query.pair_id;
-    if(!pairAddress){
-      return;
-    }
-    if(!tokenPairInfo || _.isEmpty(tokenPairInfo)){
-      return;
-    }
-    const eachAddress = {
-      base: tokenPairInfo.baseToken.address,
-      quote: tokenPairInfo.pairedToken.address,
-      pairAddress: pairAddress,
-      time: time
-    }
-    dispatch(getBitqueryInitInfo(eachAddress));
-  }, [tokenPairInfo])
+  // useEffect(()=>{
+  //   const time = 15;
+  //   const pairAddress = router.query.pair_id;
+  //   if(!pairAddress){
+  //     return;
+  //   }
+  //   if(!tokenPairInfo || _.isEmpty(tokenPairInfo)){
+  //     return;
+  //   }
+  //   const eachAddress = {
+  //     base: tokenPairInfo.baseToken.address,
+  //     quote: tokenPairInfo.pairedToken.address,
+  //     pairAddress: pairAddress,
+  //     time: time
+  //   }
+  //   dispatch(getBitqueryInitInfo(eachAddress));
+  // }, [tokenPairInfo])
 
   useEffect(() => {
     console.log("tokenPairInfo", tokenPairInfo);
@@ -151,7 +164,7 @@ export default function Pair({
       pairAddress: pairAddress,
       time: time
     }
-    dispatch(getBitqueryInitInfo(eachAddress));
+    // dispatch(getBitqueryInitInfo(eachAddress));
   }, [tokenPairInfo]);
  
 
@@ -259,8 +272,8 @@ export default function Pair({
               <PoolInfoToken token={token} />
             </>
           )}
-          <OrderBookToken token={token} />
-          <PoolInfoToken token={token} />
+          {/* <OrderBookToken token={token} />
+          <PoolInfoToken token={token} /> */}
         </div>
         <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
           <button
