@@ -8,6 +8,7 @@ import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
+import Strategies from "@/lib/api/strategies";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
 import { getOrdersByPair } from "@/lib/orders";
 import { getTokenPrice } from "@/lib/token-price";
@@ -17,7 +18,7 @@ import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { TokenPairPrice } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import type { Order } from "@/types";
+import type { Order, Strategy } from "@/types";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
@@ -56,8 +57,22 @@ export default function Pair({
   const [showSidebar, setShowSidebar] = useState(false);
   const [pairAddress, setPairAddress] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const strategies = useAppSelector((state) => state.strategies.value);
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  useEffect(()=>{
+    const fetchStrategies = async () => {
+      try {
+        const res = await Strategies.getStrategiesData();
+        setStrategies(res);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if(strategies.length===0){
+      fetchStrategies();
+    }
+  }, [strategies]);
 
   useEffect(() => {
     router.isReady && setIsLoading(false);
