@@ -22,15 +22,20 @@ export default function StrategyDetails({ id }: { id: string }) {
 
   const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [strategyDetails, setStrategyDetails] = useState<Strategy>();
+  const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
   useEffect(() => {
     const fetchStrategies = async () => {
       try {
+        setStatus("loading");
         const res = await Strategies.getStrategiesData();
         setStrategies(res);
         const [strategy_details] = res.filter(({id}) => id === strategyId);
         setStrategyDetails(strategy_details);
+        setStatus("ok");
       } catch (err) {
         console.error(err);
+        setStatus("failed");//Some error message here.
+        setStatus("ok");
       }
     };
 
@@ -64,7 +69,7 @@ export default function StrategyDetails({ id }: { id: string }) {
     <div className="flex flex-col">
       {strategyDetails && (
         <div className="p-8">
-          <FullHeaderStrategies strategyDetails={strategyDetails} />
+          <FullHeaderStrategies strategyDetails={strategyDetails} status={status}/>
           <div className="hidden md:grid grid-cols-9 gap-4">
             {strategyDetails?.orderTokens?.map((item, index) => (
               <div key={index} className="col-span-9 md:col-span-3">
