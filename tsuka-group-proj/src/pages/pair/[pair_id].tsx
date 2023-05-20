@@ -1,4 +1,3 @@
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
@@ -8,8 +7,14 @@ import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
+import { getLiveDexTrades } from "@/lib/bitquery/dexTradesLiveStream";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
 import { getOrdersByPair } from "@/lib/orders";
+import {
+  HistoricalDexTrades,
+  getHistoricalDexTrades,
+} from "@/lib/token-activity-feed";
+import { getTokenNamesFromPair } from "@/lib/token-pair";
 import { getTokenPrice } from "@/lib/token-price";
 import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
 import { getStrategies } from "@/store/apps/strategies";
@@ -17,24 +22,17 @@ import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
 import { TokenPairPrice } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { createClient } from "graphql-ws";
 import type { Order, TokenPairInfo } from "@/types";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
   PriceTypeEnum,
 } from "@/types/token-order.type";
+import { createClient } from "graphql-ws";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { getTokenNamesFromPair } from "@/lib/token-pair";
-import { getLiveDexTrades } from "@/lib/bitquery/dexTradesLiveStream";
-import {
-  HistoricalDexTrades,
-  getHistoricalDexTrades,
-} from "@/lib/token-activity-feed";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ModifiedOrder } from "@/lib/setups";
@@ -420,23 +418,6 @@ export default function Pair({
           </>
         )}
       </div>
-      <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
-        <button
-          type="button"
-          onClick={() => setShowSidebar(true)}
-          className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
-        >
-          <label className="mr-2">
-            <HiOutlineArrowLongLeft size={24} />
-          </label>
-          Order & Strategies
-        </button>
-      </div>
-      <SidebarStrategies
-        open={showSidebar}
-        handleOpen={() => setShowSidebar(false)}
-        strategies={strategies!}
-      />
       {showEditOrderModal && (
         <EditOrderToken
           name1={tokenPairInfo.baseToken?.name as string}
