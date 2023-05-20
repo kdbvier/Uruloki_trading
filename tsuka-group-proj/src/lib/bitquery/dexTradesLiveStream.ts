@@ -2,6 +2,9 @@ export const getLiveDexTrades = (
   tradeSide: string,
   baseAddress: string
 ): { query: string } => {
+  console.log('pressed');
+  console.log(tradeSide);
+  console.log(baseAddress);
   return {
     query: `
     subscription {
