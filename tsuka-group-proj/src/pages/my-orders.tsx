@@ -224,7 +224,6 @@ export default function MyOrder() {
           <SidebarStrategies
             open={showSidebar}
             handleOpen={() => setShowSidebar(false)}
-            strategies={strategies!}
           />
         </div>
         {!showAll && (

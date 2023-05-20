@@ -1,10 +1,6 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
 
 export interface OrderBookTokenProps {
-  token: {
-    id: string;
-    token: string;
-  };
   sellTrades?: any[];
   buyTrades?: any[];
 }
