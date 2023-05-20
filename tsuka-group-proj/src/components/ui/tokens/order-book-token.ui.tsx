@@ -12,6 +12,8 @@ export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
   useEffect(() => {
     const fetchTokenOrderBooks = async () => {
       try {
+        if(!token || !token.pair?.address)
+          return;
         setLoading(true);
         const res = await Orders.getOrderBooks(token?.pair?.address as string);
         setTokenOrdersBooks(res);
@@ -22,7 +24,7 @@ export const OrderBookTokenUi: React.FC<{ token: Token }> = ({ token }) => {
     };
 
     fetchTokenOrderBooks();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     let sellSum: number = 0,

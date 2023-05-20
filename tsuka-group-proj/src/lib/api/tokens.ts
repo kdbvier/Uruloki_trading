@@ -21,7 +21,7 @@ export default class HomePageTokens {
   static getTokenPairInfo = async (
     pair_address: string
   ): Promise<TokenPairInfo> => {
-    return await httpRequest.get(`/tokens/token-pair`, {
+    return await httpRequest.get(`${API_URL}/api/tokens/token-pair`, {
       params: {
         pair_address,
       },
