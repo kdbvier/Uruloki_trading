@@ -1,6 +1,7 @@
 import {useState, useRef, useEffect} from 'react';
-import { deleteOrder } from "@/store/apps/user-order";
-import { useAppDispatch } from "@/store/hooks";
+// import { deleteOrder } from "@/store/apps/user-order";
+// import { useAppDispatch } from "@/store/hooks";
+import Orders from '@/lib/api/orders';
 
 export interface DeleteConfirmTokenProp {
   setShowConfirmDlg: (a: any) => void;
@@ -34,7 +35,7 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
   const handleClickInside = (event:any) => {
     setClickedInside(true);
   };
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   return (
     <div ref={ref}  className="absolute z-40 right-0 top-full w-[176px] border border-[#343C4F] rounded-2xl p-4 bg-tsuka-500 shadow-[0px_20px_64px_rgba(0,0,0,0.4)]" onClick={handleClickInside}>
@@ -54,8 +55,9 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
         className="mt-2 py-[8px] text-custom-red text-sm text-center bg-tsuka-400 rounded-md cursor-pointer"
         onClick={() => {
           setShowConfirmDlg(false);
-          dispatch(deleteOrder(deleteID))
-          setShowDeletedAlert(true);
+          // dispatch(deleteOrder(deleteID))
+          Orders.deleteOrder(deleteID).then(res=>{setShowDeletedAlert(true);}).catch(err=>console.error(err));
+          
         }}
       >
         Yes, Delete
