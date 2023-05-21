@@ -13,3 +13,4 @@ export type TokenPairInfo = {
   baseToken: TokenInfo;
   pairedToken: TokenInfo;
 };
+

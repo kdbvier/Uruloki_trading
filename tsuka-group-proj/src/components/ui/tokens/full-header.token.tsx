@@ -1,19 +1,20 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
-import {
-  getToken,
-  getTokenVolume,
-  getYesterdayTokenPairPrice,
-  setOrderSplit,
-} from "@/store/apps/token";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+// import {
+//   getToken,
+//   getTokenVolume,
+//   getYesterdayTokenPriceInPair,
+//   setOrderSplit,
+// } from "@/store/apps/token";
+// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdArrowBack } from "react-icons/md";
-import { setPairAddress } from "@/store/apps/token";
+// import { setPairAddress } from "@/store/apps/token";
 import { InfoSpanToken } from "./info-span.token";
-import { ApiResponse, Order, TokenPairInfo } from "@/types";
-import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
-import { TokenPairPrice, getTokenPairPrice } from "@/store/apps/user-order";
+import { ApiResponse, Order, TokenPairInfo, TokenPriceInPair } from "@/types";
+// import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+// import { getTokenPriceInPair } from "@/store/apps/user-order";
+
 import {
   convertLawPrice,
   handleNumberFormat,
@@ -21,12 +22,15 @@ import {
 import { GetServerSideProps } from "next";
 import Orders from "@/lib/api/orders";
 import HomePageTokens from "@/lib/api/tokens";
+import { Token } from "@/types/token.type";
 export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
   orders: Order[];
-  token_price: TokenPairPrice;
-  oldTokenPrice: TokenPairPrice;
+  token_price: TokenPriceInPair;
+  oldTokenPrice: TokenPriceInPair;
+  token?: Token;
+  setToken: (t: Token) => void;
 }
 
 export const defaultNumberFormat = (num: number): any => {
@@ -51,23 +55,36 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   orders,
   token_price,
   oldTokenPrice,
+  token,
+  setToken,
 }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.token);
-  
-  const baseTokenAddress = useAppSelector(
-    (state) => state.tokenPairInfo.value.baseToken.address
-  );
+  // const dispatch = useAppDispatch();
+  // const { value, status } = useAppSelector((state) => state.token);
+  const [value, setValue] = useState<Token | undefined>(token);
+  const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
+  useEffect(() => {
+    if (!token) {
+      setStatus("loading");
+      return;
+    }
+    setValue(token);
+    setStatus("ok");
+  }, [token]);
+
+  // const baseTokenAddress = useAppSelector(
+  //   (state) => state.tokenPairInfo.value.baseToken.address
+  // );
+  const baseTokenAddress = tokenPairInfo.baseToken.address;
   const [tokenVolume, setTokenVolume] = useState({
     value: 0,
     currencyLabel: "",
   });
 
-  useEffect(() => {
-    if (pair_address) {
-      dispatch(setPairAddress(pair_address as string));
-    }
-  }, [pair_address]);
+  // useEffect(() => {
+  //   if (pair_address) {
+  //     dispatch(setPairAddress(pair_address as string));
+  //   }
+  // }, [pair_address]);
 
   useEffect(() => {
     if (baseTokenAddress) {
@@ -114,14 +131,16 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
         0
       );
     }
-    dispatch(
-      setOrderSplit({
-        orderSplit: {
-          buy: total_buy,
-          sell: total_sell,
-        },
-      })
-    );
+    if (!token) return;
+    setToken({ ...token, orderSplit: { buy: total_buy, sell: total_sell } });
+    // dispatch(
+    //   setOrderSplit({
+    //     orderSplit: {
+    //       buy: total_buy,
+    //       sell: total_sell,
+    //     },
+    //   })
+    // );
   }, [orders]);
 
   return (

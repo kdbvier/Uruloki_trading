@@ -3,8 +3,9 @@ import Orders from "@/lib/api/orders";
 import HomePageTokens from "@/lib/api/tokens";
 import { RootState } from "@/store";
 import { Token } from "@/types/token.type";
+import { TokenPriceInPair } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { TokenPairPrice, getTokenPairPrice } from "../user-order";
+// import { TokenPriceInPair, getTokenPriceInPair } from "../user-order";
 
 export interface TokenState {
   value: Token;
@@ -98,10 +99,10 @@ export const getTokenVolume = createAsyncThunk(
   }
 );
 
-export const getYesterdayTokenPairPrice = createAsyncThunk(
-  "tokenPairPrice/getYesterdayPrice",
-  async (pair_address: string): Promise<TokenPairPrice> => {
-    const data = Orders.getYesterdayTokenPairPrice(pair_address);
+export const getYesterdayTokenPriceInPair = createAsyncThunk(
+  "TokenPriceInPair/getYesterdayPrice",
+  async (pair_address: string): Promise<TokenPriceInPair> => {
+    const data = Orders.getYesterdayTokenPriceInPair(pair_address);
     return data;
   }
 );
@@ -192,11 +193,11 @@ export const tokenSlice = createSlice({
           state.value.volume.currencyLabel = "";
         }
       })
-      .addCase(getYesterdayTokenPairPrice.fulfilled, (state, action) => {
-        console.log("getYesterdayTokenPairPrice fulfilled", action.payload);
+      .addCase(getYesterdayTokenPriceInPair.fulfilled, (state, action) => {
+        console.log("getYesterdayTokenPriceInPair fulfilled", action.payload);
         state.value.price.variationValue = action.payload.base_price;
       });
-    // .addCase(getTokenPairPrice.fulfilled, (state, action) => {
+    // .addCase(getTokenPriceInPair.fulfilled, (state, action) => {
     //   state.value.price.value = action.payload.base_price.toLocaleString();
     // });
   },

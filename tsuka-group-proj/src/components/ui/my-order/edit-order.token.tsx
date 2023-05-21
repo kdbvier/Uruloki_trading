@@ -7,7 +7,7 @@ import {
   editUserOrder,
   setSelectedOrder,
   createOrder,
-  getTokenPairPrice,
+  getTokenPriceInPair,
 } from "@/store/apps/user-order";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
@@ -93,7 +93,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   );
   const tokenCache = useAppSelector((state) => state.tokencache.value);
   const token_price = useAppSelector(
-    (state) => state.userOrder.selectedTokenPairPrice
+    (state) => state.userOrder.selectedTokenPriceInPair
   );
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
@@ -122,7 +122,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (isEdit) {
       dispatch(setSelectedOrder(selectedOrderId));
     } else {
-      dispatch(getTokenPairPrice(pair_address as string));
+      dispatch(getTokenPriceInPair(pair_address as string));
     }
     dispatch(getAllTokenCache());
   }, []);
@@ -143,7 +143,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setAmount(handleNumberFormat(selectedOrder.budget ?? 0));
       setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
       setIsContinuous(selectedOrder.is_continuous ?? false);
-      dispatch(getTokenPairPrice(selectedOrder.pair_address as string));
+      dispatch(getTokenPriceInPair(selectedOrder.pair_address as string));
     }
   }, [selectedOrder]);
 
