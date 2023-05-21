@@ -1,5 +1,27 @@
 import { numberWithCommas } from "@/helpers/comma.helper";
+import { commafy } from "@/helpers/calc.helper";
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 
+const subPrice = (price: number) => {
+  let priceEle;
+  if (price >= 0.01) {
+    // console.log("topgainer price >: ", topGainer.price);
+    priceEle = `$${commafy(price)}`;
+  } else {
+    // console.log("topgainer price <: ", topGainer.price);
+
+    priceEle = (
+      <>
+        ${formatNumberToHtmlTag(price).integerPart}.0
+        <sub>
+          {formatNumberToHtmlTag(price).leadingZerosCount}
+        </sub>
+        {formatNumberToHtmlTag(price).remainingDecimal}
+      </>
+    );
+  }
+  return priceEle
+}
 export interface OrderBookTokenProps {
   sellTrades?: any[];
   buyTrades?: any[];
@@ -22,7 +44,7 @@ const TradeRow: React.FC<TradeRowProps> = ({ item }) => {
         {item.side}
       </span>
       <span className=" py-2 w-[190px] text-sm font-normal whitespace-nowrap">
-        {numberWithCommas(Number(item.price).toFixed(4))}
+        {subPrice(Number(item.price).toFixed(4))}
       </span>
       <span className=" py-2 w-[190px] text-sm font-normal whitespace-nowrap">
         {Number(item.tradeAmount).toFixed(4)}
