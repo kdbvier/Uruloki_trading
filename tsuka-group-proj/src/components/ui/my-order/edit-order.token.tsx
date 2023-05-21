@@ -3,19 +3,19 @@ import { Order, PostOrder, TokenCache, TokenPriceInPair } from "@/types";
 import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-import {
-  editUserOrder,
-  setSelectedOrder,
-  createOrder,
-  getTokenPriceInPair,
-} from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+// import {
+//   editUserOrder,
+//   setSelectedOrder,
+//   createOrder,
+//   getTokenPriceInPair,
+// } from "@/store/apps/user-order";
+// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
 import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
-import { getAllTokenCache } from "@/store/apps/token-cache";
+// import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
@@ -88,7 +88,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   pair_address,
 }) => {
   console.log("Create an order");
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
   const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
@@ -267,8 +267,17 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       patchData.is_continuous = isContinuous;
       console.log("before submit(patch)::");
       console.log(patchData);
-      dispatch(editUserOrder({ id: selectedOrderId, patchData }));
-      setShowEditOrderModal(false);
+      Orders.editOrder(selectedOrderId, patchData).then(res=>{
+        //TOAST:
+        alert("Order successfully updated");
+        setShowEditOrderModal(false);
+      }).catch(err=>{
+        console.error(err);
+        alert("Update order failed")
+        setShowEditOrderModal(false);
+      })
+      // dispatch(editUserOrder({ id: selectedOrderId, patchData }));
+      // setShowEditOrderModal(false);
     } else {
       const postData = {} as PostOrder;
       postData.budget = toNumber(amount);
@@ -289,8 +298,17 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       postData.pair_address = pair_address as string;
       console.log("before Submit(post)::");
       console.log(postData);
-      dispatch(createOrder(postData));
-      setShowEditOrderModal(false);
+      Orders.createOrder(postData).then(res=>{
+        //TOAST:
+        alert("Order successfully created");
+        setShowEditOrderModal(false);
+      }).catch(err=>{
+        console.error(err);
+        alert("Create order failed");
+        setShowEditOrderModal(false);
+      })
+      // dispatch(createOrder(postData));
+      // setShowEditOrderModal(false);
     }
   };
 
