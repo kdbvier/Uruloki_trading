@@ -32,6 +32,7 @@ export interface EditOrderTokenProp {
   pair_address?: string;
   selectedOrderId?: number;
   closeHandler: () => void;
+  fetchOrders?: ()=>void;
 
   //  token?: Token;
 }
@@ -81,6 +82,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowEditOrderModal,
   selectedOrderId = 0,
   closeHandler,
+  fetchOrders,
   name1,
   code1,
   name2,
@@ -269,6 +271,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       console.log(patchData);
       Orders.editOrder(selectedOrderId, patchData).then(res=>{
         //TOAST:
+        if(fetchOrders){
+          fetchOrders();
+        }
         alert("Order successfully updated");
         setShowEditOrderModal(false);
       }).catch(err=>{
@@ -300,6 +305,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       console.log(postData);
       Orders.createOrder(postData).then(res=>{
         //TOAST:
+        if(fetchOrders){
+          fetchOrders();
+        }
         alert("Order successfully created");
         setShowEditOrderModal(false);
       }).catch(err=>{

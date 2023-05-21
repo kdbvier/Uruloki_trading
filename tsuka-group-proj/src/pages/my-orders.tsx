@@ -59,6 +59,12 @@ export default function MyOrder() {
     setSelectedOrderId(id);
     setShowEditOrderModal(show);
   };
+  const fetchOrders = async ()=> {
+    setLoading(true);
+    const res_1 = await Orders.getOrdersbyUserIdandFilters(1, openToggle ? "Open" : "Close", searchValue);
+    setValue(res_1);
+    setLoading(false);
+  }
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       {/* header */}
@@ -220,6 +226,7 @@ export default function MyOrder() {
             setShowEditOrderModal(false);
             setSelectedOrderId(-1);
           }}
+          fetchOrders = {fetchOrders}
         />
       )}
       {showDeletedAlert && (
