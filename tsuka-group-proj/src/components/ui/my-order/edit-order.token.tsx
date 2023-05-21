@@ -1,4 +1,4 @@
-import { PostOrder, TokenCache } from "@/types";
+import { Order, PostOrder, TokenCache, TokenPriceInPair } from "@/types";
 // import getTokenCache from '@/lib/api/tokens/'
 import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
@@ -19,6 +19,8 @@ import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
+import Orders from "@/lib/api/orders";
+import TokenCacheData from "@/lib/api/token-cache";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -88,13 +90,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   console.log("Create an order");
   const dispatch = useAppDispatch();
 
-  const selectedOrder = useAppSelector(
-    (state) => state.userOrder.selectedOrder
-  );
-  const tokenCache = useAppSelector((state) => state.tokencache.value);
-  const token_price = useAppSelector(
-    (state) => state.userOrder.selectedTokenPriceInPair
-  );
+  const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
+  const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
+  const [token_price, setToken_Price] = useState<TokenPriceInPair>({} as TokenPriceInPair);
+  // const selectedOrder = useAppSelector(
+  //   (state) => state.userOrder.selectedOrder
+  // );
+  // const tokenCache = useAppSelector((state) => state.tokencache.value);
+  // const token_price = useAppSelector(
+  //   (state) => state.userOrder.selectedTokenPriceInPair
+  // );
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
@@ -120,11 +125,20 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   useEffect(() => {
     if (isEdit) {
-      dispatch(setSelectedOrder(selectedOrderId));
+      // dispatch(setSelectedOrder(selectedOrderId));
+      if(selectedOrderId == -1) {
+        setSelectedOrder_L({} as Order);
+      } else {
+        Orders.getOrderById(selectedOrderId).then(res=>{setSelectedOrder_L(res)}).catch(err=>console.error(err));
+      }
     } else {
-      dispatch(getTokenPriceInPair(pair_address as string));
+      // dispatch(getTokenPriceInPair(pair_address as string));
+      Orders.getTokenPriceInPair(pair_address as string).then(res=>{setToken_Price(res)}).catch(err=>console.error(err))
     }
-    dispatch(getAllTokenCache());
+    // dispatch(getAllTokenCache());
+    TokenCacheData.getAllTokenName().then(res=>{
+      setTokenCache(res);
+    }).catch(err=>console.error(err))
   }, []);
 
   useEffect(() => {
@@ -143,7 +157,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setAmount(handleNumberFormat(selectedOrder.budget ?? 0));
       setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
       setIsContinuous(selectedOrder.is_continuous ?? false);
-      dispatch(getTokenPriceInPair(selectedOrder.pair_address as string));
+      // dispatch(getTokenPriceInPair(selectedOrder.pair_address as string));
+      Orders.getTokenPriceInPair(selectedOrder.pair_address as string).then(res=>{setToken_Price(res)}).catch(err=>console.error(err))
     }
   }, [selectedOrder]);
 
