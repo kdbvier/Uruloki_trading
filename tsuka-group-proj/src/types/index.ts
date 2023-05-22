@@ -8,3 +8,4 @@ export * from "./search.type";
 export * from './bitquerydata.type'
 export * from './token_cache.type'
 export * from './tokens_in_wallet'
+export * from './cache.type'
