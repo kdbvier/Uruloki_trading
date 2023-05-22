@@ -33,9 +33,9 @@ export default function Home() {
   useEffect(() => {
     void (async () => {
       // console.log('qwe');
-      const walletAddress = await getConnectedAddress();
+      //const walletAddress = await getConnectedAddress();
       dispatch(getHomePageTokens());
-      dispatch(getStrategies(walletAddress as string));
+      dispatch(getStrategies(''));
     })();
   }, [dispatch]);
 
