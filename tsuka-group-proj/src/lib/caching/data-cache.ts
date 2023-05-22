@@ -11,14 +11,25 @@ export default class DataCache {
    */
   static getIfFresh = async (data_key: string): Promise<Cache> => {
     let result = await prisma.cache.findFirst({ where: { data_key } })
-    let deadline = result!.timestamp + result!.ttl
-    let currentTime = Math.floor(Date.now() / 1000)
-    if (deadline >= currentTime) {
-      return {
-        stale: false,
-        data: {
-          data_key: result?.data_key as string,
-          cached_data: JSON.parse(result?.cached_data as string)
+    if(result) {
+      let deadline = result!.timestamp + result!.ttl
+      let currentTime = Math.floor(Date.now() / 1000)
+
+      if (deadline >= currentTime) {
+        return {
+          stale: false,
+          data: {
+            data_key: result?.data_key as string,
+            cached_data: JSON.parse(result?.cached_data as string)
+          }
+        }
+      } else {
+        return {
+          stale: true,
+          data: {
+            data_key: '',
+            cached_data: {}
+          }
         }
       }
     } else {
@@ -26,7 +37,7 @@ export default class DataCache {
         stale: true,
         data: {
           data_key: '',
-          cached_data: ''
+          cached_data: {}
         }
       }
     }
@@ -36,7 +47,7 @@ export default class DataCache {
    * Adds the supplied data to the cache, overwriting any other item in the cache with the same key
    * @param data 
    * @param key 
-   * @param ttl 
+   * @param ttl (seconds)
    */
   static addToCache = async (data: any, key: string, ttl: number) => {
     let currentTime = Math.floor(Date.now() / 1000)

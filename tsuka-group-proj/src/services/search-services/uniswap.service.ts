@@ -21,7 +21,7 @@ export async function checkIfTokenIsOnUniswap(address: string): Promise<boolean>
 
     return data?.token !== null;
   } catch (error) {
-    console.error(`Error checking if token is on Uniswap: ${error}`);
+    //console.error(`Error checking if token is on Uniswap: ${error}`);
     return false;
   }
 }
@@ -49,14 +49,14 @@ export async function getPairsByTokenAddress(tokenAddress: string):Promise<Searc
     const pairs = pairResponse.pairs;
 
     if (pairs.length === 0) {
-      console.log(`No pairs found with token address ${tokenAddress}`);
+      //console.log(`No pairs found with token address ${tokenAddress}`);
       return [];
     }
 
-    console.log(`Pairs for token address ${tokenAddress}:`);
+    //console.log(`Pairs for token address ${tokenAddress}:`);
     pairs.forEach((pair: SearchPair) => {
-      console.log(`Pair address: ${pair.id}`);
-      console.log(`${pair.token0.symbol} - ${pair.token1.symbol}`);
+      //console.log(`Pair address: ${pair.id}`);
+      //console.log(`${pair.token0.symbol} - ${pair.token1.symbol}`);
     });
     return pairs;
   } catch (error) {
