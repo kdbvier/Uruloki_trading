@@ -192,6 +192,7 @@ export default function StrategyDetails({
                   : `${order.code1}/${order.code2}`,
             }))}
             orders={currentSetup.orderTokens}
+            dexTrades={[]}
           />
         </div>
       )}

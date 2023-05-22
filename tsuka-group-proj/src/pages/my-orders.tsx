@@ -34,8 +34,12 @@ export default function MyOrder() {
   useEffect(() => {
     void (async () => {
       const address = await getConnectedAddress();
-      setWalletAddress(address);
-      dispatch(getStrategies(address as string));
+      if(address) {
+        setWalletAddress(address);
+      }
+      
+      //dispatch(getStrategies(address as string));
+      /*
       dispatch(
         getUserOrderWithFilter({
           id: 1,
@@ -44,11 +48,13 @@ export default function MyOrder() {
           walletAddress: address,
         })
       );
+      */
     })();
   }, []);
   useEffect(() => {
     //TODO: change id to my id
     if (walletAddress) {
+      /*
       dispatch(
         getUserOrderWithFilter({
           id: 1,
@@ -57,6 +63,7 @@ export default function MyOrder() {
           walletAddress,
         })
       );
+      */
     }
   }, [openToogle]);
   // useEffect(()=> {
@@ -74,6 +81,7 @@ export default function MyOrder() {
     console.log("user pressed enter key");
     //TODO: change id to my id
     if (walletAddress) {
+      /*
       dispatch(
         getUserOrderWithFilter({
           id: 1,
@@ -82,6 +90,7 @@ export default function MyOrder() {
           walletAddress,
         })
       );
+      */
     }
   };
   const handleEditModal = (show: boolean, id: number) => {

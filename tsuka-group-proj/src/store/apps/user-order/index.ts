@@ -115,14 +115,16 @@ export const deleteOrder = createAsyncThunk(
     const data = await Orders.deleteOrder(id);
     if (data) {
       const address = await getConnectedAddress();
-      dispatch(
-        getUserOrderWithFilter({
-          id: 1,
-          status: "Open",
-          search: "",
-          walletAddress: address,
-        })
-      );
+      if(address) {
+        dispatch(
+          getUserOrderWithFilter({
+            id: 1,
+            status: "Open",
+            search: "",
+            walletAddress: address,
+          })
+        );
+      }
     }
     return data;
   }
