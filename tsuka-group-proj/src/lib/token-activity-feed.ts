@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export type HistoricalDexTrades = {
-  side: string,
-  tradeAmount: number,
-  transaction: any
+  side: string;
+  tradeAmount: number;
+  transaction: any;
+  timestamp?: string;
 };
 
 export type HistoricalDexTradesResult = {
@@ -12,13 +13,13 @@ export type HistoricalDexTradesResult = {
 };
 
 export type DexTrade = {
-  block: Object,
-  tradeAmount: number,
-  side: string,
-  sellAmount: number,
-  buyAmount: number,
-  transaction: Object
-}
+  block: { timestamp: { time: string } };
+  tradeAmount: number;
+  side: string;
+  sellAmount: number;
+  buyAmount: number;
+  transaction: Object;
+};
 
 export async function getHistoricalDexTrades(
   baseAddress: string,
@@ -108,6 +109,7 @@ export async function getHistoricalDexTrades(
         side: trade.side,
         tradeAmount: amount,
         transaction: trade.transaction,
+        timestamp: trade.block.timestamp.time,
       };
     });
 
