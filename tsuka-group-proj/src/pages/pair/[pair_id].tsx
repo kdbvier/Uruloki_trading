@@ -56,12 +56,6 @@ export default function Pair({
   historicalDexTrades: HistoricalDexTrades;
   baseAddress: string;
 }) {
-  const [buyTrades, setBuyTrades] = useState<any>(
-    historicalDexTrades.buyTrades
-  );
-  const [sellTrades, setSellTrades] = useState<any>(
-    historicalDexTrades.sellTrades
-  );
 
   interface Trade {
     side: string;
@@ -279,8 +273,7 @@ export default function Pair({
             </div>
             <div className="col-span-12 md:col-span-5">
               <OrderBookToken
-                buyTrades={buyTrades}
-                sellTrades={sellTrades}
+                dexTrades={historicalDexTrades}
                 tokens={[
                   {
                     value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
@@ -412,7 +405,7 @@ export default function Pair({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let orders: Order[];
   let tokenPairInfo: TokenPairInfo = {};
-  let historicalDexTrades: HistoricalDexTrades = {};
+  let historicalDexTrades: Array<HistoricalDexTrades> = [];
   try {
     orders = await getOrdersByPair(context.query.pair_id as string, "Active");
   } catch (e) {

@@ -1,20 +1,31 @@
 import axios from "axios";
 
 export type HistoricalDexTrades = {
-  sellTrades?: Array<any>;
-  buyTrades?: Array<any>;
+  side: string,
+  tradeAmount: number,
+  transaction: any
 };
 
 export type HistoricalDexTradesResult = {
   success: boolean;
-  historicalDexTrades?: HistoricalDexTrades;
+  historicalDexTrades?: Array<HistoricalDexTrades>;
 };
+
+export type DexTrade = {
+  block: Object,
+  tradeAmount: number,
+  side: string,
+  sellAmount: number,
+  buyAmount: number,
+  transaction: Object
+}
 
 export async function getHistoricalDexTrades(
   baseAddress: string,
   quoteAddress: string
 ): Promise<HistoricalDexTradesResult> {
   try {
+    /*
     const { data } = await axios.post(
       "https://graphql.bitquery.io/",
       {
@@ -31,7 +42,7 @@ export async function getHistoricalDexTrades(
                       time(format: "%Y-%m-%d %H:%M:%S")
                     }
                   }
-                  tradeAmount(in: BTC)
+                  tradeAmount(in: ${tokenSymbol})
                   side
                   sellAmount(in: USD)
                   buyAmount(in: USD)
@@ -48,35 +59,62 @@ export async function getHistoricalDexTrades(
       {
         headers: {
           "Content-Type": "application/json",
-          "X-API-KEY": "BQYedcj8q0acU4h8q0CmF2rfIVZp9VOe",
+          "X-API-KEY": process.env.BITQUERY_API_KEY,
+        },
+      }
+    );
+    */
+
+    const { data } = await axios.post(
+      "https://graphql.bitquery.io/",
+      {
+        query: `{
+              ethereum(network: ethereum) {
+                dexTrades(
+                  baseCurrency: {is: "${baseAddress}"}
+                  quoteCurrency: {is: "${quoteAddress}"}
+                  options: {desc: ["block.timestamp.time", "transaction.index"], limit: 500}
+                ) {
+                  block {
+                    height
+                    timestamp {
+                      time(format: "%Y-%m-%d %H:%M:%S")
+                    }
+                  }
+                  side
+                  sellAmount(in: USD)
+                  buyAmount(in: USD)
+                  transaction {
+                    index
+                    txFrom {
+                      address
+                    }
+                  }
+                }
+              }
+          }`,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": process.env.BITQUERY_API_KEY,
         },
       }
     );
 
-    const dexTrades = data?.data?.ethereum?.dexTrades.map((trade: any) => {
-      const amount = trade.side === "SELL" ? trade.sellAmount : trade.buyAmount;
+    const dexTrades = data?.data?.ethereum?.dexTrades.map((trade: DexTrade) => {
+      const amount = trade.side === "SELL" ? trade.buyAmount : trade.sellAmount;
       return {
-        tradeAmount: trade.tradeAmount,
         side: trade.side,
-        price: amount,
+        tradeAmount: amount,
         transaction: trade.transaction,
       };
     });
 
     if (dexTrades && dexTrades.length) {
-      let sell24hrAgoTrades = dexTrades?.filter(
-        (trade: any) => trade.side === "SELL"
-      );
-      let buy24hrAgoTrades = dexTrades?.filter(
-        (trade: any) => trade.side === "BUY"
-      );
-
       return {
         success: true,
-        historicalDexTrades: {
-          sellTrades: sell24hrAgoTrades,
-          buyTrades: buy24hrAgoTrades,
-        },
+        historicalDexTrades: dexTrades,
       };
     } else {
       return {
