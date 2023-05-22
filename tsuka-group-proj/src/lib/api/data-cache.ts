@@ -1,11 +1,15 @@
-import { Caches, CachedData } from "@/types";
+import { Cache } from "@/types";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default class DataCache {
-
-  static get = async (data_key: string): Promise<Caches> => {
+  /**
+   * Reads the cached data for "data_key" from the cache if it is not stale
+   * @param data_key 
+   * @returns 
+   */
+  static getIfFresh = async (data_key: string): Promise<Cache> => {
     let result = await prisma.cache.findFirst({ where: { data_key } })
     let deadline = result!.timestamp + result!.ttl
     let currentTime = Math.floor(Date.now() / 1000)
@@ -13,8 +17,8 @@ export default class DataCache {
       return {
         stale: false,
         data: {
-          data_key: JSON.parse(result?.data_key as string),
-          cached_data: result?.cached_data as string
+          data_key: result?.data_key as string,
+          cached_data: JSON.parse(result?.cached_data as string)
         }
       }
     } else {
@@ -27,38 +31,23 @@ export default class DataCache {
       }
     }
   };
-  static set = async (data: CachedData): Promise<{ status: any }> => {
 
+  /**
+   * Adds the supplied data to the cache, overwriting any other item in the cache with the same key
+   * @param data 
+   * @param key 
+   * @param ttl 
+   */
+  static addToCache = async (data: any, key: string, ttl: number) => {
     let currentTime = Math.floor(Date.now() / 1000)
-    let result = await prisma.cache.findFirst({ where: { data_key: data.data_key } })
-    if (result) {
-      await prisma.cache.updateMany({
-        where: {
-          data_key: result.data_key
-        },
-        data: {
-          timestamp: currentTime,
-          cached_data: JSON.stringify(data.cached_data),
-          data_key: data.data_key,
-          ttl: data.ttl
-        }
-      })
-      return {
-        status : "success updating"
+    await prisma.cache.deleteMany({ where: { data_key: key } })
+    await prisma.cache.create({
+      data: {
+        timestamp: currentTime,
+        cached_data: JSON.stringify(data),
+        data_key: key,
+        ttl: ttl
       }
-    } else {
-
-      await prisma.cache.create({
-        data: {
-          timestamp: currentTime,
-          cached_data: JSON.stringify(data.cached_data),
-          data_key: data.data_key,
-          ttl: data.ttl
-        }
-      })
-      return {
-        status : "success creating"
-      }
-    }
+    })
   }
 }

@@ -1,13 +1,7 @@
-export type Caches = {
+export type Cache = {
   stale: boolean,
   data: {
-    cached_data: string,
-    data_key: Object
+    cached_data: any,
+    data_key: string
   }
-}
-
-export type CachedData = {
-  cached_data: Object,
-  data_key: string,
-  ttl: number
 }
