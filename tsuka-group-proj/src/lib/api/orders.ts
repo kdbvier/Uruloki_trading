@@ -1,7 +1,7 @@
 import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
-import { TokenPriceInPair } from "@/store/apps/user-order";
+import { TokenPriceInPair } from "@/types";
 
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
