@@ -1,3 +1,4 @@
+import { TokenPairInfo } from "@/types";
 import axios from "axios";
 
 export type HistoricalDexTrades = {
@@ -5,6 +6,7 @@ export type HistoricalDexTrades = {
   tradeAmount: number;
   transaction: any;
   timestamp?: string;
+  tokenPairInfo?: TokenPairInfo;
 };
 
 export type HistoricalDexTradesResult = {

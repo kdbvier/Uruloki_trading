@@ -244,8 +244,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           historicalDexTradesResult.success &&
           historicalDexTradesResult.historicalDexTrades
         ) {
-          historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
-          return historicalDexTradesResult.historicalDexTrades;
+          return historicalDexTradesResult.historicalDexTrades.map((item) => ({
+            ...item,
+            tokenPairInfo,
+          }));
         }
       }
     } catch (error) {
