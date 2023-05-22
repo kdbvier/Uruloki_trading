@@ -1,47 +1,36 @@
 import { ContentHeader } from "@/components/ui/content-header/content-header.token";
+import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { MostBuyOrders } from "@/components/ui/most-buy-orders/most-buy-orders.token";
 import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-orders.token";
 import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
-import { LoadingBox } from "@/components/ui/loading/loading-box";
-import "react-toastify/dist/ReactToastify.css";
-import _ from "lodash";
 import {
   MostBuyOrdersMapper,
   MostSellOrdersMapper,
   TopGainersMapper,
   TopMoversMapper,
 } from "@/lib/mapper";
-import { getStrategies } from "@/store/apps/strategies";
-import { getHomePageTokens } from "@/store/apps/tokens";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
-import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import HomePageTokens from "@/lib/api/tokens";
-import Strategies from "@/lib/api/strategies";
 import { Strategy, Tokens } from "@/types";
+import Strategies from "@/lib/api/strategies";
 
 let currentTranslateX: number = 0;
 
 export async function getServerSideProps() {
   const tokens = await HomePageTokens.getTokens();
-  const walletAddress = await getConnectedAddress();
-  const strategies = await Strategies.getStrategiesData(
-    walletAddress as string
-  );
 
   return {
-    props: { tokens, strategies },
+    props: { tokens },
   };
 }
 
 export default function Home({
   tokens,
-  strategies,
 }: {
   tokens: Tokens;
   strategies: Strategy[];
