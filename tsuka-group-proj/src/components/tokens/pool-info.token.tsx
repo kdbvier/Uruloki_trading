@@ -16,8 +16,8 @@ export const PoolInfoToken: React.FC<PoolInfoTokenProps> = ({ token }) => {
 
   useEffect(() => {
     // TODO: from fake data, set loading
-    const data = poolInfoData.find((item) => item.id === token.id)!;
-    setValue({...data});
+    const data = poolInfoData.find((item) => item.id === token?.id)!;
+    setValue({ ...data });
   }, [token]);
 
   return (

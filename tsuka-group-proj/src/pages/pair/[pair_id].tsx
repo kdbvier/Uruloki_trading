@@ -277,15 +277,17 @@ export default function Pair({
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
       <ToastContainer />
-      <FullHeaderToken
-        tokenPairInfo={tokenPairInfo as TokenPairInfo}
-        pair_address={String(pairAddress)}
-        orders={orders}
-        token_price={token_price}
-        oldTokenPrice={oldTokenPrice}
-        token={token}
-        setToken={setToken}
-      />
+      {tokenPairInfo && (
+        <FullHeaderToken
+          tokenPairInfo={tokenPairInfo}
+          pair_address={String(pairAddress)}
+          orders={orders}
+          token_price={token_price}
+          oldTokenPrice={oldTokenPrice}
+          token={token}
+          setToken={setToken}
+        />
+      )}
       <div className="hidden lg:grid grid-cols-11 gap-4">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
