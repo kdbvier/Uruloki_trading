@@ -24,9 +24,7 @@ export const getWeb3Modal = async () => {
     try {
     if (typeof window !== 'undefined') {
         const web3Mo = await getWeb3Modal();
-        console.log(web3Mo);
         const provider = await web3Mo.connect();
-        console.log(provider);
         const signer = new ethers.providers.Web3Provider(provider).getSigner();
         const address = await signer.getAddress();
         console.log("Connected address:", address);
@@ -38,7 +36,6 @@ export const getWeb3Modal = async () => {
       }
       return "";
     } catch(err) {
-      console.log(err);
     }
   };
 
