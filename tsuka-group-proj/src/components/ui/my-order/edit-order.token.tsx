@@ -23,6 +23,7 @@ import Orders from "@/lib/api/orders";
 import HomePageTokens from "@/lib/api/tokens";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -93,7 +94,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 }) => {
   console.log("Create an order");
   const dispatch = useAppDispatch();
-  const walletAddress = "0xtest"
 
   const selectedOrder = useAppSelector(
     (state) => state.userOrder.selectedOrder
@@ -126,6 +126,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     selectedOrder.price_type === PriceTypeEnum.RANGE
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
+  const [walletAddress, setWalletAddress] = useState<string>();
 
   const [basePrice, setBasePrice] = useState<number>(0);
 
@@ -146,6 +147,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     createNonContinuousPriceRangeOrder,
     createNonContinuousTargetPriceOrder,
   } = useUrulokiAPI();
+
+  const getWalletAddress = async () => {
+    let address = await getConnectedAddress()
+    setWalletAddress(address);
+  }
   
   useEffect(() => {
     if (isEdit) {
@@ -162,6 +168,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setTokenPairInfo(pairInfo);
     }
     dispatch(getAllTokenCache());
+    getWalletAddress();
     Orders.getTokenPairPrice(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res.base_price * selectedOrder.budget : 0)))
   }, []);
 
@@ -341,6 +348,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setIsContinuous((prevState) => !prevState);
   };
   const handleSubmit = async () => {
+    if(!walletAddress) {
+      return;
+    }
     if (isEdit) {
       const patchData = {} as PatchOrder;
       patchData.budget = toNumber(amount);
@@ -355,6 +365,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       patchData.pairTokenShortName = token1Symbol ? token1Symbol as string : selectedOrder.pairTokenShortName as string;
       patchData.baseTokenShortName = token2Symbol ? token2Symbol as string : selectedOrder.baseTokenShortName as string;
       patchData.is_continuous = isContinuous;
+      patchData.creator_address = walletAddress as string;
       console.log("before submit(patch)::");
       console.log(patchData, token1Symbol);
       dispatch(editUserOrder({ id: selectedOrderId, patchData, walletAddress }));
@@ -463,6 +474,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       postData.pairTokenShortName = token1Symbol as string;
       postData.user_id = 1; ////TODO:get it from server
       postData.pair_address = pair_address as string;
+      postData.creator_address = walletAddress as string;
       console.log("before Submit(post)::");
       console.log(postData);
       const action = await dispatch(createOrder(postData));

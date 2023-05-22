@@ -14,8 +14,16 @@ import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getConnectedAddress } from "@/helpers/web3Modal";
+import { get } from "http";
+import { GetServerSideProps } from "next/types";
+import { PairOrders, getOrdersByWalletAddress } from "@/lib/orders";
+import { Order } from "@/types";
+import { OrderStatusEnum, OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
-export default function MyOrder() {
+type MyOrdersProps = {
+  pairOrders: Array<PairOrders>;
+}
+export default function MyOrder({pairOrders}: MyOrdersProps) {
   const [openToogle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
@@ -178,6 +186,7 @@ export default function MyOrder() {
               />
             </div>
           )}
+          {/*
           {status !== "loading" &&
             value.map((order, idx) => {
               if (idx > 2)
@@ -218,6 +227,42 @@ export default function MyOrder() {
                 </div>
               );
             })}
+          */}
+          
+          {pairOrders.map((pairOrder, idx) => {
+            return (
+              <div
+                    className={`${
+                      showAll ? "" : "hidden md:block"
+                    } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
+                    key={idx}
+                  >
+              <OrderWidgetToken
+                    name1={pairOrder?.orders[0]?.baseTokenLongName ?? ""}
+                    code1={pairOrder?.orders[0]?.baseTokenShortName ?? ""}
+                    name2={pairOrder?.orders[0]?.pairTokenLongName ?? ""}
+                    code2={pairOrder?.orders[0]?.pairTokenShortName ?? ""}
+                    status={pairOrder?.orders[0]?.status as OrderStatusEnum}
+                    orders={pairOrder?.orders.map((order) => ({
+                      id: order.order_id as number,
+                      budget: order.budget as number,
+                      price_type: order.price_type as PriceTypeEnum,
+                      order_type: order.order_type as OrderTypeEnum,
+                      status: order.status as OrderStatusEnum,
+                      is_continuous: order.is_continuous as boolean,
+                      baseTokenShortName: order.baseTokenShortName ?? "",
+                      baseTokenLongName: order.baseTokenLongName ?? "",
+                      pairTokenShortName: order.pairTokenShortName ?? "",
+                      pairTokenLongName: order.pairTokenLongName ?? "",
+                      price: order.single_price ?? 0,
+                      prices: [order.from_price ?? 0, order.to_price ?? 0],
+                    }))}
+                    setShowEditOrderModal={handleEditModal}
+                    setShowDeletedAlert={setShowDeletedAlert}
+                  />
+                  </div>
+            )
+          })}
           <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
             <button
               type="button"
@@ -262,4 +307,14 @@ export default function MyOrder() {
       </div>
     </>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const pairOrders = await getOrdersByWalletAddress("0xtest");
+  
+  return {
+    props: {
+      pairOrders
+    }
+  }
 }

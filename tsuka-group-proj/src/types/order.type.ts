@@ -31,6 +31,7 @@ export type PostOrder = {
   baseTokenLongName: string;
   pairTokenShortName: string;
   pairTokenLongName: string;
+  creator_address: string;
 };
 
 export type PatchOrder = {
@@ -45,6 +46,7 @@ export type PatchOrder = {
   is_continuous: boolean | null;
   baseTokenShortName: string;
   pairTokenShortName: string;
+  creator_address: string;
 };
 
 export type OrdersBook = {

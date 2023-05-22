@@ -26,3 +26,39 @@ export async function getOrdersByPair(
   });
   return orders;
 }
+
+export async function getAllOrders(): Promise<Array<Order>> {
+  const orders = await prisma.orders.findMany();
+  return orders
+}
+
+export type PairOrders = {
+  pair_address: string;
+  orders: Array<Order>;
+}
+
+export async function getOrdersByWalletAddress(wallet_address: string): Promise<Array<PairOrders>> {
+  const orders = await prisma.orders.findMany({
+    where: {
+      creator_address: wallet_address,
+    }
+  })
+
+  let groupedOrders = new Map<string, Array<Order>>()
+  let pairAddresses: Array<string> = []
+  orders.forEach((order) => {
+    if(groupedOrders.has(order.pair_address)) {
+      groupedOrders.get(order.pair_address)?.push(order)
+    } else {
+      groupedOrders.set(order.pair_address, [order])
+      pairAddresses.push(order.pair_address)
+    }
+  })
+
+  let groupedOrdersArr: Array<PairOrders> = []
+  pairAddresses.forEach((pairAddress) => {
+    if(groupedOrders.has(pairAddress)) groupedOrdersArr.push({pair_address: pairAddress, orders: groupedOrders.get(pairAddress) as Order[]})
+  })
+
+  return groupedOrdersArr
+}
