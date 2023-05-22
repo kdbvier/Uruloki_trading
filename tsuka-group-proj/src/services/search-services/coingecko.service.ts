@@ -2,25 +2,24 @@ import { SearchToken } from '@/types';
 import axios from 'axios';
 import { checkIfTokenIsErc20 } from './etherscan.service';
 import { checkIfTokenIsOnUniswap } from './uniswap.service';
-
-// Simple in-memory cache
-const cache = {
-  data: [],
-  lastFetch: 0,
-  expiresIn: 5 * 60 * 1000, // Cache expires in 5 minutes
-};
+import DataCache from '@/lib/caching/data-cache';
 
 export async function searchTokensByName(name: string): Promise<SearchToken[]> {
   try {
     const now = Date.now();
+    let data: any;
+    const cacheReq = await DataCache.getIfFresh('coingeko-all-tokens');
     // Check if data is cached and still valid
-    if (cache.data.length === 0 || now - cache.lastFetch > cache.expiresIn) {
+    if (cacheReq.stale) {
+      console.log("Writing data to cache")
       const response = await axios.get('https://api.coingecko.com/api/v3/coins/list?include_platform=true');
-      cache.data = response.data;
-      cache.lastFetch = now;    
+      await DataCache.addToCache(response.data, 'coingeko-all-tokens', 60 * 60 * 6); //6hr ttl
+      data = response.data;
+    } else {
+      console.log("Data already in cache")
+      data = cacheReq.data.cached_data;
     }
-    // console.log("cache.data",cache.data);
-    const tokens = cache.data
+    const tokens = data
       .filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase())||coin.symbol.toLowerCase().includes(name.toLowerCase()))
       .sort((a: any, b: any) => {
         if(a.name.toLowerCase().startsWith(name.toLowerCase()))
