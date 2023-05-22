@@ -27,7 +27,9 @@ export const transformStreamData = (data: any, compareTokenName: any) => {
   let buySideFiltered =
     buySide.length !== 0
       ? buySide.filter(
-          (item: any) => item.Trade.Sell.Currency.Symbol.toUpperCase() === compareTokenName.toUpperCase()
+          (item: any) =>
+            item.Trade.Sell.Currency.Symbol.toUpperCase() ===
+            compareTokenName.toUpperCase()
         )
       : [];
 
@@ -42,7 +44,9 @@ export const transformStreamData = (data: any, compareTokenName: any) => {
   let sellSideFiltered =
     sellSide.length !== 0
       ? sellSide.filter(
-          (item: any) => item.Trade.Sell.Currency.Symbol.toUpperCase() === compareTokenName.toUpperCase()
+          (item: any) =>
+            item.Trade.Sell.Currency.Symbol.toUpperCase() ===
+            compareTokenName.toUpperCase()
         )
       : [];
   let { sellSidePrices, sellSideTimes } = sellSideFiltered.reduce(
@@ -108,8 +112,8 @@ export const getAddData = (forwardTime: any, data: any) => {
 };
 
 // WETH / USDC trades
-const fetchStreamData = async (pairAddress:any, setDatas:any = undefined) => {
-  console.log("PairAddress",pairAddress)
+const fetchStreamData = async (pairAddress: any, setDatas: any = undefined) => {
+  console.log("PairAddress", pairAddress);
   if (typeof window !== "undefined") {
     const subscription = client
       .request({
@@ -201,13 +205,16 @@ const fetchStreamData = async (pairAddress:any, setDatas:any = undefined) => {
           // handle subscription data
           console.log(response);
           // const data = await response.json();
-          console.log("store.getState()",store.getState().tokenPairInfo.value.baseToken.symbol);
-          const compareTokenName = store.getState().tokenPairInfo.value.baseToken.symbol;
+          console.log(
+            "store.getState()",
+            store.getState().tokenPairInfo.value.baseToken?.symbol
+          );
+          const compareTokenName =
+            store.getState().tokenPairInfo.value.baseToken?.symbol;
           const transData = transformStreamData(response, compareTokenName);
-          console.log("transform",transData)
-          if(setDatas)
-            setDatas(transData);//Not set but Add using next line;
-            // state.streamValue = [...state.streamValue, temp];
+          console.log("transform", transData);
+          if (setDatas) setDatas(transData); //Not set but Add using next line;
+          // state.streamValue = [...state.streamValue, temp];
           if (transData.open != "")
             store.dispatch(getBitqueryStream(transData));
           return transData;
@@ -225,7 +232,7 @@ const fetchStreamData = async (pairAddress:any, setDatas:any = undefined) => {
 };
 
 // Request the Bitquery to subscribe
-export const getBitqueryStreamData = async (pairAddress:any) => {
+export const getBitqueryStreamData = async (pairAddress: any) => {
   client.unsubscribeAll();
   const streamData = await fetchStreamData(pairAddress);
 };
@@ -238,7 +245,10 @@ export const stopBitqueryStream = async () => {
 };
 
 // Request the Bitquery to subscribe
-export const getBitqueryStreamData1 = async (pairAddress:any, setDatas:any) => {
+export const getBitqueryStreamData1 = async (
+  pairAddress: any,
+  setDatas: any
+) => {
   client.unsubscribeAll();
   const streamData = await fetchStreamData(pairAddress, setDatas);
 };

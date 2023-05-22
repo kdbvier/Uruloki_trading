@@ -1,28 +1,38 @@
-import React, { useEffect } from "react";
 import { HeaderMenuButton } from "@/components/ui/buttons/header-menu.button";
 import { HeaderNotificationButton } from "@/components/ui/buttons/header-notification.button";
-import Head from "next/head";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { PropsWithChildren, useState } from "react";
-import { HeaderLinkButton } from "../ui/buttons/header-link.button";
+import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { Notifications } from "@/components/ui/tokens/notifications.token";
 import { INotification } from "@/global";
-import { DefaultButton } from "../ui/buttons/default.button";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
+import { DefaultButton } from "../ui/buttons/default.button";
+import { HeaderLinkButton } from "../ui/buttons/header-link.button";
 
+import { fetchTestnet } from "@/helpers/fetch-testnet";
 import { Web3Button } from "@web3modal/react";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { SidebarStrategies } from "../strategies/sidebar.strategies";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [showNotify, setShowNotify] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [providerUrl, setProviderUrl] = useState(
+    process.env.PROVIDER_TESTNET_URL as string
+  );
 
   const [network, setNetwork] = useState("");
 
-  const handleChainChanged = (chainId: any) => {
+  const handleChainChanged = async (chainId: any) => {
     setNetwork(chainId);
+    const { provider } = await fetchTestnet({ chainId, providerUrl });
+
+    // TODO new methods with provider
   };
 
   const switchToEthereum = async () => {
@@ -149,15 +159,17 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                       height={40}
                     /> */}
                     <div className="flex justify-between items-center">
-                      <Image
-                        // src={icon.url}
-                        className="hidden sm:block"
-                        src="/logos/logo_icon.png"
-                        alt="logo__image"
-                        width={40}
-                        height={40}
-                        style={{ position: "relative" }}
-                      />
+                      <Link href="/">
+                        <Image
+                          // src={icon.url}
+                          className="hidden sm:block"
+                          src="/logos/logo_icon.png"
+                          alt="logo__image"
+                          width={40}
+                          height={40}
+                          style={{ position: "relative" }}
+                        />
+                      </Link>
                       <div
                         className="px-3 flex flex-col hidden sm:block"
                         style={{ position: "relative" }}
@@ -265,6 +277,22 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           )}
         </nav>
         <div className="">{children}</div>
+        <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
+          <button
+            type="button"
+            onClick={() => setShowSidebar(true)}
+            className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
+          >
+            <label className="mr-2">
+              <HiOutlineArrowLongLeft size={24} />
+            </label>
+            Orders & Setups
+          </button>
+        </div>
+        <SidebarStrategies
+          open={showSidebar}
+          handleOpen={() => setShowSidebar(false)}
+        />
       </main>
     </>
   );

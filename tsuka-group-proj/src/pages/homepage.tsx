@@ -4,8 +4,6 @@ import { MostSellOrders } from "@/components/ui/most-sell-orders/most-sell-order
 import { TopGainers } from "@/components/ui/top-gainers/top-gainers.token";
 import { TopMoversTokens } from "@/components/ui/top-movers-tokens/top-movers-tokens.token";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
-import { useEffect, useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import {
@@ -14,6 +12,13 @@ import {
   TopGainersMapper,
   TopMoversMapper,
 } from "@/lib/mapper";
+import { getStrategies } from "@/store/apps/strategies";
+import { getHomePageTokens } from "@/store/apps/tokens";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useEffect, useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import HomePageTokens from "@/lib/api/tokens";
@@ -22,31 +27,40 @@ import { Strategy, Tokens } from "@/types";
 
 let currentTranslateX: number = 0;
 
-export async function getServerSideProps(){
+export async function getServerSideProps() {
   const tokens = await HomePageTokens.getTokens();
-  const strategies = await Strategies.getStrategiesData();
+  const walletAddress = await getConnectedAddress();
+  const strategies = await Strategies.getStrategiesData(
+    walletAddress as string
+  );
 
   return {
-    props: {tokens, strategies}
-  }
+    props: { tokens, strategies },
+  };
 }
 
-export default function Home({tokens, strategies}:{tokens:Tokens, strategies:Strategy[]}) {
+export default function Home({
+  tokens,
+  strategies,
+}: {
+  tokens: Tokens;
+  strategies: Strategy[];
+}) {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
 
   const [value, setValue] = useState(tokens);
   const [status, setStatus] = useState(!tokens);
 
-  useEffect(()=> {
-    if(!tokens) {
+  useEffect(() => {
+    if (!tokens) {
       setStatus(true);
-      HomePageTokens.getTokens().then(tokens_data => {
+      HomePageTokens.getTokens().then((tokens_data) => {
         setValue(tokens_data);
         setStatus(false);
-      })
+      });
     }
-  }, [tokens])
+  }, [tokens]);
 
   let content: any = useRef();
   let x1: number = 0;
@@ -186,23 +200,6 @@ export default function Home({tokens, strategies}:{tokens:Tokens, strategies:Str
           <div className="mt-4">
             <TopMoversTokens topMovers={TopMoversMapper(value.topMovers)} />
           </div>
-          <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
-            <button
-              type="button"
-              onClick={() => setShowSidebar(true)}
-              className="w-full text-center focus:outline-none rounded-full text-sm p-4 inline-flex justify-center items-center mr-2"
-            >
-              <label className="mr-2">
-                <HiOutlineArrowLongLeft size={24} />
-              </label>
-              Order & Strategies
-            </button>
-          </div>
-          <SidebarStrategies
-            open={showSidebar}
-            handleOpen={() => setShowSidebar(false)}
-            strategies={strategies!}
-          />
         </div>
       )}
     </>

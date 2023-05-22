@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdArrowBack } from "react-icons/md";
 // import { setPairAddress } from "@/store/apps/token";
-import { InfoSpanToken } from "./info-span.token";
 import { ApiResponse, Order, TokenPairInfo, TokenPriceInPair } from "@/types";
 // import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 // import { getTokenPriceInPair } from "@/store/apps/user-order";
@@ -23,6 +22,7 @@ import { GetServerSideProps } from "next";
 import Orders from "@/lib/api/orders";
 import HomePageTokens from "@/lib/api/tokens";
 import { Token } from "@/types/token.type";
+import { InfoSpanToken } from "./info-span.token";
 export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
@@ -74,7 +74,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   // const baseTokenAddress = useAppSelector(
   //   (state) => state.tokenPairInfo.value.baseToken.address
   // );
-  const baseTokenAddress = tokenPairInfo.baseToken.address;
+  const baseTokenAddress = tokenPairInfo.baseToken?.address;
   const [tokenVolume, setTokenVolume] = useState({
     value: 0,
     currencyLabel: "",
@@ -123,7 +123,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
     let total_sell: number = 0;
     let total_buy: number = 0;
     let price: number = 0;
-    if (orders) {
+    if (orders[0]) {
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
       price = orders.reduce(
@@ -165,9 +165,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             <div className="px-2 flex-1 flex-col">
               <p className="text-sm xs:text-base">
                 <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
-                  {tokenPairInfo.baseToken.symbol}
+                  {tokenPairInfo.baseToken?.symbol}
                 </label>
-                /{tokenPairInfo.pairedToken.symbol}
+                /{tokenPairInfo.pairedToken?.symbol}
               </p>
               <div className="flex items-start flex-col md:flex-row">
                 <label className="text-xs whitespace-nowrap">
@@ -201,10 +201,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <InfoSpanToken
                 title={"24h"}
                 value={`${defaultNumberFormat(
-                  token_price?.base_price
-                    ? ((token_price.base_price -
-                        (oldTokenPrice?.base_price ?? 0)) /
-                        token_price.base_price) *
+                  oldTokenPrice?.base_price
+                    ? ((token_price.base_price - oldTokenPrice.base_price) /
+                        oldTokenPrice.base_price) *
                         100
                     : 0
                 ).toString()}%`}
@@ -213,12 +212,15 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             <div className="text-sm justify-end">
               <div className="flex flex-col lg:flex-row items-end justify-end">
                 <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
-                  {token_price?.base_price &&
-                    (token_price.base_price >= 0.01
-                      ? `$${handleNumberFormat(
-                          parseFloat(token_price.base_price.toFixed(2))
-                        )}`
-                      : convertLawPrice(token_price.base_price))}
+                  {token_price?.base_price && (
+                    <>
+                      {token_price.base_price >= 0.01
+                        ? handleNumberFormat(
+                            parseFloat(token_price.base_price.toFixed(2))
+                          )
+                        : convertLawPrice(token_price.base_price)}
+                    </>
+                  )}
                 </div>
               </div>
             </div>

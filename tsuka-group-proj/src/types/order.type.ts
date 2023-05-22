@@ -31,6 +31,7 @@ export type PostOrder = {
   baseTokenLongName: string;
   pairTokenShortName: string;
   pairTokenLongName: string;
+  creator_address: string;
 };
 
 export type PatchOrder = {
@@ -43,6 +44,9 @@ export type PatchOrder = {
   order_type?: "buy" | "sell";
   price_type?: "single" | "range";
   is_continuous: boolean | null;
+  baseTokenShortName: string;
+  pairTokenShortName: string;
+  creator_address: string;
 };
 
 export type OrdersBook = {

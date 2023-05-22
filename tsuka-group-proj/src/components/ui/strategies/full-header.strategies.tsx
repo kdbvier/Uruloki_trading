@@ -4,15 +4,16 @@ import { useEffect, useMemo } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import { MdArrowBack } from "react-icons/md";
 import { DefaultButton } from "../buttons/default.button";
+import { Setup } from "@/lib/setups";
 
 export interface FullHeaderStrategiesProps {
-  strategyDetails: Strategy;
-  status: "ok"|"loading"|"failed";
+  strategyDetails: Setup;
+  status: "ok" | "loading" | "failed";
 }
 
 export const FullHeaderStrategies: React.FC<FullHeaderStrategiesProps> = ({
   strategyDetails,
-  status
+  status,
 }) => {
   const statusTextColor = useMemo((): string => {
     switch (strategyDetails?.status) {

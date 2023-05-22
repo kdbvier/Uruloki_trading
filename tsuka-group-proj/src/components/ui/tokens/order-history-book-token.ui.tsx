@@ -3,94 +3,81 @@ import { OrderBookPosition } from "@/types/token-positions.type";
 import { tokenPositionsData } from "@/@fake-data/token-positions.fake-data";
 import { splitAddress } from "@/helpers/splitAddress.helper";
 import { numberWithCommas } from "@/helpers/comma.helper";
+import { commafy } from "@/helpers/calc.helper";
+import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
+import { HistoricalDexTrades } from "@/lib/token-activity-feed";
 
+const subPrice = (price: number) => {
+  let priceEle;
+  if (price >= 0.01) {
+    // console.log("topgainer price >: ", topGainer.price);
+    priceEle = `$${price.toLocaleString("en-us")}`;
+  } else {
+    // console.log("topgainer price <: ", topGainer.price);
+
+    priceEle = (
+      <>
+        ${formatNumberToHtmlTag(price).integerPart}.0
+        <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
+        {formatNumberToHtmlTag(price).remainingDecimal}
+      </>
+    );
+  }
+  return priceEle;
+};
 export interface OrderBookTokenProps {
-  token: {
-    id: string;
-    token: string;
-  };
+  dexTrades: Array<HistoricalDexTrades>;
 }
 
+interface TradeRowProps {
+  item: HistoricalDexTrades;
+}
+
+const TradeRow: React.FC<TradeRowProps> = ({ item }) => {
+  return (
+    <div
+      className={`${
+        item.side == "BUY" || item.side == "Buy"
+          ? "text-green-400"
+          : "text-red-400"
+      } border-b border-tsuka-400 text-base relative w-full text-left flex flex-center`}
+    >
+      <span className=" py-2 w-[120px] ml-4 text-sm font-normal whitespace-nowrap">
+        {item.side}
+      </span>
+      <span className=" py-2 w-[190px] text-sm font-normal whitespace-nowrap">
+        {subPrice(Number(item.tradeAmount))}
+      </span>
+      <span className=" py-2  text-sm font-normal whitespace-nowrap">
+        {item.transaction.txFrom.address}
+      </span>
+    </div>
+  );
+};
+
 export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
-  token,
+  dexTrades,
 }) => {
-  const [status, setStatus] = useState<"ok" | "loading" | "failed">("loading");
-  const [value, setValue] = useState<Array<OrderBookPosition>>([]);
-
-  useEffect(() => {
-    setStatus("loading");
-
-    const fetchData = async () => {
-      try {
-        const data = tokenPositionsData.find((item) => item.id === token.id);
-        if (!data) {
-          throw new Error("No data found");
-        }
-
-        const filteredData = [
-          ...data.buy.positions.map((item) => {
-            return {
-              ...item,
-              address: splitAddress(item.address),
-            };
-          }),
-          ...data.sell.positions.map((item) => {
-            return {
-              ...item,
-              address: splitAddress(item.address),
-            };
-          }),
-        ].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
-
-        setValue(filteredData);
-        setStatus("ok");
-      } catch (error) {
-        console.error(error);
-        setStatus("failed");
-      }
-    };
-
-    fetchData();
-  }, [token]);
-
   return (
     <div>
-      {status === "loading" && "Loading..."}
-      {status === "ok" && value && (
-        <div className="p-4 flex">
-          <div className="flex-1">
-            <div className="h-96 overflow-auto">
-              <div className="w-full text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
-                <span className="flex-1 px-4 py-2">Type</span>
-                <span className="flex-1 px-4 py-2">Price (USD)</span>
-                <span className="flex-1 px-4 py-2">Amount {token.token}</span>
-                <span className="flex-1 px-4 py-2">Buyer Address</span>
-              </div>
-              {value.map((item, index) => (
-                <div
-                  key={index}
-                  className={`${
-                    item.type === "Buy" ? "text-green-400" : "text-red-400"
-                  } border-b border-tsuka-400 text-base relative w-full text-left flex flex-center`}
-                >
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.type}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {numberWithCommas(item.priceUsdt)}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.amount}
-                  </span>
-                  <span className="flex-1 py-2 px-4 text-sm font-normal whitespace-nowrap">
-                    {item.address}
-                  </span>
-                </div>
-              ))}
+      {/* {status === "loading" && "Loading..."}
+      {status === "ok" && value && ( */}
+      <div className="p-4 flex">
+        <div className="flex-1">
+          <div className="h-96 overflow-auto">
+            <div className="text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
+              <span className="px-4 py-2 w-[120px]">Type</span>
+              <span className="px-4 py-2 w-[190px]">Amount (USD)</span>
+              <span className="px-4 py-2">Buyer Address</span>
             </div>
+            {dexTrades &&
+              dexTrades.map((item: any, index: number) => (
+                <TradeRow key={index} item={item} />
+              ))}
           </div>
         </div>
-      )}
+      </div>
+      {/* )} */}
     </div>
   );
 };
