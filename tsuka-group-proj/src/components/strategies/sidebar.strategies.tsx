@@ -23,7 +23,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
 
   useEffect(() => {
     void (async () => {
-      const walletAddress = await getConnectedAddress();
+      //const walletAddress = await getConnectedAddress();
       //dispatch(getStrategies(walletAddress));
     })();
   }, [dispatch]);
