@@ -62,3 +62,20 @@ export async function getOrdersByWalletAddress(wallet_address: string): Promise<
 
   return groupedOrdersArr
 }
+
+export async function configureSetups(order_id: number, setup_ids: number[]) {
+  //Delete order from existing setups
+  await prisma.order_strategy.deleteMany({where: {orderId: order_id}})
+
+  //Add order to new set of setups
+  await prisma.order_strategy.createMany({
+    data: [
+      ...setup_ids.map((setup_id) => {
+        return {
+          orderId: order_id,
+          strategyId: setup_id,
+        }
+      })
+    ]
+  })
+}
