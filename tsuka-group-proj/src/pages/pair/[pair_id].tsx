@@ -53,15 +53,9 @@ export default function Pair({
   orders: Order[];
   token_price: TokenPairPrice;
   oldTokenPrice: TokenPairPrice;
-  historicalDexTrades: HistoricalDexTrades;
+  historicalDexTrades: Array<HistoricalDexTrades>;
   baseAddress: string;
 }) {
-  const [buyTrades, setBuyTrades] = useState<any>(
-    historicalDexTrades.buyTrades
-  );
-  const [sellTrades, setSellTrades] = useState<any>(
-    historicalDexTrades.sellTrades
-  );
 
   interface Trade {
     side: string;
@@ -95,6 +89,8 @@ export default function Pair({
   const extractTrades = (data: any): any[] => {
     return data.data.EVM.DEXTrades.map((trade: any) => {
       const obj = trade.Trade;
+      console.log("extractTrades")
+      console.log(obj)
       const side = Object.keys(trade.Trade)[0];
       return {
         side,
@@ -124,6 +120,7 @@ export default function Pair({
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const strategies = useAppSelector((state) => state.strategies.value);
   const [isLoading, setIsLoading] = useState(true);
+  const [dexTrades, setDexTrades] = useState<HistoricalDexTrades[]>(historicalDexTrades)
 
   useEffect(() => {
     router.isReady && setIsLoading(false);
@@ -144,7 +141,7 @@ export default function Pair({
   useEffect(() => {
     void (async () => {
       const address = await getConnectedAddress();
-      dispatch(getStrategies(address as string));
+      //dispatch(getStrategies(address as string));
     })();
   }, [dispatch]);
 
@@ -167,13 +164,14 @@ export default function Pair({
       pairAddress: pairAddress,
       time: time,
     };
-    dispatch(getBitqueryInitInfo(eachAddress));
+    //dispatch(getBitqueryInitInfo(eachAddress));
   }, [tokenPairInfo]);
 
   useEffect(() => {
     if (pairAddress) {
       void (async () => {
         const walletAddress = await getConnectedAddress();
+        /*
         dispatch(getTokenPairInfo(pairAddress as string));
         dispatch(
           getActiveOrdersbyTokenPair({
@@ -181,6 +179,7 @@ export default function Pair({
             walletAddress,
           })
         );
+        */
       })();
     }
   }, [pairAddress, dispatch]);
@@ -197,50 +196,16 @@ export default function Pair({
 
       const updatedTrades = extractTrades(data);
 
-      setSellTrades((prev: any) => [
+      setDexTrades((prev: Array<HistoricalDexTrades>) => [
         ...prev,
-        ...updatedTrades.filter((trade: any) => trade.side.includes("Sell")),
+        ...updatedTrades,
       ]);
     };
 
     let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getLiveDexTrades("Sell", baseAddress), {
-          next: onNext,
-          error: (err: any) => {
-            console.log("Subscription error:", err);
-            reject(err);
-          },
-          complete: () => {
-            console.log("Subscription complete");
-            resolve();
-          },
-        });
-      });
-    })();
-
-    return () => {
-      unsubscribe();
-    };
-  }, [baseAddress]);
-
-  useEffect(() => {
-    const onNext = (data: any) => {
-      console.log("setBuyTrades = ", data);
-
-      const updatedTrades = extractTrades(data);
-
-      setBuyTrades((prev: any) => [
-        ...prev,
-        ...updatedTrades.filter((trade: any) => trade.side.includes("Buy")),
-      ]);
-    };
-
-    let unsubscribe = () => {};
-    (async () => {
-      await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getLiveDexTrades("Buy", baseAddress), {
+        unsubscribe = client.subscribe(getLiveDexTrades( baseAddress), {
           next: onNext,
           error: (err: any) => {
             console.log("Subscription error:", err);
@@ -279,8 +244,7 @@ export default function Pair({
             </div>
             <div className="col-span-12 md:col-span-5">
               <OrderBookToken
-                buyTrades={buyTrades}
-                sellTrades={sellTrades}
+                dexTrades={dexTrades}
                 tokens={[
                   {
                     value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
@@ -412,7 +376,7 @@ export default function Pair({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let orders: Order[];
   let tokenPairInfo: TokenPairInfo = {};
-  let historicalDexTrades: HistoricalDexTrades = {};
+  let historicalDexTrades: Array<HistoricalDexTrades> = [];
   try {
     orders = await getOrdersByPair(context.query.pair_id as string, "Active");
   } catch (e) {

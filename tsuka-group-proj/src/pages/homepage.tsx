@@ -29,8 +29,10 @@ export default function Home() {
   const {
     strategies: { value: strategies },
   } = useAppSelector((state) => state);
+  
   useEffect(() => {
     void (async () => {
+      // console.log('qwe');
       const walletAddress = await getConnectedAddress();
       dispatch(getHomePageTokens());
       dispatch(getStrategies(walletAddress as string));

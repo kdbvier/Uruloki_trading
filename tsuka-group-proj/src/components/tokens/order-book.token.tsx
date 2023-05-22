@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
 import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
+import { HistoricalDexTrades } from "@/lib/token-activity-feed";
 
 export interface OrderBookTokens {
   value: string;
@@ -15,9 +16,8 @@ export interface OrderBookTokens {
 export const OrderBookToken: React.FC<{
   orders: TokenPairOrders[];
   tokens?: OrderBookTokens[];
-  buyTrades?: any;
-  sellTrades?: any;
-}> = ({ orders, tokens, buyTrades, sellTrades }) => {
+  dexTrades: Array<HistoricalDexTrades>
+}> = ({ orders, tokens, dexTrades }) => {
   const dispatch = useAppDispatch();
   const { value, status } = useAppSelector((state) => state.tokenPosition);
   const [selectedPath, setSelectedPath] = useState("order-book");
@@ -37,7 +37,7 @@ export const OrderBookToken: React.FC<{
     selectedPath === "order-book" ? (
       <OrderBookTokenUi orders={orders} tokens={tokens as OrderBookTokens[]} />
     ) : (
-      <OrderHistoryBookTokenUi sellTrades={sellTrades} buyTrades={buyTrades} />
+      <OrderHistoryBookTokenUi dexTrades={dexTrades} />
     );
 
   return (
@@ -60,9 +60,11 @@ export const OrderBookToken: React.FC<{
             {title}
           </span>
         ))}
+        {/*
         <div className="ml-auto">
           <FiltersButton callback={() => console.log("filters button")} />
         </div>
+          */}
       </div>
       {orderComponent && (
         <div className="overflow-x-scroll">{orderComponent}</div>
