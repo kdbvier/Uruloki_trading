@@ -2,22 +2,23 @@ import { StrategyBookStrategies } from "@/components/strategies/strategy-book.st
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { getStrategies } from "@/store/apps/strategies";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Strategies from "@/lib/api/strategies";
+import { Strategy } from "@/types";
 import Link from "next/link";
-import { useEffect } from "react";
 
-export default function StrategyDetails() {
-  const dispatch = useAppDispatch();
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
+export async function getServerSideProps() {
+  const walletAddress = await getConnectedAddress();
+  const strategies = await Strategies.getStrategiesData(
+    walletAddress as string
+  );
+  return { props: { strategies: strategies } };
+}
 
-  useEffect(() => {
-    void (async () => {
-      const walletAddress = await getConnectedAddress();
-      dispatch(getStrategies(walletAddress as string));
-    })();
-  }, [dispatch]);
-
+export default function StrategyDetails({
+  strategies,
+}: {
+  strategies: Strategy[];
+}) {
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       <div className="w-full gap-4 text-tsuka-300 flex py-2 mb-2 md:items-center justify-center md:justify-start flex-row">

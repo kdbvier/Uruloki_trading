@@ -10,36 +10,47 @@ import {
   TopGainersMapper,
   TopMoversMapper,
 } from "@/lib/mapper";
-import { getStrategies } from "@/store/apps/strategies";
-import { getHomePageTokens } from "@/store/apps/tokens";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getConnectedAddress } from "@/helpers/web3Modal";
+import HomePageTokens from "@/lib/api/tokens";
+import { Strategy, Tokens } from "@/types";
+import Strategies from "@/lib/api/strategies";
 
 let currentTranslateX: number = 0;
 
-export default function Home() {
+export async function getServerSideProps() {
+  const tokens = await HomePageTokens.getTokens();
+
+  return {
+    props: { tokens },
+  };
+}
+
+export default function Home({
+  tokens,
+}: {
+  tokens: Tokens;
+  strategies: Strategy[];
+}) {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const dispatch = useAppDispatch();
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
-  
-  useEffect(() => {
-    void (async () => {
-      // console.log('qwe');
-      const walletAddress = await getConnectedAddress();
-      dispatch(getHomePageTokens());
-      dispatch(getStrategies(walletAddress as string));
-    })();
-  }, [dispatch]);
+  const [value, setValue] = useState(tokens);
+  const [status, setStatus] = useState(!tokens);
 
-  const { value, status } = useAppSelector((state) => state.homepageTokens);
+  useEffect(() => {
+    if (!tokens) {
+      setStatus(true);
+      HomePageTokens.getTokens().then((tokens_data) => {
+        setValue(tokens_data);
+        setStatus(false);
+      });
+    }
+  }, [tokens]);
+
   let content: any = useRef();
   let x1: number = 0;
   let x2: number = 0;
@@ -114,13 +125,13 @@ export default function Home() {
   return (
     <>
       <ToastContainer />
-      {(status === "loading" || _.isEmpty(value)) && (
+      {(status === true || _.isEmpty(value)) && (
         <LoadingBox
           title="Loading data"
           description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
         />
       )}
-      {status === "ok" && !_.isEmpty(value) && (
+      {status === false && !_.isEmpty(value) && (
         <div className="px-4 md:px-10 pt-6 pb-8">
           <ContentHeader title="Homepage" className="w-full mb-6" />
           <div className="hidden md:flex md:gap-5">

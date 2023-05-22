@@ -1,12 +1,8 @@
-import { getUserOrderWithFilter } from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
-import { getStrategies } from "@/store/apps/strategies";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
@@ -18,92 +14,92 @@ import { get } from "http";
 import { GetServerSideProps } from "next/types";
 import { PairOrders, getOrdersByWalletAddress } from "@/lib/orders";
 import { Order } from "@/types";
-import { OrderStatusEnum, OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
+import {
+  OrderStatusEnum,
+  OrderTypeEnum,
+  PriceTypeEnum,
+} from "@/types/token-order.type";
+import { UserOrder } from "@/types/token-order.type";
+import Strategies from "@/lib/api/strategies";
+import { Strategy } from "@/types";
+import Orders from "@/lib/api/orders";
 
 type MyOrdersProps = {
   pairOrders: Array<PairOrders>;
-}
-export default function MyOrder({pairOrders}: MyOrdersProps) {
-  const [openToogle, setOpenToggle] = useState<boolean>(true);
+};
+export default function MyOrder({ pairOrders }: MyOrdersProps) {
+  const [openToggle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
 
-  const [showPopupBg, setShowPopupBg] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.userOrder);
-  const {
-    strategies: { value: strategies },
-  } = useAppSelector((state) => state);
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
+  const [value, setValue] = useState<UserOrder[]>([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    void (async () => {
-      const address = await getConnectedAddress();
-      if(address) {
-        setWalletAddress(address);
+    const fetchStrategies = async () => {
+      try {
+        setLoading(true);
+        const walletAddress = await getConnectedAddress();
+        const res = await Strategies.getStrategiesData(walletAddress as string);
+        setStrategies(res);
+        const res_1 = await Orders.getOrdersbyUserIdandFilters(
+          1,
+          openToggle ? "Open" : "Close",
+          searchValue,
+          walletAddress as string
+        );
+        setValue(res_1);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
       }
-      
-      //dispatch(getStrategies(address as string));
-      /*
-      dispatch(
-        getUserOrderWithFilter({
-          id: 1,
-          status: openToogle ? "Open" : "Close",
-          search: searchValue,
-          walletAddress: address,
-        })
-      );
-      */
-    })();
-  }, []);
-  useEffect(() => {
-    //TODO: change id to my id
-    if (walletAddress) {
-      /*
-      dispatch(
-        getUserOrderWithFilter({
-          id: 1,
-          status: openToogle ? "Open" : "Close",
-          search: searchValue,
-          walletAddress,
-        })
-      );
-      */
-    }
-  }, [openToogle]);
-  // useEffect(()=> {
-  //   const fetchData =async () => {
-  //     const userOrder_1 = await Orders.getOrdersbyUserId("1");
-  //     setUserOrderData([...userOrder_1]);
-  //   }
-  //   fetchData();
-  // }, [])
+    };
+
+    fetchStrategies();
+  }, [openToggle]);
+
   const handleSearchChange = (e: any) => {
     console.log("changing");
     setSearchValue(e.target.value);
   };
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = async () => {
     console.log("user pressed enter key");
-    //TODO: change id to my id
-    if (walletAddress) {
-      /*
-      dispatch(
-        getUserOrderWithFilter({
-          id: 1,
-          status: openToogle ? "Open" : "Close",
-          search: searchValue,
-          walletAddress,
-        })
-      );
-      */
-    }
+    setLoading(true);
+    const walletAddress = await getConnectedAddress();
+    Orders.getOrdersbyUserIdandFilters(
+      1,
+      openToggle ? "Open" : "Close",
+      searchValue,
+      walletAddress as string
+    )
+      .then((res) => {
+        setValue(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
   };
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
     setShowEditOrderModal(show);
+  };
+  const fetchOrders = async () => {
+    setLoading(true);
+    const walletAddress = await getConnectedAddress();
+    const res_1 = await Orders.getOrdersbyUserIdandFilters(
+      1,
+      openToggle ? "Open" : "Close",
+      searchValue,
+      walletAddress as string
+    );
+    setValue(res_1);
+    setLoading(false);
   };
   return (
     <>
@@ -128,7 +124,7 @@ export default function MyOrder({pairOrders}: MyOrdersProps) {
             <div className="w-full md:w-auto flex md:gap-1">
               <button
                 className={`w-1/2 md:w-auto px-4 py-[11px] focus:outline-none bg-tsuka-500 ${
-                  openToogle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
+                  openToggle ? "bg-tsuka-500 text-green-400" : "text-tsuka-300"
                 } rounded-md text-sm`}
                 onClick={() => setOpenToggle(true)}
               >
@@ -136,7 +132,7 @@ export default function MyOrder({pairOrders}: MyOrdersProps) {
               </button>
               <button
                 className={`w-1/2 md:w-auto ml-1 px-4 py-[11px] focus:outline-none ${
-                  !openToogle ? "bg-tsuka-500 text-red-400" : "text-tsuka-300"
+                  !openToggle ? "bg-tsuka-500 text-red-400" : "text-tsuka-300"
                 } rounded-md text-sm`}
                 onClick={() => setOpenToggle(false)}
               >
@@ -178,7 +174,7 @@ export default function MyOrder({pairOrders}: MyOrdersProps) {
 
         {/* content */}
         <div className="grid grid-cols-12 gap-x-5">
-          {status === "loading" && (
+          {loading && (
             <div className="w-screen h-screen">
               <LoadingBox
                 title="Processing orders"
@@ -186,58 +182,17 @@ export default function MyOrder({pairOrders}: MyOrdersProps) {
               />
             </div>
           )}
-          {/*
-          {status !== "loading" &&
-            value.map((order, idx) => {
-              if (idx > 2)
-                return (
-                  <div
-                    className={`${
-                      showAll ? "" : "hidden md:block"
-                    } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
-                    key={idx}
-                  >
-                    <OrderWidgetToken
-                      name1={order?.orders[0].baseTokenLongName}
-                      code1={order?.orders[0].baseTokenShortName}
-                      name2={order?.orders[0].pairTokenLongName}
-                      code2={order?.orders[0].pairTokenShortName}
-                      status={order?.orders[0].status}
-                      orders={order?.orders}
-                      setShowEditOrderModal={handleEditModal}
-                      setShowDeletedAlert={setShowDeletedAlert}
-                    />
-                  </div>
-                );
+
+          {!loading &&
+            pairOrders.map((pairOrder, idx) => {
               return (
                 <div
-                  className="col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition"
+                  className={`${
+                    showAll ? "" : "hidden md:block"
+                  } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
                   key={idx}
                 >
                   <OrderWidgetToken
-                    name1={order?.orders[0].baseTokenLongName}
-                    code1={order?.orders[0].baseTokenShortName}
-                    name2={order?.orders[0].pairTokenLongName}
-                    code2={order?.orders[0].pairTokenShortName}
-                    status={order?.orders[0].status}
-                    orders={order?.orders}
-                    setShowEditOrderModal={handleEditModal}
-                    setShowDeletedAlert={setShowDeletedAlert}
-                  />
-                </div>
-              );
-            })}
-          */}
-          
-          {pairOrders.map((pairOrder, idx) => {
-            return (
-              <div
-                    className={`${
-                      showAll ? "" : "hidden md:block"
-                    } col-span-12 md:col-span-6 lg:col-span-4 cursor-pointer hover:scale-105 transition`}
-                    key={idx}
-                  >
-              <OrderWidgetToken
                     name1={pairOrder?.orders[0]?.baseTokenLongName ?? ""}
                     code1={pairOrder?.orders[0]?.baseTokenShortName ?? ""}
                     name2={pairOrder?.orders[0]?.pairTokenLongName ?? ""}
@@ -260,9 +215,9 @@ export default function MyOrder({pairOrders}: MyOrdersProps) {
                     setShowEditOrderModal={handleEditModal}
                     setShowDeletedAlert={setShowDeletedAlert}
                   />
-                  </div>
-            )
-          })}
+                </div>
+              );
+            })}
           <div className="fixed z-10 bottom-4 right-4 bg-tsuka-300 text-tsuka-50 rounded-full text-sm font-normal whitespace-nowrap">
             <button
               type="button"
@@ -311,10 +266,10 @@ export default function MyOrder({pairOrders}: MyOrdersProps) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pairOrders = await getOrdersByWalletAddress("0xtest");
-  
+
   return {
     props: {
-      pairOrders
-    }
-  }
-}
+      pairOrders,
+    },
+  };
+};

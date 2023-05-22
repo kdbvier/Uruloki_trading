@@ -65,6 +65,7 @@
     "@storybook/testing-library": "^0.1.0",
     "@types/node": "^20.2.1",
     "@types/react": "^18.2.6",
+    "@walletconnect/web3-provider": "^1.8.0",
     "@web3modal/react": "^2.4.1",
     "autoprefixer": "^10.4.14",
     "contentful-management": "^10.32.0",

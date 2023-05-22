@@ -1,3 +1,5 @@
+import _ from "lodash";
+import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
@@ -8,6 +10,9 @@ import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token"
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderToken } from "@/components/ui/tokens/full-header.token";
 import { getLiveDexTrades } from "@/lib/bitquery/dexTradesLiveStream";
+import Orders from "@/lib/api/orders";
+import Strategies from "@/lib/api/strategies";
+import HomePageTokens from "@/lib/api/tokens";
 import { stopBitqueryStream } from "@/lib/bitquery/getBitqueryStreamData";
 import { getOrdersByPair } from "@/lib/orders";
 import {
@@ -16,13 +21,13 @@ import {
 } from "@/lib/token-activity-feed";
 import { getTokenNamesFromPair } from "@/lib/token-pair";
 import { getTokenPrice } from "@/lib/token-price";
-import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
-import { getStrategies } from "@/store/apps/strategies";
-import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
+// import { getBitqueryInitInfo } from "@/store/apps/bitquery-data";
+// import { getStrategies } from "@/store/apps/strategies";
+// import tokenpairInfo, { getTokenPairInfo } from "@/store/apps/tokenpair-info";
 import { getActiveOrdersbyTokenPair } from "@/store/apps/tokenpair-orders";
-import { TokenPairPrice } from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import type { Order, TokenPairInfo } from "@/types";
+import { TokenPriceInPair } from "@/types";
+// import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import type { BitqueryData, Order, Strategy, TokenPairInfo } from "@/types";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
@@ -37,6 +42,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ModifiedOrder } from "@/lib/setups";
 import { getConnectedAddress } from "@/helpers/web3Modal";
+import { HiOutlineArrowLongLeft } from "react-icons/hi2";
+import { Token } from "@/types/token.type";
+import { tokensData } from "@/@fake-data/token.fake-data";
 
 interface InputToken {
   id: string;
@@ -51,12 +59,11 @@ export default function Pair({
   baseAddress,
 }: {
   orders: Order[];
-  token_price: TokenPairPrice;
-  oldTokenPrice: TokenPairPrice;
   historicalDexTrades: Array<HistoricalDexTrades>;
   baseAddress: string;
+  token_price: TokenPriceInPair;
+  oldTokenPrice: TokenPriceInPair;
 }) {
-
   interface Trade {
     side: string;
     tradeAmount: number;
@@ -89,8 +96,8 @@ export default function Pair({
   const extractTrades = (data: any): any[] => {
     return data.data.EVM.DEXTrades.map((trade: any) => {
       const obj = trade.Trade;
-      console.log("extractTrades")
-      console.log(obj)
+      console.log("extractTrades");
+      console.log(obj);
       const side = Object.keys(trade.Trade)[0];
       return {
         side,
@@ -105,12 +112,6 @@ export default function Pair({
     });
   };
 
-  const dispatch = useAppDispatch();
-  const { value: token } = useAppSelector((state) => state.token);
-  const tokenPairInfo = useAppSelector((state) => state.tokenPairInfo.value);
-  const activeOrders = useAppSelector(
-    (state) => state.tokenpairOrders.value.orders
-  );
   const router = useRouter();
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
@@ -118,37 +119,95 @@ export default function Pair({
   const [showSidebar, setShowSidebar] = useState(false);
   const [pairAddress, setPairAddress] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const strategies = useAppSelector((state) => state.strategies.value);
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [dexTrades, setDexTrades] = useState<HistoricalDexTrades[]>(historicalDexTrades)
+  const [dexTrades, setDexTrades] =
+    useState<HistoricalDexTrades[]>(historicalDexTrades);
+  useEffect(() => {
+    const fetchStrategies = async () => {
+      try {
+        const walletAddress = await getConnectedAddress();
+        const res = await Strategies.getStrategiesData(walletAddress as string);
+        setStrategies(res);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (strategies.length === 0) {
+      fetchStrategies();
+    }
+  }, [strategies]);
+
+  const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
+  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
+  useEffect(() => {
+    const fetchTokenPairInfo_ActiveOrders = async () => {
+      try {
+        if (!pairAddress || _.isEmpty(pairAddress)) return;
+        const res = await HomePageTokens.getTokenPairInfo(pairAddress);
+        setTokenPairInfo({ ...res });
+        const walletAddress: string = (await getConnectedAddress()) as string;
+        const res_1 = await Orders.getActiveOrdersbyTokenPair({
+          tokenpair: pairAddress,
+          walletAddress,
+        });
+        setActiveOrders(res_1);
+      } catch (err) {
+        console.log("errors");
+        console.error(err);
+      }
+    };
+
+    fetchTokenPairInfo_ActiveOrders();
+  }, [pairAddress]);
 
   useEffect(() => {
     router.isReady && setIsLoading(false);
   }, [router.isReady]);
 
-  // When this page becomes unmounted
+  const [token, setToken] = useState<Token>();
   useEffect(() => {
     return () => {
       // Stop subscribing from the Bitquery
       stopBitqueryStream();
     };
-  }, []);
+  }, [pairAddress]);
+  // // When this page becomes unmounted
+  // useEffect(() => {
+
+  //   return () => {
+  //     // Stop subscribing from the Bitquery
+  //     stopBitqueryStream();
+  //   };
+  // }, []);
 
   useEffect(() => {
     setPairAddress(String(router.query.pair_id));
   }, [router]);
 
-  useEffect(() => {
-    void (async () => {
-      const address = await getConnectedAddress();
-      //dispatch(getStrategies(address as string));
-    })();
-  }, [dispatch]);
+  // useEffect(()=>{
+  //   const time = 15;
+  //   const pairAddress = router.query.pair_id;
+  //   if(!pairAddress){
+  //     return;
+  //   }
+  //   if(!tokenPairInfo || _.isEmpty(tokenPairInfo)){
+  //     return;
+  //   }
+  //   const eachAddress = {
+  //     base: tokenPairInfo.baseToken.address,
+  //     quote: tokenPairInfo.pairedToken.address,
+  //     pairAddress: pairAddress,
+  //     time: time
+  //   }
+  //   dispatch(getBitqueryInitInfo(eachAddress));
+  // }, [tokenPairInfo])
 
   useEffect(() => {
     console.log("tokenPairInfo", tokenPairInfo);
     console.log(
       "router.query.pair_id--------------------------",
+
       router.query.pair_id
     );
     // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
@@ -158,31 +217,22 @@ export default function Pair({
     if (!pairAddress) {
       return;
     }
+    if (!tokenPairInfo || _.isEmpty(tokenPairInfo)) {
+      return;
+    }
     const eachAddress = {
       base: tokenPairInfo.baseToken?.address,
       quote: tokenPairInfo.pairedToken?.address,
       pairAddress: pairAddress,
       time: time,
     };
-    //dispatch(getBitqueryInitInfo(eachAddress));
+    // dispatch(getBitqueryInitInfo(eachAddress));
   }, [tokenPairInfo]);
 
-  useEffect(() => {
-    if (pairAddress) {
-      void (async () => {
-        const walletAddress = await getConnectedAddress();
-        /*
-        dispatch(getTokenPairInfo(pairAddress as string));
-        dispatch(
-          getActiveOrdersbyTokenPair({
-            pair_address: pairAddress,
-            walletAddress,
-          })
-        );
-        */
-      })();
-    }
-  }, [pairAddress, dispatch]);
+  // useEffect(() => {
+  //   dispatch(getTokenPairInfo(pairAddress as string));
+  //   dispatch(getActiveOrdersbyTokenPair(pairAddress as string));
+  // }, [pairAddress, dispatch]);
 
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
@@ -205,7 +255,7 @@ export default function Pair({
     let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getLiveDexTrades( baseAddress), {
+        unsubscribe = client.subscribe(getLiveDexTrades(baseAddress), {
           next: onNext,
           error: (err: any) => {
             console.log("Subscription error:", err);
@@ -227,20 +277,24 @@ export default function Pair({
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
       <ToastContainer />
-      <FullHeaderToken
-        tokenPairInfo={tokenPairInfo}
-        pair_address={String(pairAddress)}
-        orders={orders}
-        token_price={token_price}
-        oldTokenPrice={oldTokenPrice}
-      />
+      {tokenPairInfo && (
+        <FullHeaderToken
+          tokenPairInfo={tokenPairInfo}
+          pair_address={String(pairAddress)}
+          orders={orders}
+          token_price={token_price}
+          oldTokenPrice={oldTokenPrice}
+          token={token}
+          setToken={setToken}
+        />
+      )}
       <div className="hidden lg:grid grid-cols-11 gap-4">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
           <LiveGraphToken />
           <div className="hidden md:grid grid-cols-8 gap-4">
             <div className="col-span-12 md:col-span-3">
-              <PoolInfoToken token={token} />
+              <PoolInfoToken token={token as Token} />
             </div>
             <div className="col-span-12 md:col-span-5">
               <OrderBookToken
@@ -292,10 +346,10 @@ export default function Pair({
             Icon={FiPlusCircle}
           />
           <OrderWidgetToken
-            name1={tokenPairInfo.baseToken?.name as string}
-            code1={tokenPairInfo.baseToken?.symbol as string}
-            name2={tokenPairInfo.pairedToken?.name as string}
-            code2={tokenPairInfo.pairedToken?.symbol as string}
+            name1={tokenPairInfo?.baseToken?.name as string}
+            code1={tokenPairInfo?.baseToken?.symbol as string}
+            name2={tokenPairInfo?.pairedToken?.name as string}
+            code2={tokenPairInfo?.pairedToken?.symbol as string}
             status={"Active" as OrderStatusEnum}
             orders={activeOrders.map((order) => ({
               id: order.order_id as number,
@@ -319,10 +373,10 @@ export default function Pair({
       <div className="block lg:hidden">
         <LiveGraphToken />
         <OrderWidgetToken
-          name1={tokenPairInfo.baseToken?.name as string}
-          code1={tokenPairInfo.baseToken?.symbol as string}
-          name2={tokenPairInfo.pairedToken?.name as string}
-          code2={tokenPairInfo.pairedToken?.symbol as string}
+          name1={tokenPairInfo?.baseToken?.name as string}
+          code1={tokenPairInfo?.baseToken?.symbol as string}
+          name2={tokenPairInfo?.pairedToken?.name as string}
+          code2={tokenPairInfo?.pairedToken?.symbol as string}
           status={"Active" as OrderStatusEnum}
           orders={activeOrders.map((order) => ({
             id: order.order_id as number,
@@ -344,10 +398,10 @@ export default function Pair({
       </div>
       {showEditOrderModal && (
         <EditOrderToken
-          name1={tokenPairInfo.baseToken?.name as string}
-          code1={tokenPairInfo.baseToken?.symbol as string}
-          name2={tokenPairInfo.pairedToken?.name as string}
-          code2={tokenPairInfo.pairedToken?.symbol as string}
+          name1={tokenPairInfo?.baseToken?.name as string}
+          code1={tokenPairInfo?.baseToken?.symbol as string}
+          name2={tokenPairInfo?.pairedToken?.name as string}
+          code2={tokenPairInfo?.pairedToken?.symbol as string}
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
@@ -382,27 +436,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (e) {
     orders = [];
   }
-  const initialTokenPairPrice: TokenPairPrice = {
+  const initialTokenPriceInPair: TokenPriceInPair = {
     base_price: 0,
     quote_price: 0,
   };
-  let token_price: TokenPairPrice = { ...initialTokenPairPrice };
-  let oldTokenPrice: TokenPairPrice = { ...initialTokenPairPrice };
+  let token_price: TokenPriceInPair = { ...initialTokenPriceInPair };
+  let oldTokenPrice: TokenPriceInPair = { ...initialTokenPriceInPair };
   try {
     token_price = (await getTokenPrice(
       context.query.pair_id as string
-    )) as TokenPairPrice;
+    )) as TokenPriceInPair;
   } catch (err) {
-    token_price = { ...initialTokenPairPrice };
+    token_price = { ...initialTokenPriceInPair };
   }
 
   try {
     oldTokenPrice = (await getTokenPrice(
       context.query.pair_id as string,
       true
-    )) as TokenPairPrice;
+    )) as TokenPriceInPair;
   } catch (err) {
-    oldTokenPrice = { ...initialTokenPairPrice };
+    oldTokenPrice = { ...initialTokenPriceInPair };
   }
   const { pair_id } = context.query;
 

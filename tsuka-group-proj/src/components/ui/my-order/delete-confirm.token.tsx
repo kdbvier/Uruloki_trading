@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { deleteOrder } from "@/store/apps/user-order";
-import { useAppDispatch } from "@/store/hooks";
+// import { deleteOrder } from "@/store/apps/user-order";
+// import { useAppDispatch } from "@/store/hooks";
+import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 
@@ -37,7 +38,7 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
   const handleClickInside = (event: any) => {
     setClickedInside(true);
   };
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   return (
     <div
@@ -61,7 +62,8 @@ export const DeleteConfirmToken: React.FC<DeleteConfirmTokenProp> = ({
         className="mt-2 py-[8px] text-custom-red text-sm text-center bg-tsuka-400 rounded-md cursor-pointer"
         onClick={async () => {
           setShowConfirmDlg(false);
-          dispatch(deleteOrder(deleteID));
+          // dispatch(deleteOrder(deleteID))
+          Orders.deleteOrder(deleteID);
           cancelOrder(deleteID).then((res) => {
             if (res?.msg === "success") {
               toast(res?.msg, { type: "success" });
