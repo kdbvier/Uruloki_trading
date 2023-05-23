@@ -45,3 +45,30 @@ export async function getTokenNamesFromPair(pair_address: string): Promise<Token
         }
     }
 }
+
+/**
+ * Server-Side
+ * Gets the two token names from the provided pair address. (Modified by Mykola)
+ * @param pair_address 
+ * @returns 
+ */
+export async function getTokenNamesFromPairN(pair_address: string): Promise<TokenPairInfoResult> {
+    const tokenPairResponse = await G_QUERY_GetTokenPair(
+        pair_address as string
+    );
+    
+    if (!tokenPairResponse.data.data.ethereum.dexTrades?.[0]) {
+        return {success: false}
+    }
+
+    const { token0: baseToken, token: pairedToken } = tokenPairResponse.data.data.ethereum.dexTrades[0];
+    console.log(baseToken, pairedToken)
+
+    return {
+        success: true,
+        tokenPairInfo: {
+            baseToken,
+            pairedToken
+        }
+    }
+}
