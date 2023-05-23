@@ -56,13 +56,11 @@ export default function Pair({
   token_price,
   oldTokenPrice,
   historicalDexTrades,
-  baseAddress,
+  tokenPairInfo,
 }: {
   orders: Order[];
   historicalDexTrades: Array<HistoricalDexTrades>;
-  baseAddress: string;
-  token_price: TokenPriceInPair;
-  oldTokenPrice: TokenPriceInPair;
+  tokenPairInfo: TokenPairInfo
 }) {
   interface Trade {
     side: string;
@@ -255,7 +253,7 @@ export default function Pair({
     let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getLiveDexTrades(baseAddress), {
+        unsubscribe = client.subscribe(getLiveDexTrades(tokenPairInfo.baseToken?.address ?? ""), {
           next: onNext,
           error: (err: any) => {
             console.log("Subscription error:", err);
@@ -272,7 +270,7 @@ export default function Pair({
     return () => {
       unsubscribe();
     };
-  }, [baseAddress]);
+  }, [tokenPairInfo]);
 
   return (
     <div className="flex flex-col px-4 md:px-10 py-6">
@@ -487,7 +485,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       orders,
       token_price,
       oldTokenPrice,
-      baseAddress: tokenPairInfo.baseToken?.address as string,
+      tokenPairInfo,
       historicalDexTrades,
     },
   };

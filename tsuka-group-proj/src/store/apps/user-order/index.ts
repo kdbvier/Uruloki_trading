@@ -8,14 +8,14 @@ import { TokenPriceInPair } from "@/types";
 
 export interface UserOrderState {
   selectedOrder: Order;
-  selectedTokenPriceInPair: TokenPriceInPair;
+  selectedTokenPairPrice: number;
   value: UserOrder[];
   status: "ok" | "loading" | "failed";
 }
 
 const initialState: UserOrderState = {
   selectedOrder: {} as Order,
-  selectedTokenPriceInPair: {} as TokenPriceInPair,
+  selectedTokenPairPrice: 0,
   value: [] as UserOrder[],
   status: "ok",
 };
@@ -37,10 +37,10 @@ interface updateEditOrderParams {
   walletAddress: string;
 }
 
-export const getTokenPriceInPair = createAsyncThunk(
-  "TokenPriceInPair/get",
-  async (pair_address: string): Promise<TokenPriceInPair> => {
-    const data = Orders.getTokenPriceInPair(pair_address);
+export const getTokenPairPrice = createAsyncThunk(
+  "tokenPairPrice/get",
+  async (pair_address: string): Promise<number> => {
+    const data = Orders.getTokenPairPrice(pair_address);
     return data;
   }
 );

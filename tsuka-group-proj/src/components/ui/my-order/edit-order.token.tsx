@@ -188,13 +188,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
     // dispatch(getAllTokenCache());
     getWalletAddress();
-    Orders.getTokenPriceInPair(pair_address as string).then((res) =>
-      setAmount(
-        handleNumberFormat(
-          selectedOrder.budget ? res.base_price * selectedOrder.budget : 0
-        )
-      )
-    );
+    Orders.getTokenPairPrice(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res * selectedOrder.budget : 0)))
   }, []);
 
   useEffect(() => {
@@ -643,14 +637,14 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              {!!token_price.base_price && (
+              {!!token_price && (
                 <>
                   $
-                  {token_price.base_price >= 0.01
+                  {token_price >= 0.01
                     ? handleNumberFormat(
-                        parseFloat(token_price.base_price.toFixed(2))
+                        parseFloat(token_price.toFixed(2))
                       )
-                    : convertLawPrice(token_price.base_price)}
+                    : convertLawPrice(token_price)}
                 </>
               )}
             </span>
@@ -875,9 +869,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
+                  /*
                   let totalAmount =
                     parseFloat(amount.split(",").join("")) *
                     (isBuy ? token_price.quote_price : token_price.base_price);
+                    */
+                   let totalAmount = parseFloat(amount.split(",").join("")) * token_price;
                   return (
                     <>
                       $
@@ -893,10 +890,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 })()}
               </span>
             </div>
-          </div>
-          <div className="flex justify-between text-sm mt-3">
-            <span className="text-tsuka-200">Slippage</span>
-            <span className="text-tsuka-50">{2.5}%</span>
           </div>
           <button
             className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"

@@ -99,10 +99,10 @@ export const getTokenVolume = createAsyncThunk(
   }
 );
 
-export const getYesterdayTokenPriceInPair = createAsyncThunk(
-  "TokenPriceInPair/getYesterdayPrice",
-  async (pair_address: string): Promise<TokenPriceInPair> => {
-    const data = Orders.getYesterdayTokenPriceInPair(pair_address);
+export const getYesterdayTokenPairPrice = createAsyncThunk(
+  "tokenPairPrice/getYesterdayPrice",
+  async (pair_address: string): Promise<number> => {
+    const data = Orders.getYesterdayTokenPairPrice(pair_address);
     return data;
   }
 );
@@ -193,9 +193,9 @@ export const tokenSlice = createSlice({
           state.value.volume.currencyLabel = "";
         }
       })
-      .addCase(getYesterdayTokenPriceInPair.fulfilled, (state, action) => {
-        console.log("getYesterdayTokenPriceInPair fulfilled", action.payload);
-        state.value.price.variationValue = action.payload.base_price;
+      .addCase(getYesterdayTokenPairPrice.fulfilled, (state, action) => {
+        console.log("getYesterdayTokenPairPrice fulfilled", action.payload);
+        state.value.price.variationValue = action.payload;
       });
     // .addCase(getTokenPriceInPair.fulfilled, (state, action) => {
     //   state.value.price.value = action.payload.base_price.toLocaleString();
