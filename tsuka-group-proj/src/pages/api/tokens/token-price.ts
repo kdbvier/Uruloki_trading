@@ -1,9 +1,8 @@
 import type { ApiResponse, TokenPriceInPair } from "@/types";
-import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
 import { G_QUERY_GetQuotePrice } from "./g_queries";
-import {getTokenNamesFromPairN} from "lib/token-pair"
+import {getTokenNamesFromPair} from "lib/token-pair"
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
@@ -12,11 +11,9 @@ const reqBodySchema = Joi.object({
   .min(1)
   .max(2);
 
-const prisma = new PrismaClient();
-
 export default async function tokenPriceInPairHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<TokenPriceInPair>>
+  res: NextApiResponse<ApiResponse<number>>
 ) {
   const { method, body } = req;
 
@@ -42,7 +39,7 @@ export default async function tokenPriceInPairHandler(
             : new Date()
         ).toISOString();
 
-        const pair_find_result = await getTokenNamesFromPairN(pair_address); /* Find token pair from pair_address */
+        const pair_find_result = await getTokenNamesFromPair(pair_address); /* Find token pair from pair_address */
 
         if(pair_find_result.success !== true) {
           res.status(404).json({
@@ -55,41 +52,36 @@ export default async function tokenPriceInPairHandler(
         const pair_base_address: string = pair_find_result.tokenPairInfo?.baseToken?.address!;
         const pair_quote_address: string = pair_find_result.tokenPairInfo?.pairedToken?.address!;
 
-        const pair_price_result = await G_QUERY_GetQuotePrice(pair_quote_address, pair_base_address, time_before); /* get price rate of base_token / quote_token */
+        const pair_price_result = await G_QUERY_GetQuotePrice(pair_base_address, pair_quote_address, time_before); /* get price rate of base_token / quote_token */
         if (!pair_price_result.data.data.ethereum.dexTrades?.[0]) {
           res.status(400).json({
             payload: undefined,
-            message: `Transaction for ${pair_address} not found yesterday`,
+            message: `Transaction for ${pair_address} not found`,
           });
           return;
         }
 
-        if(pair_find_result.tokenPairInfo?.baseToken?.address === process.env.USDT_ADDR 
-          || pair_find_result.tokenPairInfo?.baseToken?.address === process.env.USDC_ADDR) { /* Case of base_token is USDT or USDC */
+        if(is_usdt_or_usdc(pair_find_result.tokenPairInfo?.baseToken?.address ?? "")) { //If the base token is usdt or usdc
           res.status(200).json({
-            payload: {
-              base_price: 1,
-              quote_price: pair_price_result.data.data.ethereum.dexTrades[0].quotePrice,
-            },
+            payload: pair_price_result.data.data.ethereum.dexTrades[0].quotePrice,
             message: `Successfully found price quote for pair address ${pair_address}`,
           });
-        } else {
-          const base2usd_price = await get_price_base2usd(pair_base_address, time_before);
+        } else if (is_usdt_or_usdc(pair_find_result.tokenPairInfo?.pairedToken?.address ?? "")) { //If the paired token is usdt or usdc
+          res.status(200).json({
+            payload: pair_price_result.data.data.ethereum.dexTrades[0].basePrice,
+            message: `Successfully found price quote for pair address ${pair_address}`,
+          });
+        } else { //If the base token is the "paired token", then get the price of the other token
+          const base2usd_price = await get_price_base2usd(pair_quote_address, time_before);
           if(base2usd_price) { /* Case of there is transaction pair base_token / USDT or base_token/USTC */
             res.status(200).json({
-              payload: {
-                base_price: base2usd_price,
-                quote_price: base2usd_price * pair_price_result.data.data.ethereum.dexTrades[0].quotePrice,
-              },
+              payload: base2usd_price * pair_price_result.data.data.ethereum.dexTrades[0].quotePrice,
               message: `Successfully found price quote for pair address ${pair_address}`,
             });
           } else { /* Else Use intermediate token */
             const quote2usd_price = await get_price_base2usd(pair_quote_address, time_before);
             res.status(200).json({
-              payload: {
-                base_price: quote2usd_price / pair_price_result.data.data.ethereum.dexTrades[0].quotePrice,
-                quote_price:  quote2usd_price,
-              },
+              payload: quote2usd_price / pair_price_result.data.data.ethereum.dexTrades[0].quotePrice,
               message: `Successfully found price quote for pair address ${pair_address}`,
             });
           }
@@ -117,3 +109,11 @@ async function get_price_base2usd(base_address: string, time_before: string) {
     return usdc_price_result.data.data.ethereum.dexTrades?.[0]?.quotePrice;
   }
  }
+
+function is_usdt_or_usdc(token_address: string) {
+  return token_address === process.env.USDT_ADDR || token_address === process.env.USDC_ADDR;
+}
+
+function is_paired_token(token_address: string) {
+  return token_address === process.env.USDT_ADDR || token_address === process.env.USDC_ADDR || token_address === process.env.WETH_ADDR || token_address === process.env.DAI_ADDR
+}

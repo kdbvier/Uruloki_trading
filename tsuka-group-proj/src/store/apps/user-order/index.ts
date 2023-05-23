@@ -7,7 +7,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface UserOrderState {
   selectedOrder: Order;
-  selectedTokenPairPrice: TokenPairPrice;
+  selectedTokenPairPrice: number;
   value: UserOrder[];
   status: "ok" | "loading" | "failed";
 }
@@ -19,7 +19,7 @@ export type TokenPairPrice = {
 
 const initialState: UserOrderState = {
   selectedOrder: {} as Order,
-  selectedTokenPairPrice: {} as TokenPairPrice,
+  selectedTokenPairPrice: 0,
   value: [] as UserOrder[],
   status: "ok",
 };
@@ -43,7 +43,7 @@ interface updateEditOrderParams {
 
 export const getTokenPairPrice = createAsyncThunk(
   "tokenPairPrice/get",
-  async (pair_address: string): Promise<TokenPairPrice> => {
+  async (pair_address: string): Promise<number> => {
     const data = Orders.getTokenPairPrice(pair_address);
     return data;
   }
