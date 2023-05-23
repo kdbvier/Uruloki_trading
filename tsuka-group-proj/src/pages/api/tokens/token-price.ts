@@ -52,13 +52,6 @@ export default async function tokenPriceInPairHandler(
         const pair_base_address: string = pair_find_result.tokenPairInfo?.baseToken?.address!;
         const pair_quote_address: string = pair_find_result.tokenPairInfo?.pairedToken?.address!;
 
-        if(!is_valid_token(pair_base_address, pair_quote_address)) {
-          res.status(200).json({
-            payload: 0,
-            message: `Successfully found price quote for pair address ${pair_address}`,
-          });          
-        }
-
         const pair_price_result = await G_QUERY_GetQuotePrice(pair_base_address, pair_quote_address, time_before); /* get price rate of base_token / quote_token */
         if (!pair_price_result.data.data.ethereum.dexTrades?.[0]) {
           res.status(400).json({
@@ -123,8 +116,4 @@ function is_usdt_or_usdc(token_address: string) {
 
 function is_paired_token(token_address: string) {
   return token_address === process.env.USDT_ADDR || token_address === process.env.USDC_ADDR || token_address === process.env.WETH_ADDR || token_address === process.env.DAI_ADDR
-}
-
-function is_valid_token(base_token: string, quote_token: string) {
-  return base_token.startsWith("0x") && quote_token.startsWith("0x");
 }
