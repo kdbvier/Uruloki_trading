@@ -59,16 +59,16 @@ export default class Orders {
 
   static getTokenPairPrice = async (
     pair_address: string
-  ): Promise<TokenPairPrice> => {
+  ): Promise<number> => {
     return await httpRequest.post("/tokens/token-price", {
       pair_address,
-      yesterday: true,
+      yesterday: false,
     });
   };
 
   static getYesterdayTokenPairPrice = async (
     pair_address: string
-  ): Promise<TokenPairPrice> => {
+  ): Promise<number> => {
     console.log("getTokenPairPrice", pair_address);
     return await httpRequest.post("/tokens/token-price", {
       pair_address,

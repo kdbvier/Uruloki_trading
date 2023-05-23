@@ -100,7 +100,7 @@ export const getTokenVolume = createAsyncThunk(
 
 export const getYesterdayTokenPairPrice = createAsyncThunk(
   "tokenPairPrice/getYesterdayPrice",
-  async (pair_address: string): Promise<TokenPairPrice> => {
+  async (pair_address: string): Promise<number> => {
     const data = Orders.getYesterdayTokenPairPrice(pair_address);
     return data;
   }
@@ -194,7 +194,7 @@ export const tokenSlice = createSlice({
       })
       .addCase(getYesterdayTokenPairPrice.fulfilled, (state, action) => {
         console.log("getYesterdayTokenPairPrice fulfilled", action.payload);
-        state.value.price.variationValue = action.payload.base_price;
+        state.value.price.variationValue = action.payload;
       });
     // .addCase(getTokenPairPrice.fulfilled, (state, action) => {
     //   state.value.price.value = action.payload.base_price.toLocaleString();
