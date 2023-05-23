@@ -1,5 +1,6 @@
 import type { TokenPairInfo } from "@/types";
 import { G_QUERY_GetTokenPair } from "../pages/api/tokens/g_queries";
+import DataCache from '@/lib/caching/data-cache';
 
 export type TokenPairInfoResult = {
     success: boolean;
@@ -9,7 +10,7 @@ export type TokenPairInfoResult = {
 /**
  * Server-Side
  * Gets the two token names from the provided pair address
- * @param pair_address 
+ * @param pair_address  
  * @returns 
  */
 export async function getTokenNamesFromPair(pair_address: string): Promise<TokenPairInfoResult> {
@@ -19,6 +20,14 @@ export async function getTokenNamesFromPair(pair_address: string): Promise<Token
     );
     if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
         return {success: false}
+    }
+    const cacheReq = await DataCache.getIfFresh('token-Pair');
+    // Check if data is cached and still valid
+    if (cacheReq.stale) {
+      console.log("Writing data to cache")
+      await DataCache.addToCache(tokenPairResponse.data, 'token-Pair', 60 * 60 * 6); //6hr ttl
+    } else {
+      console.log("Data already in cache")
     }
     const { token0, token1 } = tokenPairResponse.data.data.ethereum.dexTrades[0];
     let baseToken, pairedToken;
