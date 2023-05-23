@@ -65,7 +65,7 @@ export default async function tokenPriceInPairHandler(
         }
 
         if(pair_find_result.tokenPairInfo?.baseToken?.address === process.env.USDT_ADDR 
-          || pair_find_result.tokenPairInfo?.baseToken?.address === process.env.USDT_ADDR) { /* Case of base_token is USDT or USDC */
+          || pair_find_result.tokenPairInfo?.baseToken?.address === process.env.USDC_ADDR) { /* Case of base_token is USDT or USDC */
           res.status(200).json({
             payload: {
               base_price: 1,
