@@ -59,6 +59,8 @@ export default function Pair({
   tokenPairInfo,
 }: {
   orders: Order[];
+  token_price: number;
+  oldTokenPrice: number;
   historicalDexTrades: Array<HistoricalDexTrades>;
   tokenPairInfo: TokenPairInfo
 }) {
@@ -136,14 +138,11 @@ export default function Pair({
     }
   }, [strategies]);
 
-  const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   useEffect(() => {
     const fetchTokenPairInfo_ActiveOrders = async () => {
       try {
         if (!pairAddress || _.isEmpty(pairAddress)) return;
-        const res = await HomePageTokens.getTokenPairInfo(pairAddress);
-        setTokenPairInfo({ ...res });
         const walletAddress: string = (await getConnectedAddress()) as string;
         const res_1 = await Orders.getActiveOrdersbyTokenPair({
           tokenpair: pairAddress,

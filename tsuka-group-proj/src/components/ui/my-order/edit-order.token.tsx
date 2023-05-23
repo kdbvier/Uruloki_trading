@@ -105,9 +105,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
   const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
-  const [token_price, setToken_Price] = useState<TokenPriceInPair>(
-    {} as TokenPriceInPair
-  );
+  const [token_price, setToken_Price] = useState<number>(0);
   // const selectedOrder = useAppSelector(
   //   (state) => state.userOrder.selectedOrder
   // );
@@ -188,7 +186,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
     // dispatch(getAllTokenCache());
     getWalletAddress();
-    Orders.getTokenPairPrice(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res * selectedOrder.budget : 0)))
+    Orders.getTokenPriceInPair(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res * selectedOrder.budget : 0)))
   }, []);
 
   useEffect(() => {

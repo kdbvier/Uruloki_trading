@@ -40,7 +40,7 @@ interface updateEditOrderParams {
 export const getTokenPairPrice = createAsyncThunk(
   "tokenPairPrice/get",
   async (pair_address: string): Promise<number> => {
-    const data = Orders.getTokenPairPrice(pair_address);
+    const data = Orders.getTokenPriceInPair(pair_address);
     return data;
   }
 );
@@ -162,9 +162,6 @@ export const userOrderSlice = createSlice({
       .addCase(setSelectedOrder.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(getTokenPriceInPair.fulfilled, (state, action) => {
-        state.selectedTokenPriceInPair = action.payload;
-      });
   },
 });
 

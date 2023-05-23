@@ -102,7 +102,7 @@ export const getTokenVolume = createAsyncThunk(
 export const getYesterdayTokenPairPrice = createAsyncThunk(
   "tokenPairPrice/getYesterdayPrice",
   async (pair_address: string): Promise<number> => {
-    const data = Orders.getYesterdayTokenPairPrice(pair_address);
+    const data = Orders.getYesterdayTokenPriceInPair(pair_address);
     return data;
   }
 );

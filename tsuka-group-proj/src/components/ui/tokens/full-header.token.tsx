@@ -27,8 +27,8 @@ export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
   orders: Order[];
-  token_price: TokenPriceInPair;
-  oldTokenPrice: TokenPriceInPair;
+  token_price: number;
+  oldTokenPrice: number;
   token?: Token;
   setToken: (t: Token) => void;
 }
@@ -201,9 +201,9 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <InfoSpanToken
                 title={"24h"}
                 value={`${defaultNumberFormat(
-                  oldTokenPrice?.base_price
-                    ? ((token_price.base_price - oldTokenPrice.base_price) /
-                        oldTokenPrice.base_price) *
+                  oldTokenPrice ?
+                    ((token_price - oldTokenPrice) /
+                        oldTokenPrice) *
                         100
                     : 0
                 ).toString()}%`}
@@ -212,13 +212,13 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
             <div className="text-sm justify-end">
               <div className="flex flex-col lg:flex-row items-end justify-end">
                 <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
-                  {token_price?.base_price && (
+                  {token_price && (
                     <>
-                      {token_price.base_price >= 0.01
+                      {token_price >= 0.01
                         ? handleNumberFormat(
-                            parseFloat(token_price.base_price.toFixed(2))
+                            parseFloat(token_price.toFixed(2))
                           )
-                        : convertLawPrice(token_price.base_price)}
+                        : convertLawPrice(token_price)}
                     </>
                   )}
                 </div>
