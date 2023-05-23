@@ -7,7 +7,7 @@ export interface BarBuySellTokenProps {
 
 export const BarBuySellToken: React.FC<BarBuySellTokenProps> = ({
   buyValue,
-  sellValue,
+  sellValue, 
 }) => {
   const percentPositive = calculatePercentIncrease(buyValue, sellValue);
   const percentNegative = 100 - percentPositive;
