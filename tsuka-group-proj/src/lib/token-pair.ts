@@ -14,21 +14,18 @@ export type TokenPairInfoResult = {
  * @returns 
  */
 export async function getTokenNamesFromPair(pair_address: string): Promise<TokenPairInfoResult> {
-  console.log("tokenPairResponse", pair_address);
   let tokenPairResponse: any
-  const cacheReq = await DataCache.getIfFresh('token-Pair');
+  const cacheReq = await DataCache.getIfFresh(`token-Pair:${pair_address}`);
   // Check if data is cached and still valid
   if (cacheReq.stale) {
-    tokenPairResponse = await G_QUERY_GetTokenPair(
+    tokenPairResponse = (await G_QUERY_GetTokenPair(
       pair_address as string
-    );
-    if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
+    ))?.data;
+    if (!tokenPairResponse.data.ethereum.dexTrades[0]) {
       return { success: false }
     }
-    console.log("Writing data to cache")
-    await DataCache.addToCache(tokenPairResponse.data, 'token-Pair', 60 * 60 * 6); //6hr ttl
+    await DataCache.addToCache(tokenPairResponse, `token-Pair:${pair_address}`, 60 * 60 * 24); //6hr ttl
   } else {
-    console.log("Data already in cache")
     tokenPairResponse = cacheReq.data.cached_data
   }
   const { token0, token1 } = tokenPairResponse.data.ethereum.dexTrades[0];
