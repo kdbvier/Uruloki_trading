@@ -1,5 +1,3 @@
-import { getStrategyDetails } from "@/store/apps/strategy-details";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Strategy, StrategyStatusEnum } from "@/types/strategy.type";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
@@ -10,12 +8,13 @@ import { Setup } from "@/lib/setups";
 
 export interface FullHeaderStrategiesProps {
   strategyDetails: Setup;
+  status: "ok" | "loading" | "failed";
 }
 
 export const FullHeaderStrategies: React.FC<FullHeaderStrategiesProps> = ({
   strategyDetails,
+  status,
 }) => {
-  const status = useAppSelector((state) => state.strategies.status);
   const statusTextColor = useMemo((): string => {
     switch (strategyDetails?.status) {
       case StrategyStatusEnum.ACTIVE:

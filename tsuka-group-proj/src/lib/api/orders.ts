@@ -1,7 +1,7 @@
 import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
-import { TokenPairPrice } from "@/store/apps/user-order";
+import { TokenPriceInPair } from "@/types";
 
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
@@ -57,7 +57,7 @@ export default class Orders {
     return await httpRequest.delete(`/orders/${orderId}`);
   };
 
-  static getTokenPairPrice = async (
+  static getTokenPriceInPair = async (
     pair_address: string
   ): Promise<number> => {
     return await httpRequest.post("/tokens/token-price", {
@@ -66,7 +66,7 @@ export default class Orders {
     });
   };
 
-  static getYesterdayTokenPairPrice = async (
+  static getYesterdayTokenPriceInPair = async (
     pair_address: string
   ): Promise<number> => {
     console.log("getTokenPairPrice", pair_address);

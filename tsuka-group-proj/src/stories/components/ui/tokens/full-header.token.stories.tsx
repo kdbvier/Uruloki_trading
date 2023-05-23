@@ -17,7 +17,7 @@ export default {
     },
   },
   decorators: [
-    (Story) => {
+    (Story, context) => {
       return (
         <Provider store={store}>
           <DashboardLayout>{Story()}</DashboardLayout>

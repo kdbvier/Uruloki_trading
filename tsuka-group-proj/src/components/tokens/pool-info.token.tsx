@@ -1,6 +1,6 @@
-import { getPoolInfo } from "@/store/apps/pool-info";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
+import { poolInfoData } from "@/@fake-data/pool-info.fake-data";
+import { Pool } from "@/types/pool.type";
+import { useEffect, useState } from "react";
 import { FiArrowDown } from "react-icons/fi";
 import { DefaultButton } from "../ui/buttons/default.button";
 
@@ -11,12 +11,14 @@ export interface PoolInfoTokenProps {
 }
 
 export const PoolInfoToken: React.FC<PoolInfoTokenProps> = ({ token }) => {
-  const dispatch = useAppDispatch();
-  const { value, status } = useAppSelector((state) => state.poolInfo);
+  const [value, setValue] = useState<Pool>();
+  const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
 
   useEffect(() => {
-    dispatch(getPoolInfo(token.id));
-  }, [dispatch, token]);
+    // TODO: from fake data, set loading
+    const data = poolInfoData.find((item) => item.id === token?.id)!;
+    setValue({ ...data });
+  }, [token]);
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 p-6">

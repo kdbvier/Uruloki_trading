@@ -4,6 +4,7 @@ import Orders from "@/lib/api/orders";
 import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { TokenPriceInPair } from "@/types";
 
 export interface UserOrderState {
   selectedOrder: Order;
@@ -11,11 +12,6 @@ export interface UserOrderState {
   value: UserOrder[];
   status: "ok" | "loading" | "failed";
 }
-
-export type TokenPairPrice = {
-  base_price: number;
-  quote_price: number;
-};
 
 const initialState: UserOrderState = {
   selectedOrder: {} as Order,
@@ -166,8 +162,8 @@ export const userOrderSlice = createSlice({
       .addCase(setSelectedOrder.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(getTokenPairPrice.fulfilled, (state, action) => {
-        state.selectedTokenPairPrice = action.payload;
+      .addCase(getTokenPriceInPair.fulfilled, (state, action) => {
+        state.selectedTokenPriceInPair = action.payload;
       });
   },
 });
