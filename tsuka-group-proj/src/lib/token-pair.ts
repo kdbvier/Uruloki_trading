@@ -61,8 +61,7 @@ export async function getTokenNamesFromPairN(pair_address: string): Promise<Toke
         return {success: false}
     }
 
-    const { token0: baseToken, token: pairedToken } = tokenPairResponse.data.data.ethereum.dexTrades[0];
-    console.log(baseToken, pairedToken)
+    const { token0: baseToken, token1: pairedToken } = tokenPairResponse.data.data.ethereum.dexTrades[0];
 
     return {
         success: true,

@@ -43,6 +43,7 @@ export default async function tokenPriceInPairHandler(
         ).toISOString();
 
         const pair_find_result = await getTokenNamesFromPairN(pair_address); /* Find token pair from pair_address */
+
         if(pair_find_result.success !== true) {
           res.status(404).json({
             payload: undefined,
@@ -94,6 +95,7 @@ export default async function tokenPriceInPairHandler(
           }
         }
       } catch (err) {
+        console.log(err);
         res.status(400).json({
           payload: undefined,
           message: `Something went wrong! Please read the error message '${JSON.stringify(err)}'`,
@@ -109,9 +111,9 @@ export default async function tokenPriceInPairHandler(
 async function get_price_base2usd(base_address: string, time_before: string) {
   const usdt_price_result = await G_QUERY_GetQuotePrice(base_address, process.env.USDT_ADDR!, time_before);
   if(usdt_price_result.data.data.ethereum.dexTrades?.[0]) {
-    return usdt_price_result.data.data.ethereum.dexTrades?.[0].quotePrice;
+    return usdt_price_result.data.data.ethereum.dexTrades?.[0]?.quotePrice;
   } else {
     const usdc_price_result = await G_QUERY_GetQuotePrice(base_address, process.env.USDC_ADDR!, time_before);
-    return usdc_price_result.data.data.ethereum.dexTrades?.[0].quotePrice;
+    return usdc_price_result.data.data.ethereum.dexTrades?.[0]?.quotePrice;
   }
  }
