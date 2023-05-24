@@ -5,7 +5,7 @@ export const LiveGraphToken: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="h-full md:h-[58%] relative">
+    <div className="relative">
       <div className="bg-tsuka-500 rounded-xl text-tsuka-100 mb-4 md:mb-0 p-4">
         <TokenGraphChart
           onLoaded={() =>

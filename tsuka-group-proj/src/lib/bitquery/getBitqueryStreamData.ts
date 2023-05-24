@@ -5,6 +5,7 @@ import {
   initBitqueryStreamData,
 } from "@/store/apps/bitquery-data";
 import { store } from "@/store";
+import { TokenPairInfo } from "@/types";
 
 const client = createSubscriptionClient();
 
@@ -111,7 +112,7 @@ export const getAddData = (forwardTime: any, data: any) => {
 };
 
 // WETH / USDC trades
-const fetchStreamData = async (pairAddress: any) => {
+const fetchStreamData = async (pairAddress: any, setDatas: any = undefined) => {
   console.log("PairAddress", pairAddress);
   if (typeof window !== "undefined") {
     const subscription = client
@@ -212,6 +213,8 @@ const fetchStreamData = async (pairAddress: any) => {
             store.getState().tokenPairInfo.value.baseToken?.symbol;
           const transData = transformStreamData(response, compareTokenName);
           console.log("transform", transData);
+          if (setDatas) setDatas(transData); //Not set but Add using next line;
+          // state.streamValue = [...state.streamValue, temp];
           if (transData.open != "")
             store.dispatch(getBitqueryStream(transData));
           return transData;
@@ -239,4 +242,13 @@ export const stopBitqueryStream = async () => {
   client.unsubscribeAll();
   store.dispatch(initBitqueryData());
   store.dispatch(initBitqueryStreamData());
+};
+
+// Request the Bitquery to subscribe
+export const getBitqueryStreamData1 = async (
+  pairAddress: any,
+  setDatas: any
+) => {
+  client.unsubscribeAll();
+  const streamData = await fetchStreamData(pairAddress, setDatas);
 };

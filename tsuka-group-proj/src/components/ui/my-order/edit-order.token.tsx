@@ -1,21 +1,27 @@
-import { Order, PostOrder, TokenCache, TokenPairInfo } from "@/types";
+import {
+  Order,
+  PostOrder,
+  TokenCache,
+  TokenPairInfo,
+  TokenPriceInPair,
+} from "@/types";
 // import getTokenCache from '@/lib/api/tokens/'
 import { useEffect, useMemo, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-import {
-  editUserOrder,
-  setSelectedOrder,
-  createOrder,
-  getTokenPairPrice,
-} from "@/store/apps/user-order";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+// import {
+//   editUserOrder,
+//   setSelectedOrder,
+//   createOrder,
+//   getTokenPriceInPair,
+// } from "@/store/apps/user-order";
+// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
 import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
-import { getAllTokenCache } from "@/store/apps/token-cache";
+// import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
@@ -36,6 +42,7 @@ export interface EditOrderTokenProp {
   selectedOrderId?: number;
   closeHandler: () => void;
   pairInfo?: TokenPairInfo;
+  fetchOrders?: () => void;
 
   //  token?: Token;
 }
@@ -85,6 +92,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowEditOrderModal,
   selectedOrderId = 0,
   closeHandler,
+  fetchOrders,
   name1,
   code1,
   name2,
@@ -93,15 +101,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   pairInfo,
 }) => {
   console.log("Create an order");
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  const selectedOrder = useAppSelector(
-    (state) => state.userOrder.selectedOrder
-  );
-  const tokenCache = useAppSelector((state) => state.tokencache.value);
-  const token_price = useAppSelector(
-    (state) => state.userOrder.selectedTokenPairPrice
-  );
+  const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
+  const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
+  const [token_price, setToken_Price] = useState<number>(0);
+  // const selectedOrder = useAppSelector(
+  //   (state) => state.userOrder.selectedOrder
+  // );
+  // const tokenCache = useAppSelector((state) => state.tokencache.value);
+  // const token_price = useAppSelector(
+  //   (state) => state.userOrder.selectedTokenPriceInPair
+  // );
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [selectedToken, setSelectedToken] = useState(0);
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
@@ -149,47 +160,76 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   } = useUrulokiAPI();
 
   const getWalletAddress = async () => {
-    let address = await getConnectedAddress()
+    let address = await getConnectedAddress();
     setWalletAddress(address);
-  }
-  
+  };
+
   useEffect(() => {
     if (isEdit) {
-      dispatch(setSelectedOrder(selectedOrderId));
-    }
-    if (!pairInfo) {
-      void (async () => {
-        const info = await HomePageTokens.getTokenPairInfo(
-          pair_address as string
-        );
-        setTokenPairInfo(info);
-      })();
+      // dispatch(setSelectedOrder(selectedOrderId));
+      if (selectedOrderId == -1) {
+        setSelectedOrder_L({} as Order);
+      } else {
+        Orders.getOrderById(selectedOrderId)
+          .then((res) => {
+            setSelectedOrder_L(res);
+          })
+          .catch((err) => console.error(err));
+      }
     } else {
-      setTokenPairInfo(pairInfo);
+      // dispatch(getTokenPriceInPair(pair_address as string));
+      Orders.getTokenPriceInPair(pair_address as string)
+        .then((res) => {
+          setToken_Price(res);
+        })
+        .catch((err) => console.error(err));
     }
-    dispatch(getAllTokenCache());
+    // dispatch(getAllTokenCache());
     getWalletAddress();
-    Orders.getTokenPairPrice(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res.base_price * selectedOrder.budget : 0)))
+    Orders.getTokenPriceInPair(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res * selectedOrder.budget : 0)))
   }, []);
 
   useEffect(() => {
     const currentToken: any = isBuy ? pairShortName : baseShortName;
-    if(isBuy)
-      settoken1Symbol(currentToken);
-      else
-      settoken2Symbol(currentToken);
-      currentToken && setAllTokenName([
+    if (isBuy) settoken1Symbol(currentToken);
+    else settoken2Symbol(currentToken);
+    currentToken &&
+      setAllTokenName([
         { shortName: currentToken } as TokenCache,
         ...tokenCache.filter(({ shortName }) => shortName !== currentToken),
       ]);
-    
   }, [tokenCache, isBuy, pairShortName, baseShortName]);
 
   useEffect(() => {
-    if (pair_address) {
-      dispatch(getTokenPairPrice(pair_address as string));
+    const currentToken = isBuy ? pairShortName : baseShortName;
+
+    if (tokenCache && currentToken) {
+      const currentPrice = tokenCache.filter(
+        (token) => token.shortName === pairShortName
+      ).length
+        ? tokenCache.filter((token) => token.shortName === pairShortName)[0]!
+            .price
+        : 0;
+
+      const selectPrice = tokenCache.filter((token) =>
+        isBuy
+          ? token.shortName === pairShortName
+          : token.shortName === baseShortName
+      ).length
+        ? tokenCache.filter((token) =>
+            isBuy
+              ? token.shortName === pairShortName
+              : token.shortName === baseShortName
+          )[0]!.price
+        : 0;
+      const newValue = (
+        Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
+      )
+        .toFixed(2)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      setAmount(newValue);
     }
-  }, [pair_address]);
+  }, [isBuy]);
 
   useEffect(() => {
     const currentToken = isBuy ? pairShortName : baseShortName;
@@ -227,7 +267,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setAmount(handleNumberFormat(selectedOrder.budget ?? 0));
       setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
       setIsContinuous(selectedOrder.is_continuous ?? false);
-      dispatch(getTokenPairPrice(selectedOrder.pair_address as string));
+      // dispatch(getTokenPriceInPair(selectedOrder.pair_address as string));
+      Orders.getTokenPriceInPair(selectedOrder.pair_address as string)
+        .then((res) => {
+          setToken_Price(res);
+        })
+        .catch((err) => console.error(err));
     }
   }, [selectedOrder]);
 
@@ -236,18 +281,21 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       const currentToken = isBuy ? pairShortName : baseShortName;
       const currentPrice = tokenCache.filter(
         (token) => token.shortName === currentToken
-      ).length ? tokenCache.filter(
-        (token) => token.shortName === currentToken
-      )[0]!.price : 0;
+      ).length
+        ? tokenCache.filter((token) => token.shortName === currentToken)[0]!
+            .price
+        : 0;
       const selectPrice = tokenCache.filter((token) =>
         isBuy
           ? token.shortName === token1Symbol
           : token.shortName === token2Symbol
-      ).length ? tokenCache.filter((token) =>
-      isBuy
-        ? token.shortName === token1Symbol
-        : token.shortName === token2Symbol
-    )[0]!.price : 0;
+      ).length
+        ? tokenCache.filter((token) =>
+            isBuy
+              ? token.shortName === token1Symbol
+              : token.shortName === token2Symbol
+          )[0]!.price
+        : 0;
       const newValue = (
         Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
       )
@@ -348,7 +396,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setIsContinuous((prevState) => !prevState);
   };
   const handleSubmit = async () => {
-    if(!walletAddress) {
+    if (!walletAddress) {
       return;
     }
     if (isEdit) {
@@ -362,20 +410,23 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       } else {
         patchData.single_price = toNumber(targetPrice);
       }
-      patchData.pairTokenShortName = token1Symbol ? token1Symbol as string : selectedOrder.pairTokenShortName as string;
-      patchData.baseTokenShortName = token2Symbol ? token2Symbol as string : selectedOrder.baseTokenShortName as string;
+      patchData.pairTokenShortName = token1Symbol
+        ? (token1Symbol as string)
+        : (selectedOrder.pairTokenShortName as string);
+      patchData.baseTokenShortName = token2Symbol
+        ? (token2Symbol as string)
+        : (selectedOrder.baseTokenShortName as string);
       patchData.is_continuous = isContinuous;
       patchData.creator_address = walletAddress as string;
       console.log("before submit(patch)::");
-      console.log(patchData, token1Symbol);
-      dispatch(editUserOrder({ id: selectedOrderId, patchData, walletAddress }));
       console.log(patchData);
-      const action = await dispatch(
-        editUserOrder({ id: selectedOrderId, patchData, walletAddress })
-      );
-      if (action.meta.requestStatus === "fulfilled") {
-        if (action.payload) {
-          const payload = action.payload as Order;
+      Orders.editOrder(selectedOrderId, patchData)
+        .then((res) => {
+          //TOAST:
+          if (fetchOrders) {
+            fetchOrders();
+          }
+          const payload = res as Order;
           if (payload.price_type === "range") {
             if (payload.is_continuous === true) {
               editContinuousPriceRangeOrder(
@@ -453,9 +504,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               });
             }
           }
-        }
-      }
-      setShowEditOrderModal(false);
+          alert("Order successfully updated");
+          setShowEditOrderModal(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Update order failed");
+          setShowEditOrderModal(false);
+        });
+      // dispatch(editUserOrder({ id: selectedOrderId, patchData }));
+      // setShowEditOrderModal(false);
     } else {
       const postData = {} as PostOrder;
       postData.budget = toNumber(amount);
@@ -477,10 +535,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       postData.creator_address = walletAddress as string;
       console.log("before Submit(post)::");
       console.log(postData);
-      const action = await dispatch(createOrder(postData));
-      if (action.meta.requestStatus === "fulfilled") {
-        if (action.payload) {
-          const payload = action.payload as Order;
+      Orders.createOrder(postData)
+        .then((res) => {
+          //TOAST:
+          if (fetchOrders) {
+            fetchOrders();
+          }
+          const payload = res as Order;
           if (payload.price_type === "range") {
             if (payload.is_continuous === true) {
               createContinuousPriceRangeOrder(
@@ -546,9 +607,17 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               });
             }
           }
-        }
-      }
-      setShowEditOrderModal(false);
+
+          alert("Order successfully created");
+          setShowEditOrderModal(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Create order failed");
+          setShowEditOrderModal(false);
+        });
+      // dispatch(createOrder(postData));
+      // setShowEditOrderModal(false);
     }
   };
 
@@ -566,14 +635,14 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              {!!token_price.base_price && (
+              {!!token_price && (
                 <>
                   $
-                  {token_price.base_price >= 0.01
+                  {token_price >= 0.01
                     ? handleNumberFormat(
-                        parseFloat(token_price.base_price.toFixed(2))
+                        parseFloat(token_price.toFixed(2))
                       )
-                    : convertLawPrice(token_price.base_price)}
+                    : convertLawPrice(token_price)}
                 </>
               )}
             </span>
@@ -772,9 +841,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             <div className="w-full flex justify-between">
               <Dropdown
                 allTokenName={allTokenName}
-                setSelectTokenName={
-                  isBuy ? settoken1Symbol : settoken2Symbol
-                }
+                setSelectTokenName={isBuy ? settoken1Symbol : settoken2Symbol}
               />
               {/* <div
                 className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
@@ -800,9 +867,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
+                  /*
                   let totalAmount =
                     parseFloat(amount.split(",").join("")) *
                     (isBuy ? token_price.quote_price : token_price.base_price);
+                    */
+                   let totalAmount = parseFloat(amount.split(",").join("")) * token_price;
                   return (
                     <>
                       $
@@ -818,10 +888,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 })()}
               </span>
             </div>
-          </div>
-          <div className="flex justify-between text-sm mt-3">
-            <span className="text-tsuka-200">Slippage</span>
-            <span className="text-tsuka-50">{2.5}%</span>
           </div>
           <button
             className="w-full flex justify-center items-center rounded-[10px] bg-custom-primary py-2 mt-3 text-white"

@@ -13,12 +13,14 @@ import {
   PriceTypeEnum,
 } from "@/types/token-order.type";
 import { GetServerSideProps } from "next";
+import Strategies from "@/lib/api/strategies";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
   HiOutlineArrowLongLeft,
   HiOutlineArrowLongRight,
 } from "react-icons/hi2";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 export const mapModifiedOrderToOrder = (modifiedOrder: ModifiedOrder) =>
   ({
@@ -42,6 +44,10 @@ export default function StrategyDetails({
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const router = useRouter();
   const [token, setToken] = useState(null);
+
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
+  const [strategyDetails, setStrategyDetails] = useState<Strategy>();
+  const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
 
   const settings = {
     dots: true,
@@ -69,7 +75,10 @@ export default function StrategyDetails({
     <div className="flex flex-col">
       {currentSetup && (
         <div className="p-8">
-          <FullHeaderStrategies strategyDetails={currentSetup} />
+          <FullHeaderStrategies
+            strategyDetails={currentSetup}
+            status={status}
+          />
           <div className="hidden md:grid grid-cols-9 gap-4">
             {currentSetup?.orderTokens?.map((item, index) => (
               <div key={index} className="col-span-9 md:col-span-3">

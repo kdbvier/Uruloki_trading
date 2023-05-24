@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from "react";
+import { OrderBookPosition } from "@/types/token-positions.type";
+import { tokenPositionsData } from "@/@fake-data/token-positions.fake-data";
+import { splitAddress } from "@/helpers/splitAddress.helper";
 import { numberWithCommas } from "@/helpers/comma.helper";
 import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
@@ -14,17 +18,15 @@ const subPrice = (price: number) => {
     priceEle = (
       <>
         ${formatNumberToHtmlTag(price).integerPart}.0
-        <sub>
-          {formatNumberToHtmlTag(price).leadingZerosCount}
-        </sub>
+        <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
         {formatNumberToHtmlTag(price).remainingDecimal}
       </>
     );
   }
-  return priceEle
-}
+  return priceEle;
+};
 export interface OrderBookTokenProps {
-  dexTrades: Array<HistoricalDexTrades>
+  dexTrades: Array<HistoricalDexTrades>;
 }
 
 interface TradeRowProps {
@@ -54,7 +56,7 @@ const TradeRow: React.FC<TradeRowProps> = ({ item }) => {
 };
 
 export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
-  dexTrades
+  dexTrades,
 }) => {
   return (
     <div>
@@ -68,9 +70,10 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
               <span className="px-4 py-2 w-[190px]">Amount (USD)</span>
               <span className="px-4 py-2">Buyer Address</span>
             </div>
-            {dexTrades && dexTrades.map((item: any, index: number) => (
-              <TradeRow key={index} item={item} />
-            ))}
+            {dexTrades &&
+              dexTrades.map((item: any, index: number) => (
+                <TradeRow key={index} item={item} />
+              ))}
           </div>
         </div>
       </div>

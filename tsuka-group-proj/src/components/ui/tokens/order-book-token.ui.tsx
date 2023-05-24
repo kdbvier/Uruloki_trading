@@ -3,6 +3,9 @@ import { numberWithCommas } from "@/helpers/comma.helper";
 import { ModifiedOrder, TokenPairOrders } from "@/lib/setups";
 import { useAppSelector } from "@/store/hooks";
 import { OrderBookData } from "@/types/orderbook.type";
+import Orders from "@/lib/api/orders";
+import { TokenOrderBooks } from "@/types/token-order-books.type";
+import { Token } from "@/types/token.type";
 import { useEffect, useState } from "react";
 
 interface OrderBookTokenUiProp {
@@ -14,7 +17,6 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
   orders,
   tokens,
 }) => {
-  const { status } = useAppSelector((state) => state.tokenOrderBooks);
   const [sellSum, setSellSum] = useState(0);
   const [buySum, setBuySum] = useState(0);
   const [orderBookData, setOrderBookData] = useState<OrderBookData>(
@@ -23,6 +25,23 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
   const [selectedToken, setSelectedToken] = useState<OrderBookTokens>(
     tokens[0]
   );
+
+  const [tokenOrdersBooks, setTokenOrdersBooks] = useState<TokenOrderBooks>();
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (selectedToken) {
+      let tempOrderBookData = orderBookData.fromOrders(
+        orders.find(({ pair_address }) => pair_address === selectedToken.value)
+          ?.orders ?? []
+      );
+      setOrderBookData(tempOrderBookData);
+
+      setSellSum(tempOrderBookData.getSellSum());
+      setBuySum(tempOrderBookData.getBuySum());
+      console.log(orders);
+      console.log(tempOrderBookData);
+    }
+  });
 
   const handleSelect = (token: OrderBookTokens) => {
     setSelectedToken(token);
@@ -47,8 +66,8 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
 
   return (
     <div>
-      {status === "loading" && "Loading..."}
-      {status === "ok" && orderBookData && orders[0] ? (
+      {loading && "Loading..."}
+      {!loading && tokenOrdersBooks && orders[0] ? (
         <div className="p-4 flex gap-2">
           <div className="flex-1">
             <div className="h-96">
