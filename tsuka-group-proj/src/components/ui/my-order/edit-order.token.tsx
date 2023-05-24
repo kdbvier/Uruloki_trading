@@ -8,9 +8,8 @@ import {
 import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
-
+import HomePageTokens from "@/lib/api/tokens";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
@@ -20,6 +19,8 @@ import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { handleNumberFormat, convertLawPrice, toNumber } from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
+import { blurHandler, handleNumberInputChange } from "@/lib/edit-order-token/helpers";
+import { CreateOrderPriceInfo, editOrderInContract, editOrderInDb } from "@/lib/edit-order-token/submit-order";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -104,6 +105,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (isEdit && selectedOrderId) {
       handleIsEditLoad(selectedOrderId ?? 0, setSelectedOrder_L, setTokenPairPriceInfo, setAmount)
     }
+    if (!pairInfo) {
+      void (async () => {
+        const info = await HomePageTokens.getTokenPairInfo(
+          pair_address as string
+        );
+        setTokenPairInfo(info);
+      })();
+    } else {
+      setTokenPairInfo(pairInfo);
+    }
     getWalletAddress();
   }, []);
 
@@ -119,34 +130,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   }, [tokenCache, isBuy, pairShortName, baseShortName]);
 
   useEffect(() => {
-    const currentToken = isBuy ? pairShortName : baseShortName;
-
-    if (tokenCache && currentToken) {
-      const currentPrice = tokenCache.filter(
-        (token) => token.shortName === pairShortName
-      ).length ? tokenCache.filter(
-        (token) => token.shortName === pairShortName
-      )[0]!.price : 0;
-      
-      const selectPrice = tokenCache.filter((token) =>
-        isBuy
-          ? token.shortName === pairShortName
-          : token.shortName === baseShortName
-      ).length ?  tokenCache.filter((token) =>
-      isBuy
-        ? token.shortName === pairShortName
-        : token.shortName === baseShortName
-    )[0]!.price : 0;
-      const newValue = (
-        Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
-      )
-        .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      setAmount(newValue);
-    }
-  }, [isBuy])
-
-  useEffect(() => {
     if (JSON.stringify(selectedOrder) !== "{}" && isEdit) {
       setTargetPrice(handleNumberFormat(selectedOrder.single_price ?? 0));
       setMinPrice(handleNumberFormat(selectedOrder.from_price ?? 0));
@@ -156,35 +139,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setIsContinuous(selectedOrder.is_continuous ?? false);
     }
   }, [selectedOrder]);
-
-  useEffect(() => {
-    if ((token1Symbol || token2Symbol) && tokenCache.length) {
-      const currentToken = isBuy ? pairShortName : baseShortName;
-      const currentPrice = tokenCache.filter(
-        (token) => token.shortName === currentToken
-      ).length
-        ? tokenCache.filter((token) => token.shortName === currentToken)[0]!
-            .price
-        : 0;
-      const selectPrice = tokenCache.filter((token) =>
-        isBuy
-          ? token.shortName === token1Symbol
-          : token.shortName === token2Symbol
-      ).length
-        ? tokenCache.filter((token) =>
-            isBuy
-              ? token.shortName === token1Symbol
-              : token.shortName === token2Symbol
-          )[0]!.price
-        : 0;
-      const newValue = (
-        Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
-      )
-        .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      setAmount(newValue);
-    }
-  }, [token1Symbol, token2Symbol]);
 
   const closeClickHandler = () => {
     closeHandler();
@@ -196,70 +150,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setShowEditOrderModal(false);
   };
 
-  const handleNumberInputChange = (name: string, event: any) => {
-    let value = event.target.value.replace(/,/g, "");
-    const pattern = /^\d*\.?\d*$/;
-    if (!pattern.test(value)) return;
-    let newValue = "";
-    if (value.search("\\.") !== -1) {
-      let [integerPart, decimalPart] = value.split(".");
-      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
-    } else {
-      newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-    switch (name) {
-      case "amount":
-        setAmount(newValue);
-        break;
-      case "target":
-        setTargetPrice(newValue);
-        break;
-      case "min":
-        setMinPrice(newValue);
-        break;
-      case "max":
-        setMaxPrice(newValue);
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const blurHandler = (name: string, event: any) => {
-    let value = event.target.value.replace(/,/g, "");
-    let newValue = "";
-    if (!/^\d*\.?\d*$/.test(value)) {
-      newValue = "0";
-      return;
-    } else {
-      value = (+value).toString();
-      let [integerPart, decimalPart] = value.split(".");
-      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      newValue = decimalPart
-        ? `${integerPart}.${decimalPart}`
-        : `${integerPart}`;
-    }
-    switch (name) {
-      case "amount":
-        setAmount(newValue);
-        break;
-      case "target":
-        setTargetPrice(newValue);
-        break;
-      case "min":
-        setMinPrice(newValue);
-        break;
-      case "max":
-        setMaxPrice(newValue);
-        break;
-
-      default:
-        break;
-    }
-  };
-
   const toggle = () => {
     setIsContinuous((prevState) => !prevState);
   };
@@ -267,109 +157,27 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (!walletAddress) {
       return;
     }
-    if (isEdit) {
-      const patchData = {} as PatchOrder;
-      patchData.budget = toNumber(amount);
-      patchData.order_type = isBuy ? "buy" : "sell";
-      patchData.price_type = isRange ? "range" : "single";
-      if (!isRange) {
-        patchData.from_price = toNumber(minPrice);
-        patchData.to_price = toNumber(maxPrice);
-      } else {
-        patchData.single_price = toNumber(targetPrice);
+    if (isEdit && tokenPairInfo) {
+      const newOrderPriceInfo: CreateOrderPriceInfo = {
+        minPrice,
+        maxPrice,
+        targetPrice
       }
-      patchData.pairTokenShortName = token1Symbol
-        ? (token1Symbol as string)
-        : (selectedOrder.pairTokenShortName as string);
-      patchData.baseTokenShortName = token2Symbol
-        ? (token2Symbol as string)
-        : (selectedOrder.baseTokenShortName as string);
-      patchData.is_continuous = isContinuous;
-      patchData.creator_address = walletAddress as string;
-      Orders.editOrder(selectedOrderId ?? 0, patchData)
-        .then((res) => {
-          //TOAST:
-          if (fetchOrders) {
-            fetchOrders();
-          }
-          const payload = res as Order;
-          if (payload.price_type === "range") {
-            if (payload.is_continuous === true) {
-              editContinuousPriceRangeOrder(
-                payload.order_id,
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(minPrice.split(",").join("")),
-                Number(maxPrice.split(",").join("")),
-                Number(amount.split(",").join("")),
-                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            } else {
-              editNonContinuousPriceRangeOrder(
-                payload.order_id,
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(minPrice.split(",").join("")),
-                Number(maxPrice.split(",").join("")),
-                Number(amount.split(",").join(""))
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            }
-          } else {
-            if (payload.is_continuous === true) {
-              editContinuousTargetPriceOrder(
-                payload.order_id,
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(targetPrice.split(",").join("")),
-                Number(amount.split(",").join("")),
-                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            } else {
-              editNonContinuousTargetPriceOrder(
-                payload.order_id as number,
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy as boolean,
-                Number(targetPrice.split(",").join("")),
-                Number(amount.split(",").join(""))
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            }
-          }
-          alert("Order successfully updated");
-          setShowEditOrderModal(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("Update order failed");
-          setShowEditOrderModal(false);
-        });
+
+      try {
+        const newOrder = await editOrderInDb(selectedOrder, amount, isBuy, isRange, newOrderPriceInfo, token1Symbol, token2Symbol, isContinuous, walletAddress)
+    
+        //TOAST:
+        if (fetchOrders) {
+          fetchOrders();
+        }
+
+        await editOrderInContract(editContinuousTargetPriceOrder, editNonContinuousTargetPriceOrder, editContinuousPriceRangeOrder, editNonContinuousPriceRangeOrder, toast, newOrder, tokenPairInfo);
+
+        setShowEditOrderModal(false);
+      } catch (e) {
+        setShowEditOrderModal(false);
+      }
     } else {
       const postData = {} as PostOrder;
       postData.budget = toNumber(amount);
@@ -610,8 +418,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 type="text"
                 className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                 value={targetPrice}
-                onChange={(e) => handleNumberInputChange("target", e)}
-                onBlur={(e) => blurHandler("target", e)}
+                onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "target", e)}
+                onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "target", e)}
               />
             </div>
           )}
@@ -625,8 +433,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={minPrice}
-                  onChange={(e) => handleNumberInputChange("min", e)}
-                  onBlur={(e) => blurHandler("min", e)}
+                  onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "min", e)}
+                  onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "min", e)}
                 />
               </div>
               <span className="hidden md:block mx-4 mt-4 text-tsuka-300">
@@ -640,8 +448,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={maxPrice}
-                  onChange={(e) => handleNumberInputChange("max", e)}
-                  onBlur={(e) => blurHandler("max", e)}
+                  onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "max", e)}
+                  onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "max", e)}
                 />
               </div>
             </div>
@@ -663,8 +471,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 type="text"
                 className="grow min-w-[100px] bg-tsuka-500 outline-none text-right text-2xl font-medium"
                 value={amount}
-                onChange={(e) => handleNumberInputChange("amount", e)}
-                onBlur={(e) => blurHandler("amount", e)}
+                onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "amount", e)}
+                onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "amount", e)}
               />
             </div>
             <div className="w-full flex justify-between mt-1">
