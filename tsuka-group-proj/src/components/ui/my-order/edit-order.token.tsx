@@ -118,6 +118,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       ]);
   }, [tokenCache, isBuy, pairShortName, baseShortName]);
 
+  /*
   useEffect(() => {
     const currentToken = isBuy ? pairShortName : baseShortName;
 
@@ -145,6 +146,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setAmount(newValue);
     }
   }, [isBuy])
+  */
 
   useEffect(() => {
     if (JSON.stringify(selectedOrder) !== "{}" && isEdit) {
