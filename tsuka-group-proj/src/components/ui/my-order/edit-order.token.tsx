@@ -158,7 +158,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (!walletAddress) {
       return;
     }
-    if (isEdit) {
+    if (isEdit && tokenPairInfo) {
       const newOrderPriceInfo: CreateOrderPriceInfo = {
         minPrice,
         maxPrice,
@@ -173,7 +173,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           fetchOrders();
         }
 
-        tokenPairInfo && await editOrderInContract(toast, newOrder, tokenPairInfo);
+        await editOrderInContract(toast, newOrder, tokenPairInfo);
 
         setShowEditOrderModal(false);
       } catch (e) {
