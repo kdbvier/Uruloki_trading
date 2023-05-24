@@ -2,25 +2,41 @@ import {
   G_QUERY_GetQuotePrice,
   G_QUERY_GetTokenPair,
 } from "@/pages/api/tokens/g_queries";
+import { TokenPriceInPair } from "@/types";
 
-export const getTokenPrice = async (
+export const getTokenPrice = async ( 
   pair_address: string,
   yesterday: boolean = false
-) => {
+): Promise<TokenPriceInPair> => {
   const timeBefore = (
     yesterday
       ? new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
       : new Date()
   ).toISOString();
+  if(!pair_address) {
+    console.log("token-price.ts: No pair address provided")
+    return {
+      base_price: 0,
+      quote_price: 0
+    }
+  }
+
+  //Query bitquery
   const tokenPairResponse = await G_QUERY_GetTokenPair(pair_address);
+
+  //Return 0 if pair is not found
   if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
     return { base_price: 0, quote_price: 0 };
   }
+
+  //Get token addresses from pair
   const {
     token0: { address: token0Address },
     token1: { address: token1Address },
   } = tokenPairResponse.data.data.ethereum.dexTrades[0];
   let tokenAddress, pairedTokenAddress;
+
+  //Determine the token & paired token
   if (
     [
       process.env.WETH_ADDR,
@@ -36,20 +52,29 @@ export const getTokenPrice = async (
     pairedTokenAddress = token1Address;
   }
 
+  //Get the price of the token
   const quotePriceResponse = await G_QUERY_GetQuotePrice(
     tokenAddress,
     pairedTokenAddress,
     timeBefore
   );
+
+  //If no trades are found
   if (!quotePriceResponse.data.data.ethereum.dexTrades[0]) {
     return { base_price: 0, quote_price: 0 };
   }
   const { quotePrice: basePrice } =
     quotePriceResponse.data.data.ethereum.dexTrades[0];
+
+  console.log("Paired token address")
+  console.log(pairedTokenAddress)
+
+  //If the paired tokens address is weth or dai (so not a stablecoin)
   if (
     String(pairedTokenAddress).toLowerCase() === process.env.WETH_ADDR ||
     String(pairedTokenAddress).toLowerCase() === process.env.DAI_ADDR
   ) {
+    console.log("WETH Pair")
     const baseQuotePrice = basePrice;
     const baseCurrency = pairedTokenAddress;
     const quoteCurrency =

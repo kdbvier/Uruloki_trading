@@ -59,7 +59,7 @@ export default function Pair({
   tokenPairInfo,
 }: {
   orders: Order[];
-  token_price: number;
+  token_price: TokenPriceInPair;
   oldTokenPrice: number;
   historicalDexTrades: Array<HistoricalDexTrades>;
   tokenPairInfo: TokenPairInfo
@@ -399,6 +399,7 @@ export default function Pair({
           code1={tokenPairInfo?.baseToken?.symbol as string}
           name2={tokenPairInfo?.pairedToken?.name as string}
           code2={tokenPairInfo?.pairedToken?.symbol as string}
+          pair_price_info={token_price}
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}

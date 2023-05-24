@@ -5,31 +5,21 @@ import {
   TokenPairInfo,
   TokenPriceInPair,
 } from "@/types";
-// import getTokenCache from '@/lib/api/tokens/'
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-// import {
-//   editUserOrder,
-//   setSelectedOrder,
-//   createOrder,
-//   getTokenPriceInPair,
-// } from "@/store/apps/user-order";
-// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 
-import { commafy } from "@/helpers/calc.helper";
-import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
-// import { getAllTokenCache } from "@/store/apps/token-cache";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
 import Orders from "@/lib/api/orders";
-import HomePageTokens from "@/lib/api/tokens";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
+import { handleNumberFormat, convertLawPrice, toNumber } from "@/lib/number-helpers";
+import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -39,82 +29,32 @@ export interface EditOrderTokenProp {
   name2?: string;
   code2?: string;
   pair_address?: string;
+  pair_price_info?: TokenPriceInPair;
   selectedOrderId?: number;
   closeHandler: () => void;
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
-
-  //  token?: Token;
 }
 
-export const convertLawPrice = (price: number) => {
-  let priceEle;
-  if (price >= 0.01) {
-    priceEle = `$${commafy(price)}`;
-  } else {
-    priceEle = (
-      <>
-        {formatNumberToHtmlTag(price).integerPart}
-        .0
-        <sub>{formatNumberToHtmlTag(price).leadingZerosCount}</sub>
-        {formatNumberToHtmlTag(price).remainingDecimal}
-      </>
-    );
-  }
-  return priceEle;
-};
-
-export const handleNumberFormat = (num: number): string => {
-  let value = num.toString();
-  const pattern = /^\d*\.?\d*$/;
-  if (!pattern.test(value)) return "";
-  let newValue = "";
-  if (value.search("\\.") !== -1) {
-    let [integerPart, decimalPart] = value.split(".");
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
-    // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
-  } else {
-    newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-  return newValue;
-};
-const toNumber = (str: string): number => {
-  const value = str.replace(/,/g, "");
-  const num = Number(value);
-  if (Number.isNaN(num)) {
-    return -1;
-  }
-  return num;
-};
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   isEdit = true,
   setShowEditOrderModal,
-  selectedOrderId = 0,
+  selectedOrderId,
   closeHandler,
   fetchOrders,
   name1,
   code1,
   name2,
   code2,
+  pair_price_info,
   pair_address,
   pairInfo,
 }) => {
-  console.log("Create an order");
-  // const dispatch = useAppDispatch();
-
   const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
   const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
-  const [token_price, setToken_Price] = useState<number>(0);
-  // const selectedOrder = useAppSelector(
-  //   (state) => state.userOrder.selectedOrder
-  // );
-  // const tokenCache = useAppSelector((state) => state.tokencache.value);
-  // const token_price = useAppSelector(
-  //   (state) => state.userOrder.selectedTokenPriceInPair
-  // );
+  const [tokenPairPriceInfo, setTokenPairPriceInfo] = useState<TokenPriceInPair>(pair_price_info ?? {base_price: 0, quote_price: 0})
+
   const [seletCollaped, setSeletCollaped] = useState(true);
-  const [selectedToken, setSelectedToken] = useState(0);
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
   const [token1Symbol, settoken1Symbol] = useState("");
   const [token2Symbol, settoken2Symbol] = useState("");
@@ -139,11 +79,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>();
 
-  const [basePrice, setBasePrice] = useState<number>(0);
-
-  const baseLongName = isEdit ? selectedOrder.baseTokenLongName : name1;
   const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
-  const pairLongName = isEdit ? selectedOrder.pairTokenLongName : name2;
   const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
 
   const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
@@ -165,28 +101,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   };
 
   useEffect(() => {
-    if (isEdit) {
-      // dispatch(setSelectedOrder(selectedOrderId));
-      if (selectedOrderId == -1) {
-        setSelectedOrder_L({} as Order);
-      } else {
-        Orders.getOrderById(selectedOrderId)
-          .then((res) => {
-            setSelectedOrder_L(res);
-          })
-          .catch((err) => console.error(err));
-      }
-    } else {
-      // dispatch(getTokenPriceInPair(pair_address as string));
-      Orders.getTokenPriceInPair(pair_address as string)
-        .then((res) => {
-          setToken_Price(res);
-        })
-        .catch((err) => console.error(err));
+    if (isEdit && selectedOrderId) {
+      handleIsEditLoad(selectedOrderId ?? 0, setSelectedOrder_L, setTokenPairPriceInfo, setAmount)
     }
-    // dispatch(getAllTokenCache());
     getWalletAddress();
-    Orders.getTokenPriceInPair(pair_address as string).then(res => setAmount(handleNumberFormat(selectedOrder.budget ? res * selectedOrder.budget : 0)))
   }, []);
 
   useEffect(() => {
@@ -199,37 +117,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         ...tokenCache.filter(({ shortName }) => shortName !== currentToken),
       ]);
   }, [tokenCache, isBuy, pairShortName, baseShortName]);
-
-  useEffect(() => {
-    const currentToken = isBuy ? pairShortName : baseShortName;
-
-    if (tokenCache && currentToken) {
-      const currentPrice = tokenCache.filter(
-        (token) => token.shortName === pairShortName
-      ).length
-        ? tokenCache.filter((token) => token.shortName === pairShortName)[0]!
-            .price
-        : 0;
-
-      const selectPrice = tokenCache.filter((token) =>
-        isBuy
-          ? token.shortName === pairShortName
-          : token.shortName === baseShortName
-      ).length
-        ? tokenCache.filter((token) =>
-            isBuy
-              ? token.shortName === pairShortName
-              : token.shortName === baseShortName
-          )[0]!.price
-        : 0;
-      const newValue = (
-        Number(selectedOrder.budget) * Number(currentPrice / selectPrice)
-      )
-        .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      setAmount(newValue);
-    }
-  }, [isBuy]);
 
   useEffect(() => {
     const currentToken = isBuy ? pairShortName : baseShortName;
@@ -267,12 +154,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setAmount(handleNumberFormat(selectedOrder.budget ?? 0));
       setIsRange(selectedOrder.price_type === PriceTypeEnum.RANGE);
       setIsContinuous(selectedOrder.is_continuous ?? false);
-      // dispatch(getTokenPriceInPair(selectedOrder.pair_address as string));
-      Orders.getTokenPriceInPair(selectedOrder.pair_address as string)
-        .then((res) => {
-          setToken_Price(res);
-        })
-        .catch((err) => console.error(err));
     }
   }, [selectedOrder]);
 
@@ -314,18 +195,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     setIsContinuous(false);
     setShowEditOrderModal(false);
   };
-  const tokens = [
-    {
-      name: "bitcoin",
-      code: "BTC",
-      title: "Bitcoin",
-    },
-    {
-      name: "ethereum",
-      code: "ETH",
-      title: "Ethereum",
-    },
-  ];
 
   const handleNumberInputChange = (name: string, event: any) => {
     let value = event.target.value.replace(/,/g, "");
@@ -336,7 +205,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       let [integerPart, decimalPart] = value.split(".");
       integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       newValue = `${integerPart}.${decimalPart ? decimalPart : ""}`;
-      // const newValue = decimalPart ? `${integerPart}.${decimalPart}` : `${integerPart}.`;
     } else {
       newValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -418,9 +286,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         : (selectedOrder.baseTokenShortName as string);
       patchData.is_continuous = isContinuous;
       patchData.creator_address = walletAddress as string;
-      console.log("before submit(patch)::");
-      console.log(patchData);
-      Orders.editOrder(selectedOrderId, patchData)
+      Orders.editOrder(selectedOrderId ?? 0, patchData)
         .then((res) => {
           //TOAST:
           if (fetchOrders) {
@@ -480,14 +346,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 }
               });
             } else {
-              console.log("--------------------------------");
-              console.log(payload.order_id);
-              console.log(tokenPairInfo?.pairedToken?.address as string);
-              console.log(tokenPairInfo?.baseToken?.address as string);
-              console.log(isBuy);
-              console.log(Number(targetPrice.split(",").join("")));
-              console.log(Number(amount.split(",").join("")));
-              console.log("--------------------------------");
               editNonContinuousTargetPriceOrder(
                 payload.order_id as number,
                 tokenPairInfo?.pairedToken?.address as string,
@@ -512,8 +370,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           alert("Update order failed");
           setShowEditOrderModal(false);
         });
-      // dispatch(editUserOrder({ id: selectedOrderId, patchData }));
-      // setShowEditOrderModal(false);
     } else {
       const postData = {} as PostOrder;
       postData.budget = toNumber(amount);
@@ -616,8 +472,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           alert("Create order failed");
           setShowEditOrderModal(false);
         });
-      // dispatch(createOrder(postData));
-      // setShowEditOrderModal(false);
     }
   };
 
@@ -635,44 +489,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <p className="text-sm">
             <span className="text-tsuka-200">Current Price : </span>
             <span className="text-tsuka-50">
-              {!!token_price && (
+              {!!tokenPairPriceInfo.base_price && (
                 <>
                   $
-                  {token_price >= 0.01
+                  {tokenPairPriceInfo.base_price >= 0.01
                     ? handleNumberFormat(
-                        parseFloat(token_price.toFixed(2))
+                        parseFloat(tokenPairPriceInfo.base_price.toFixed(2))
                       )
-                    : convertLawPrice(token_price)}
+                    : convertLawPrice(tokenPairPriceInfo.base_price)}
                 </>
               )}
             </span>
           </p>
-          {/* <div className="w-full mt-4 flex gap-2 text-sm">
-            <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
-                isContinuous ? "bg-tsuka-400" : ""
-              }`}
-              onClick={() => setIsContinuous(true)}
-            >
-              <span
-                className={isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
-              >
-                <FaSync className={isContinuous? "text-custom-green mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/> CONTNUOUS
-              </span>
-            </button>
-            <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
-                !isContinuous ? "bg-tsuka-400" : ""
-              }`}
-              onClick={() => setIsContinuous(false)}
-            >
-              <span
-                className={!isContinuous ? "text-tsuka-50 flex items-center" : "text-tsuka-300 flex items-center"}
-              >
-                <FaClock className={!isContinuous?"text-custom-red mr-1 xs:mr-2":"text-tsuka-300 mr-1 xs:mr-2"}/>ONE TIME
-              </span>
-            </button>
-          </div> */}
           <div className="flex flex-row-reverse justify-center items-center mt-4">
             <ToggleButton isContinuous={isContinuous} onToggle={toggle} />
 
@@ -818,18 +646,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </div>
             </div>
           )}
-          {/* <div className="flex items-center"> */}
-          {/* <span className="ml-1 text-sm text-tsuka-100 mr-2">
-                    {isBuy
-                      ? pairLongName
-                      : baseLongName}
-                  </span>
-                </div>
-              </div>
-                      ? selectedOrder.pairTokenLongName
-                      : selectedOrder.baseTokenLongName}
-                  </span> */}
-          {/* </div> */}
           <span className="text-tsuka-200 text-sm mt-3 ml-3.5 px-1 bg-tsuka-500">
             Amount
           </span>
@@ -843,12 +659,6 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 allTokenName={allTokenName}
                 setSelectTokenName={isBuy ? settoken1Symbol : settoken2Symbol}
               />
-              {/* <div
-                className="relative shrink-0 w-28 flex justify-between items-center p-2 bg-tsuka-400 rounded-lg cursor-pointer"
-                onClick={() => setSeletCollaped(!seletCollaped)}
-              >
-                
-              </div> */}
               <input
                 type="text"
                 className="grow min-w-[100px] bg-tsuka-500 outline-none text-right text-2xl font-medium"
@@ -867,12 +677,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
-                  /*
-                  let totalAmount =
-                    parseFloat(amount.split(",").join("")) *
-                    (isBuy ? token_price.quote_price : token_price.base_price);
-                    */
-                   let totalAmount = parseFloat(amount.split(",").join("")) * token_price;
+                  console.log(tokenPairPriceInfo)
+                   let totalAmount = isBuy ? tokenPairPriceInfo.quote_price * parseFloat(amount.split(",").join("")) : tokenPairPriceInfo.base_price * parseFloat(amount.split(",").join(""));
                   return (
                     <>
                       $

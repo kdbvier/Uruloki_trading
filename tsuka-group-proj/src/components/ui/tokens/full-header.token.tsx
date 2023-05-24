@@ -1,25 +1,10 @@
 import { splitAddress } from "@/helpers/splitAddress.helper";
-// import {
-//   getToken,
-//   getTokenVolume,
-//   getYesterdayTokenPriceInPair,
-//   setOrderSplit,
-// } from "@/store/apps/token";
-// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdArrowBack } from "react-icons/md";
-// import { setPairAddress } from "@/store/apps/token";
-import { ApiResponse, Order, TokenPairInfo, TokenPriceInPair } from "@/types";
-// import { getTokenPairInfo } from "@/store/apps/tokenpair-info";
-// import { getTokenPriceInPair } from "@/store/apps/user-order";
+import { Order, TokenPairInfo, TokenPriceInPair } from "@/types";
 
-import {
-  convertLawPrice,
-  handleNumberFormat,
-} from "../my-order/edit-order.token";
-import { GetServerSideProps } from "next";
-import Orders from "@/lib/api/orders";
+import { convertLawPrice, handleNumberFormat } from "@/lib/number-helpers";
 import HomePageTokens from "@/lib/api/tokens";
 import { Token } from "@/types/token.type";
 import { InfoSpanToken } from "./info-span.token";
@@ -27,7 +12,7 @@ export interface FullHeaderTokenProps {
   pair_address: string;
   tokenPairInfo: TokenPairInfo;
   orders: Order[];
-  token_price: number;
+  token_price: TokenPriceInPair;
   oldTokenPrice: number;
   token?: Token;
   setToken: (t: Token) => void;
@@ -58,19 +43,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   token,
   setToken,
 }) => {
-  // const dispatch = useAppDispatch();
-  // const { value, status } = useAppSelector((state) => state.token);
-  const [value, setValue] = useState<Token | undefined>(token);
-  const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
-  useEffect(() => {
-    if (!token) {
-      setStatus("loading");
-      return;
-    }
-    setValue(token);
-    setStatus("ok");
-  }, [token]);
-
   // const baseTokenAddress = useAppSelector(
   //   (state) => state.tokenPairInfo.value.baseToken.address
   // );
@@ -145,88 +117,78 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
 
   return (
     <div className="w-full text-tsuka-300 flex py-2 mb-4 sm:flex-col items-center sm:items-start lg:items-center lg:flex-row justify-between sm:justify-normal lg:justify-between">
-      {status === "loading" && (
-        <>
-          <Link href="/" className="text-xl p-2 rounded-full cursor-pointer">
+      <>
+        <div className="flex sm:mb-8 lg:mb-0 items-center">
+          <Link
+            href="/"
+            className="text-xl pr-2 xs:p-2 rounded-full cursor-pointer"
+          >
             <MdArrowBack />
           </Link>
-          &quot;Loading...&quot;
-        </>
-      )}
-      {status === "ok" && value && (
-        <>
-          <div className="flex sm:mb-8 lg:mb-0 items-center">
-            <Link
-              href="/"
-              className="text-xl pr-2 xs:p-2 rounded-full cursor-pointer"
-            >
-              <MdArrowBack />
-            </Link>
-            <div className="px-2 flex-1 flex-col">
-              <p className="text-sm xs:text-base">
-                <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
-                  {tokenPairInfo.baseToken?.symbol}
+          <div className="px-2 flex-1 flex-col">
+            <p className="text-sm xs:text-base">
+              <label className="text-tsuka-50 text-xl xs:text-2xl font-semibold">
+                {tokenPairInfo.baseToken?.symbol}
+              </label>
+              /{tokenPairInfo.pairedToken?.symbol}
+            </p>
+            <div className="flex items-start flex-col md:flex-row">
+              <label className="text-xs whitespace-nowrap">
+                Pair Address:{" "}
+              </label>
+              <div className="flex flex-col items-center justify-around ml-2">
+                <label className="text-xs text-tsuka-50">
+                  {splitAddress(token?.pair?.address as string)}
                 </label>
-                /{tokenPairInfo.pairedToken?.symbol}
-              </p>
-              <div className="flex items-start flex-col md:flex-row">
-                <label className="text-xs whitespace-nowrap">
-                  Pair Address:{" "}
-                </label>
-                <div className="flex flex-col items-center justify-around ml-2">
-                  <label className="text-xs text-tsuka-50">
-                    {splitAddress(value.pair?.address as string)}
-                  </label>
-                </div>
-                <label className="text-xs whitespace-nowrap md:ml-4"></label>
+              </div>
+              <label className="text-xs whitespace-nowrap md:ml-4"></label>
+            </div>
+          </div>
+        </div>
+        <div className=" lg:flex-1 flex w-full lg:w-auto justify-end sm:justify-between lg:justify-end items-center">
+          <div className="hidden sm:flex text-sm mr-12">
+            <InfoSpanToken title={"TXS"} value={orders ? orders.length : 0} />
+            <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
+              <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
+                ORDERS
+              </label>
+              <InfoSpanToken title={"BUY"} value={token?.orderSplit?.buy ?? 0} />
+              <InfoSpanToken title={"SELL"} value={token?.orderSplit?.sell ?? 0} />
+            </div>
+            <InfoSpanToken
+              title={"VOL."}
+              value={`$${defaultNumberFormat(tokenVolume.value ?? 0)} ${
+                tokenVolume.currencyLabel
+              }`}
+            />
+            <InfoSpanToken
+              title={"24h"}
+              value={`${defaultNumberFormat(
+                oldTokenPrice ?
+                  ((token_price.base_price - oldTokenPrice) /
+                      oldTokenPrice) *
+                      100
+                  : 0
+              ).toString()}%`}
+            />
+          </div>
+          <div className="text-sm justify-end">
+            <div className="flex flex-col lg:flex-row items-end justify-end">
+              <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
+                ${token_price && (
+                  <>
+                    {token_price.base_price >= 0.01
+                      ? handleNumberFormat(
+                          parseFloat(token_price.base_price.toFixed(2))
+                        )
+                      : convertLawPrice(token_price.base_price)}
+                  </>
+                )}
               </div>
             </div>
           </div>
-          <div className=" lg:flex-1 flex w-full lg:w-auto justify-end sm:justify-between lg:justify-end items-center">
-            <div className="hidden sm:flex text-sm mr-12">
-              <InfoSpanToken title={"TXS"} value={orders ? orders.length : 0} />
-              <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
-                <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
-                  ORDERS
-                </label>
-                <InfoSpanToken title={"BUY"} value={value.orderSplit?.buy} />
-                <InfoSpanToken title={"SELL"} value={value.orderSplit?.sell} />
-              </div>
-              <InfoSpanToken
-                title={"VOL."}
-                value={`$${defaultNumberFormat(tokenVolume.value ?? 0)} ${
-                  tokenVolume.currencyLabel
-                }`}
-              />
-              <InfoSpanToken
-                title={"24h"}
-                value={`${defaultNumberFormat(
-                  oldTokenPrice ?
-                    ((token_price - oldTokenPrice) /
-                        oldTokenPrice) *
-                        100
-                    : 0
-                ).toString()}%`}
-              />
-            </div>
-            <div className="text-sm justify-end">
-              <div className="flex flex-col lg:flex-row items-end justify-end">
-                <div className="text-tsuka-50 xs:ml-2 text-base xs:text-xl md:text-2xl">
-                  {token_price && (
-                    <>
-                      {token_price >= 0.01
-                        ? handleNumberFormat(
-                            parseFloat(token_price.toFixed(2))
-                          )
-                        : convertLawPrice(token_price)}
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </>
     </div>
   );
 };
