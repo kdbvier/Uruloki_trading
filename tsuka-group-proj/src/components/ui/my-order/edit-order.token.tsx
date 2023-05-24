@@ -8,7 +8,6 @@ import {
 import { useEffect, useState } from "react";
 import Dropdown from "../buttons/dropdown";
 
-import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 import HomePageTokens from "@/lib/api/tokens";
 import { FaClock, FaSync } from "react-icons/fa";
@@ -173,7 +172,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           fetchOrders();
         }
 
-        await editOrderInContract(toast, newOrder, tokenPairInfo);
+        await editOrderInContract(editContinuousTargetPriceOrder, editNonContinuousTargetPriceOrder, editContinuousPriceRangeOrder, editNonContinuousPriceRangeOrder, toast, newOrder, tokenPairInfo);
 
         setShowEditOrderModal(false);
       } catch (e) {

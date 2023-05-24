@@ -9,17 +9,6 @@ export type CreateOrderPriceInfo = {
     targetPrice: string;
 }
 
-const {
-    editContinuousPriceRangeOrder,
-    editContinuousTargetPriceOrder,
-    editNonContinuousPriceRangeOrder,
-    editNonContinuousTargetPriceOrder,
-    createContinuousPriceRangeOrder,
-    createContinuousTargetPriceOrder,
-    createNonContinuousPriceRangeOrder,
-    createNonContinuousTargetPriceOrder,
-} = useUrulokiAPI();
-
 export const editOrderInDb = async (selectedOrder: Order, amount: string, isBuy: boolean, isRange: boolean, 
     newOrderPriceInfo: CreateOrderPriceInfo, token1Symbol: string, token2Symbol: string, isContinuous: boolean, 
     walletAddress: string): Promise<Order> => {
@@ -58,7 +47,7 @@ type EditOrderResult = {
     msg?: string;
 }
 
-const editPriceRangeOrderInContract = async (order: Order, tokenPairInfo: TokenPairInfo): Promise<EditOrderResult> => {
+const editPriceRangeOrderInContract = async (editContinuousPriceRangeOrder: any, editNonContinuousPriceRangeOrder: any, order: Order, tokenPairInfo: TokenPairInfo): Promise<EditOrderResult> => {
     if(!validatePriceRangeOrder(order)) {
         return {
             success: false,
@@ -110,7 +99,7 @@ const editPriceRangeOrderInContract = async (order: Order, tokenPairInfo: TokenP
     }
 }
 
-const editTargetPriceOrderInContract = async (order: Order, tokenPairInfo: TokenPairInfo): Promise<EditOrderResult> => {
+const editTargetPriceOrderInContract = async (editContinuousTargetPriceOrder: any, editNonContinuousTargetPriceOrder: any, order: Order, tokenPairInfo: TokenPairInfo): Promise<EditOrderResult> => {
     if(!validateTargetPriceOrder(order)) {
         return {
             success: false,
@@ -162,9 +151,9 @@ const editTargetPriceOrderInContract = async (order: Order, tokenPairInfo: Token
     }
 }
 
-export const editOrderInContract = async(toast: Function, order: Order, tokenPairInfo: TokenPairInfo) => {
+export const editOrderInContract = async(editContinuousTargetPriceOrder: any, editNonContinuousTargetPriceOrder: any, editContinuousPriceRangeOrder: any, editNonContinuousPriceRangeOrder: any, toast: Function, order: Order, tokenPairInfo: TokenPairInfo) => {
     if (order.price_type === "range") {
-        const editResult = await editPriceRangeOrderInContract(order, tokenPairInfo)
+        const editResult = await editPriceRangeOrderInContract(editContinuousPriceRangeOrder, editNonContinuousPriceRangeOrder, order, tokenPairInfo)
 
         if(!editResult.success) {
         toast(editResult.msg, { type: "error" })
@@ -172,7 +161,7 @@ export const editOrderInContract = async(toast: Function, order: Order, tokenPai
         toast("Order successfully updated", { type: "success" })
         }
     } else {
-        const editResult = await editTargetPriceOrderInContract(order, tokenPairInfo)
+        const editResult = await editTargetPriceOrderInContract(editContinuousTargetPriceOrder, editNonContinuousTargetPriceOrder, order, tokenPairInfo)
 
         if(!editResult.success) {
         toast(editResult.msg, { type: "error" })
