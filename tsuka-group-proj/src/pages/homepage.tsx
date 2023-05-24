@@ -14,15 +14,13 @@ import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getConnectedAddress } from "@/helpers/web3Modal";
-import HomePageTokens from "@/lib/api/tokens";
 import { Strategy, Tokens } from "@/types";
-import Strategies from "@/lib/api/strategies";
+import { getTokens } from "@/lib/homepage/tokens";
 
 let currentTranslateX: number = 0;
 
 export async function getServerSideProps() {
-  const tokens = await HomePageTokens.getTokens();
+  const tokens = await getTokens();
 
   return {
     props: { tokens },
@@ -40,16 +38,6 @@ export default function Home({
 
   const [value, setValue] = useState(tokens);
   const [status, setStatus] = useState(!tokens);
-
-  useEffect(() => {
-    if (!tokens) {
-      setStatus(true);
-      HomePageTokens.getTokens().then((tokens_data) => {
-        setValue(tokens_data);
-        setStatus(false);
-      });
-    }
-  }, [tokens]);
 
   let content: any = useRef();
   let x1: number = 0;
@@ -114,14 +102,6 @@ export default function Home({
       notify();
     }
   }, [status]);
-
-  // useEffect(() => {
-  //   const container = document.getElementsByClassName("swipable-container")[0];
-  //   container.addEventListener("touchstart", handleTouchStart, false);
-  //   container.addEventListener("touchmove", handleTouchMove, false);
-  //   container.addEventListener("touchend", handleTouchEnd, false);
-  // }, []);
-
   return (
     <>
       <ToastContainer />
