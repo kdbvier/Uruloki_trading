@@ -10,7 +10,7 @@ import Dropdown from "../buttons/dropdown";
 
 import { PatchOrder } from "@/types";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
-
+import HomePageTokens from "@/lib/api/tokens";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
@@ -106,6 +106,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (isEdit && selectedOrderId) {
       handleIsEditLoad(selectedOrderId ?? 0, setSelectedOrder_L, setTokenPairPriceInfo, setAmount)
     }
+    if (!pairInfo) {
+      void (async () => {
+        const info = await HomePageTokens.getTokenPairInfo(
+          pair_address as string
+        );
+        setTokenPairInfo(info);
+      })();
+    } else {
+      setTokenPairInfo(pairInfo);
+    }
     getWalletAddress();
   }, []);
 
@@ -163,7 +173,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           fetchOrders();
         }
 
-        await editOrderInContract(toast, newOrder, tokenPairInfo);
+        tokenPairInfo && await editOrderInContract(toast, newOrder, tokenPairInfo);
 
         setShowEditOrderModal(false);
       } catch (e) {
