@@ -8,7 +8,7 @@ import { FiEdit } from "react-icons/fi";
 import {
   convertLawPrice,
   handleNumberFormat,
-} from "../my-order/edit-order.token";
+} from "@/lib/number-helpers";
 
 export interface OrderWidgetGraphProp {
   id: number;

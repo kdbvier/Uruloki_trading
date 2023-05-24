@@ -399,7 +399,7 @@ export default function Pair({
           code1={tokenPairInfo?.baseToken?.symbol as string}
           name2={tokenPairInfo?.pairedToken?.name as string}
           code2={tokenPairInfo?.pairedToken?.symbol as string}
-          quoteTokenPrice={token_price.quote_price}
+          pair_price_info={token_price}
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}

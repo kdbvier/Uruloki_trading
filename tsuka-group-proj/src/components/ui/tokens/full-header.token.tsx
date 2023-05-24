@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import { MdArrowBack } from "react-icons/md";
 import { Order, TokenPairInfo, TokenPriceInPair } from "@/types";
 
-import {
-  convertLawPrice,
-  handleNumberFormat,
-} from "../my-order/edit-order.token";
+import { convertLawPrice, handleNumberFormat } from "@/lib/number-helpers";
 import HomePageTokens from "@/lib/api/tokens";
 import { Token } from "@/types/token.type";
 import { InfoSpanToken } from "./info-span.token";
