@@ -39,6 +39,7 @@ export interface EditOrderTokenProp {
   name2?: string;
   code2?: string;
   pair_address?: string;
+  quoteTokenPrice: number;
   selectedOrderId?: number;
   closeHandler: () => void;
   pairInfo?: TokenPairInfo;
@@ -97,6 +98,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   code1,
   name2,
   code2,
+  quoteTokenPrice,
   pair_address,
   pairInfo,
 }) => {
@@ -867,12 +869,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
-                  /*
-                  let totalAmount =
-                    parseFloat(amount.split(",").join("")) *
-                    (isBuy ? token_price.quote_price : token_price.base_price);
-                    */
-                   let totalAmount = parseFloat(amount.split(",").join("")) * token_price;
+                   let totalAmount = isBuy ? quoteTokenPrice * parseFloat(amount.split(",").join("")) : token_price * parseFloat(amount.split(",").join(""));
                   return (
                     <>
                       $
