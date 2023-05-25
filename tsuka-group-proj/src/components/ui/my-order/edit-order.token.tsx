@@ -17,10 +17,26 @@ import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { handleNumberFormat, convertLawPrice, toNumber } from "@/lib/number-helpers";
+import {
+  handleNumberFormat,
+  convertLawPrice,
+  toNumber,
+} from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
-import { blurHandler, handleNumberInputChange } from "@/lib/edit-order-token/helpers";
-import { CreateOrderPriceInfo, editOrderInContract, editOrderInDb } from "@/lib/edit-order-token/submit-order";
+import {
+  CreateOrderPriceInfoProps,
+  createOrderInContract,
+  createOrderInDb,
+} from "@/lib/create-order-token/submit-order";
+import {
+  blurHandler,
+  handleNumberInputChange,
+} from "@/lib/edit-order-token/helpers";
+import {
+  CreateOrderPriceInfo,
+  editOrderInContract,
+  editOrderInDb,
+} from "@/lib/edit-order-token/submit-order";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -53,7 +69,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 }) => {
   const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
   const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
-  const [tokenPairPriceInfo, setTokenPairPriceInfo] = useState<TokenPriceInPair>(pair_price_info ?? {base_price: 0, quote_price: 0})
+  const [tokenPairPriceInfo, setTokenPairPriceInfo] =
+    useState<TokenPriceInPair>(
+      pair_price_info ?? { base_price: 0, quote_price: 0 }
+    );
 
   const [seletCollaped, setSeletCollaped] = useState(true);
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
@@ -103,7 +122,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   useEffect(() => {
     if (isEdit && selectedOrderId) {
-      handleIsEditLoad(selectedOrderId ?? 0, setSelectedOrder_L, setTokenPairPriceInfo, setAmount)
+      handleIsEditLoad(
+        selectedOrderId ?? 0,
+        setSelectedOrder_L,
+        setTokenPairPriceInfo,
+        setAmount
+      );
     }
     if (!pairInfo) {
       void (async () => {
@@ -157,129 +181,91 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (!walletAddress) {
       return;
     }
-    if (isEdit && tokenPairInfo) {
-      const newOrderPriceInfo: CreateOrderPriceInfo = {
-        minPrice,
-        maxPrice,
-        targetPrice
-      }
+    if (tokenPairInfo) {
+      if (isEdit) {
+        const newOrderPriceInfo: CreateOrderPriceInfo = {
+          minPrice,
+          maxPrice,
+          targetPrice,
+        };
 
-      try {
-        const newOrder = await editOrderInDb(selectedOrder, amount, isBuy, isRange, newOrderPriceInfo, token1Symbol, token2Symbol, isContinuous, walletAddress)
-    
-        //TOAST:
-        if (fetchOrders) {
-          fetchOrders();
-        }
+        try {
+          const newOrder = await editOrderInDb(
+            selectedOrder,
+            amount,
+            isBuy,
+            isRange,
+            newOrderPriceInfo,
+            token1Symbol,
+            token2Symbol,
+            isContinuous,
+            walletAddress
+          );
 
-        await editOrderInContract(editContinuousTargetPriceOrder, editNonContinuousTargetPriceOrder, editContinuousPriceRangeOrder, editNonContinuousPriceRangeOrder, toast, newOrder, tokenPairInfo);
-
-        setShowEditOrderModal(false);
-      } catch (e) {
-        setShowEditOrderModal(false);
-      }
-    } else {
-      const postData = {} as PostOrder;
-      postData.budget = toNumber(amount);
-      postData.order_type = isBuy ? "buy" : "sell";
-      postData.price_type = isRange ? "range" : "single";
-      if (!isRange) {
-        postData.from_price = toNumber(minPrice);
-        postData.to_price = toNumber(maxPrice);
-      } else {
-        postData.single_price = toNumber(targetPrice);
-      }
-      postData.is_continuous = isContinuous;
-      postData.baseTokenLongName = name1 as string;
-      postData.baseTokenShortName = token2Symbol as string;
-      postData.pairTokenLongName = name2 as string;
-      postData.pairTokenShortName = token1Symbol as string;
-      postData.user_id = 1; ////TODO:get it from server
-      postData.pair_address = pair_address as string;
-      postData.creator_address = walletAddress as string;
-      console.log("before Submit(post)::");
-      console.log(postData);
-      Orders.createOrder(postData)
-        .then((res) => {
           //TOAST:
           if (fetchOrders) {
             fetchOrders();
           }
-          const payload = res as Order;
-          if (payload.price_type === "range") {
-            if (payload.is_continuous === true) {
-              createContinuousPriceRangeOrder(
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(minPrice.split(",").join("")),
-                Number(maxPrice.split(",").join("")),
-                Number(amount.split(",").join("")),
-                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            } else {
-              createNonContinuousPriceRangeOrder(
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(minPrice.split(",").join("")),
-                Number(maxPrice.split(",").join("")),
-                Number(amount.split(",").join(""))
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            }
-          } else {
-            if (payload.is_continuous === true) {
-              createContinuousTargetPriceOrder(
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(targetPrice.split(",").join("")),
-                Number(amount.split(",").join("")),
-                Number(process.env.NEXT_PUBLIC_RESET_PERCENTAGE)
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            } else {
-              createNonContinuousTargetPriceOrder(
-                tokenPairInfo?.pairedToken?.address as string,
-                tokenPairInfo?.baseToken?.address as string,
-                isBuy,
-                Number(targetPrice.split(",").join("")),
-                Number(amount.split(",").join(""))
-              ).then((res) => {
-                if (res?.msg === "success") {
-                  toast(res?.msg, { type: "success" });
-                } else {
-                  toast(res?.msg, { type: "error" });
-                }
-              });
-            }
-          }
 
-          alert("Order successfully created");
+          await editOrderInContract(
+            editContinuousTargetPriceOrder,
+            editNonContinuousTargetPriceOrder,
+            editContinuousPriceRangeOrder,
+            editNonContinuousPriceRangeOrder,
+            toast,
+            newOrder,
+            tokenPairInfo
+          );
+
           setShowEditOrderModal(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("Create order failed");
+        } catch (e) {
           setShowEditOrderModal(false);
-        });
+        }
+      } else {
+        if (name1 && name2 && pair_address) {
+          const newOrderPriceInfo: CreateOrderPriceInfoProps = {
+            minPrice,
+            maxPrice,
+            targetPrice,
+            name1,
+            name2,
+            pair_address,
+          };
+
+          try {
+            const newOrder = await createOrderInDb(
+              selectedOrder,
+              amount,
+              isBuy,
+              isRange,
+              newOrderPriceInfo,
+              token1Symbol,
+              token2Symbol,
+              isContinuous,
+              walletAddress
+            );
+
+            //TOAST:
+            if (fetchOrders) {
+              fetchOrders();
+            }
+
+            await createOrderInContract(
+              createContinuousTargetPriceOrder,
+              createNonContinuousTargetPriceOrder,
+              createContinuousPriceRangeOrder,
+              createNonContinuousPriceRangeOrder,
+              toast,
+              newOrder,
+              tokenPairInfo
+            );
+
+            setShowEditOrderModal(false);
+          } catch (e) {
+            setShowEditOrderModal(false);
+          }
+        }
+      }
     }
   };
 
@@ -418,8 +404,26 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 type="text"
                 className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                 value={targetPrice}
-                onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "target", e)}
-                onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "target", e)}
+                onChange={(e) =>
+                  handleNumberInputChange(
+                    setAmount,
+                    setTargetPrice,
+                    setMinPrice,
+                    setMaxPrice,
+                    "target",
+                    e
+                  )
+                }
+                onBlur={(e) =>
+                  blurHandler(
+                    setAmount,
+                    setTargetPrice,
+                    setMinPrice,
+                    setMaxPrice,
+                    "target",
+                    e
+                  )
+                }
               />
             </div>
           )}
@@ -433,8 +437,26 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={minPrice}
-                  onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "min", e)}
-                  onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "min", e)}
+                  onChange={(e) =>
+                    handleNumberInputChange(
+                      setAmount,
+                      setTargetPrice,
+                      setMinPrice,
+                      setMaxPrice,
+                      "min",
+                      e
+                    )
+                  }
+                  onBlur={(e) =>
+                    blurHandler(
+                      setAmount,
+                      setTargetPrice,
+                      setMinPrice,
+                      setMaxPrice,
+                      "min",
+                      e
+                    )
+                  }
                 />
               </div>
               <span className="hidden md:block mx-4 mt-4 text-tsuka-300">
@@ -448,8 +470,26 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                   type="text"
                   className="w-full bg-tsuka-500 outline-none border border-tsuka-400 rounded-md text-right pr-3 pl-12 py-2 text-sm"
                   value={maxPrice}
-                  onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "max", e)}
-                  onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "max", e)}
+                  onChange={(e) =>
+                    handleNumberInputChange(
+                      setAmount,
+                      setTargetPrice,
+                      setMinPrice,
+                      setMaxPrice,
+                      "max",
+                      e
+                    )
+                  }
+                  onBlur={(e) =>
+                    blurHandler(
+                      setAmount,
+                      setTargetPrice,
+                      setMinPrice,
+                      setMaxPrice,
+                      "max",
+                      e
+                    )
+                  }
                 />
               </div>
             </div>
@@ -471,8 +511,26 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 type="text"
                 className="grow min-w-[100px] bg-tsuka-500 outline-none text-right text-2xl font-medium"
                 value={amount}
-                onChange={(e) => handleNumberInputChange(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "amount", e)}
-                onBlur={(e) => blurHandler(setAmount, setTargetPrice, setMinPrice, setMaxPrice, "amount", e)}
+                onChange={(e) =>
+                  handleNumberInputChange(
+                    setAmount,
+                    setTargetPrice,
+                    setMinPrice,
+                    setMaxPrice,
+                    "amount",
+                    e
+                  )
+                }
+                onBlur={(e) =>
+                  blurHandler(
+                    setAmount,
+                    setTargetPrice,
+                    setMinPrice,
+                    setMaxPrice,
+                    "amount",
+                    e
+                  )
+                }
               />
             </div>
             <div className="w-full flex justify-between mt-1">
@@ -485,8 +543,12 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
-                  console.log(tokenPairPriceInfo)
-                   let totalAmount = isBuy ? tokenPairPriceInfo.quote_price * parseFloat(amount.split(",").join("")) : tokenPairPriceInfo.base_price * parseFloat(amount.split(",").join(""));
+                  console.log(tokenPairPriceInfo);
+                  let totalAmount = isBuy
+                    ? tokenPairPriceInfo.quote_price *
+                      parseFloat(amount.split(",").join(""))
+                    : tokenPairPriceInfo.base_price *
+                      parseFloat(amount.split(",").join(""));
                   return (
                     <>
                       $
