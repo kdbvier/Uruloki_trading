@@ -155,9 +155,9 @@ const createTargetPriceOrderInContract = async (createContinuousTargetPriceOrder
     }
 }
 
-export const createOrderInContract = async (editContinuousTargetPriceOrder: any, editNonContinuousTargetPriceOrder: any, editContinuousPriceRangeOrder: any, editNonContinuousPriceRangeOrder: any, toast: Function, order: Order, tokenPairInfo: TokenPairInfo) => {
+export const createOrderInContract = async (createContinuousTargetPriceOrder: any, createNonContinuousTargetPriceOrder: any, createContinuousPriceRangeOrder: any, createNonContinuousPriceRangeOrder: any, toast: Function, order: Order, tokenPairInfo: TokenPairInfo) => {
     if (order.price_type === "range") {
-        const editResult = await createPriceRangeOrderInContract(editContinuousPriceRangeOrder, editNonContinuousPriceRangeOrder, order, tokenPairInfo)
+        const editResult = await createPriceRangeOrderInContract(createContinuousPriceRangeOrder, createNonContinuousPriceRangeOrder, order, tokenPairInfo)
 
         if (!editResult.success) {
             toast(editResult.msg, { type: "error" })
@@ -165,7 +165,7 @@ export const createOrderInContract = async (editContinuousTargetPriceOrder: any,
             toast("Order successfully updated", { type: "success" })
         }
     } else {
-        const editResult = await createTargetPriceOrderInContract(editContinuousTargetPriceOrder, editNonContinuousTargetPriceOrder, order, tokenPairInfo)
+        const editResult = await createTargetPriceOrderInContract(createContinuousTargetPriceOrder, createNonContinuousTargetPriceOrder, order, tokenPairInfo)
 
         if (!editResult.success) {
             toast(editResult.msg, { type: "error" })
