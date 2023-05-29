@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Joi from "joi";
 import { G_QUERY_GetQuotePrice } from "./g_queries";
 import {getTokenNamesFromPair} from "lib/token-pair"
+import NextCors from "nextjs-cors"
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
@@ -15,6 +16,12 @@ export default async function tokenPriceInPairHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<number>>
 ) {
+  await NextCors(req, res, {
+    methods: ['POST'],
+    origin: '*',
+    optionsSuccessStatus: 200
+  })
+  
   const { method, body } = req;
 
   switch (method) {

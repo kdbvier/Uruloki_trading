@@ -1,41 +1,22 @@
 import { TokenPairInfo, Tokens } from "@/types";
-import { httpRequest } from "./http";
-import { FilterSearchItemType } from "@/components/ui/content-header/filters.search";
-
-const API_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://live-site-url"
-    : "http://localhost:3000";
 
 import { SearchPair } from "@/types";
+import axios from "axios";
 export default class HomePageTokens {
   static getTokens = async (): Promise<Tokens> => {
-    // return await httpRequest.get("/tokens");
-    return await httpRequest.get(`${API_URL}/api/tokens`);
+    return await axios.get(`/api/tokens`);
   };
   static searchTokens = async (name: string): Promise<SearchPair[]> => {
-    return await httpRequest.get("/search/addresses", {
-      params: {
-        name,
-      },
-    });
+    return await axios.get(`/api/search/addresses?name=${name}`)
   };
   static getTokenPairInfo = async (
     pair_address: string
   ): Promise<TokenPairInfo> => {
-    return await httpRequest.get(`${API_URL}/api/tokens/token-pair`, {
-      params: {
-        pair_address,
-      },
-    });
+    return await axios.get(`/api/tokens/token-pair?pair_address=${pair_address}`);
   };
   static getTokenVolume = async (
     baseTokenAddress: string
   ): Promise<{ tradeAmount: number }> => {
-    return await httpRequest.get(`/tokens/token-volume`, {
-      params: {
-        baseTokenAddress,
-      },
-    });
+    return await axios.get(`/api/tokens/token-volume?baseTokenAddress=${baseTokenAddress}`);
   };
 }
