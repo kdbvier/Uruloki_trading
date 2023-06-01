@@ -237,14 +237,16 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   showNotify={showNotify}
                   setShowNotify={setShowNotify}
                 />
-                <Web3Button />
+                <div className="hidden sm:block">
+                  <Web3Button />
+                </div>
               </div>
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
           {!menuCollapsed && (
             <div className="lg:hidden" id="mobile-menu">
-              <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700">
+              <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700 flex flex-col">
                 {navLinks?.map(({ path, title }, idx) => (
                   <div
                     className={`flex justify-center${
@@ -260,6 +262,9 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                     />
                   </div>
                 ))}
+                <div className="mx-auto">
+                  <Web3Button />
+                </div>
                 <DefaultButton
                   label="Create an Order"
                   callback={() => setShowEditOrderModal(true)}
