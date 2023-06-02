@@ -129,8 +129,8 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Tsuka Group</title>
-        <meta name="description" content="Tsuka Group Project" />
+        <title>Uruloki</title>
+        <meta name="description" content="Uruloki" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
