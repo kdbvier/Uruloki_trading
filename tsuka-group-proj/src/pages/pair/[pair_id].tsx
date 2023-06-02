@@ -428,41 +428,41 @@ export default function Pair({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let orders: Order[];
-  let tokenPairInfo: TokenPairInfo = {};
-  let historicalDexTrades: Array<HistoricalDexTrades> = [];
+async function getOrdersByPairSafe(pair_id: string): Promise<Order[]> {
   try {
-    orders = await getOrdersByPair(context.query.pair_id as string, "Active");
+    return await getOrdersByPair(pair_id as string, "Active");
   } catch (e) {
-    orders = [];
+    return [];
   }
-  const initialTokenPriceInPair: TokenPriceInPair = {
-    base_price: 0,
-    quote_price: 0,
-  };
-  let token_price: TokenPriceInPair = { ...initialTokenPriceInPair };
-  let oldTokenPrice: TokenPriceInPair = { ...initialTokenPriceInPair };
-  try {
-    token_price = (await getTokenPrice(
-      context.query.pair_id as string
-    )) as TokenPriceInPair;
-  } catch (err) {
-    token_price = { ...initialTokenPriceInPair };
-  }
+}
 
+async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
-    oldTokenPrice = (await getTokenPrice(
-      context.query.pair_id as string,
-      true
-    )) as TokenPriceInPair;
-  } catch (err) {
-    oldTokenPrice = { ...initialTokenPriceInPair };
+    return await getTokenPrice(pair_id as string);
+  } catch (e) {
+    return {
+      base_price: 0,
+      quote_price: 0,
+    };
   }
-  const { pair_id } = context.query;
+}
 
+async function getOldTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
+  try {
+    return await getTokenPrice(pair_id as string, true);
+  } catch (err) {
+    return {
+      base_price: 0,
+      quote_price: 0,
+    }
+  }
+}
+
+async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{tokenPairInfo: TokenPairInfo, historicalDexTrades: Array<HistoricalDexTrades>}> {
   try {
     const tokenPairNamesResult = await getTokenNamesFromPair(pair_id as string);
+    var tokenPairInfo: TokenPairInfo;
+    var historicalDexTrades: Array<HistoricalDexTrades> = [];
 
     if (tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
       tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
@@ -478,10 +478,45 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       ) {
         historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
       }
+
+      return {
+        tokenPairInfo,
+        historicalDexTrades
+      }
+    } else {
+      return {
+        tokenPairInfo: {
+          baseToken: {
+            name: "",
+            symbol: "",
+            address: "",
+          },
+        },
+        historicalDexTrades: [],
+      }
     }
   } catch (error) {
-    console.log(error, "error");
+    console.log(error);
+    return {
+      tokenPairInfo: {
+        baseToken: {
+          name: "",
+          symbol: "",
+          address: "",
+        },
+      },
+      historicalDexTrades: [],
+    }
   }
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const [orders, token_price, oldTokenPrice, {historicalDexTrades, tokenPairInfo}] = await Promise.all([
+    getOrdersByPairSafe(context.query.pair_id as string),
+    getTokenPriceSafe(context.query.pair_id as string),
+    getOldTokenPriceSafe(context.query.pair_id as string),
+    getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
+  ])
 
   return {
     props: {

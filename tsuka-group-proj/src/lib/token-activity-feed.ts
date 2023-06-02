@@ -25,46 +25,6 @@ export async function getHistoricalDexTrades(
   quoteAddress: string
 ): Promise<HistoricalDexTradesResult> {
   try {
-    /*
-    const { data } = await axios.post(
-      "https://graphql.bitquery.io/",
-      {
-        query: `{
-              ethereum(network: ethereum) {
-                dexTrades(
-                  baseCurrency: {is: "${baseAddress}"}
-                  quoteCurrency: {is: "${quoteAddress}"}
-                  options: {desc: ["block.timestamp.time", "transaction.index"], limit: 10}
-                ) {
-                  block {
-                    height
-                    timestamp {
-                      time(format: "%Y-%m-%d %H:%M:%S")
-                    }
-                  }
-                  tradeAmount(in: ${tokenSymbol})
-                  side
-                  sellAmount(in: USD)
-                  buyAmount(in: USD)
-                  transaction {
-                    index
-                    txFrom {
-                      address
-                    }
-                  }
-                }
-              }
-          }`,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": process.env.BITQUERY_API_KEY,
-        },
-      }
-    );
-    */
-
     const { data } = await axios.post(
       "https://graphql.bitquery.io/",
       {
