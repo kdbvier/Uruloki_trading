@@ -342,29 +342,32 @@ export default function Pair({
             filled={true}
             Icon={FiPlusCircle}
           />
-          <OrderWidgetToken
-            name1={tokenPairInfo?.baseToken?.name as string}
-            code1={tokenPairInfo?.baseToken?.symbol as string}
-            name2={tokenPairInfo?.pairedToken?.name as string}
-            code2={tokenPairInfo?.pairedToken?.symbol as string}
-            status={"Active" as OrderStatusEnum}
-            orders={activeOrders.map((order) => ({
-              id: order.order_id as number,
-              budget: order.budget as number,
-              price_type: order.price_type as PriceTypeEnum,
-              order_type: order.order_type as OrderTypeEnum,
-              status: order.status as OrderStatusEnum,
-              is_continuous: order.is_continuous as boolean,
-              baseTokenShortName: order.baseTokenShortName as string,
-              baseTokenLongName: order.baseTokenLongName as string,
-              pairTokenShortName: order.pairTokenShortName as string,
-              pairTokenLongName: order.pairTokenLongName as string,
-              price: order.single_price as number,
-              prices: [order.from_price, order.to_price],
-            }))}
-            setShowEditOrderModal={handleEditModal}
-            setShowDeletedAlert={setShowDeletedAlert}
-          />
+          {activeOrders.length > 0 && (
+            <OrderWidgetToken
+              name1={tokenPairInfo?.baseToken?.name as string}
+              code1={tokenPairInfo?.baseToken?.symbol as string}
+              name2={tokenPairInfo?.pairedToken?.name as string}
+              code2={tokenPairInfo?.pairedToken?.symbol as string}
+              status={"Active" as OrderStatusEnum}
+              orders={activeOrders.map((order) => ({
+                id: order.order_id as number,
+                budget: order.budget as number,
+                price_type: order.price_type as PriceTypeEnum,
+                order_type: order.order_type as OrderTypeEnum,
+                status: order.status as OrderStatusEnum,
+                is_continuous: order.is_continuous as boolean,
+                baseTokenShortName: order.baseTokenShortName as string,
+                baseTokenLongName: order.baseTokenLongName as string,
+                pairTokenShortName: order.pairTokenShortName as string,
+                pairTokenLongName: order.pairTokenLongName as string,
+                price: order.single_price as number,
+                prices: [order.from_price, order.to_price],
+              }))}
+              setShowEditOrderModal={handleEditModal}
+              setShowDeletedAlert={setShowDeletedAlert}
+            />
+          )}
+          
         </div>
       </div>
       <div className="block lg:hidden">
