@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { TokenGraphChart } from "../charts/token-graph.chart";
+import { TokenPairInfo } from "@/types";
 
-export const LiveGraphToken: React.FC = () => {
+interface Props {
+  tokenPairInfo: TokenPairInfo;
+}
+
+export const LiveGraphToken: React.FC<Props> = ({tokenPairInfo}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -13,6 +18,8 @@ export const LiveGraphToken: React.FC = () => {
               setIsLoading(false);
             }, 1000)
           }
+
+          tokenPairInfo={tokenPairInfo}
         />
       </div>
       {isLoading && (

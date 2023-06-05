@@ -85,25 +85,19 @@ const scaleFactor = 1e15;
 
 interface Props {
   onLoaded: () => void;
+  tokenPairInfo: TokenPairInfo
 }
 
 // This is our lightweight chart
-const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded }) => {
-  const [pairAddress, setPairAddress] = useState("");
+const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
   const router = useRouter();
-  useEffect(() => {
-    setPairAddress(String(router.query.pair_id));
-  }, [router]);
-  const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
+  const [pairAddress, setPairAddress] = useState(router.query.pair_id as string);
   const [activeOrdersByTokenpair, setActiveOrdersByTokenpair] = useState<
     Order[]
   >([]);
   useEffect(() => {
     const fetchTokenPairInfo_ActiveOrders = async () => {
       try {
-        if (!pairAddress || _.isEmpty(pairAddress)) return;
-        const res = await HomePageTokens.getTokenPairInfo(pairAddress);
-        setTokenPairInfo({ ...res });
         const walletAddress: string = (await getConnectedAddress()) as string;
         const res_1 = await Orders.getActiveOrdersbyTokenPair({
           tokenpair: pairAddress,
@@ -257,7 +251,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded }) => {
           return new Date(businessDayOrTimestamp).toLocaleString();
         },
         priceFormatter: (price: any) => {
-          return (price / scaleFactor).toFixed(10); // Scale the price back down for display
+          return (price).toFixed(10);
         },
       },
       timeScale: {

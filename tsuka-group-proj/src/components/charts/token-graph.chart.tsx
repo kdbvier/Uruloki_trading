@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { AdvancedRealTimeChartProps } from "react-ts-tradingview-widgets";
 import BitqueryOHLCChart from "./BitqueryOHLCChart";
+import { TokenPairInfo } from "@/types";
 
 interface Props {
   onLoaded: () => void;
+  tokenPairInfo: TokenPairInfo
 }
 
-export const TokenGraphChart: React.FC<Props> = ({ onLoaded }) => {
+export const TokenGraphChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
   const config = {
     theme: "dark",
     calendar: false,
@@ -104,6 +106,6 @@ export const TokenGraphChart: React.FC<Props> = ({ onLoaded }) => {
     // <div className="h-full">
     //   {token && <AdvancedRealTimeChart style="8" {...config} symbol={token} />}
     // </div>
-    <BitqueryOHLCChart onLoaded={onLoaded} />
+    <BitqueryOHLCChart onLoaded={onLoaded} tokenPairInfo={tokenPairInfo}/>
   );
 };
