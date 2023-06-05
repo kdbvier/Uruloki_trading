@@ -294,8 +294,8 @@ export default function Pair({
                 dexTrades={dexTrades}
                 tokens={[
                   {
-                    value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
-                    // value: orders[0].pair_address as string,
+                    //value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+                    value: orders[0]?.pair_address ?? "" as string,
                     label:
                       orders[0]?.baseTokenShortName == "USDT" ||
                       orders[0]?.baseTokenShortName == "USDC" ||
