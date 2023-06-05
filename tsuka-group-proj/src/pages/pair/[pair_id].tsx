@@ -392,7 +392,7 @@ export default function Pair({
           setShowDeletedAlert={setShowDeletedAlert}
         />
       </div>
-      {showEditOrderModal && (
+      {showEditOrderModal == 1 && (
         <EditOrderToken
           name1={tokenPairInfo?.baseToken?.name as string}
           code1={tokenPairInfo?.baseToken?.symbol as string}
