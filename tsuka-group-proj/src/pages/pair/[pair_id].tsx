@@ -3,7 +3,6 @@ import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
 import { OrderBookToken } from "@/components/tokens/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
-import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
@@ -290,10 +289,7 @@ export default function Pair({
           {/*<LiveGraphToken token={token.chain?.code} />*/}
           <LiveGraphToken tokenPairInfo={tokenPairInfo}/>
           <div className="hidden md:grid grid-cols-8 gap-4">
-            <div className="col-span-12 md:col-span-3">
-              <PoolInfoToken token={token as Token} />
-            </div>
-            <div className="col-span-12 md:col-span-5">
+            <div className="col-span-12">
               <OrderBookToken
                 dexTrades={dexTrades}
                 tokens={[
