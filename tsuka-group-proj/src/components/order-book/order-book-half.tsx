@@ -34,8 +34,6 @@ export const OrderBookHalf: React.FC<{
 }> = ({data, isBuy, baseTokenShortName, pairTokenShortName, buyOrSellSum}) => {
     let sum: number;
 
-    
-
     return (
         <div className="flex-1">
             <div className="h-96">
@@ -57,11 +55,11 @@ export const OrderBookHalf: React.FC<{
                   return (
                     <div
                       key={index}
-                      className="text-green-400 border-b border-tsuka-400 text-base relative w-full text-left flex flex-center"
+                      className={`${isBuy ? "text-green-400" : "text-red-400"} border-b border-tsuka-400 text-base relative w-full text-left flex flex-center`}
                     >
-                      <div className="text-green-400 absolute w-full rounded-lg m-2 pr-4">
+                      <div className="absolute w-full rounded-lg m-2 pr-4">
                         <div
-                          className="bg-green-400/20 h-6 rounded text-start flex items-center px-2 mr-auto"
+                          className={`${isBuy ? "bg-green-400/20" : "bg-red-400/20"} h-6 rounded text-start flex items-center px-2 mr-auto`}
                           style={{
                             width: `${(sum * 100) / buyOrSellSum}%`,
                           }}

@@ -46,8 +46,6 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
     setSelectedToken(token);
   };
 
-  let sum: number;
-
   return (
     <div>
       {loading && "Loading..."}

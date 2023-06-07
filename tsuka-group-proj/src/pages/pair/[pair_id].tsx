@@ -517,6 +517,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
   ])
 
+
   return {
     props: {
       orders,
