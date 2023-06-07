@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
-import { OrderBookToken } from "@/components/tokens/order-book.token";
+import { OrderBookToken } from "@/components/order-book/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { LoadingBox } from "@/components/ui/loading/loading-box";

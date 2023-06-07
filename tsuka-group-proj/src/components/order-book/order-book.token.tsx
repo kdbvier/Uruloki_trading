@@ -2,7 +2,7 @@ import { Order } from "@/types";
 import { Token } from "@/types/token.type";
 import { useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
-import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
+import { OrderBookTokenUi } from "./order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { HistoricalDexTrades } from "@/lib/token-activity-feed";
 import { TokenPairOrders } from "@/lib/setups";
