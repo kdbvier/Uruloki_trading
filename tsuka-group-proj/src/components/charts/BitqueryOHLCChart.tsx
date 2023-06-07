@@ -91,7 +91,10 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
 
   useEffect(() => {
     onLoaded()
+    console.log("First Bitquery:")
+    console.log(firstBitquery)
     if(firstBitquery.length == 0) setDataUnavailable(true)
+    else setDataUnavailable(false)
   }, [firstBitquery])
 
   interface MyCandlestickData extends CandlestickData {
