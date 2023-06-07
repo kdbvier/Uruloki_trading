@@ -272,7 +272,7 @@ export default function Pair({
   }, [tokenPairInfo]);
 
   return (
-    <div className="flex flex-col px-4 md:px-10 py-6">
+    <div className="flex flex-col px-4 py-6 md:px-10">
       <ToastContainer />
       {tokenPairInfo && (
         <FullHeaderToken
@@ -284,7 +284,7 @@ export default function Pair({
           setToken={setToken}
         />
       )}
-      <div className="hidden lg:grid grid-cols-11 gap-4">
+      <div className="hidden grid-cols-11 gap-4 lg:grid">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
           <LiveGraphToken tokenPairInfo={tokenPairInfo}/>
@@ -413,7 +413,7 @@ export default function Pair({
         <DeletedAlertToken setShowDeletedAlert={setShowDeletedAlert} />
       )}
       {isLoading && (
-        <div className="w-screen h-screen z-40">
+        <div className="z-40 w-screen h-screen">
           <LoadingBox
             title="Loading data"
             description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
@@ -476,7 +476,12 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
         historicalDexTradesResult.success &&
         historicalDexTradesResult.historicalDexTrades
       ) {
-        historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
+        historicalDexTrades = historicalDexTradesResult.historicalDexTrades.map(
+          (item) => ({
+            ...item,
+            tokenPairInfo,
+          })
+        );
       }
 
       return {
