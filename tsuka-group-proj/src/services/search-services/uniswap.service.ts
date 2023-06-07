@@ -21,7 +21,7 @@ export async function checkIfTokenIsOnUniswap(address: string): Promise<boolean>
 
     return data?.token !== null;
   } catch (error) {
-    //console.error(`Error checking if token is on Uniswap:`);
+    console.error(`Error checking if token is on Uniswap:`);
     return false;
   }
 }
