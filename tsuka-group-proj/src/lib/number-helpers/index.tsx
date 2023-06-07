@@ -47,15 +47,15 @@ export const toNumber = (str: string): number => {
  * @param price 
  * @returns 
  */
-export function commafyOrHtmlTag(price: number) {
+export function commafyOrHtmlTag(price: number, includeDollarSign: boolean = true) {
   var output
 
   if (price >= 0.01) {
-      output = `$${commafy(price)}`;
+      output = `${includeDollarSign ? "$" : ""}${commafy(price)}`;
   } else {
       output = (
         <>
-          ${formatNumberToHtmlTag(price).integerPart}.0
+          {includeDollarSign ? "$" : ""}{formatNumberToHtmlTag(price).integerPart}.0
           <sub>
             {formatNumberToHtmlTag(price).leadingZerosCount}
           </sub>

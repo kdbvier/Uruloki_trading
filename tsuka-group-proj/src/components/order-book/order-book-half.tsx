@@ -1,29 +1,8 @@
 import { commafy } from "@/helpers/calc.helper";
 import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { numberWithCommas } from "@/helpers/comma.helper";
+import { commafyOrHtmlTag } from "@/lib/number-helpers";
 import { OrderBookVolume } from "@/types/orderbook.type";
-
-function commafyOrHtmlTag(price: number) {
-    var output
-
-    if (price >= 0.01) {
-        output = `$${commafy(price)}`;
-    } else {
-        // console.log("topMover price <: ", topMover.price);
-
-        output = (
-          <>
-            ${formatNumberToHtmlTag(price).integerPart}.0
-            <sub>
-              {formatNumberToHtmlTag(price).leadingZerosCount}
-            </sub>
-            {formatNumberToHtmlTag(price).remainingDecimal}
-          </>
-        );
-    }
-
-    return output
-}
 
 export const OrderBookHalf: React.FC<{
     data: Array<OrderBookVolume>, 
@@ -42,7 +21,7 @@ export const OrderBookHalf: React.FC<{
                 <span className="flex-1 px-4 py-2 text-end">
                   Size ({isBuy ? pairTokenShortName : baseTokenShortName})
                 </span>
-                <span className="flex-1 px-4 py-2 text-end">SUM (USD)</span>
+                <span className="flex-1 px-4 py-2 text-end">SUM ({isBuy ? pairTokenShortName : baseTokenShortName})</span>
               </div>
               {[...(data ?? [])]
                 .sort((a, b) => a.price - b.price)
@@ -72,7 +51,7 @@ export const OrderBookHalf: React.FC<{
                         {item.size.toLocaleString("en-us")}
                       </span>
                       <span className="flex-1 py-2 px-4 text-sm text-end font-normal whitespace-nowrap">
-                        {numberWithCommas(sum)}
+                        {commafyOrHtmlTag(sum, false)} {isBuy ? pairTokenShortName : baseTokenShortName}
                       </span>
                     </div>
                   );
