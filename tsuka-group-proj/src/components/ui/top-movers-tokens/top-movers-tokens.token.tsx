@@ -155,7 +155,11 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
                         <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                          {topMover.token}
+                          {topMover.token.length > 20 ? (
+                            topMover.token.slice(0,20) + "..."
+                          ) : (
+                            topMover.token
+                          )}
                         </span>
                       </td>
                       <td className="py-2 md:py-8 flex items-center">
