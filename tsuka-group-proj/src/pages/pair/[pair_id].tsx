@@ -447,9 +447,10 @@ async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
 
 async function getOldTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
-    return await getTokenPrice(pair_id as string, true);
+    const result = await getTokenPrice(pair_id as string, true);
+    return result
   } catch (err) {
-    console.log("Error getting old token price", err)
+    console.log("[pair_id].tsx: Error getting old token price", err)
     return {
       base_price: 0,
       quote_price: 0,
@@ -517,12 +518,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
   ])
 
+  console.log("Old token price:")
+  console.log(oldTokenPrice)
+  console.log("\nToken price:")
+  console.log(token_price)
 
   return {
     props: {
       orders,
       token_price,
-      oldTokenPrice,
+      oldTokenPrice: oldTokenPrice.base_price,
       tokenPairInfo,
       historicalDexTrades,
     },

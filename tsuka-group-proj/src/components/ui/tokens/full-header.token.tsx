@@ -146,7 +146,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               }`}
             />
             <InfoSpanToken
-              title={"24h"}
+              title={"24hr"}
               value={`${defaultNumberFormat(
                 oldTokenPrice ?
                   ((token_price.base_price - oldTokenPrice) /
@@ -154,6 +154,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
                       100
                   : 0
               ).toString()}%`}
+              isPositive={token_price.base_price > oldTokenPrice}
             />
           </div>
           <div className="text-sm justify-end">
