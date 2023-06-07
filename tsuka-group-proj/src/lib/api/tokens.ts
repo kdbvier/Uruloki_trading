@@ -12,7 +12,9 @@ export default class HomePageTokens {
   static getTokenPairInfo = async (
     pair_address: string
   ): Promise<TokenPairInfo> => {
-    return await axios.get(`/api/tokens/token-pair?pair_address=${pair_address}`);
+    const a = await axios.get(`/api/tokens/token-pair?pair_address=${pair_address}`);
+    console.log(a.data.payload);
+    return a.data?.payload as TokenPairInfo;
   };
   static getTokenVolume = async (
     baseTokenAddress: string

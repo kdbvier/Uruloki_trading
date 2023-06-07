@@ -6,6 +6,7 @@ import {
 } from "@/store/apps/bitquery-data";
 import { store } from "@/store";
 import { TokenPairInfo } from "@/types";
+import HomePageTokens from "../api/tokens";
 
 const client = createSubscriptionClient();
 
@@ -23,6 +24,9 @@ export const transformData = async (data: any) => {
 export const transformStreamData = (data: any, compareTokenName: any) => {
   const buySide = data.data.EVM?.buyside;
   const sellSide = data.data.EVM?.sellside;
+
+  console.log("buySide: ", buySide);
+  console.log("sellSide: ", sellSide);
 
   let buySideFiltered =
     buySide.length !== 0
@@ -203,14 +207,19 @@ const fetchStreamData = async (pairAddress: any, setDatas: any = undefined) => {
       .subscribe({
         next: async (response: any) => {
           // handle subscription data
-          console.log(response);
+          console.log("response: each :  ",response);
           // const data = await response.json();
+          // const compareTokenName =
+          //   store.getState().tokenPairInfo.value.baseToken?.symbol;
+          const tempTokenName = await HomePageTokens.getTokenPairInfo(pairAddress);
+          console.log("ldfjdaljfladkjf. ", pairAddress);
+          console.log("ldfjdaljfladkjf. ", tempTokenName);
           console.log(
             "store.getState()",
             store.getState().tokenPairInfo.value.baseToken?.symbol
           );
-          const compareTokenName =
-            store.getState().tokenPairInfo.value.baseToken?.symbol;
+          const compareTokenName = tempTokenName.baseToken?.symbol;
+          console.log("dfkj, ", compareTokenName);
           const transData = transformStreamData(response, compareTokenName);
           console.log("transform", transData);
           if (setDatas) setDatas(transData); //Not set but Add using next line;
