@@ -63,18 +63,15 @@ export const getTokenPrice = async (
   if (!quotePriceResponse.data.data.ethereum.dexTrades[0]) {
     return { base_price: 0, quote_price: 0 };
   }
+  
   const { quotePrice: basePrice } =
     quotePriceResponse.data.data.ethereum.dexTrades[0];
-
-  console.log("Paired token address")
-  console.log(pairedTokenAddress)
 
   //If the paired tokens address is weth or dai (so not a stablecoin)
   if (
     String(pairedTokenAddress).toLowerCase() === process.env.WETH_ADDR ||
     String(pairedTokenAddress).toLowerCase() === process.env.DAI_ADDR
   ) {
-    console.log("WETH Pair")
     const baseQuotePrice = basePrice;
     const baseCurrency = pairedTokenAddress;
     const quoteCurrency =

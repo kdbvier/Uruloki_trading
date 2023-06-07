@@ -1,9 +1,8 @@
 import _ from "lodash";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
-import { OrderBookToken } from "@/components/tokens/order-book.token";
+import { OrderBookToken } from "@/components/order-book/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
-import { PoolInfoToken } from "@/components/tokens/pool-info.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
@@ -201,12 +200,13 @@ export default function Pair({
   // }, [tokenPairInfo])
 
   useEffect(() => {
-    console.log("tokenPairInfo", tokenPairInfo);
-    console.log(
+    //console.log("tokenPairInfo", tokenPairInfo);
+    /*console.log(
       "router.query.pair_id--------------------------",
 
       router.query.pair_id
     );
+    */
     // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
     // console.log("pairInfo",pairInfo);
     const time = 15;
@@ -239,7 +239,7 @@ export default function Pair({
 
   useEffect(() => {
     const onNext = (data: any) => {
-      console.log("setSellTrades = ", data);
+      //console.log("setSellTrades = ", data);
 
       const updatedTrades = extractTrades(data);
 
@@ -272,7 +272,7 @@ export default function Pair({
   }, [tokenPairInfo]);
 
   return (
-    <div className="flex flex-col px-4 md:px-10 py-6">
+    <div className="flex flex-col px-4 py-6 md:px-10">
       <ToastContainer />
       {tokenPairInfo && (
         <FullHeaderToken
@@ -281,25 +281,21 @@ export default function Pair({
           orders={orders}
           token_price={token_price}
           oldTokenPrice={oldTokenPrice}
-          token={token}
           setToken={setToken}
         />
       )}
-      <div className="hidden lg:grid grid-cols-11 gap-4">
+      <div className="hidden grid-cols-11 gap-4 lg:grid">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
-          <LiveGraphToken />
+          <LiveGraphToken tokenPairInfo={tokenPairInfo}/>
           <div className="hidden md:grid grid-cols-8 gap-4">
-            <div className="col-span-12 md:col-span-3">
-              <PoolInfoToken token={token as Token} />
-            </div>
-            <div className="col-span-12 md:col-span-5">
+            <div className="col-span-12">
               <OrderBookToken
                 dexTrades={dexTrades}
                 tokens={[
                   {
-                    value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
-                    // value: orders[0].pair_address as string,
+                    //value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+                    value: orders[0]?.pair_address ?? "" as string,
                     label:
                       orders[0]?.baseTokenShortName == "USDT" ||
                       orders[0]?.baseTokenShortName == "USDC" ||
@@ -342,33 +338,36 @@ export default function Pair({
             filled={true}
             Icon={FiPlusCircle}
           />
-          <OrderWidgetToken
-            name1={tokenPairInfo?.baseToken?.name as string}
-            code1={tokenPairInfo?.baseToken?.symbol as string}
-            name2={tokenPairInfo?.pairedToken?.name as string}
-            code2={tokenPairInfo?.pairedToken?.symbol as string}
-            status={"Active" as OrderStatusEnum}
-            orders={activeOrders.map((order) => ({
-              id: order.order_id as number,
-              budget: order.budget as number,
-              price_type: order.price_type as PriceTypeEnum,
-              order_type: order.order_type as OrderTypeEnum,
-              status: order.status as OrderStatusEnum,
-              is_continuous: order.is_continuous as boolean,
-              baseTokenShortName: order.baseTokenShortName as string,
-              baseTokenLongName: order.baseTokenLongName as string,
-              pairTokenShortName: order.pairTokenShortName as string,
-              pairTokenLongName: order.pairTokenLongName as string,
-              price: order.single_price as number,
-              prices: [order.from_price, order.to_price],
-            }))}
-            setShowEditOrderModal={handleEditModal}
-            setShowDeletedAlert={setShowDeletedAlert}
-          />
+          {activeOrders.length > 0 && (
+            <OrderWidgetToken
+              name1={tokenPairInfo?.baseToken?.name as string}
+              code1={tokenPairInfo?.baseToken?.symbol as string}
+              name2={tokenPairInfo?.pairedToken?.name as string}
+              code2={tokenPairInfo?.pairedToken?.symbol as string}
+              status={"Active" as OrderStatusEnum}
+              orders={activeOrders.map((order) => ({
+                id: order.order_id as number,
+                budget: order.budget as number,
+                price_type: order.price_type as PriceTypeEnum,
+                order_type: order.order_type as OrderTypeEnum,
+                status: order.status as OrderStatusEnum,
+                is_continuous: order.is_continuous as boolean,
+                baseTokenShortName: order.baseTokenShortName as string,
+                baseTokenLongName: order.baseTokenLongName as string,
+                pairTokenShortName: order.pairTokenShortName as string,
+                pairTokenLongName: order.pairTokenLongName as string,
+                price: order.single_price as number,
+                prices: [order.from_price, order.to_price],
+              }))}
+              setShowEditOrderModal={handleEditModal}
+              setShowDeletedAlert={setShowDeletedAlert}
+            />
+          )}
+          
         </div>
       </div>
       <div className="block lg:hidden">
-        <LiveGraphToken />
+        <LiveGraphToken tokenPairInfo={tokenPairInfo}/>
         <OrderWidgetToken
           name1={tokenPairInfo?.baseToken?.name as string}
           code1={tokenPairInfo?.baseToken?.symbol as string}
@@ -393,7 +392,7 @@ export default function Pair({
           setShowDeletedAlert={setShowDeletedAlert}
         />
       </div>
-      {showEditOrderModal && (
+      {showEditOrderModal == 1 && (
         <EditOrderToken
           name1={tokenPairInfo?.baseToken?.name as string}
           code1={tokenPairInfo?.baseToken?.symbol as string}
@@ -414,7 +413,7 @@ export default function Pair({
         <DeletedAlertToken setShowDeletedAlert={setShowDeletedAlert} />
       )}
       {isLoading && (
-        <div className="w-screen h-screen z-40">
+        <div className="z-40 w-screen h-screen">
           <LoadingBox
             title="Loading data"
             description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
@@ -425,41 +424,45 @@ export default function Pair({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let orders: Order[];
-  let tokenPairInfo: TokenPairInfo = {};
-  let historicalDexTrades: Array<HistoricalDexTrades> = [];
+async function getOrdersByPairSafe(pair_id: string): Promise<Order[]> {
   try {
-    orders = await getOrdersByPair(context.query.pair_id as string, "Active");
+    return await getOrdersByPair(pair_id as string, "", "Active");
   } catch (e) {
-    orders = [];
+    console.log("Error getting orders by pair", e)
+    return [];
   }
-  const initialTokenPriceInPair: TokenPriceInPair = {
-    base_price: 0,
-    quote_price: 0,
-  };
-  let token_price: TokenPriceInPair = { ...initialTokenPriceInPair };
-  let oldTokenPrice: TokenPriceInPair = { ...initialTokenPriceInPair };
-  try {
-    token_price = (await getTokenPrice(
-      context.query.pair_id as string
-    )) as TokenPriceInPair;
-  } catch (err) {
-    token_price = { ...initialTokenPriceInPair };
-  }
+}
 
+async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
-    oldTokenPrice = (await getTokenPrice(
-      context.query.pair_id as string,
-      true
-    )) as TokenPriceInPair;
-  } catch (err) {
-    oldTokenPrice = { ...initialTokenPriceInPair };
+    return await getTokenPrice(pair_id as string);
+  } catch (e) {
+    console.log("Error getting token price", e)
+    return {
+      base_price: 0,
+      quote_price: 0,
+    };
   }
-  const { pair_id } = context.query;
+}
 
+async function getOldTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
+  try {
+    const result = await getTokenPrice(pair_id as string, true);
+    return result
+  } catch (err) {
+    console.log("[pair_id].tsx: Error getting old token price", err)
+    return {
+      base_price: 0,
+      quote_price: 0,
+    }
+  }
+}
+
+async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{tokenPairInfo: TokenPairInfo, historicalDexTrades: Array<HistoricalDexTrades>}> {
   try {
     const tokenPairNamesResult = await getTokenNamesFromPair(pair_id as string);
+    var tokenPairInfo: TokenPairInfo;
+    var historicalDexTrades: Array<HistoricalDexTrades> = [];
 
     if (tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
       tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
@@ -473,18 +476,63 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         historicalDexTradesResult.success &&
         historicalDexTradesResult.historicalDexTrades
       ) {
-        historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
+        historicalDexTrades = historicalDexTradesResult.historicalDexTrades.map(
+          (item) => ({
+            ...item,
+            tokenPairInfo,
+          })
+        );
+      }
+
+      return {
+        tokenPairInfo,
+        historicalDexTrades
+      }
+    } else {
+      return {
+        tokenPairInfo: {
+          baseToken: {
+            name: "",
+            symbol: "",
+            address: "",
+          },
+        },
+        historicalDexTrades: [],
       }
     }
   } catch (error) {
-    console.log(error, "error");
+    console.log("Error getting token pair names", error)
+    return {
+      tokenPairInfo: {
+        baseToken: {
+          name: "",
+          symbol: "",
+          address: "",
+        },
+      },
+      historicalDexTrades: [],
+    }
   }
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const [orders, token_price, oldTokenPrice, {historicalDexTrades, tokenPairInfo}] = await Promise.all([
+    getOrdersByPairSafe(context.query.pair_id as string),
+    getTokenPriceSafe(context.query.pair_id as string),
+    getOldTokenPriceSafe(context.query.pair_id as string),
+    getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
+  ])
+
+  console.log("Old token price:")
+  console.log(oldTokenPrice)
+  console.log("\nToken price:")
+  console.log(token_price)
 
   return {
     props: {
       orders,
       token_price,
-      oldTokenPrice,
+      oldTokenPrice: oldTokenPrice.base_price,
       tokenPairInfo,
       historicalDexTrades,
     },

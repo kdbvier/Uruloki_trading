@@ -238,7 +238,7 @@ export const getBitqueryStreamData = async (pairAddress: any) => {
 };
 
 // Stop subscribing when leaving the page and init the Store
-export const stopBitqueryStream = async () => {
+export const stopBitqueryStream = () => {
   client.unsubscribeAll();
   store.dispatch(initBitqueryData());
   store.dispatch(initBitqueryStreamData());

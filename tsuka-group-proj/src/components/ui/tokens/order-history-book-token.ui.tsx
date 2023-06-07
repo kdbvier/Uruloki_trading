@@ -48,8 +48,17 @@ const TradeRow: React.FC<TradeRowProps> = ({ item }) => {
       <span className=" py-2 w-[190px] text-sm font-normal whitespace-nowrap">
         {subPrice(Number(item.tradeAmount))}
       </span>
-      <span className=" py-2  text-sm font-normal whitespace-nowrap">
+      <span className="py-2 text-sm font-normal whitespace-nowrap w-[384px]">
         {item.transaction.txFrom.address}
+      </span>
+      {item.tokenPairInfo?.baseToken && item.tokenPairInfo?.pairedToken && (
+        <span className="py-2 text-sm font-normal whitespace-nowrap w-[194px]">
+          {item.tokenPairInfo.baseToken.symbol} /{" "}
+          {item.tokenPairInfo.pairedToken.symbol}
+        </span>
+      )}
+      <span className="py-2 text-sm font-normal whitespace-nowrap">
+        {item.timestamp}
       </span>
     </div>
   );
@@ -62,13 +71,15 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
     <div>
       {/* {status === "loading" && "Loading..."}
       {status === "ok" && value && ( */}
-      <div className="p-4 flex">
+      <div className="flex p-4">
         <div className="flex-1">
-          <div className="h-96 overflow-auto">
-            <div className="text-base text-left flex flex-center text-tsuka-300 border-b border-tsuka-400">
+          <div className="overflow-auto h-96">
+            <div className="flex text-base text-left border-b flex-center text-tsuka-300 border-tsuka-400">
               <span className="px-4 py-2 w-[120px]">Type</span>
               <span className="px-4 py-2 w-[190px]">Amount (USD)</span>
-              <span className="px-4 py-2">Buyer Address</span>
+              <span className="px-4 py-2 w-[384px]">Buyer Address</span>
+              <span className="px-4 py-2 w-[194px]">Base / Quote</span>
+              <span className="px-4 py-2">Date</span>
             </div>
             {dexTrades &&
               dexTrades.map((item: any, index: number) => (

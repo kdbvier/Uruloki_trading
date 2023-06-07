@@ -17,6 +17,14 @@ export default class HomePageTokens {
   static getTokenVolume = async (
     baseTokenAddress: string
   ): Promise<{ tradeAmount: number }> => {
-    return await axios.get(`/api/tokens/token-volume?baseTokenAddress=${baseTokenAddress}`);
+    const response = await axios.get(`/api/tokens/token-volume?baseTokenAddress=${baseTokenAddress}`);
+    if(response?.status == 200) {
+      return response.data.payload;
+    } else {
+      console.log("Error getting token volume")
+      return {
+        tradeAmount: 0
+      }
+    }
   };
 }

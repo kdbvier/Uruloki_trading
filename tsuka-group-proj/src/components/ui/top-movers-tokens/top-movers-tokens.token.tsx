@@ -1,8 +1,8 @@
 import { OrderSplitBar } from "@/components/ui/top-movers-tokens/order-split-bar.token";
 import { ITopMover, ITopMoversTokenProps } from "@/global";
 import { commafy, commafy2 } from "@/helpers/calc.helper";
-import { formatNumberToHtmlTag } from "@/helpers/coin.helper";
 import { splitAddress } from "@/helpers/splitAddress.helper";
+import { commafyOrHtmlTag } from "@/lib/number-helpers";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import {
@@ -116,23 +116,7 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
               /// TODO: This is only for test
               let shortName = "ETH";
               let id = "ethereum";
-              let priceEle;
-              if (topMover.price >= 0.01) {
-                // console.log("topMover price >: ", topMover.price);
-                priceEle = `$${commafy(topMover.price)}`;
-              } else {
-                // console.log("topMover price <: ", topMover.price);
-
-                priceEle = (
-                  <>
-                    ${formatNumberToHtmlTag(topMover.price).integerPart}.0
-                    <sub>
-                      {formatNumberToHtmlTag(topMover.price).leadingZerosCount}
-                    </sub>
-                    {formatNumberToHtmlTag(topMover.price).remainingDecimal}
-                  </>
-                );
-              }
+              let priceEle = commafyOrHtmlTag(topMover.price)
               return (
                 topMover.token &&
                 topMover.token !== "-" && (
@@ -155,7 +139,11 @@ export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
                       </td>
                       <td className="hidden md:table-cell py-2 md:py-8">
                         <span className="ml-1 text-tsuka-50 text-[16px] leading-[20px] font-normal">
-                          {topMover.token}
+                          {topMover.token.length > 20 ? (
+                            topMover.token.slice(0,20) + "..."
+                          ) : (
+                            topMover.token
+                          )}
                         </span>
                       </td>
                       <td className="py-2 md:py-8 flex items-center">

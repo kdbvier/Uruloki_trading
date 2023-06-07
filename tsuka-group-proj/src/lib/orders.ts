@@ -17,9 +17,12 @@ export async function getOrdersByPair(
 ): Promise<Array<Order>> {
   console.log("Pair address");
   console.log(pair_address);
-  const whereCondition: any = { pair_address, creator_address: wallet_address };
+  const whereCondition: any = { pair_address };
   if (status) {
     whereCondition["status"] = status;
+  }
+  if (wallet_address != "") {
+    whereCondition.creator_address = wallet_address;
   }
   const orders = await prisma.orders.findMany({
     where: whereCondition,

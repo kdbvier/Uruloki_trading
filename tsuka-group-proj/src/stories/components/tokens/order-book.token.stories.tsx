@@ -1,4 +1,4 @@
-import { OrderBookToken } from "@/components/tokens/order-book.token";
+import { OrderBookToken } from "@/components/order-book/order-book.token";
 import { store } from "@/store";
 import { Token } from "@/types/token.type";
 import { Meta, StoryObj } from "@storybook/react";

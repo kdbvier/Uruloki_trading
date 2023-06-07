@@ -8,7 +8,13 @@ const quoteCurrencyAddress =
   "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as string;
 let interval = 15;
 // WETH = 1 WETH / USDC
-const fetchOHLCData = async (eachAddress:any) => {
+type Addresses = {
+  base: string;
+  quote: string;
+  time: number
+}
+
+const fetchOHLCData = async (eachAddress: Addresses) => {
   const date = new Date(new Date().getTime() - 24 * 60 * 60 * 1000); // Replace this with your date object
   const from = moment(date).format("YYYY-MM-DD");
   console.log("baseAddress", eachAddress.base);
@@ -63,7 +69,6 @@ const fetchOHLCData = async (eachAddress:any) => {
 };
 // fetch the historical data
 export const getBitqueryOHLCData = async (eachAddress:any) => {
-  console.log("getbitfdsa",eachAddress);
   const ohlcData = await fetchOHLCData(eachAddress);
   return ohlcData;
 };

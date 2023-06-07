@@ -2,7 +2,7 @@ import { Order } from "@/types";
 import { Token } from "@/types/token.type";
 import { useState } from "react";
 import { FiltersButton } from "../ui/buttons/filters.button";
-import { OrderBookTokenUi } from "../ui/tokens/order-book-token.ui";
+import { OrderBookTokenUi } from "./order-book-token.ui";
 import { OrderHistoryBookTokenUi } from "../ui/tokens/order-history-book-token.ui";
 import { HistoricalDexTrades } from "@/lib/token-activity-feed";
 import { TokenPairOrders } from "@/lib/setups";
@@ -38,8 +38,8 @@ export const OrderBookToken: React.FC<{
     );
 
   return (
-    <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 px-2">
-      <div className="w-full flex items-center justify-start border-b border-tsuka-400 px-2 pt-2 mb-2">
+    <div className="px-2 mt-4 bg-tsuka-500 rounded-xl text-tsuka-100">
+      <div className="flex items-center justify-start w-full px-2 pt-2 mb-2 border-b border-tsuka-400">
         {options.map(({ title, path }, index) => (
           <span
             key={index}
