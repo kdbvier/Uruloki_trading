@@ -17,7 +17,7 @@ import {
 export const TopMoversTokens: React.FC<ITopMoversTokenProps> = ({
   topMovers,
 }) => {
-  console.log(topMovers);
+  // console.log(topMovers);
   const [collapeds, setCollapeds] = useState<boolean[]>([]);
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");

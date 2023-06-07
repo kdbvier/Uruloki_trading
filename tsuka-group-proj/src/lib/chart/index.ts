@@ -34,6 +34,7 @@ export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInf
       setFirstBitquery(tranData);
       setForwardTime(tranData[tranData.length - 1]?.time + 15 * 60 * 1000);
     } catch (err) {
+      console.log("This is the suspected part")
       console.error(err);
     }
 };
