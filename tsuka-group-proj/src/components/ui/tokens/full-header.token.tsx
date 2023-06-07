@@ -133,7 +133,7 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
           <div className="hidden sm:flex text-sm mr-12">
             <InfoSpanToken title={"TXS"} value={orders ? orders.length : 0} />
             <div className="flex items-center border border-tsuka-400 pt-1 mx-2">
-              <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
+              <label className="absolute -mt-16 mx-auto bg-tsuka-700 px-2 text-tsuka-200">
                 ORDERS
               </label>
               <InfoSpanToken title={"BUY"} value={buyOrders} />
