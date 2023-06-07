@@ -200,12 +200,13 @@ export default function Pair({
   // }, [tokenPairInfo])
 
   useEffect(() => {
-    console.log("tokenPairInfo", tokenPairInfo);
-    console.log(
+    //console.log("tokenPairInfo", tokenPairInfo);
+    /*console.log(
       "router.query.pair_id--------------------------",
 
       router.query.pair_id
     );
+    */
     // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
     // console.log("pairInfo",pairInfo);
     const time = 15;
@@ -238,7 +239,7 @@ export default function Pair({
 
   useEffect(() => {
     const onNext = (data: any) => {
-      console.log("setSellTrades = ", data);
+      //console.log("setSellTrades = ", data);
 
       const updatedTrades = extractTrades(data);
 

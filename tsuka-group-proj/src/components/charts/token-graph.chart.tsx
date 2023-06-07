@@ -5,10 +5,11 @@ import { TokenPairInfo } from "@/types";
 
 interface Props {
   onLoaded: () => void;
-  tokenPairInfo: TokenPairInfo
+  tokenPairInfo: TokenPairInfo;
+  setDataUnavailable: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const TokenGraphChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
+export const TokenGraphChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUnavailable }) => {
   const config = {
     theme: "dark",
     calendar: false,
@@ -106,6 +107,6 @@ export const TokenGraphChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) =>
     // <div className="h-full">
     //   {token && <AdvancedRealTimeChart style="8" {...config} symbol={token} />}
     // </div>
-    <BitqueryOHLCChart onLoaded={onLoaded} tokenPairInfo={tokenPairInfo}/>
+    <BitqueryOHLCChart onLoaded={onLoaded} tokenPairInfo={tokenPairInfo} setDataUnavailable={setDataUnavailable}/>
   );
 };

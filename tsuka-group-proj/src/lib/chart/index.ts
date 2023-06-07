@@ -20,6 +20,8 @@ export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInf
         time: time,
       };
       const responseData = await getBitqueryOHLCData(eachAddress);
+      console.log("Response data:")
+      console.log(responseData)
       const tranData = await transformData(responseData);
       setCandleStickTime(eachAddress.time);
       // getBitqueryStreamInfo(eachAddress.pairAddress);//////
