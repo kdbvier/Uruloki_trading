@@ -426,8 +426,9 @@ export default function Pair({
 
 async function getOrdersByPairSafe(pair_id: string): Promise<Order[]> {
   try {
-    return await getOrdersByPair(pair_id as string, "Active");
+    return await getOrdersByPair(pair_id as string, "", "Active");
   } catch (e) {
+    console.log("Error getting orders by pair", e)
     return [];
   }
 }
@@ -436,6 +437,7 @@ async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
     return await getTokenPrice(pair_id as string);
   } catch (e) {
+    console.log("Error getting token price", e)
     return {
       base_price: 0,
       quote_price: 0,
@@ -447,6 +449,7 @@ async function getOldTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> 
   try {
     return await getTokenPrice(pair_id as string, true);
   } catch (err) {
+    console.log("Error getting old token price", err)
     return {
       base_price: 0,
       quote_price: 0,
@@ -492,7 +495,7 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
       }
     }
   } catch (error) {
-    console.log(error);
+    console.log("Error getting token pair names", error)
     return {
       tokenPairInfo: {
         baseToken: {
