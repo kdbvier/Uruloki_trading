@@ -14,6 +14,8 @@ export default async function tempSearchHandler(
       try {
         let name = query.name as string;
         const tokens = await searchTokensByName(name);
+        console.log("Tokens:")
+        console.log(tokens)
         if(tokens.length === 0) {
           res.status(404).json({
             payload: undefined,

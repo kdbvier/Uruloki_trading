@@ -21,7 +21,7 @@ export async function checkIfTokenIsOnUniswap(address: string): Promise<boolean>
 
     return data?.token !== null;
   } catch (error) {
-    //console.error(`Error checking if token is on Uniswap: ${error}`);
+    //console.error(`Error checking if token is on Uniswap:`);
     return false;
   }
 }
@@ -60,7 +60,7 @@ export async function getPairsByTokenAddress(tokenAddress: string):Promise<Searc
     });
     return pairs;
   } catch (error) {
-    console.error('Error fetching pairs:', error);
+    console.error('Error fetching pairs');
     return [];
   }
 }

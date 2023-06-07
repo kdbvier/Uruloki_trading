@@ -44,8 +44,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   // const baseTokenAddress = useAppSelector(
   //   (state) => state.tokenPairInfo.value.baseToken.address
   // );
-  console.log("Full header orders:")
-  console.log(orders)
   const baseTokenAddress = tokenPairInfo.baseToken?.address;
   const [tokenVolume, setTokenVolume] = useState({
     value: 0,
@@ -88,6 +86,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
           newTokenVolume.value = volume.tradeAmount;
           newTokenVolume.currencyLabel = "";
         }
+        console.log("New Volume:")
+        console.log(newTokenVolume)
         setTokenVolume(newTokenVolume);
       })();
     }
