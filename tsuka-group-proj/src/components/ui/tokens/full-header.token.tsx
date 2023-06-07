@@ -14,7 +14,6 @@ export interface FullHeaderTokenProps {
   orders: Order[];
   token_price: TokenPriceInPair;
   oldTokenPrice: number;
-  token?: Token;
   setToken: (t: Token) => void;
 }
 
@@ -40,17 +39,20 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   orders,
   token_price,
   oldTokenPrice,
-  token,
   setToken,
 }) => {
   // const baseTokenAddress = useAppSelector(
   //   (state) => state.tokenPairInfo.value.baseToken.address
   // );
+  console.log("Full header orders:")
+  console.log(orders)
   const baseTokenAddress = tokenPairInfo.baseToken?.address;
   const [tokenVolume, setTokenVolume] = useState({
     value: 0,
     currencyLabel: "",
   });
+  const [buyOrders, setBuyOrders] = useState<number>(0)
+  const [sellOrders, setSellOrders] = useState<number>(0)
 
   // useEffect(() => {
   //   if (pair_address) {
@@ -94,25 +96,12 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
   useEffect(() => {
     let total_sell: number = 0;
     let total_buy: number = 0;
-    let price: number = 0;
     if (orders[0]) {
       total_sell = orders.filter((ele, id) => ele.order_type === "sell").length;
       total_buy = orders.filter((ele, id) => ele.order_type === "buy").length;
-      price = orders.reduce(
-        (prev, curr, index, array) => prev + (curr.budget ?? 0),
-        0
-      );
     }
-    if (!token) return;
-    setToken({ ...token, orderSplit: { buy: total_buy, sell: total_sell } });
-    // dispatch(
-    //   setOrderSplit({
-    //     orderSplit: {
-    //       buy: total_buy,
-    //       sell: total_sell,
-    //     },
-    //   })
-    // );
+    setBuyOrders(total_buy)
+    setSellOrders(total_sell)
   }, [orders]);
 
   return (
@@ -136,11 +125,6 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <label className="text-xs whitespace-nowrap">
                 Pair Address: {splitAddress(pair_address)}
               </label>
-              <div className="flex flex-col items-center justify-around ml-2">
-                <label className="text-xs text-tsuka-50">
-                  {splitAddress(token?.pair?.address as string)}
-                </label>
-              </div>
               <label className="text-xs whitespace-nowrap md:ml-4"></label>
             </div>
           </div>
@@ -152,8 +136,8 @@ export const FullHeaderToken: React.FC<FullHeaderTokenProps> = ({
               <label className="absolute -mt-16 ml-4 bg-tsuka-700 px-2 text-tsuka-200">
                 ORDERS
               </label>
-              <InfoSpanToken title={"BUY"} value={token?.orderSplit?.buy ?? 0} />
-              <InfoSpanToken title={"SELL"} value={token?.orderSplit?.sell ?? 0} />
+              <InfoSpanToken title={"BUY"} value={buyOrders} />
+              <InfoSpanToken title={"SELL"} value={sellOrders} />
             </div>
             <InfoSpanToken
               title={"VOL."}

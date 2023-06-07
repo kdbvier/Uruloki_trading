@@ -281,7 +281,6 @@ export default function Pair({
           orders={orders}
           token_price={token_price}
           oldTokenPrice={oldTokenPrice}
-          token={token}
           setToken={setToken}
         />
       )}
