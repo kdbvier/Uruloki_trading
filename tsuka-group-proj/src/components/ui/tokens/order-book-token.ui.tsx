@@ -22,52 +22,35 @@ export const OrderBookTokenUi: React.FC<OrderBookTokenUiProp> = ({
   const [orderBookData, setOrderBookData] = useState<OrderBookData>(
     new OrderBookData()
   );
-  const [selectedToken, setSelectedToken] = useState<OrderBookTokens>(
-    tokens[0]
-  );
-
-  const [tokenOrdersBooks, setTokenOrdersBooks] = useState<TokenOrderBooks>();
+  const [selectedToken, setSelectedToken] = useState<OrderBookTokens>();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setSelectedToken(tokens[0]);
+  }, [tokens])
+ 
   useEffect(() => {
     if (selectedToken) {
       let tempOrderBookData = orderBookData.fromOrders(
-        orders.find(({ pair_address }) => pair_address === selectedToken.value)
-          ?.orders ?? []
+        orders.find(({ pair_address }) => pair_address === selectedToken.value)?.orders ?? []
       );
       setOrderBookData(tempOrderBookData);
 
       setSellSum(tempOrderBookData.getSellSum());
       setBuySum(tempOrderBookData.getBuySum());
-      console.log(orders);
-      console.log(tempOrderBookData);
     }
-  });
+  }, [selectedToken]);
 
   const handleSelect = (token: OrderBookTokens) => {
     setSelectedToken(token);
   };
-
-  useEffect(() => {
-    if (selectedToken) {
-      let tempOrderBookData = orderBookData.fromOrders(
-        orders.find(({ pair_address }) => pair_address === selectedToken.value)
-          ?.orders ?? []
-      );
-      setOrderBookData(tempOrderBookData);
-
-      setSellSum(tempOrderBookData.getSellSum());
-      setBuySum(tempOrderBookData.getBuySum());
-      console.log(orders);
-      console.log(tempOrderBookData);
-    }
-  }, [orders, selectedToken]);
 
   let sum: number;
 
   return (
     <div>
       {loading && "Loading..."}
-      {!loading && tokenOrdersBooks && orders[0] ? (
+      {!loading && orderBookData && orders[0] ? (
         <div className="p-4 flex gap-2">
           <div className="flex-1">
             <div className="h-96">
