@@ -59,7 +59,7 @@ export const OrderBookHalf: React.FC<{
                     >
                       <div className="absolute w-full rounded-lg m-2 pr-4">
                         <div
-                          className={`${isBuy ? "bg-green-400/20" : "bg-red-400/20"} h-6 rounded text-start flex items-center px-2 mr-auto`}
+                          className={`${isBuy ? "bg-green-400/20" : "bg-red-400/20"} h-6 rounded text-start flex items-center px-2 ${isBuy? "mr-auto" : "ml-auto"}`}
                           style={{
                             width: `${(sum * 100) / buyOrSellSum}%`,
                           }}
