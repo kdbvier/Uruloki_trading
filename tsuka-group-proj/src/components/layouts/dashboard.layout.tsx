@@ -232,15 +232,18 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   menuCollapsed={menuCollapsed}
                   callback={() => setMenuCollapsed(!menuCollapsed)}
                 />
+                {/*
                 <HeaderNotificationButton
                   callback={() => console.log("NotificationButton click")}
                   showNotify={showNotify}
                   setShowNotify={setShowNotify}
                 />
+              */}
                 <div className="hidden sm:block">
                   <Web3Button />
                 </div>
               </div>
+              
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
