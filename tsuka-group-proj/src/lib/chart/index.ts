@@ -88,6 +88,7 @@ export const getUpdatedData = (forTime: string, datas: any, candleStickTime: num
     }
 };
 
+
 export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
     return createChart(chartRef, {
         width: 1300,
@@ -124,7 +125,8 @@ export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
             return new Date(businessDayOrTimestamp).toLocaleString();
           },
           priceFormatter: (price: any) => {
-            return (price).toFixed(10);
+            
+            return (price).toFixed(14).padEnd(10);
           },
         },
         timeScale: {
@@ -194,15 +196,11 @@ export const addMarkers = (activeOrdersByTokenpair: Array<Order>, candlestickSer
 }
 
 export const updateChartSize = (chartRef: HTMLDivElement, chart: IChartApi) => {
-    const containerWidth: number = chartRef.clientWidth
-      ? chartRef.clientWidth
-      : 0;
-    const containerHeight: number = chartRef.clientHeight
-      ? chartRef.clientHeight
-      : 0;
-
-    const newWidth = containerWidth * 1;
-    const newHeight = containerHeight * 1;
-
-    chart.resize(newWidth, newHeight);
+    console.log(chartRef)
+    console.log(chart)
+    new ResizeObserver(entries => {
+      if (entries.length === 0 || entries[0].target !== chartRef) { return; }
+      const newRect = entries[0].contentRect;
+      chart.applyOptions({ height: newRect.height, width: newRect.width });
+    }).observe(chartRef);
 };
