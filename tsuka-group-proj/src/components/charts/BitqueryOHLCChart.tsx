@@ -71,9 +71,16 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     // let a = [...streamValue];
     // a.push(transData);
     // setStreamValue(a);
-    setStreamValue(prevStreamValue => [...prevStreamValue, transData]);
-    if (transData.time > forwardTime) {
-      setForwardTime(forwardTime + candleStickTime * 60 * 1000);
+    // if(transData.close === '' || transData.open === '' ){
+    //   return;
+    // }
+    if(Number.isNaN(transData.time)){
+      
+    } else {
+      setStreamValue(prevStreamValue => [...prevStreamValue, transData]);
+      if (transData.time > forwardTime) {
+        setForwardTime(forwardTime + candleStickTime * 60 * 1000);
+      }
     }
   };
  
@@ -93,6 +100,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
   }
 
   const candleStickClicked = async (stick: number) => {
+    setCandleStickTime(stick);
     await setActive(stick);
     if (!tokenPairInfo) return;
     console.log(stick, active);
