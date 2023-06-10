@@ -38,11 +38,10 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       const symbol = coin.symbol;
       const address = coin.platforms.ethereum;
       
-      // const isErc20 = await checkIfTokenIsErc20(address);
-      const isErc20 = true;
-      const isOnUniswap = await checkIfTokenIsOnUniswap(address);
+      //const isOnUniswap = await checkIfTokenIsOnUniswap(address);
+      const isOnUniswap = true;
 
-      if(isErc20 && isOnUniswap)
+      if(isOnUniswap)
         return {
           id,
           name: tokenName,
@@ -52,11 +51,11 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       else
        return null;
     }));
-
+    //console.log(erc20Tokens)
     const erc20Tokens1: SearchToken[] = erc20Tokens.filter(isSearchToken).filter(token=>token.address);
     return erc20Tokens1;
   } catch (error) {
-    console.error(`Error searching tokens by name: ${error}`);
+    //console.error(`Error searching tokens by name: ${error}`);
     return [];
   }
 }

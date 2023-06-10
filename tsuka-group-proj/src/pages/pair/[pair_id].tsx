@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { SidebarStrategies } from "@/components/strategies/sidebar.strategies";
 import { LiveGraphToken } from "@/components/tokens/live-graph.token";
-import { OrderBookToken } from "@/components/tokens/order-book.token";
+import { OrderBookToken } from "@/components/order-book/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { DefaultButton } from "@/components/ui/buttons/default.button";
 import { LoadingBox } from "@/components/ui/loading/loading-box";
@@ -200,12 +200,13 @@ export default function Pair({
   // }, [tokenPairInfo])
 
   useEffect(() => {
-    console.log("tokenPairInfo", tokenPairInfo);
-    console.log(
+    //console.log("tokenPairInfo", tokenPairInfo);
+    /*console.log(
       "router.query.pair_id--------------------------",
 
       router.query.pair_id
     );
+    */
     // const pairInfo = HomePageTokens.getTokenPairInfo(router.query.pair_id as string);
     // console.log("pairInfo",pairInfo);
     const time = 15;
@@ -238,7 +239,7 @@ export default function Pair({
 
   useEffect(() => {
     const onNext = (data: any) => {
-      console.log("setSellTrades = ", data);
+      //console.log("setSellTrades = ", data);
 
       const updatedTrades = extractTrades(data);
 
@@ -271,7 +272,7 @@ export default function Pair({
   }, [tokenPairInfo]);
 
   return (
-    <div className="flex flex-col px-4 md:px-10 py-6">
+    <div className="flex flex-col px-4 py-6 md:px-10">
       <ToastContainer />
       {tokenPairInfo && (
         <FullHeaderToken
@@ -280,11 +281,10 @@ export default function Pair({
           orders={orders}
           token_price={token_price}
           oldTokenPrice={oldTokenPrice}
-          token={token}
           setToken={setToken}
         />
       )}
-      <div className="hidden lg:grid grid-cols-11 gap-4">
+      <div className="hidden grid-cols-11 gap-4 lg:grid">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
           <LiveGraphToken tokenPairInfo={tokenPairInfo}/>
@@ -413,7 +413,7 @@ export default function Pair({
         <DeletedAlertToken setShowDeletedAlert={setShowDeletedAlert} />
       )}
       {isLoading && (
-        <div className="w-screen h-screen z-40">
+        <div className="z-40 w-screen h-screen">
           <LoadingBox
             title="Loading data"
             description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
@@ -426,8 +426,9 @@ export default function Pair({
 
 async function getOrdersByPairSafe(pair_id: string): Promise<Order[]> {
   try {
-    return await getOrdersByPair(pair_id as string, "Active");
+    return await getOrdersByPair(pair_id as string, "", "Active");
   } catch (e) {
+    console.log("Error getting orders by pair", e)
     return [];
   }
 }
@@ -436,6 +437,7 @@ async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
     return await getTokenPrice(pair_id as string);
   } catch (e) {
+    console.log("Error getting token price", e)
     return {
       base_price: 0,
       quote_price: 0,
@@ -445,8 +447,10 @@ async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
 
 async function getOldTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
-    return await getTokenPrice(pair_id as string, true);
+    const result = await getTokenPrice(pair_id as string, true);
+    return result
   } catch (err) {
+    console.log("[pair_id].tsx: Error getting old token price", err)
     return {
       base_price: 0,
       quote_price: 0,
@@ -472,7 +476,12 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
         historicalDexTradesResult.success &&
         historicalDexTradesResult.historicalDexTrades
       ) {
-        historicalDexTrades = historicalDexTradesResult.historicalDexTrades;
+        historicalDexTrades = historicalDexTradesResult.historicalDexTrades.map(
+          (item) => ({
+            ...item,
+            tokenPairInfo,
+          })
+        );
       }
 
       return {
@@ -492,7 +501,7 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
       }
     }
   } catch (error) {
-    console.log(error);
+    console.log("Error getting token pair names", error)
     return {
       tokenPairInfo: {
         baseToken: {
@@ -514,11 +523,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
   ])
 
+  console.log("Old token price:")
+  console.log(oldTokenPrice)
+  console.log("\nToken price:")
+  console.log(token_price)
+
   return {
     props: {
       orders,
       token_price,
-      oldTokenPrice,
+      oldTokenPrice: oldTokenPrice.base_price,
       tokenPairInfo,
       historicalDexTrades,
     },

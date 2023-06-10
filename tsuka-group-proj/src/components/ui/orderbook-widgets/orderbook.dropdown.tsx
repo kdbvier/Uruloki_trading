@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { TokenCache } from "@/types";
-import { OrderBookTokens } from "@/components/tokens/order-book.token";
+import { OrderBookTokens } from "@/components/order-book/order-book.token";
 
 interface OrderBookDropdownProp {
   dropdownOptions: OrderBookTokens[];

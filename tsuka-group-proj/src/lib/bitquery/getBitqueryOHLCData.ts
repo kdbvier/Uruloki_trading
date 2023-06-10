@@ -69,7 +69,6 @@ const fetchOHLCData = async (eachAddress: Addresses) => {
 };
 // fetch the historical data
 export const getBitqueryOHLCData = async (eachAddress:any) => {
-  console.log("getbitfdsa",eachAddress);
   const ohlcData = await fetchOHLCData(eachAddress);
   return ohlcData;
 };

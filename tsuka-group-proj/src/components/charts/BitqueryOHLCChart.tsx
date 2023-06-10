@@ -23,16 +23,18 @@ import { addMarkers, createLightweightChart, fetchData, getUpdatedData, updateCh
 
 interface Props {
   onLoaded: () => void;
-  tokenPairInfo: TokenPairInfo
+  tokenPairInfo: TokenPairInfo;
+  setDataUnavailable: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // This is our lightweight chart
-const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
+const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUnavailable }) => {
   const router = useRouter();
   const [pairAddress, setPairAddress] = useState(router.query.pair_id as string);
   const [activeOrdersByTokenpair, setActiveOrdersByTokenpair] = useState<
     Order[]
   >([]);
+
   useEffect(() => {
     const fetchTokenPairInfo_ActiveOrders = async () => {
       try {
@@ -49,6 +51,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     };
     fetchTokenPairInfo_ActiveOrders();
   }, [pairAddress]);
+
   const [chart, setChart] = useState<IChartApi | null>(null);
   const [showMarkers, setShowMarkers] = useState(true);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -105,6 +108,14 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     };
   }, []);
 
+  useEffect(() => {
+    onLoaded()
+    console.log("First Bitquery:")
+    console.log(firstBitquery)
+    if(firstBitquery.length == 0) setDataUnavailable(true)
+    else setDataUnavailable(false)
+  }, [firstBitquery])
+
   interface MyCandlestickData extends CandlestickData {
     [key: string]: any;
   }
@@ -118,7 +129,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
   };
 
   useEffect(() => {
-    console.log("useEffect");
+    //console.log("useEffect");
     if (!chartRef.current || !firstBitquery) return;
     const chart = createLightweightChart(chartRef.current);
 
@@ -185,6 +196,8 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
       if(chartRef.current === null) return;
       updateChartSize(chartRef.current, chart)
     });
+
+    // When this page becomes unmounted
     return () => {
       chart.remove();
       window.removeEventListener("resize", () => {
@@ -210,6 +223,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     let updatedData: MyCandlestickData | null = null;
     // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
+
     console.log("4: updatedData = ", updatedData);
     // setForwardTime((prevForwardTime: number)=>{
     //   // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
@@ -222,12 +236,10 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     //     return prevForwardTime;
     //   }
     // })
+
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
   }, [streamValue, forwardTime]);
-
-  // When subscription data arrives
-  useEffect(onLoaded, []);
 
   return (
     <>
@@ -266,9 +278,6 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
           >
             6H
           </button>
-          {/* <button onClick={() => candleStickClicked(30)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-wide mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">30M</button>
-            <button onClick={() => candleStickClicked(60)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">1H</button>
-            <button onClick={() => candleStickClicked(360)} className="m-[3px] pt-[4px] pb-[4px] w-[50px] tracking-widest mb-[3px] focus:bg-[rgba(51,150,255,1)] transition duration-300 text-white rounded-md">6H</button> */}
         </div>
       </div>
     </>

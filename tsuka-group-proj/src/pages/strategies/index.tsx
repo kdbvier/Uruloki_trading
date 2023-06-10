@@ -1,15 +1,14 @@
-import { StrategyBookStrategies } from "@/components/strategies/strategy-book.strategies";
+import { StrategiesPageComponent } from "@/components/strategies/strategy-page-component";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { getStrategies } from "@/store/apps/strategies";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import Strategies from "@/lib/api/strategies";
+import { Strategies } from "@/lib/strategies/strategies";
 import { Strategy } from "@/types";
 import Link from "next/link";
 
 export async function getServerSideProps() {
   const walletAddress = await getConnectedAddress();
   const strategies = await Strategies.getStrategiesData(
-    walletAddress as string
+    //walletAddress as string
+    ""
   );
   return { props: { strategies: strategies } };
 }
@@ -39,7 +38,7 @@ export default function StrategyDetails({
           My Orders
         </Link>
       </div>
-      {strategies && <StrategyBookStrategies strategies={strategies} />}
+      {strategies && <StrategiesPageComponent strategies={strategies} />}
     </div>
   );
 }

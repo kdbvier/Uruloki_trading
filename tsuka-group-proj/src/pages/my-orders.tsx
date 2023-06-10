@@ -37,31 +37,8 @@ export default function MyOrder({ pairOrders }: MyOrdersProps) {
   const [showAll, setShowAll] = useState<boolean>(false);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
-  const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [value, setValue] = useState<UserOrder[]>([]);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchStrategies = async () => {
-      try {
-        setLoading(true);
-        const walletAddress = await getConnectedAddress();
-        const res = await Strategies.getStrategiesData(walletAddress as string);
-        setStrategies(res);
-        const res_1 = await Orders.getOrdersbyUserIdandFilters(
-          1,
-          openToggle ? "Open" : "Close",
-          searchValue,
-          walletAddress as string
-        );
-        setValue(res_1);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchStrategies();
-  }, [openToggle]);
 
   const handleSearchChange = (e: any) => {
     console.log("changing");
@@ -88,18 +65,6 @@ export default function MyOrder({ pairOrders }: MyOrdersProps) {
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
     setShowEditOrderModal(show);
-  };
-  const fetchOrders = async () => {
-    setLoading(true);
-    const walletAddress = await getConnectedAddress();
-    const res_1 = await Orders.getOrdersbyUserIdandFilters(
-      1,
-      openToggle ? "Open" : "Close",
-      searchValue,
-      walletAddress as string
-    );
-    setValue(res_1);
-    setLoading(false);
   };
   return (
     <>
