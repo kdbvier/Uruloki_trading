@@ -232,7 +232,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
   return (
     <>
       <div ref={chartRef} />
-      <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[330px] flex flex-row justify-around">
+      <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[230px] flex flex-row justify-around">
         <div className="-mr-[3px] -ml-[3px] w-full">
           <button
             onClick={() => candleStickClicked(15)}
