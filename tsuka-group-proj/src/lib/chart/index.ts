@@ -42,6 +42,7 @@ export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInf
 export const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) => {
   console.log("inside getUpdatedData:: forTime=",forTime, " datas=", datas, " candleStickTime=", candleStickTime)
     if (datas[datas.length - 1].time > forTime) {
+      console.log("inside getUpdatedData:: firstCase");
       const filterData = datas.filter((data: any) => data.time > forTime);
       const time = forTime + (candleStickTime * 60 * 1000 - 900000);
       const open = filterData[0].open;
@@ -62,28 +63,29 @@ export const getUpdatedData = (forTime: string, datas: any, candleStickTime: num
         close,
       };
     } else {
+      console.log("inside getUpdatedData:: secondCase");
       const filterData1 = datas.filter((data: any) => data.time < forTime);
-      const filterData = filterData1.filter(
+      const filterData_2 = filterData1.filter(
         (data: any) => parseInt(forTime) - candleStickTime * 60 * 1000 < data.time
       );
-      const time = forTime;
-      const open = filterData[0]?.open;
-      const close = filterData[filterData.length - 1]?.close;
-      const high =
-        filterData.length !== 0
-          ? Math.max(...filterData.map((item: any) => item.high))
+      const time_2 = forTime;
+      const open_2 = filterData_2[0]?.open;
+      const close_2 = filterData_2[filterData_2.length - 1]?.close;
+      const high_2 =
+        filterData_2.length !== 0
+          ? Math.max(...filterData_2.map((item: any) => item.high))
           : 0;
-      const low =
-        filterData.length !== 0
-          ? Math.min(...filterData.map((item: any) => item.low))
+      const low_2 =
+        filterData_2.length !== 0
+          ? Math.min(...filterData_2.map((item: any) => item.low))
           : 0;
   
       return {
-        time,
-        open,
-        high,
-        low,
-        close,
+        time:time_2,
+        open:open_2,
+        high:high_2,
+        low:low_2,
+        close:close_2,
       };
     }
 };

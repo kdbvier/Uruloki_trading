@@ -78,6 +78,13 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
       
     } else {
       setStreamValue(prevStreamValue => [...prevStreamValue, transData]);
+      setForwardTime((prevForTime:number)=>{
+        if(transData.time > prevForTime) {
+          return prevForTime + candleStickTime * 60 * 1000;
+        } else {
+          return prevForTime;
+        }
+      })
       // if (transData.time > forwardTime) {
       //   alert("forwarding time"  + transData.time + ", +  original forwardTime = " + forwardTime);
       //   setForwardTime(forwardTime + candleStickTime * 60 * 1000);
@@ -204,20 +211,20 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
     console.log("4: updatedData = ", updatedData);
-    setForwardTime((prevForwardTime: number)=>{
-      // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
-      console.log("4.0, ", prevForwardTime, "isUpdating forward=", updatedData && updatedData.time > prevForwardTime);
+    // setForwardTime((prevForwardTime: number)=>{
+    //   // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
+    //   console.log("4.0, ", prevForwardTime, "isUpdating forward=", updatedData && updatedData.time > prevForwardTime);
 
-      if(updatedData && updatedData.time > prevForwardTime){
+    //   if(updatedData && updatedData.time > prevForwardTime){
         
-        return prevForwardTime + candleStickTime * 60 * 1000;
-      } else {
-        return prevForwardTime;
-      }
-    })
+    //     return prevForwardTime + candleStickTime * 60 * 1000;
+    //   } else {
+    //     return prevForwardTime;
+    //   }
+    // })
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
-  }, [streamValue]);
+  }, [streamValue, forwardTime]);
 
   // When subscription data arrives
   useEffect(onLoaded, []);
