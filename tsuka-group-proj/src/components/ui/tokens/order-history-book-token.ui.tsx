@@ -69,11 +69,9 @@ export const OrderHistoryBookTokenUi: React.FC<OrderBookTokenProps> = ({
 }) => {
   return (
     <div>
-      {/* {status === "loading" && "Loading..."}
-      {status === "ok" && value && ( */}
       <div className="flex p-4">
         <div className="flex-1">
-          <div className="overflow-auto h-96">
+          <div className="h-96 scrollable overflow-y-auto overflow-x-auto">
             <div className="flex text-base text-left border-b flex-center text-tsuka-300 border-tsuka-400">
               <span className="px-4 py-2 w-[120px]">Type</span>
               <span className="px-4 py-2 w-[190px]">Amount (USD)</span>
