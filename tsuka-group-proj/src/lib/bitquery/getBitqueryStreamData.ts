@@ -25,7 +25,7 @@ export const transformStreamData = (data: any, compareTokenName: any) => {
   const buySide = data.data.EVM?.buyside;
   const sellSide = data.data.EVM?.sellside;
 
-  console.log("buySide: ", buySide);
+  // console.log("buySide: ", buySide);
   console.log("sellSide: ", sellSide);
 
   let buySideFiltered =
@@ -207,22 +207,20 @@ const fetchStreamData = async (pairAddress: any, setDatas: any = undefined) => {
       .subscribe({
         next: async (response: any) => {
           // handle subscription data
-          console.log("response: each :  ",response);
+          // console.log("response: each :  ",response);
           // const data = await response.json();
           // const compareTokenName =
           //   store.getState().tokenPairInfo.value.baseToken?.symbol;
           const tempTokenName = await HomePageTokens.getTokenPairInfo(pairAddress);
-          console.log("ldfjdaljfladkjf. ", pairAddress);
-          console.log("ldfjdaljfladkjf. ", tempTokenName);
-          console.log(
-            "store.getState()",
-            store.getState().tokenPairInfo.value.baseToken?.symbol
-          );
+
           const compareTokenName = tempTokenName.baseToken?.symbol;
-          console.log("dfkj, ", compareTokenName);
+          // console.log("dfkj, ", compareTokenName);
           const transData = transformStreamData(response, compareTokenName);
           console.log("transform", transData);
-          if (setDatas) setDatas(transData); //Not set but Add using next line;
+          if (setDatas) {
+            console.log("1, transData from subscribe",  transData)
+            setDatas(transData);
+          } //Not set but Add using next line;
           // state.streamValue = [...state.streamValue, temp];
           if (transData.open != "")
             store.dispatch(getBitqueryStream(transData));

@@ -40,6 +40,7 @@ export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInf
 };
 
 export const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) => {
+  console.log("inside getUpdatedData:: forTime=",forTime, " datas=", datas, " candleStickTime=", candleStickTime)
     if (datas[datas.length - 1].time > forTime) {
       const filterData = datas.filter((data: any) => data.time > forTime);
       const time = forTime + (candleStickTime * 60 * 1000 - 900000);
@@ -128,14 +129,14 @@ export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
         },
         timeScale: {
           tickMarkFormatter: (businessDayOrTimestamp: any) => {
-            console.log("businessDayOrTimestamp", businessDayOrTimestamp);
+            // console.log("businessDayOrTimestamp", businessDayOrTimestamp);
             const date = new Date(businessDayOrTimestamp);
-            console.log("date", date);
+            // console.log("date", date);
             const hours = date.getHours().toString().padStart(2, "0");
-            console.log("hours", date);
+            // console.log("hours", date);
     
             const minutes = date.getMinutes().toString().padStart(2, "0");
-            console.log("minutes", date);
+            // console.log("minutes", date);
     
             const timeString = `${hours}:${minutes}`;
             return timeString;

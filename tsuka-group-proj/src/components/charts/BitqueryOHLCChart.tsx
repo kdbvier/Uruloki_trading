@@ -78,13 +78,16 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
       
     } else {
       setStreamValue(prevStreamValue => [...prevStreamValue, transData]);
-      if (transData.time > forwardTime) {
-        setForwardTime(forwardTime + candleStickTime * 60 * 1000);
-      }
+      // if (transData.time > forwardTime) {
+      //   alert("forwarding time"  + transData.time + ", +  original forwardTime = " + forwardTime);
+      //   setForwardTime(forwardTime + candleStickTime * 60 * 1000);
+      // }
+
     }
   };
  
   useEffect(() => {
+    console.log("0, inside useEffect: fetchData first invoke");
     fetchData(pairAddress, tokenPairInfo, setCandleStickTime, setFirstBitquery, setForwardTime, setDatas);
   }, [tokenPairInfo]);
   // When this page becomes unmounted
@@ -186,6 +189,10 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
 
   // When subscription data arrives
   useEffect(() => {
+    console.log("3: subscription arrived:");
+    console.log("3.1: forwardTime = ", forwardTime);
+    console.log("3.2: streamValue = ", streamValue);
+    console.log("3.3: candleStickTime", candleStickTime);
     if (
       streamValue.length == 0 ||
       typeof streamValue.length == "undefined" ||
@@ -196,14 +203,21 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
     let updatedData: MyCandlestickData | null = null;
     // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
-    console.log("Look at here ____forwardTime ____________ streamValue ____________ candleStickTime __________ updatedData ________________");
-    console.log(forwardTime);
-    console.log(streamValue);
-    console.log(candleStickTime);
-    console.log(updatedData);
+    console.log("4: updatedData = ", updatedData);
+    setForwardTime((prevForwardTime: number)=>{
+      // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
+      console.log("4.0, ", prevForwardTime, "isUpdating forward=", updatedData && updatedData.time > prevForwardTime);
+
+      if(updatedData && updatedData.time > prevForwardTime){
+        
+        return prevForwardTime + candleStickTime * 60 * 1000;
+      } else {
+        return prevForwardTime;
+      }
+    })
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
-  }, [streamValue, forwardTime]);
+  }, [streamValue]);
 
   // When subscription data arrives
   useEffect(onLoaded, []);
@@ -211,7 +225,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo }) => {
   return (
     <>
       <div ref={chartRef} />
-      <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[230px] flex flex-row justify-around">
+      <div className="mt-2 border border-[rgba(67,70,81,1)] rounded-xl w-[330px] flex flex-row justify-around">
         <div className="-mr-[3px] -ml-[3px] w-full">
           <button
             onClick={() => candleStickClicked(15)}
