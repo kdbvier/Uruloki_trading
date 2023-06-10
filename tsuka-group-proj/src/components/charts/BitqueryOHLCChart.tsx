@@ -71,14 +71,33 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     low: string | number;
     close: any;
   }) => {
-    let a = streamValue;
-    setStreamValue([...a, transData]);
-    if (transData.time > forwardTime) {
-      setForwardTime(forwardTime + candleStickTime * 60 * 1000);
+    // let a = [...streamValue];
+    // a.push(transData);
+    // setStreamValue(a);
+    // if(transData.close === '' || transData.open === '' ){
+    //   return;
+    // }
+    if(Number.isNaN(transData.time)){
+      
+    } else {
+      setStreamValue(prevStreamValue => [...prevStreamValue, transData]);
+      setForwardTime((prevForTime:number)=>{
+        if(transData.time > prevForTime) {
+          return prevForTime + candleStickTime * 60 * 1000;
+        } else {
+          return prevForTime;
+        }
+      })
+      // if (transData.time > forwardTime) {
+      //   alert("forwarding time"  + transData.time + ", +  original forwardTime = " + forwardTime);
+      //   setForwardTime(forwardTime + candleStickTime * 60 * 1000);
+      // }
+
     }
   };
  
   useEffect(() => {
+    console.log("0, inside useEffect: fetchData first invoke");
     fetchData(pairAddress, tokenPairInfo, setCandleStickTime, setFirstBitquery, setForwardTime, setDatas);
   }, [tokenPairInfo]);
   // When this page becomes unmounted
@@ -101,11 +120,12 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     [key: string]: any;
   }
 
-  const candleStickClicked = (stick: number) => {
-    setActive(stick);
+  const candleStickClicked = async (stick: number) => {
+    setCandleStickTime(stick);
+    await setActive(stick);
     if (!tokenPairInfo) return;
-    console.log(stick);
-    fetchData(pairAddress, tokenPairInfo, setCandleStickTime, setFirstBitquery, setForwardTime, setDatas, active);
+    console.log(stick, active);
+    fetchData(pairAddress, tokenPairInfo, setCandleStickTime, setFirstBitquery, setForwardTime, setDatas, stick);
   };
 
   useEffect(() => {
@@ -189,6 +209,10 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
 
   // When subscription data arrives
   useEffect(() => {
+    console.log("3: subscription arrived:");
+    console.log("3.1: forwardTime = ", forwardTime);
+    console.log("3.2: streamValue = ", streamValue);
+    console.log("3.3: candleStickTime", candleStickTime);
     if (
       streamValue.length == 0 ||
       typeof streamValue.length == "undefined" ||
@@ -199,6 +223,19 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     let updatedData: MyCandlestickData | null = null;
     // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
+
+    console.log("4: updatedData = ", updatedData);
+    // setForwardTime((prevForwardTime: number)=>{
+    //   // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
+    //   console.log("4.0, ", prevForwardTime, "isUpdating forward=", updatedData && updatedData.time > prevForwardTime);
+
+    //   if(updatedData && updatedData.time > prevForwardTime){
+        
+    //     return prevForwardTime + candleStickTime * 60 * 1000;
+    //   } else {
+    //     return prevForwardTime;
+    //   }
+    // })
 
     // Update the chart
     candleStickSeriesRef.current.update(updatedData);
