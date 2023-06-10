@@ -6,11 +6,11 @@ import { FiltersButton } from "../ui/buttons/filters.button";
 import { FiltersSearch } from "../ui/content-header/filters.search";
 import { StatusSpan } from "../ui/spans/status.span";
 
-export interface StrategyBookStrategiesProps {
+export interface StrategiesPageComponentProps {
   strategies: Array<Strategy>;
 }
 
-export const StrategyBookStrategies: React.FC<StrategyBookStrategiesProps> = ({
+export const StrategiesPageComponent: React.FC<StrategiesPageComponentProps> = ({
   strategies,
 }) => {
   const [selectedPath, setSelectedPath] = useState("strategies-list");
