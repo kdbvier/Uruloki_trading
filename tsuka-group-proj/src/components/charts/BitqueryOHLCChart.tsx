@@ -146,7 +146,18 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     console.log(stick);
     fetchData(pairAddress, tokenPairInfo, setCandleStickTime, setFirstBitquery, setForwardTime, setDatas, active);
   };
+  function transformNumber(num:number) {
+    console.log("num", num)
+    let str = num.toExponential();
+    let eIndex = str.indexOf('e');
+    if (eIndex !== -1) {
+        let exponent = parseInt(str.slice(eIndex + 1));
+        return Number('1e' + (exponent - 1));
+    }
 
+    // If there's no 'e', just return the original number
+    return num;
+}
   useEffect(() => {
     //console.log("useEffect");
     if (!chartRef.current || !firstBitquery) return;
@@ -174,7 +185,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       tempTime = tempItem["time"];
       temp.push(tempItem);
     });
-
+   
     // In case existing wrong sort by time
     temp.sort((a: Record<string, any>, b: Record<string, any>) => {
       const dateA = new Date(a.time);
@@ -182,6 +193,11 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       // Compare the dates
       return dateA.getTime() - dateB.getTime();
     });
+    let scale = 0.01;
+    if(temp[0]){
+      scale = transformNumber(temp[0].open)
+      console.log("scale1", scale);
+    }
 
     // Add the candlestick to the chart
     const candlestickSeries = chart.addCandlestickSeries({
@@ -195,20 +211,13 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
         formatter: (price:any) => {
           
         },
-        minMove: 0.00000000001,
+        minMove: scale,
       }
     });
     if(candlestickSeries)
       // update chart state 
       setChartState({ chart, candleSeries: candlestickSeries });
     candleStickSeriesRef.current = candlestickSeries;
-    // let scaledData = temp.map((item) => ({
-    //   ...item,
-    //   open: item.open,
-    //   high: item.high,
-    //   low: item.low,
-    //   close: item.close,
-    // }));
     console.log("temp:",temp)
 
     let scaledData = temp.map((item) => ({
@@ -219,6 +228,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       close: item.close*wethPrice,
     }));
     console.log("scaledData:",scaledData)
+    
     // Set data to the chart
     candlestickSeries.setData(scaledData);
     if (showMarkers) {
