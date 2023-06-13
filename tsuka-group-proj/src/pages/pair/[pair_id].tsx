@@ -114,7 +114,7 @@ export default function Pair({
   const router = useRouter();
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-  const [showEditOrderModal, setShowEditOrderModal] = useState<number>(0);
+  const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [pairAddress, setPairAddress] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -233,7 +233,7 @@ export default function Pair({
 
   const handleEditModal = (show: boolean, id: number) => {
     setSelectedOrderId(id);
-    setShowEditOrderModal(show ? 1 : 0);
+    setShowEditOrderModal(show);
     setIsEdit(true);
   };
 
@@ -332,7 +332,7 @@ export default function Pair({
           <DefaultButton
             label="Create an Order"
             callback={() => {
-              setShowEditOrderModal(2);
+              setShowEditOrderModal(true);
               setIsEdit(false);
             }}
             filled={true}
@@ -392,7 +392,7 @@ export default function Pair({
           setShowDeletedAlert={setShowDeletedAlert}
         />
       </div>
-      {showEditOrderModal == 1 && (
+      {showEditOrderModal && (
         <EditOrderToken
           name1={tokenPairInfo?.baseToken?.name as string}
           code1={tokenPairInfo?.baseToken?.symbol as string}
@@ -402,9 +402,9 @@ export default function Pair({
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
-          isEdit={showEditOrderModal === 1}
+          isEdit={showEditOrderModal}
           closeHandler={() => {
-            setShowEditOrderModal(0);
+            setShowEditOrderModal(false);
             setSelectedOrderId(-1);
           }}
         />
@@ -522,12 +522,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     getOldTokenPriceSafe(context.query.pair_id as string),
     getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
   ])
-
-  console.log("Old token price:")
-  console.log(oldTokenPrice)
-  console.log("\nToken price:")
-  console.log(token_price)
-
+  
   return {
     props: {
       orders,

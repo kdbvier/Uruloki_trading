@@ -20,7 +20,7 @@ export const getTokenPrice = async (
       quote_price: 0
     }
   }
-
+ 
   //Query bitquery
   const tokenPairResponse = await G_QUERY_GetTokenPair(pair_address);
 
