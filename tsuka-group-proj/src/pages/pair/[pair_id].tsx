@@ -402,7 +402,7 @@ export default function Pair({
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
-          isEdit={showEditOrderModal}
+          isEdit={isEdit}
           closeHandler={() => {
             setShowEditOrderModal(false);
             setSelectedOrderId(-1);
