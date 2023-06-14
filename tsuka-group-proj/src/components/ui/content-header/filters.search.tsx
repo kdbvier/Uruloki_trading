@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import HomePageTokens from "@/lib/api/tokens";
 import { useRouter } from "next/router";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SearchPair } from "@/types";
 export interface FiltersSearchProps {

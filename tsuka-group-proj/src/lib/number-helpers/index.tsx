@@ -41,3 +41,33 @@ export const toNumber = (str: string): number => {
   }
   return num;
 };
+
+/**
+ * Optimizes numbers so that either very small values can be represented using the subscript notation seen on the homepage if the value is less than 0.01, or for larger values will display them as normal currency
+ * @param price 
+ * @returns 
+ */
+export function commafyOrHtmlTag(price: number, includeDollarSign: boolean = true) {
+  var output
+
+  if (price >= 0.01) {
+      output = `${includeDollarSign ? "$" : ""}${commafy(price)}`;
+  } else {
+      output = (
+        <>
+          {includeDollarSign ? "$" : ""}{formatNumberToHtmlTag(price).integerPart}.0
+          <sub>
+            {formatNumberToHtmlTag(price).leadingZerosCount}
+          </sub>
+          {formatNumberToHtmlTag(price).remainingDecimal}
+        </>
+      );
+  }
+
+  return output
+}
+
+export function fixedDecimal(x: number, d: number) {
+  const p = Math.pow(10, d);
+  return Number((x * p).toFixed(0)) / p;
+} 

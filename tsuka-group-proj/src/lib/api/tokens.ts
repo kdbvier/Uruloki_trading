@@ -12,11 +12,21 @@ export default class HomePageTokens {
   static getTokenPairInfo = async (
     pair_address: string
   ): Promise<TokenPairInfo> => {
-    return await axios.get(`/api/tokens/token-pair?pair_address=${pair_address}`);
+    const a = await axios.get(`/api/tokens/token-pair?pair_address=${pair_address}`);
+    console.log(a.data.payload);
+    return a.data?.payload as TokenPairInfo;
   };
   static getTokenVolume = async (
     baseTokenAddress: string
   ): Promise<{ tradeAmount: number }> => {
-    return await axios.get(`/api/tokens/token-volume?baseTokenAddress=${baseTokenAddress}`);
+    const response = await axios.get(`/api/tokens/token-volume?baseTokenAddress=${baseTokenAddress}`);
+    if(response?.status == 200) {
+      return response.data.payload;
+    } else {
+      console.log("Error getting token volume")
+      return {
+        tradeAmount: 0
+      }
+    }
   };
 }

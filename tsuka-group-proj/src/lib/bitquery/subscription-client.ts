@@ -27,5 +27,13 @@ export const createSubscriptionClient = () => {
     webSocketImpl
   );
 
+  client.onError((error) => {
+    console.log('WebSocket Error: ', error);
+  });
+  
+  client.onDisconnected(() => {
+    console.log('WebSocket Disconnected');
+  });
+  
   return client;
 };

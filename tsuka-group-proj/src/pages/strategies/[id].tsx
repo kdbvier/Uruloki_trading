@@ -1,11 +1,10 @@
-import { OrderBookToken } from "@/components/tokens/order-book.token";
+import { OrderBookToken } from "@/components/order-book/order-book.token";
 import { OrderWidgetToken } from "@/components/tokens/order-widget.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderStrategies } from "@/components/ui/strategies/full-header.strategies";
 import { ModifiedOrder, Setup, TokenPairOrders, getSetups } from "@/lib/setups";
-import { getStrategies } from "@/store/apps/strategies";
-import { getTokenByStrategyId } from "@/store/apps/token";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
+import { useAppDispatch } from "@/store/hooks";
 import { Order, Strategy } from "@/types";
 import {
   OrderStatusEnum,
@@ -13,14 +12,20 @@ import {
   PriceTypeEnum,
 } from "@/types/token-order.type";
 import { GetServerSideProps } from "next";
-import Strategies from "@/lib/api/strategies";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   HiOutlineArrowLongLeft,
   HiOutlineArrowLongRight,
 } from "react-icons/hi2";
 import { getConnectedAddress } from "@/helpers/web3Modal";
+import { getTokenNamesFromPair } from "@/lib/token-pair";
+import type { TokenPairInfo } from "@/types";
+import {
+  HistoricalDexTrades,
+  getHistoricalDexTrades,
+} from "@/lib/token-activity-feed";
+import moment from "moment";
 
 export const mapModifiedOrderToOrder = (modifiedOrder: ModifiedOrder) =>
   ({
@@ -32,30 +37,21 @@ export default function StrategyDetails({
   id,
   orders,
   currentSetup,
+  historicalDexTrades,
 }: {
   id: string;
   orders: Array<TokenPairOrders>;
   currentSetup: Setup;
+  historicalDexTrades: Array<HistoricalDexTrades>;
 }) {
-  const dispatch = useAppDispatch();
   const [showIndex, setShowIndex] = useState(0);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-  const router = useRouter();
-  const [token, setToken] = useState(null);
-
-  const [strategies, setStrategies] = useState<Strategy[]>([]);
-  const [strategyDetails, setStrategyDetails] = useState<Strategy>();
+  const [dexTrades, setDexTrades] =
+    useState<HistoricalDexTrades[]>(historicalDexTrades);
+    
   const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
 
   const handlePrevIndex = useCallback(() => {
     setShowIndex((prev) => prev - 1);
@@ -79,7 +75,7 @@ export default function StrategyDetails({
             strategyDetails={currentSetup}
             status={status}
           />
-          <div className="hidden md:grid grid-cols-9 gap-4">
+          <div className="hidden grid-cols-9 gap-4 md:grid">
             {currentSetup?.orderTokens?.map((item, index) => (
               <div key={index} className="col-span-9 md:col-span-3">
                 <OrderWidgetToken
@@ -201,7 +197,7 @@ export default function StrategyDetails({
                   : `${order.code1}/${order.code2}`,
             }))}
             orders={currentSetup.orderTokens}
-            dexTrades={[]}
+            dexTrades={dexTrades}
           />
         </div>
       )}
@@ -210,19 +206,59 @@ export default function StrategyDetails({
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
+  let tokenPairInfo: TokenPairInfo = {};
+  let historicalDexTrades: Array<HistoricalDexTrades> = [];
 
   //Get all orders in strategy
   const allSetups = (await getSetups()).setups;
   const currentSetup = allSetups.filter((a) => a.id === id)[0];
   const orders = currentSetup.orderTokens;
 
+  const getHistoricalDataForPair = async (pair_id: string) => {
+    try {
+      const tokenPairNamesResult = await getTokenNamesFromPair(pair_id);
+
+      if (tokenPairNamesResult.success && tokenPairNamesResult.tokenPairInfo) {
+        tokenPairInfo = tokenPairNamesResult.tokenPairInfo;
+
+        let historicalDexTradesResult = await getHistoricalDexTrades(
+          tokenPairInfo.baseToken?.address as string,
+          tokenPairInfo.pairedToken?.address as string
+        );
+
+        if (
+          historicalDexTradesResult.success &&
+          historicalDexTradesResult.historicalDexTrades
+        ) {
+          return historicalDexTradesResult.historicalDexTrades.map((item) => ({
+            ...item,
+            tokenPairInfo,
+          }));
+        }
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+
   //Get list pair addresses
   const pairAddresses: Array<string> = [];
-  orders.map((a) => {
+  for (const a of orders) {
     if (!pairAddresses.includes(a.pair_address)) {
       pairAddresses.push(a.pair_address);
     }
-  });
+  }
+
+  for (const address of pairAddresses) {
+    const history = await getHistoricalDataForPair(address);
+    if (history) {
+      historicalDexTrades = [...historicalDexTrades, ...history];
+    }
+  }
+
+  historicalDexTrades = historicalDexTrades.sort((a, b) =>
+    moment(a.timestamp).isBefore(b.timestamp) ? 1 : -1
+  );
 
   //Get activity feed & order book info for each pair
 
@@ -231,6 +267,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       id,
       orders,
       currentSetup,
+      historicalDexTrades,
     },
   };
 };

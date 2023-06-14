@@ -1,9 +1,12 @@
+import { TokenPairInfo } from "@/types";
 import axios from "axios";
 
 export type HistoricalDexTrades = {
-  side: string,
-  tradeAmount: number,
-  transaction: any
+  side: string;
+  tradeAmount: number;
+  transaction: any;
+  timestamp?: string;
+  tokenPairInfo?: TokenPairInfo;
 };
 
 export type HistoricalDexTradesResult = {
@@ -12,59 +15,19 @@ export type HistoricalDexTradesResult = {
 };
 
 export type DexTrade = {
-  block: Object,
-  tradeAmount: number,
-  side: string,
-  sellAmount: number,
-  buyAmount: number,
-  transaction: Object
-}
+  block: { timestamp: { time: string } };
+  tradeAmount: number;
+  side: string;
+  sellAmount: number;
+  buyAmount: number;
+  transaction: Object;
+};
 
 export async function getHistoricalDexTrades(
   baseAddress: string,
   quoteAddress: string
 ): Promise<HistoricalDexTradesResult> {
   try {
-    /*
-    const { data } = await axios.post(
-      "https://graphql.bitquery.io/",
-      {
-        query: `{
-              ethereum(network: ethereum) {
-                dexTrades(
-                  baseCurrency: {is: "${baseAddress}"}
-                  quoteCurrency: {is: "${quoteAddress}"}
-                  options: {desc: ["block.timestamp.time", "transaction.index"], limit: 10}
-                ) {
-                  block {
-                    height
-                    timestamp {
-                      time(format: "%Y-%m-%d %H:%M:%S")
-                    }
-                  }
-                  tradeAmount(in: ${tokenSymbol})
-                  side
-                  sellAmount(in: USD)
-                  buyAmount(in: USD)
-                  transaction {
-                    index
-                    txFrom {
-                      address
-                    }
-                  }
-                }
-              }
-          }`,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": process.env.BITQUERY_API_KEY,
-        },
-      }
-    );
-    */
-
     const { data } = await axios.post(
       "https://graphql.bitquery.io/",
       {
@@ -108,6 +71,7 @@ export async function getHistoricalDexTrades(
         side: trade.side,
         tradeAmount: amount,
         transaction: trade.transaction,
+        timestamp: trade.block.timestamp.time,
       };
     });
 

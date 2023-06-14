@@ -129,8 +129,8 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Tsuka Group</title>
-        <meta name="description" content="Tsuka Group Project" />
+        <title>Uruloki</title>
+        <meta name="description" content="Uruloki" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -232,19 +232,24 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   menuCollapsed={menuCollapsed}
                   callback={() => setMenuCollapsed(!menuCollapsed)}
                 />
+                {/*
                 <HeaderNotificationButton
                   callback={() => console.log("NotificationButton click")}
                   showNotify={showNotify}
                   setShowNotify={setShowNotify}
                 />
-                <Web3Button />
+              */}
+                <div className="hidden sm:block">
+                  <Web3Button />
+                </div>
               </div>
+              
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}
           {!menuCollapsed && (
             <div className="lg:hidden" id="mobile-menu">
-              <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700">
+              <div className="absolute z-20 w-full bg-tsuka-500 space-y-1 px-4 pb-3 pt-2 shadow-lg shadow-tsuka-700 flex flex-col">
                 {navLinks?.map(({ path, title }, idx) => (
                   <div
                     className={`flex justify-center${
@@ -260,6 +265,9 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                     />
                   </div>
                 ))}
+                <div className="mx-auto">
+                  <Web3Button />
+                </div>
                 <DefaultButton
                   label="Create an Order"
                   callback={() => setShowEditOrderModal(true)}

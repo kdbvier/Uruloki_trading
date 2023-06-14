@@ -6,6 +6,8 @@ import {
   TokenPriceInPair,
 } from "@/types";
 import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { fetchBalance } from '@wagmi/core'
 import Dropdown from "../buttons/dropdown";
 
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
@@ -17,11 +19,7 @@ import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import {
-  handleNumberFormat,
-  convertLawPrice,
-  toNumber,
-} from "@/lib/number-helpers";
+import { handleNumberFormat, convertLawPrice, toNumber, fixedDecimal } from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
 import {
   CreateOrderPriceInfoProps,
@@ -97,6 +95,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     selectedOrder.price_type === PriceTypeEnum.RANGE
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
+  const [tokenBalance, setTokenBalance] = useState<number>(0);
   const [walletAddress, setWalletAddress] = useState<string>();
 
   const baseShortName = isEdit ? selectedOrder.baseTokenShortName : code1;
@@ -141,6 +140,22 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     }
     getWalletAddress();
   }, []);
+
+  useEffect(() => {
+    (async() => {
+      if(walletAddress && tokenPairInfo) {
+        const tokenAddress = isBuy ? tokenPairInfo.pairedToken?.address : tokenPairInfo.baseToken?.address;
+
+        const fetchData = await fetchBalance({
+          address: `0x${walletAddress.split('0x')[1]}`,
+          token: `0x${tokenAddress?.split('0x')[1]}`
+        })
+        const balance = ethers.utils.formatUnits(fetchData.value, fetchData.decimals);
+
+        setTokenBalance(Number(balance));
+      }
+    })()
+  }, [isBuy, tokenPairInfo, walletAddress]);
 
   useEffect(() => {
     const currentToken: any = isBuy ? pairShortName : baseShortName;
@@ -537,7 +552,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {3.000493} {(isBuy ? pairShortName : baseShortName) ?? ""}
+                  {handleNumberFormat(fixedDecimal(tokenBalance, 6))} {(isBuy ? pairShortName : baseShortName) ?? ""}
                 </span>
                 <span className="text-custom-primary text-xs"> MAX</span>
               </p>
