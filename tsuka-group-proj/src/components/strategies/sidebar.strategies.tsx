@@ -6,6 +6,8 @@ import { MdArrowForward } from "react-icons/md";
 import { DefaultButton } from "../ui/buttons/default.button";
 import { TokenPairStrategies } from "../ui/strategies/token-pair.strategies";
 import { getConnectedAddress } from "@/helpers/web3Modal";
+import { Strategies } from "@/lib/strategies/strategies";
+import { Strategy } from "@/types";
 
 export interface SidebarStrategiesProps {
   open: boolean;
@@ -16,17 +18,37 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
   open,
   handleOpen,
 }) => {
-  const dispatch = useAppDispatch();
-  const {
-    strategies: { value: strategies, status },
-  } = useAppSelector((state) => state);
+  // const dispatch = useAppDispatch();
+  // const {
+  //   strategies: { value: strategies, status },
+  // } = useAppSelector((state) => state);
+
+  // useEffect(() => {
+  //   void (async () => {
+  //     //const walletAddress = await getConnectedAddress();
+  //     //dispatch(getStrategies(walletAddress));
+  //   })();
+  // }, [dispatch]);
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
+  const [status, setStatus] = useState<"ok"|"loading"|"failed">("ok")
+
+  async function onLoad() {
+    setStatus("loading");
+    const walletAddress = await getConnectedAddress();
+    const tempStrategies = await Strategies.Client.getStrategiesData(walletAddress as string)
+    if(tempStrategies.length === 0){
+      setStatus("failed");
+      setStrategies([]);
+      setStatus("ok");
+    }else{
+      setStrategies(tempStrategies)
+      setStatus("ok")
+    }
+  }
 
   useEffect(() => {
-    void (async () => {
-      //const walletAddress = await getConnectedAddress();
-      //dispatch(getStrategies(walletAddress));
-    })();
-  }, [dispatch]);
+    onLoad()
+  }, [])
 
   const [showExtraId, setShowExtraId] = useState<number | null>(null);
 
