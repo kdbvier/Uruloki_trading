@@ -8,6 +8,8 @@ module.exports = {
     extend: {
       screens: {
         xs: "375px",
+        xtraLarge: { min: "1920px" },
+        medium: { min: "1108px", max: "1919px" },
       },
       colors: {
         tsuka: {
@@ -51,6 +53,14 @@ module.exports = {
       Uruloki: ["Uruloki", "sans-serif"],
 
       "Poppins-300": ["Poppins", "sans-serif"],
+    },
+  },
+  purge: {
+    content: ['./src/**/*.js', './src/**/*.jsx', './src/**/*.ts', './src/**/*.tsx'],
+    options: {
+      safelist: [
+        'bg-[#1F2333]', 
+      ],
     },
   },
   plugins: [],

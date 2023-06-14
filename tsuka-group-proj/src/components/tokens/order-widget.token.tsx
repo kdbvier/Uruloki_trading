@@ -80,7 +80,6 @@ export const OrderWidgetToken: React.FC<TokenOrder> = ({
       <div className="md:h-[350px] md:overflow-scroll">
         {orders[0]
           ? orders.map((order) => {
-              console.log(order.id, " : ", order.is_continuous);
               if (isSingle(order)) {
                 return (
                   <OrderWidgetGraph

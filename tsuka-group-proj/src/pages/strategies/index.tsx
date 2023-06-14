@@ -3,21 +3,21 @@ import { getConnectedAddress } from "@/helpers/web3Modal";
 import { Strategies } from "@/lib/strategies/strategies";
 import { Strategy } from "@/types";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export async function getServerSideProps() {
-  const walletAddress = await getConnectedAddress();
-  const strategies = await Strategies.getStrategiesData(
-    //walletAddress as string
-    ""
-  );
-  return { props: { strategies: strategies } };
-}
+export default function StrategyDetails() {
+  const [strategies, setStrategies] = useState<Strategy[]>([]);
 
-export default function StrategyDetails({
-  strategies,
-}: {
-  strategies: Strategy[];
-}) {
+  async function onLoad() {
+    const walletAddress = await getConnectedAddress();
+    const tempStrategies = await Strategies.Client.getStrategiesData(walletAddress as string)
+    setStrategies(tempStrategies)
+  }
+
+  useEffect(() => {
+    onLoad()
+  }, [])
+
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
       <div className="w-full gap-4 text-tsuka-300 flex py-2 mb-2 md:items-center justify-center md:justify-start flex-row">

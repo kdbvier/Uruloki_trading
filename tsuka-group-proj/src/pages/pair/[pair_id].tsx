@@ -37,7 +37,6 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next/types";
 import { useEffect, useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ModifiedOrder } from "@/lib/setups";
 import { getConnectedAddress } from "@/helpers/web3Modal";
@@ -273,7 +272,6 @@ export default function Pair({
 
   return (
     <div className="flex flex-col px-4 py-6 md:px-10">
-      <ToastContainer />
       {tokenPairInfo && (
         <FullHeaderToken
           tokenPairInfo={tokenPairInfo}
