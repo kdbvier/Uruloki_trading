@@ -19,7 +19,7 @@ import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { handleNumberFormat, convertLawPrice, toNumber, fixedDecimal } from "@/lib/number-helpers";
+import { handleNumberFormat, convertLawPrice, toNumber, fixedDecimal, commafyOrHtmlTag } from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
 import {
   CreateOrderPriceInfoProps,
@@ -283,6 +283,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       }
     }
   };
+
+  const applyMaxAmount = (amount: number) => {
+    setAmount(amount.toString())
+  }
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
@@ -552,9 +556,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {handleNumberFormat(fixedDecimal(tokenBalance, 6))} {(isBuy ? pairShortName : baseShortName) ?? ""}
+                  {commafyOrHtmlTag(tokenBalance)} {(isBuy ? pairShortName : baseShortName) ?? ""}
                 </span>
-                <span className="text-custom-primary text-xs"> MAX</span>
+                <span className="text-custom-primary text-xs cursor-pointer" onClick={()=>{applyMaxAmount(tokenBalance)}}> MAX</span>
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
