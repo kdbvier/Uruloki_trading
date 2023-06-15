@@ -205,7 +205,7 @@ const fetchStreamData = async (pairAddress: any, setDatas: any = undefined) => {
       .subscribe({
         next: async (response: any) => {
           // handle subscription data
-          // console.log("response: each :  ",response);
+          console.log("streac response:",response);
           // const data = await response.json();
           // const compareTokenName =
           //   store.getState().tokenPairInfo.value.baseToken?.symbol;
