@@ -94,12 +94,14 @@ export namespace Strategies {
       let strategies = data.payload
       strategies = strategies.map((strategy: any) => {
         return {
+          id:strategy.id,
           status: strategy.status ?? StrategyStatusEnum.ACTIVE,
           createdAt: strategy.createdAt ?? Math.round((new Date().getTime() ?? 0)).toString(),
           orderTokens: strategy.orderTokens ?? []
         }
       })
-      return data.payload
+      // return data.payload
+      return strategies;
     }
   }
 }

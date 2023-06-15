@@ -50,7 +50,9 @@ export const toNumber = (str: string): number => {
 export function commafyOrHtmlTag(price: number, includeDollarSign: boolean = true) {
   var output
 
-  if (price >= 0.01) {
+  if (price == 0) {
+    output = 0
+  } else if (price >= 0.01) {
       output = `${includeDollarSign ? "$" : ""}${commafy(price)}`;
   } else {
       output = (
