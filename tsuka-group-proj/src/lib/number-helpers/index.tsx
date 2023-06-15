@@ -50,7 +50,9 @@ export const toNumber = (str: string): number => {
 export function commafyOrHtmlTag(price: number, includeDollarSign: boolean = true) {
   var output
 
-  if (price >= 0.01) {
+  if (price == 0) {
+    output = 0
+  } else if (price >= 0.01) {
       output = `${includeDollarSign ? "$" : ""}${commafy(price)}`;
   } else {
       output = (
@@ -66,3 +68,8 @@ export function commafyOrHtmlTag(price: number, includeDollarSign: boolean = tru
 
   return output
 }
+
+export function fixedDecimal(x: number, d: number) {
+  const p = Math.pow(10, d);
+  return Number((x * p).toFixed(0)) / p;
+} 

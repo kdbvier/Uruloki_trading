@@ -1,5 +1,4 @@
 import { Strategy } from "@/types";
-import { httpRequest } from "./http";
 import axios from "axios";
 
 export default class Strategies {

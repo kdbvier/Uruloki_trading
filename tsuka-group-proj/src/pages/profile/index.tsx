@@ -11,7 +11,7 @@ import { getTokensInWallet } from "@/lib/bitquery/getTokensInWallet";
 
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { useUrulokiAPI } from "@/blockchain";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type PageProps = {
@@ -181,7 +181,6 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
 
   return (
     <>
-      <ToastContainer />
       <div className="relative px-4 md:px-10 pt-3 md:pt-10 pb-8">
         <div className="flex justify-between w-full items-center text-tsuka-50">
           <div className="hidden md:block font-Poppins-300 font-medium text-[40px] leading-[60px] ">

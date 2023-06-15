@@ -4,7 +4,7 @@ import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import { FullHeaderStrategies } from "@/components/ui/strategies/full-header.strategies";
 import { ModifiedOrder, Setup, TokenPairOrders, getSetups } from "@/lib/setups";
 
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { Order, Strategy } from "@/types";
 import {
   OrderStatusEnum,
@@ -12,9 +12,8 @@ import {
   PriceTypeEnum,
 } from "@/types/token-order.type";
 import { GetServerSideProps } from "next";
-import Strategies from "@/lib/api/strategies";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   HiOutlineArrowLongLeft,
   HiOutlineArrowLongRight,
@@ -45,27 +44,14 @@ export default function StrategyDetails({
   currentSetup: Setup;
   historicalDexTrades: Array<HistoricalDexTrades>;
 }) {
-  const dispatch = useAppDispatch();
   const [showIndex, setShowIndex] = useState(0);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
-  const router = useRouter();
-  const [token, setToken] = useState(null);
   const [dexTrades, setDexTrades] =
     useState<HistoricalDexTrades[]>(historicalDexTrades);
-
-  const [strategies, setStrategies] = useState<Strategy[]>([]);
-  const [strategyDetails, setStrategyDetails] = useState<Strategy>();
+    
   const [status, setStatus] = useState<"ok" | "loading" | "failed">("ok");
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
 
   const handlePrevIndex = useCallback(() => {
     setShowIndex((prev) => prev - 1);
