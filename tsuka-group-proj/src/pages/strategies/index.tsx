@@ -10,13 +10,15 @@ export default function StrategyDetails() {
 
   async function onLoad() {
     const walletAddress = await getConnectedAddress();
-    const tempStrategies = await Strategies.Client.getStrategiesData(walletAddress as string)
-    setStrategies(tempStrategies)
+    const tempStrategies = await Strategies.Client.getStrategiesData(
+      walletAddress as string
+    );
+    setStrategies(tempStrategies);
   }
 
   useEffect(() => {
-    onLoad()
-  }, [])
+    onLoad();
+  }, []);
 
   return (
     <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
@@ -38,7 +40,9 @@ export default function StrategyDetails() {
           My Orders
         </Link>
       </div>
-      {strategies && <StrategiesPageComponent strategies={strategies} />}
+      {strategies && (
+        <StrategiesPageComponent strategies={strategies} onLoad={onLoad} />
+      )}
     </div>
   );
 }

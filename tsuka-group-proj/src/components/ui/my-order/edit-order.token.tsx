@@ -7,7 +7,7 @@ import {
 } from "@/types";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { fetchBalance } from '@wagmi/core'
+import { fetchBalance } from "@wagmi/core";
 import Dropdown from "../buttons/dropdown";
 
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
@@ -19,7 +19,13 @@ import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { handleNumberFormat, convertLawPrice, toNumber, fixedDecimal, commafyOrHtmlTag } from "@/lib/number-helpers";
+import {
+  handleNumberFormat,
+  convertLawPrice,
+  toNumber,
+  fixedDecimal,
+  commafyOrHtmlTag,
+} from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
 import {
   CreateOrderPriceInfoProps,
@@ -142,19 +148,24 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   }, []);
 
   useEffect(() => {
-    (async() => {
-      if(walletAddress && tokenPairInfo) {
-        const tokenAddress = isBuy ? tokenPairInfo.pairedToken?.address : tokenPairInfo.baseToken?.address;
+    (async () => {
+      if (walletAddress && tokenPairInfo) {
+        const tokenAddress = isBuy
+          ? tokenPairInfo.pairedToken?.address
+          : tokenPairInfo.baseToken?.address;
 
         const fetchData = await fetchBalance({
-          address: `0x${walletAddress.split('0x')[1]}`,
-          token: `0x${tokenAddress?.split('0x')[1]}`
-        })
-        const balance = ethers.utils.formatUnits(fetchData.value, fetchData.decimals);
+          address: `0x${walletAddress.split("0x")[1]}`,
+          token: `0x${tokenAddress?.split("0x")[1]}`,
+        });
+        const balance = ethers.utils.formatUnits(
+          fetchData.value,
+          fetchData.decimals
+        );
 
         setTokenBalance(Number(balance));
       }
-    })()
+    })();
   }, [isBuy, tokenPairInfo, walletAddress]);
 
   useEffect(() => {
@@ -196,6 +207,25 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (!walletAddress) {
       return;
     }
+    if (Number(amount) === 0) {
+      toast.error("Enter the correct amount of price");
+      return;
+    }
+    if (isRange) {
+      if (Number(minPrice) === 0) {
+        toast.error("Enter the correct min price");
+        return;
+      }
+      if (Number(maxPrice) === 0) {
+        toast.error("Enter the correct max price");
+        return;
+      }
+    } else {
+      if (Number(targetPrice) === 0) {
+        toast.error("Enter the correct target price");
+        return;
+      }
+    }
     if (tokenPairInfo) {
       if (isEdit) {
         const newOrderPriceInfo: CreateOrderPriceInfo = {
@@ -217,6 +247,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             walletAddress
           );
 
+          toast.success("Successfully edited an order");
+
           //TOAST:
           if (fetchOrders) {
             fetchOrders();
@@ -234,6 +266,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
           setShowEditOrderModal(false);
         } catch (e) {
+          toast.error("Failed to edit an order");
           setShowEditOrderModal(false);
         }
       } else {
@@ -259,6 +292,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               isContinuous,
               walletAddress
             );
+            toast.success("Successfully created an order");
 
             //TOAST:
             if (fetchOrders) {
@@ -277,6 +311,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
             setShowEditOrderModal(false);
           } catch (e) {
+            toast.error("Failed to create an order");
             setShowEditOrderModal(false);
           }
         }
@@ -285,8 +320,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   };
 
   const applyMaxAmount = (amount: number) => {
-    setAmount(amount.toString())
-  }
+    setAmount(amount.toString());
+  };
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
@@ -556,9 +591,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {commafyOrHtmlTag(tokenBalance)} {(isBuy ? pairShortName : baseShortName) ?? ""}
+                  {commafyOrHtmlTag(tokenBalance)}{" "}
+                  {(isBuy ? pairShortName : baseShortName) ?? ""}
                 </span>
-                <span className="text-custom-primary text-xs cursor-pointer" onClick={()=>{applyMaxAmount(tokenBalance)}}> MAX</span>
+                <span
+                  className="text-custom-primary text-xs cursor-pointer"
+                  onClick={() => {
+                    applyMaxAmount(tokenBalance);
+                  }}
+                >
+                  {" "}
+                  MAX
+                </span>
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
