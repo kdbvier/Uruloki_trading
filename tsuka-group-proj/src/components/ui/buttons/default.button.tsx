@@ -22,18 +22,18 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
     const connect = async () => {
       setIsConnected(await getConnectedAddress());
     };
-    connect()
+    connect();
   }, []);
   return (
     <button
       type="button"
-      onClick={() => isConnected && callback }
+      onClick={() => {
+        if (isConnected) {
+          callback();
+        }
+      }}
       className={`
-      ${
-        isConnected ?
-        "hover:bg-custom-primary/90":
-        "bg-slate-600"
-      }
+      ${isConnected ? "hover:bg-custom-primary/90" : "bg-slate-600"}
       ${
         filled
           ? "text-white bg-custom-primary"
