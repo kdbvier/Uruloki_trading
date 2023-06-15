@@ -59,6 +59,7 @@ export function formatNumberToHtmlTag(num: number): {integerPart: string, leadin
   
   let remainingDecimal = decimalPart.slice(leadingZerosCount, decimalPart.length).split('0')[0];  
   if(remainingDecimal.length < 3 ) remainingDecimal += ("000").slice(0, 3-remainingDecimal.length);
+  
   return {integerPart, leadingZerosCount, remainingDecimal};
 }
 
