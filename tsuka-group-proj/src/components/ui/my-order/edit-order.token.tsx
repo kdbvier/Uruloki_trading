@@ -360,7 +360,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {baseShortName} with {pairShortName}
+                {baseShortName} WITH {pairShortName}
               </p>
             </button>
             <button
@@ -373,7 +373,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">SELL</p>
               <p className="text-xs">
-                {baseShortName} for {pairShortName}
+                {baseShortName} FOR {pairShortName}
               </p>
             </button>
           </div>

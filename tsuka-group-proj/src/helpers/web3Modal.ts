@@ -36,6 +36,7 @@ export const getWeb3Modal = async () => {
       }
       return "";
     } catch(err) {
+      return ''
     }
   };
 
