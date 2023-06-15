@@ -232,8 +232,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       low: item.low*wethPrice,
       close: item.close*wethPrice,
     }));
-    console.log("showMarkers",showMarkers)
-    console.log("showMarkers",showMarkers)
+   
     // Set data to the chart
     candlestickSeries.setData(scaledData);
     if (showMarkers) {
@@ -251,21 +250,14 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     candleStickSeriesRef.current = candlestickSeries;
     console.log("OK")
     // Update size on window resize
-    window.addEventListener("resize", () => {
-      if(chartRef.current === null) return;
-      updateChartSize(chartRef.current, chart)
-      // new ResizeObserver(entries => {
-      //   if (entries.length === 0 || entries[0].target !== chartRef.current) { return; }
-      //   const newRect = entries[0].contentRect;
-      //   chart.applyOptions({ height: newRect.height, width: newRect.width });
-      // }).observe(chartRef.current);
-    });
-     // Make Chart Responsive with screen resize
     
+    console.log("resizing");
     // When this page becomes unmounted
     return () => {
       window.removeEventListener("resize", () => {
         if(chartRef.current === null) return;
+        console.log("removeEventListener");
+
         updateChartSize(chartRef.current, chart)
       });
       chart.remove();
@@ -273,6 +265,18 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       setChartState(undefined);
     };
   }, [firstBitquery, activeOrdersByTokenpair, showMarkers, candleStickTime]);
+  if (typeof window !== "undefined") {
+    // browser code
+    window.onresize = function() {
+      if(chartRef.current === null) return;
+      if(chart === null) return;
+
+      console.log("addEventListener");
+
+      updateChartSize(chartRef.current, chart)
+      
+    };
+  }
   
   // When subscription data arrives
   useEffect(() => {
@@ -293,20 +297,9 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       low: updatedData.low*wethPrice,
       close: updatedData.close*wethPrice,
     };
-    // setForwardTime((prevForwardTime: number)=>{
-    //   // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
-    //   console.log("4.0, ", prevForwardTime, "isUpdating forward=", updatedData && updatedData.time > prevForwardTime);
-
-    //   if(updatedData && updatedData.time > prevForwardTime){
-        
-    //     return prevForwardTime + candleStickTime * 60 * 1000;
-    //   } else {
-    //     return prevForwardTime;
-    //   }
-    // })
+    
     console.log("updatedData", updateData)
     // Update the chart
-    // candleStickSeriesRef.current.update(updateData);
     chartState?.candleSeries.update(updateData);
   }, [streamValue, forwardTime]);
   return (

@@ -25,8 +25,6 @@ export const transformStreamData = (data: any, compareTokenName: any) => {
   const buySide = data.data.EVM?.buyside;
   const sellSide = data.data.EVM?.sellside;
 
-  // console.log("buySide: ", buySide);
-  console.log("sellSide: ", sellSide);
 
   let buySideFiltered =
     buySide.length !== 0
