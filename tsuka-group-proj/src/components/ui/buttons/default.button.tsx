@@ -23,7 +23,7 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
         filled
           ? "text-white bg-custom-primary hover:bg-custom-primary/90"
           : "text-custom-primary hover:text-custom-primary/90"
-      } w-full text-center focus:outline-none rounded-md text-sm px-5 py-2 inline-flex justify-center items-center mr-2`}
+      } w-full text-center focus:outline-none rounded-md text-sm px-5 py-2 inline-flex justify-center items-center mr-2 transition-all`}
     >
       {Icon && (
         <label className="mr-1">

@@ -4,24 +4,19 @@ import { LoadingBox } from "@/components/ui/loading/loading-box";
 import { DeletedAlertToken } from "@/components/ui/my-order/deleted-alert.token";
 import { EditOrderToken } from "@/components/ui/my-order/edit-order.token";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiArrowDown, FiFilter, FiSearch } from "react-icons/fi";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { get } from "http";
 import { GetServerSideProps } from "next/types";
 import { PairOrders, getOrdersByWalletAddress } from "@/lib/orders";
-import { Order } from "@/types";
 import {
   OrderStatusEnum,
   OrderTypeEnum,
   PriceTypeEnum,
 } from "@/types/token-order.type";
 import { UserOrder } from "@/types/token-order.type";
-import Strategies from "@/lib/api/strategies";
-import { Strategy } from "@/types";
 import Orders from "@/lib/api/orders";
 
 type MyOrdersProps = {
@@ -68,7 +63,6 @@ export default function MyOrder({ pairOrders }: MyOrdersProps) {
   };
   return (
     <>
-      <ToastContainer />
       <div className="relative px-4 md:px-10 pt-3 md:pt-6 pb-8">
         {/* header */}
         <div

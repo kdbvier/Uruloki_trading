@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import { WagmiConfig, configureChains, createClient } from "wagmi";
 import { arbitrum, mainnet, polygon } from "wagmi/chains";
 import { store } from "../store";
+import ToastProvider from "@/components/ToastProvider";
 
 const chains = [arbitrum, mainnet, polygon];
 const projectId = process.env.NEXT_PUBLIC_YOUR_PROJECT_ID as string;
@@ -45,25 +46,27 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
-        <Provider store={store}>
-          {isLoading && (
-            <div className="w-screen h-screen">
-              <LoadingBox
-                title="Loading data"
-                description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
-              />
-            </div>
-          )}
-          {isLandingPage ? (
-            <Component {...pageProps} />
-          ) : (
-            <DashboardLayout>
+      <ToastProvider>
+        <WagmiConfig client={wagmiClient}>
+          <Provider store={store}>
+            {isLoading && (
+              <div className="w-screen h-screen">
+                <LoadingBox
+                  title="Loading data"
+                  description="Please wait patiently as we process your transaction, ensuring it is secure and reliable."
+                />
+              </div>
+            )}
+            {isLandingPage ? (
               <Component {...pageProps} />
-            </DashboardLayout>
-          )}
-        </Provider>
-      </WagmiConfig>
+            ) : (
+              <DashboardLayout>
+                <Component {...pageProps} />
+              </DashboardLayout>
+            )}
+          </Provider>
+        </WagmiConfig>
+      </ToastProvider>
 
       <Web3Modal
         projectId={projectId}

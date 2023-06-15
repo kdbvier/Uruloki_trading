@@ -59,6 +59,9 @@ export async function getSetups(): Promise<GetSetupsResult> {
         },
     });
 
+    console.log("11111",strategies);
+    
+
     //Parse orders out of query response
     let orders = new Map<number, Map<string, Array<db_orders>>>(); //Map<strategy_id, Map<pair_address, Array<order>>>
     for (const strategy of strategies) {
@@ -83,7 +86,7 @@ export async function getSetups(): Promise<GetSetupsResult> {
         const ordersInStrategy: Array<{pair_address: string, orders: Array<db_orders>}> = []; //Relates a pair address to its orders
 
         //Loop over all orders within the setup, divided by pair_address
-        for(let [pair_address, orders_arr] of orders.get(strategy.strategy_id)!.entries()) {
+        if(orders.get(strategy.strategy_id)) for(let [pair_address, orders_arr] of orders.get(strategy.strategy_id)!.entries()) {
             let orders_for_pair = orders.get(strategy.strategy_id)?.get(pair_address);
             if(orders_for_pair) { //If there are orders for this pair
                 if(ordersInStrategy.filter(a => a.pair_address === pair_address).length == 0) {
@@ -123,5 +126,7 @@ export async function getSetups(): Promise<GetSetupsResult> {
         })
     })
 
+    console.log("dd",payload);
+    
     return payload
 }
