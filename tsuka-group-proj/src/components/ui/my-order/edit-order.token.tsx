@@ -428,7 +428,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
                 !isRange ? "bg-tsuka-400" : ""
               }`}
-              onClick={() => setIsRange(false)}
+              onClick={() => setIsRange(true)}
             >
               <div
                 className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${
@@ -443,7 +443,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
                 isRange ? "bg-tsuka-400" : ""
               }`}
-              onClick={() => setIsRange(true)}
+              onClick={() => setIsRange(false)}
             >
               <div
                 className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${
