@@ -33,7 +33,7 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
         }
       }}
       className={`
-      ${isConnected ? "hover:bg-custom-primary/90" : "bg-slate-600"}
+      ${isConnected ? "hover:bg-custom-primary/90 cursor-pointer" : "bg-slate-600 cursor-default"}
       ${
         filled
           ? "text-white bg-custom-primary"
