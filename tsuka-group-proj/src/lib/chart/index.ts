@@ -194,5 +194,6 @@ export const addMarkers = (activeOrdersByTokenpair: Array<Order>, candlestickSer
       if (entries.length === 0 || entries[0].target !== chartRef) { return; }
       const newRect = entries[0].contentRect;
       await chart.applyOptions({ height: newRect.height, width: newRect.width });
+
     }).observe(chartRef);
 };
