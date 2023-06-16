@@ -1,9 +1,11 @@
 import { Order, TokenPairInfo } from "@/types";
 import { getBitqueryOHLCData } from "../bitquery/getBitqueryOHLCData";
 import { getBitqueryStreamData1, transformData } from "../bitquery/getBitqueryStreamData";
+import { commafyOrHtmlTag } from "../number-helpers";
 import _ from "lodash";
 import { IChartApi, ISeriesApi, LineStyle, createChart } from "lightweight-charts";
 import { RefObject } from "react";
+import { number } from "joi";
 
 export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInfo, setCandleStickTime: any, setFirstBitquery: any, setForwardTime: any, setDatas: any, time: number = 15) => {
     try {
@@ -124,7 +126,12 @@ export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
             return new Date(businessDayOrTimestamp).toLocaleString();
           },
           priceFormatter: (price: any) => {
-            
+            if(typeof commafyOrHtmlTag(price) === 'object') {
+              let number_list = commafyOrHtmlTag(price)!.props.children;
+              
+              let prices: any = (number_list[1]+number_list[2]+"..."+number_list[4]);
+              return prices;
+            }
             return (price).toFixed(14).padEnd(10);
           },
         },
