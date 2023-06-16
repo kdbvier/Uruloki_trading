@@ -46,8 +46,9 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
           ? "text-white bg-custom-primary"
           : "text-custom-primary hover:text-custom-primary/90"
       }
-       w-full text-center focus:outline-none rounded-md text-sm px-5 py-2 inline-flex justify-center items-center mr-2 transition-all`}
+       w-full text-center focus:outline-none rounded-md text-sm px-5 py-2 inline-flex justify-center items-center mr-2 transition-all create-order-button`}
     >
+      {!isConnected && <span className="tooltiptext">Connect your wallet</span>}
       {Icon && (
         <label className="mr-1">
           <Icon />
