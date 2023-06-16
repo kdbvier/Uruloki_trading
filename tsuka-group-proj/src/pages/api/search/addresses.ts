@@ -6,7 +6,7 @@ import { getPairsByTokenAddress, searchTokensByName } from "@/services/search-se
 
 export default async function tempSearchHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<SearchPair[]>>
+  res: any
 ) {
   const { method, query } = req;
   switch (method) {
@@ -23,7 +23,7 @@ export default async function tempSearchHandler(
           })
         } else {
           //console.log("tokens:", tokens);
-          const tokenAddress = tokens[1].address;
+          const tokenAddress = tokens[0].address;
           // let pairs:SearchPair[] = [];
           // tokens.forEach((pair: SearchToken) => {
           //   pairs = await getPairsByTokenAddress(tokenAddress?.toString());
@@ -39,9 +39,7 @@ export default async function tempSearchHandler(
                   message: `Something went wrong! pairs not found`,
                 });
           }
-          res
-            .status(200)
-            .json({ payload: pairs, message: `Successfully found tokens` });
+          res.status(200).json([...pairs]);
         }
       } catch (err) {
         res.status(400).json({
