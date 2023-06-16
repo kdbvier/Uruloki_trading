@@ -7,7 +7,7 @@ import {
 } from "@/types";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { fetchBalance } from '@wagmi/core'
+import { fetchBalance } from "@wagmi/core";
 import Dropdown from "../buttons/dropdown";
 
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
@@ -19,7 +19,13 @@ import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
-import { handleNumberFormat, convertLawPrice, toNumber, fixedDecimal, commafyOrHtmlTag } from "@/lib/number-helpers";
+import {
+  handleNumberFormat,
+  convertLawPrice,
+  toNumber,
+  fixedDecimal,
+  commafyOrHtmlTag,
+} from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";
 import {
   CreateOrderPriceInfoProps,
@@ -49,6 +55,7 @@ export interface EditOrderTokenProp {
   closeHandler: () => void;
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
+  onOrderAdded?: (newOrder: Order) => void;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
@@ -56,6 +63,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowEditOrderModal,
   selectedOrderId,
   closeHandler,
+  onOrderAdded,
   fetchOrders,
   name1,
   code1,
@@ -77,7 +85,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [token1Symbol, settoken1Symbol] = useState("");
   const [token2Symbol, settoken2Symbol] = useState("");
   const [isBuy, setIsBuy] = useState(
-    selectedOrder.order_type === OrderTypeEnum.BUY
+    isEdit ? selectedOrder.order_type === OrderTypeEnum.BUY : true
   );
   const [targetPrice, setTargetPrice] = useState(
     handleNumberFormat(selectedOrder.single_price ?? 0)
@@ -92,7 +100,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     handleNumberFormat(selectedOrder.budget ?? 0)
   );
   const [isRange, setIsRange] = useState(
-    selectedOrder.price_type === PriceTypeEnum.RANGE
+    isEdit ? selectedOrder.price_type === PriceTypeEnum.RANGE : true
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<number>(0);
@@ -142,19 +150,24 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   }, []);
 
   useEffect(() => {
-    (async() => {
-      if(walletAddress && tokenPairInfo) {
-        const tokenAddress = isBuy ? tokenPairInfo.pairedToken?.address : tokenPairInfo.baseToken?.address;
+    (async () => {
+      if (walletAddress && tokenPairInfo) {
+        const tokenAddress = isBuy
+          ? tokenPairInfo.pairedToken?.address
+          : tokenPairInfo.baseToken?.address;
 
         const fetchData = await fetchBalance({
-          address: `0x${walletAddress.split('0x')[1]}`,
-          token: `0x${tokenAddress?.split('0x')[1]}`
-        })
-        const balance = ethers.utils.formatUnits(fetchData.value, fetchData.decimals);
+          address: `0x${walletAddress.split("0x")[1]}`,
+          token: `0x${tokenAddress?.split("0x")[1]}`,
+        });
+        const balance = ethers.utils.formatUnits(
+          fetchData.value,
+          fetchData.decimals
+        );
 
         setTokenBalance(Number(balance));
       }
-    })()
+    })();
   }, [isBuy, tokenPairInfo, walletAddress]);
 
   useEffect(() => {
@@ -196,6 +209,26 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (!walletAddress) {
       return;
     }
+    console.log("isRange", isRange);
+    if (Number(amount) === 0) {
+      toast.error("Enter the correct amount of price");
+      return;
+    }
+    if (isRange) {
+      if (Number(minPrice) === 0) {
+        toast.error("Enter the correct min price");
+        return;
+      }
+      if (Number(maxPrice) === 0) {
+        toast.error("Enter the correct max price");
+        return;
+      }
+    } else {
+      if (Number(targetPrice) === 0) {
+        toast.error("Enter the correct target price");
+        return;
+      }
+    }
     if (tokenPairInfo) {
       if (isEdit) {
         const newOrderPriceInfo: CreateOrderPriceInfo = {
@@ -217,6 +250,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             walletAddress
           );
 
+          toast.success("Successfully edited an order");
+
           //TOAST:
           if (fetchOrders) {
             fetchOrders();
@@ -234,6 +269,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
           setShowEditOrderModal(false);
         } catch (e) {
+          toast.error("Failed to edit an order");
           setShowEditOrderModal(false);
         }
       } else {
@@ -259,6 +295,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               isContinuous,
               walletAddress
             );
+            if (onOrderAdded) {
+              onOrderAdded(newOrder);
+            }
+            toast.success("Successfully created an order");
 
             //TOAST:
             if (fetchOrders) {
@@ -277,6 +317,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
             setShowEditOrderModal(false);
           } catch (e) {
+            toast.error("Failed to create an order");
             setShowEditOrderModal(false);
           }
         }
@@ -285,8 +326,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   };
 
   const applyMaxAmount = (amount: number) => {
-    setAmount(amount.toString())
-  }
+    setAmount(amount.toString());
+  };
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-[rgba(19,21,31,0.6)] backdrop-blur-[2px] w-full h-screen">
@@ -385,36 +426,36 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
           <div className="w-full mt-4 flex gap-2 text-sm">
             <button
               className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
-                !isRange ? "bg-tsuka-400" : ""
-              }`}
-              onClick={() => setIsRange(false)}
-            >
-              <div
-                className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${
-                  !isRange ? "primary" : "tsuka-300"
-                }`}
-              />
-              <span className={!isRange ? "text-tsuka-50" : "text-tsuka-300"}>
-                Price Range
-              </span>
-            </button>
-            <button
-              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
                 isRange ? "bg-tsuka-400" : ""
               }`}
               onClick={() => setIsRange(true)}
             >
               <div
-                className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${
+                className={`w-3 h-3 mr-2 border-solid border-[2px] rounded-full border-${
                   isRange ? "primary" : "tsuka-300"
                 }`}
               />
               <span className={isRange ? "text-tsuka-50" : "text-tsuka-300"}>
+                Price Range
+              </span>
+            </button>
+            <button
+              className={`w-1/2 flex justify-center items-center border border-tsuka-400 rounded-md py-2 ${
+                !isRange ? "bg-tsuka-400" : ""
+              }`}
+              onClick={() => setIsRange(false)}
+            >
+              <div
+                className={`w-3 h-3 mr-2 border-solid border-[4px] rounded-full border-${
+                  !isRange ? "primary" : "tsuka-300"
+                }`}
+              />
+              <span className={!isRange ? "text-tsuka-50" : "text-tsuka-300"}>
                 Single Price
               </span>
             </button>
           </div>
-          {isRange && (
+          {!isRange && (
             <div className="relative mt-4">
               <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
                 Target ($)
@@ -446,7 +487,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               />
             </div>
           )}
-          {!isRange && (
+          {isRange && (
             <div className="block md:flex justify-between items-center">
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
@@ -556,9 +597,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               <p className="text-sm">
                 <span className="text-tsuka-200">Balance : </span>
                 <span className="text-tsuka-50 uppercase">
-                  {commafyOrHtmlTag(tokenBalance)} {(isBuy ? pairShortName : baseShortName) ?? ""}
+                  {commafyOrHtmlTag(tokenBalance)}{" "}
+                  {(isBuy ? pairShortName : baseShortName) ?? ""}
                 </span>
-                <span className="text-custom-primary text-xs cursor-pointer" onClick={()=>{applyMaxAmount(tokenBalance)}}> MAX</span>
+                <span
+                  className="text-custom-primary text-xs cursor-pointer"
+                  onClick={() => {
+                    applyMaxAmount(tokenBalance);
+                  }}
+                >
+                  {" "}
+                  MAX
+                </span>
               </p>
               <span className="text-tsuka-50 text-sm">
                 {(() => {
