@@ -11,6 +11,7 @@ export default function StrategyDetails() {
   async function onLoad() {
     const walletAddress = await getConnectedAddress();
     const tempStrategies = await Strategies.Client.getStrategiesData(walletAddress as string)
+    console.log(tempStrategies)
     setStrategies(tempStrategies)
   }
 
