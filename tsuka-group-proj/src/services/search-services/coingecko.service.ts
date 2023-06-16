@@ -20,15 +20,19 @@ export async function searchTokensByName(name: string): Promise<SearchToken[]> {
       data = cacheReq.data.cached_data;
     }
     const tokens = data
-      .filter((coin: any) => coin.name.toLowerCase().includes(name.toLowerCase())||coin.symbol.toLowerCase().includes(name.toLowerCase()))
+      .filter((coin: any) => coin.symbol.toLowerCase().includes(name.toLowerCase()))
       .sort((a: any, b: any) => {
-        if(a.name.toLowerCase().startsWith(name.toLowerCase()))
+        if(a.symbol.length < b.symbol.length)
+          return -1;
+        if(a.symbol.length > b.symbol.length)
+          return 1;
+        if(a.symbol.toLowerCase().startsWith(name.toLowerCase()))
           return -1; // move a to the front
-        if(b.name.toLowerCase().startsWith(name.toLowerCase()))          
+        if(b.symbol.toLowerCase().startsWith(name.toLowerCase()))          
           return 1; // move b to the front
-        if(b.name.toLowerCase() > a.name.toLowerCase())
+        if(b.symbol.toLowerCase() > a.symbol.toLowerCase())
           return -1; // move a to the front
-        if(b.name.toLowerCase() < a.name.toLowerCase())
+        if(b.symbol.toLowerCase() < a.symbol.toLowerCase())
           return 1; // move b to the front
         return 0; // keep the order of a and b unchanged
       });
