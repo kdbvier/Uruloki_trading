@@ -375,7 +375,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               } w-1/2 border-b text-center py-[11px]`}
               onClick={() => setIsBuy(false)}
             >
-              <p className="font-medium">SELL</p>
+              <p className="font-medium">Sell</p>
               <p className="text-xs">
                 {baseShortName} FOR {pairShortName}
               </p>

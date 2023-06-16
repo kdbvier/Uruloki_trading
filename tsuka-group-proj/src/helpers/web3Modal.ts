@@ -10,7 +10,7 @@ export const getWeb3Modal = async () => {
         }
       }
     };
-  
+
     const web3Modal = new Web3Modal({
       cacheProvider: true, // optional
       providerOptions, // required

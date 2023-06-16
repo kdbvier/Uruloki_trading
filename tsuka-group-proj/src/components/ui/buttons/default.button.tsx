@@ -1,6 +1,7 @@
 import { IconType } from "react-icons";
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { useEffect, useState } from "react";
+import { local } from "web3modal";
 
 export interface DefaultButtonProps {
   label: string;
@@ -17,13 +18,19 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
   Icon,
   RightIcon,
 }) => {
-  const [isConnected, setIsConnected] = useState("");
+  const [isConnected, setIsConnected] = useState<any>();
   useEffect(() => {
-    const connect = async () => {
-      setIsConnected(await getConnectedAddress());
-    };
-    connect();
+    setIsConnected(localStorage.getItem("wagmi.connected"));
+    setInterval(() => {
+      setIsConnected(
+        localStorage.getItem("wagmi.connected")
+          ? localStorage.getItem("wagmi.connected")
+          : ""
+      );
+    }, 10);
+    // 
   }, []);
+
   return (
     <button
       type="button"
