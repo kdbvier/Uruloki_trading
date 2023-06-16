@@ -95,6 +95,7 @@ export namespace Strategies {
       strategies = strategies.map((strategy: any) => {
         return {
           id:strategy.id,
+          title: strategy.title ?? "",
           status: strategy.status ?? StrategyStatusEnum.ACTIVE,
           createdAt: strategy.createdAt ?? Math.round((new Date().getTime() ?? 0)).toString(),
           orderTokens: strategy.orderTokens ?? []

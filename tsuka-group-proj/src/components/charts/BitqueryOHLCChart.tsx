@@ -60,7 +60,9 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
   const [streamValue, setStreamValue] = useState<BitqueryData[]>([]);
   const [candleStickTime, setCandleStickTime] = useState<number>(15);
   const [forwardTime, setForwardTime] = useState<any>();
-  const [wethPrice, setWethPrice] = useState<any>();
+  const [wethPrice, setWethPrice] = useState<any>(1);
+  const [firstWethPrice, setFirstWethPrice] = useState<any>(1);
+
 
   const [active, setActive] = useState(15);
   const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -117,17 +119,22 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     const fetchWeth = async () => {
       try {
         // const walletAddress: string = (await fetchWethPrice()) as string;
-        const wethPrice = await fetchWethPrice();
-        
+        const wethPriceUnit = await fetchWethPrice();
+
         const base=tokenPairInfo.baseToken?.address;
         const pair=tokenPairInfo.pairedToken?.address;
         let isWETHPair = false;
         if(base && pair){
           isWETHPair = base.toLowerCase() === WETH_ADDRESS || pair.toLowerCase() === WETH_ADDRESS;
         }
-        setWethPrice(1);
-        if(isWETHPair)
-          setWethPrice(wethPrice);
+        // setWethPrice(wethPriceUnit);
+        if(!isWETHPair)
+          setWethPrice(wethPriceUnit);
+        else
+          setFirstWethPrice(wethPriceUnit);
+          setWethPrice(1/2);
+
+
       } catch (err) {
         console.error(err);
       }
@@ -154,6 +161,8 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
   }
 
   const candleStickClicked = async (stick: number) => {
+    console.log("wethPrice", wethPrice)
+
     setCandleStickTime(stick);
     setActive(stick);
     if (!tokenPairInfo) return;
@@ -225,15 +234,16 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       }
     });
    
+    console.log("firstWethPrice", firstWethPrice)
     let scaledData = temp.map((item) => ({
       ...item,
-      open: item.open*wethPrice,
-      high: item.high*wethPrice,
-      low: item.low*wethPrice,
-      close: item.close*wethPrice,
+      open: item.open*firstWethPrice,
+      high: item.high*firstWethPrice,
+      low: item.low*firstWethPrice,
+      close: item.close*firstWethPrice,
     }));
-    console.log("showMarkers",showMarkers)
-    console.log("showMarkers",showMarkers)
+   
+
     // Set data to the chart
     candlestickSeries.setData(scaledData);
     if (showMarkers) {
@@ -250,22 +260,12 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     setChartState({ chart, candleSeries: candlestickSeries });
     candleStickSeriesRef.current = candlestickSeries;
     console.log("OK")
-    // Update size on window resize
-    window.addEventListener("resize", () => {
-      if(chartRef.current === null) return;
-      updateChartSize(chartRef.current, chart)
-      // new ResizeObserver(entries => {
-      //   if (entries.length === 0 || entries[0].target !== chartRef.current) { return; }
-      //   const newRect = entries[0].contentRect;
-      //   chart.applyOptions({ height: newRect.height, width: newRect.width });
-      // }).observe(chartRef.current);
-    });
-     // Make Chart Responsive with screen resize
-    
     // When this page becomes unmounted
     return () => {
       window.removeEventListener("resize", () => {
         if(chartRef.current === null) return;
+        console.log("removeEventListener");
+
         updateChartSize(chartRef.current, chart)
       });
       chart.remove();
@@ -273,6 +273,19 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       setChartState(undefined);
     };
   }, [firstBitquery, activeOrdersByTokenpair, showMarkers, candleStickTime]);
+  if (typeof window !== "undefined") {
+    // browser code
+    window.onresize = function() {
+      if(chartRef.current === null) return;
+      if(chart === null) return;
+
+      console.log("addEventListener");
+
+      updateChartSize(chartRef.current, chart)
+      
+    };
+  }
+
   
   // When subscription data arrives
   useEffect(() => {
@@ -286,6 +299,9 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
     let updatedData: MyCandlestickData | null = null;
     // Get the OHLC data from subscription data in the Store
     updatedData = getUpdatedData(forwardTime, streamValue, candleStickTime);
+    console.log("updatedData", updatedData)
+    console.log("wethPrice", wethPrice)
+
     let updateData ={
       time:updatedData.time,
       open: updatedData.open*wethPrice,
@@ -293,20 +309,7 @@ const BitqueryOHLCChart: React.FC<Props> = ({ onLoaded, tokenPairInfo, setDataUn
       low: updatedData.low*wethPrice,
       close: updatedData.close*wethPrice,
     };
-    // setForwardTime((prevForwardTime: number)=>{
-    //   // console.log("2, setDatas: transData ", transData, " transData.time=", transData.time, " forwardTime in state: ", prevForwardTime);
-    //   console.log("4.0, ", prevForwardTime, "isUpdating forward=", updatedData && updatedData.time > prevForwardTime);
 
-    //   if(updatedData && updatedData.time > prevForwardTime){
-        
-    //     return prevForwardTime + candleStickTime * 60 * 1000;
-    //   } else {
-    //     return prevForwardTime;
-    //   }
-    // })
-    console.log("updatedData", updateData)
-    // Update the chart
-    // candleStickSeriesRef.current.update(updateData);
     chartState?.candleSeries.update(updateData);
   }, [streamValue, forwardTime]);
   return (

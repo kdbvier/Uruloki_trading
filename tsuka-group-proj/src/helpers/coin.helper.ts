@@ -37,13 +37,13 @@ export const formatCurrencyFixed2 = (x: number, suffix0 = false): string => {
  * @returns
  */
 export function formatNumberToHtmlTag(num: number): {integerPart: string, leadingZerosCount: number, remainingDecimal: string} {
+  
   let numStr = num.toString();
-
+  
   if (numStr.indexOf('e') !== -1) {
     const exponent = parseInt(numStr.split('e')[1]);
-    numStr = parseFloat(numStr).toFixed(Math.abs(exponent));
+    numStr = parseFloat(numStr).toFixed(Math.abs(exponent-parseInt(numStr.split('e')[0])));
   }
-
   const parts = numStr.split('.');
   
   if (parts.length === 1) {
@@ -55,9 +55,12 @@ export function formatNumberToHtmlTag(num: number): {integerPart: string, leadin
 
   const leadingZeros = decimalPart.match(/^0*/) ?? [''];
   const leadingZerosCount = leadingZeros[0].length;
-
-  const remainingDecimal = decimalPart.slice(leadingZerosCount, leadingZerosCount + 2);
-
+  
+  
+  let remainingDecimal = decimalPart.slice(leadingZerosCount, decimalPart.length).split('0')[0];  
+  if(remainingDecimal.length < 3 ) remainingDecimal += ("000").slice(0, 3-remainingDecimal.length);
+  else remainingDecimal = remainingDecimal.slice(0, 3);
+  
   return {integerPart, leadingZerosCount, remainingDecimal};
 }
 

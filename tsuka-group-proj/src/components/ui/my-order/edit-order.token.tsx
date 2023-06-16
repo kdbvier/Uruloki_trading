@@ -405,7 +405,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             >
               <p className="font-medium">Buy</p>
               <p className="text-xs">
-                {baseShortName} with {pairShortName}
+                {baseShortName} WITH {pairShortName}
               </p>
             </button>
             <button
@@ -416,9 +416,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               } w-1/2 border-b text-center py-[11px]`}
               onClick={() => setIsBuy(false)}
             >
-              <p className="font-medium">SELL</p>
+              <p className="font-medium">Sell</p>
               <p className="text-xs">
-                {baseShortName} for {pairShortName}
+                {baseShortName} FOR {pairShortName}
               </p>
             </button>
           </div>

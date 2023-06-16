@@ -31,6 +31,8 @@ export const StrategiesPageComponent: React.FC<
     },
   ];
 
+  console.log(strategies)
+
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 mb-16">
       <div className="w-full flex items-center justify-start px-2 pt-2">
