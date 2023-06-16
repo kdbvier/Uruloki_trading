@@ -55,6 +55,7 @@ export interface EditOrderTokenProp {
   closeHandler: () => void;
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
+  onOrderAdded?: (newOrder: Order) => void;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
@@ -62,6 +63,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   setShowEditOrderModal,
   selectedOrderId,
   closeHandler,
+  onOrderAdded,
   fetchOrders,
   name1,
   code1,
@@ -83,7 +85,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [token1Symbol, settoken1Symbol] = useState("");
   const [token2Symbol, settoken2Symbol] = useState("");
   const [isBuy, setIsBuy] = useState(
-    selectedOrder.order_type === OrderTypeEnum.BUY
+    isEdit ? selectedOrder.order_type === OrderTypeEnum.BUY : true
   );
   const [targetPrice, setTargetPrice] = useState(
     handleNumberFormat(selectedOrder.single_price ?? 0)
@@ -98,7 +100,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     handleNumberFormat(selectedOrder.budget ?? 0)
   );
   const [isRange, setIsRange] = useState(
-    selectedOrder.price_type === PriceTypeEnum.RANGE
+    isEdit ? selectedOrder.price_type === PriceTypeEnum.RANGE : true
   );
   const [isContinuous, setIsContinuous] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<number>(0);
@@ -207,6 +209,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
     if (!walletAddress) {
       return;
     }
+    console.log("isRange", isRange);
     if (Number(amount) === 0) {
       toast.error("Enter the correct amount of price");
       return;
@@ -292,6 +295,9 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               isContinuous,
               walletAddress
             );
+            if (onOrderAdded) {
+              onOrderAdded(newOrder);
+            }
             toast.success("Successfully created an order");
 
             //TOAST:
@@ -449,7 +455,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               </span>
             </button>
           </div>
-          {isRange && (
+          {!isRange && (
             <div className="relative mt-4">
               <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">
                 Target ($)
@@ -481,7 +487,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               />
             </div>
           )}
-          {!isRange && (
+          {isRange && (
             <div className="block md:flex justify-between items-center">
               <div className="relative mt-4">
                 <span className="absolute left-3 top-[calc(50%-10px)] text-sm text-tsuka-300 text-left">

@@ -20,9 +20,10 @@ import { UserOrder } from "@/types/token-order.type";
 import Orders from "@/lib/api/orders";
 
 type MyOrdersProps = {
-  pairOrders: Array<PairOrders>;
+  initialPairOrders: Array<PairOrders>;
 };
-export default function MyOrder({ pairOrders }: MyOrdersProps) {
+export default function MyOrder({ initialPairOrders }: MyOrdersProps) {
+  const [pairOrders, setPairOrders] = useState<PairOrders[]>(initialPairOrders);
   const [openToggle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSidebar, setShowSidebar] = useState(false);
@@ -228,7 +229,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      pairOrders,
+      initialPairOrders: pairOrders,
     },
   };
 };
