@@ -131,8 +131,9 @@ export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
             return new Date(businessDayOrTimestamp).toLocaleString();
           },
           priceFormatter: (price: any) => {
-            if(typeof commafyOrHtmlTag(price) === 'object') {
-              let number_list = commafyOrHtmlTag(price)!.props.children;
+            const res = commafyOrHtmlTag(price);
+            if(typeof res === 'object') {
+              let number_list = res?.props?.children;
               
               let prices: any = (number_list[1]+number_list[2]+"..."+number_list[4]);
               return prices;
