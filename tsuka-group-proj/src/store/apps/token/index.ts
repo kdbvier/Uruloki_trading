@@ -118,8 +118,6 @@ export const setPairAddress = createAsyncThunk(
         address: pair,
       },
     };
-    console.log("setPair", data);
-
     return data;
   }
 );

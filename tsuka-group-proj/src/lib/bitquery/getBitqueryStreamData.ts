@@ -25,8 +25,6 @@ export const transformStreamData = (data: any, compareTokenName: any) => {
   const buySide = data.data.EVM?.buyside;
   const sellSide = data.data.EVM?.sellside;
 
-  // console.log("buySide: ", buySide);
-  console.log("sellSide: ", sellSide);
 
   let buySideFiltered =
     buySide.length !== 0
@@ -207,7 +205,7 @@ const fetchStreamData = async (pairAddress: any, setDatas: any = undefined) => {
       .subscribe({
         next: async (response: any) => {
           // handle subscription data
-          // console.log("response: each :  ",response);
+          console.log("streac response:",response);
           // const data = await response.json();
           // const compareTokenName =
           //   store.getState().tokenPairInfo.value.baseToken?.symbol;

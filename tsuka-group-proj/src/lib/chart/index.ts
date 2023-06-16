@@ -20,8 +20,7 @@ export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInf
         time: time,
       };
       const responseData = await getBitqueryOHLCData(eachAddress);
-      console.log("Response data:")
-      console.log(responseData)
+      console.log("firstDataResponse:", responseData)
       const tranData = await transformData(responseData);
       setCandleStickTime(eachAddress.time);
       // getBitqueryStreamInfo(eachAddress.pairAddress);//////
@@ -36,15 +35,12 @@ export const fetchData = async (pairAddress: string, tokenPairInfo: TokenPairInf
       setFirstBitquery(tranData);
       setForwardTime(tranData[tranData.length - 1]?.time + 15 * 60 * 1000);
     } catch (err) {
-      console.log("This is the suspected part")
       console.error(err);
     }
 };
 
 export const getUpdatedData = (forTime: string, datas: any, candleStickTime: number) => {
-  console.log("inside getUpdatedData:: forTime=",forTime, " datas=", datas, " candleStickTime=", candleStickTime)
     if (datas[datas.length - 1].time > forTime) {
-      console.log("inside getUpdatedData:: firstCase");
       const filterData = datas.filter((data: any) => data.time > forTime);
       const time = forTime + (candleStickTime * 60 * 1000 - 900000);
       const open = filterData[0].open;
@@ -65,7 +61,6 @@ export const getUpdatedData = (forTime: string, datas: any, candleStickTime: num
         close,
       };
     } else {
-      console.log("inside getUpdatedData:: secondCase");
       const filterData1 = datas.filter((data: any) => data.time < forTime);
       const filterData_2 = filterData1.filter(
         (data: any) => parseInt(forTime) - candleStickTime * 60 * 1000 < data.time
@@ -135,15 +130,9 @@ export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
         },
         timeScale: {
           tickMarkFormatter: (businessDayOrTimestamp: any) => {
-            // console.log("businessDayOrTimestamp", businessDayOrTimestamp);
             const date = new Date(businessDayOrTimestamp);
-            // console.log("date", date);
             const hours = date.getHours().toString().padStart(2, "0");
-            // console.log("hours", date);
-    
             const minutes = date.getMinutes().toString().padStart(2, "0");
-            // console.log("minutes", date);
-    
             const timeString = `${hours}:${minutes}`;
             return timeString;
           },
@@ -199,12 +188,12 @@ export const addMarkers = (activeOrdersByTokenpair: Array<Order>, candlestickSer
     );
 }
 
-export const updateChartSize = (chartRef: HTMLDivElement, chart: IChartApi) => {
-    console.log(chartRef)
-    console.log(chart)
-    new ResizeObserver(entries => {
+ export  const updateChartSize = async (chartRef: HTMLDivElement, chart: IChartApi): Promise<void> => {
+    console.log("updateChartSize");
+    new ResizeObserver(async (entries) => {
       if (entries.length === 0 || entries[0].target !== chartRef) { return; }
       const newRect = entries[0].contentRect;
-      chart.applyOptions({ height: newRect.height, width: newRect.width });
+      await chart.applyOptions({ height: newRect.height, width: newRect.width });
+
     }).observe(chartRef);
 };
