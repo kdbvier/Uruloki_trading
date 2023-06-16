@@ -23,7 +23,7 @@ export default async function tempSearchHandler(
           })
         } else {
           //console.log("tokens:", tokens);
-          const tokenAddress = tokens[1].address;
+          const tokenAddress = tokens[0].address;
           // let pairs:SearchPair[] = [];
           // tokens.forEach((pair: SearchToken) => {
           //   pairs = await getPairsByTokenAddress(tokenAddress?.toString());
