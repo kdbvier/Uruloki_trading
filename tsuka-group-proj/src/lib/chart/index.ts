@@ -89,9 +89,12 @@ export const getUpdatedData = (forTime: string, datas: any, candleStickTime: num
 
 
 export const createLightweightChart = (chartRef: HTMLDivElement): IChartApi => {
+  const parentHeight = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetHeight;
+  const parentWidth = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetWidth;
     return createChart(chartRef, {
-        width: 1300,
+      autoSize: true,
         height: 400,
+        width: parentWidth,
         layout: {
           background: {
             color: "#151924",
@@ -189,10 +192,14 @@ export const addMarkers = (activeOrdersByTokenpair: Array<Order>, candlestickSer
 }
 
  export  const updateChartSize = async (chartRef: HTMLDivElement, chart: IChartApi): Promise<void> => {
-    console.log("updateChartSize");
-    new ResizeObserver(async (entries) => {
-      if (entries.length === 0 || entries[0].target !== chartRef) { return; }
-      const newRect = entries[0].contentRect;
-      await chart.applyOptions({ height: newRect.height, width: newRect.width });
-    }).observe(chartRef);
+
+    const newHeight = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetHeight;
+  const newWidth = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetWidth;
+    chart.applyOptions({ height: newHeight, width: newWidth });
+  //  new ResizeObserver(async (entries) => {
+  //    console.log("updateChartSize", entries);
+  //    if (entries.length === 0 || entries[0].target !== chartRef) { return; }
+  //    const newRect = entries[0].contentRect;
+  //   chart.applyOptions({ height: newRect.height, width: newRect.width });
+  //   }).observe(chartRef);
 };
