@@ -7,7 +7,8 @@ export default class HomePageTokens {
     return await axios.get(`/api/tokens`);
   };
   static searchTokens = async (name: string): Promise<SearchPair[]> => {
-    return await axios.get(`/api/search/addresses?name=${name}`)
+    const res = await axios.get(`/api/search/addresses?name=${name}`);
+    return res.data;
   };
   static getTokenPairInfo = async (
     pair_address: string
