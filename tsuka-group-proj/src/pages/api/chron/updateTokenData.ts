@@ -6,15 +6,9 @@ import { updateTokenCacheMarketCap } from "@/lib/server/tokens/update/marketCap"
 import { purgeTokenCache } from "@/lib/server/tokens/update/purgeTokenCache";
 import { G_QUERY_GetTopGainersAndMovers } from "../tokens/g_queries";
 import { updateTopMovers } from "@/lib/server/tokens/update/topMovers";
+import { OrderCount, updateMostOrders } from "@/lib/server/tokens/update/mostOrders";
 
 const prisma = new PrismaClient();
-
-type OrderCount = {
-    pair_address: string,
-    buyOrders: number,
-    sellOrders: number,
-    token_cache_id: number | undefined
-}
 
 export default async function NotificationByUserHandler(
   req: NextApiRequest,
@@ -30,7 +24,6 @@ export default async function NotificationByUserHandler(
         var now = Date.now()
         var yesterday = now - (3600 * 24 * 1000)
 
-        /*
         console.log("Getting token data from bitquery...")
         const result = await G_QUERY_GetTopGainersAndMovers("ethereum", new Date(yesterday), new Date())
             
@@ -50,7 +43,6 @@ export default async function NotificationByUserHandler(
         
         console.log("Getting top movers...")
         const updateTopMoversResult = await updateTopMovers(MINIMUM_TX_COUNT, bitqueryData)
-        */
 
         console.log("Getting order data...")        
         const allOrders = await prisma.orders.findMany({
@@ -85,55 +77,13 @@ export default async function NotificationByUserHandler(
         console.log("Getting tokens with most sell orders...")
         const tokensWithMostSellOrders = orderCount.sort((a, b) => b.sellOrders - a.sellOrders).slice(0, 100)
 
-        console.log("Most buy orders:")
-        console.log(tokensWithMostBuyOrders)
-
-        //Clear most_buy_orders and most_sell_orders tables and add new data
-        const buyOrdersInsertData = tokensWithMostBuyOrders
-                .map((item, index) => {
-                    return {
-                        token_cache_id: item.token_cache_id ?? 0,
-                        rank: index + 1
-                    }
-                }
-                ).filter(a => a.token_cache_id != 0)
-                .map((item, index) => {
-                    item.rank = index + 1
-                    return item
-                })
-
-        const sellOrdersInsertData = tokensWithMostSellOrders
-                .map((item, index) => {
-                    return {
-                        token_cache_id: item.token_cache_id ?? 0,
-                        rank: index + 1
-                    }
-                }
-                ).filter(a => a.token_cache_id != 0)
-                .map((item, index) => {
-                    item.rank = index + 1
-                    return item
-                })
-
-        await prisma.most_buy_orders.deleteMany({})
-        await prisma.most_buy_orders.createMany({
-            data: buyOrdersInsertData
-        })
-
-        console.log("Most sell orders:")
-        console.log(tokensWithMostSellOrders)
-
-        //Clear most_sell_orders table and add new data
-        await prisma.most_sell_orders.deleteMany({})
-        await prisma.most_sell_orders.createMany({
-            data: sellOrdersInsertData
-        })
+        await updateMostOrders(tokensWithMostBuyOrders, tokensWithMostSellOrders)
         
         console.log("Updating market cap...")
-        //const updateMarketCapResult = await updateTokenCacheMarketCap()
+        const updateMarketCapResult = await updateTokenCacheMarketCap()
 
         console.log("Purging token cache...")
-        //await purgeTokenCache()
+        await purgeTokenCache()
 
         res.status(200).json({ message: `Successfully updated data` });
       } catch (err) {

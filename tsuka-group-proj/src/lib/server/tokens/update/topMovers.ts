@@ -34,8 +34,6 @@ export async function updateTopMovers(MINIMUM_TX_COUNT: number, bitqueryData: an
     //Trim down to top 100 tokens
     topMovers = topMovers.slice(0,100)
 
-    console.log("Getting final prices...")
-
     //Calculate actual price
     let finalList = await getPriceData(topMovers)
 
@@ -50,13 +48,9 @@ export async function updateTopMovers(MINIMUM_TX_COUNT: number, bitqueryData: an
         console.log(token)
     })
 
-    console.log("Clearing top_movers table...")
-
     //Clear top movers table
     await prisma.top_movers.deleteMany({})
 
-    console.log("Upserting token data into token_cache...")
-    
     //Insert token data into token_cache and track the ids
     let tokenCacheTokens: Array<TopMoverTokenCache> = []
     for(let item of finalList) {
@@ -83,8 +77,7 @@ export async function updateTopMovers(MINIMUM_TX_COUNT: number, bitqueryData: an
             token: item
         })
     }
-
-    console.log("Writing to top_movers...")
+    
     //Write to top_movers table
     tokenCacheTokens.forEach(async (item, index) => {
         await prisma.top_movers.create({

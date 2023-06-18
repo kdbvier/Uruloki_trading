@@ -35,20 +35,16 @@ export async function upsertAndGetId({name, pair_address, price, change_24hr, vo
     }
 
     if(itemExists != null) {
-        console.log("Updating existing record...")
         await prisma.token_cache.update({
             where: {
                 id: itemExists.id
             },
             data
         })
-        console.log(`Exists with id ${itemExists.id}}`)
         return itemExists.id
     } else {
-        console.log("Inserting new record...")
         try {
             const createdItem = await prisma.token_cache.create({data})
-            console.log(`Created with id ${createdItem.id}`)
             return createdItem.id
         } catch (e) {
             console.log(e)
