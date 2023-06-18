@@ -289,7 +289,7 @@ export default function Pair({
           setToken={setToken}
         />
       )}
-      <div className="hidden grid-cols-11 gap-4 lg:grid">
+      <div className=" grid grid-cols-11 gap-4 ">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
           <LiveGraphToken tokenPairInfo={tokenPairInfo} />
@@ -371,7 +371,6 @@ export default function Pair({
         </div>
       </div>
       <div className="block lg:hidden">
-        <LiveGraphToken tokenPairInfo={tokenPairInfo} />
         <OrderWidgetToken
           name1={tokenPairInfo?.baseToken?.name as string}
           code1={tokenPairInfo?.baseToken?.symbol as string}
