@@ -25,7 +25,7 @@ export const getTokenPrice = async (
   const tokenPairResponse = await G_QUERY_GetTokenPair(pair_address);
 
   //Return 0 if pair is not found
-  if (!tokenPairResponse.data.data.ethereum.dexTrades[0]) {
+  if (!tokenPairResponse?.data?.data?.ethereum?.dexTrades[0]) {
     return { base_price: 0, quote_price: 0 };
   }
 
@@ -33,7 +33,7 @@ export const getTokenPrice = async (
   const {
     token0: { address: token0Address },
     token1: { address: token1Address },
-  } = tokenPairResponse.data.data.ethereum.dexTrades[0];
+  } = tokenPairResponse?.data?.data?.ethereum?.dexTrades[0];
   let tokenAddress, pairedTokenAddress;
 
   //Determine the token & paired token
@@ -60,12 +60,11 @@ export const getTokenPrice = async (
   );
 
   //If no trades are found
-  if (!quotePriceResponse.data.data.ethereum.dexTrades[0]) {
+  if (!quotePriceResponse || quotePriceResponse?.data?.data?.ethereum?.dexTrades == null || quotePriceResponse?.data?.data?.ethereum?.dexTrades?.length == 0) {
     return { base_price: 0, quote_price: 0 };
   }
   
-  const { quotePrice: basePrice } =
-    quotePriceResponse.data.data.ethereum.dexTrades[0];
+  const { quotePrice: basePrice } = quotePriceResponse?.data?.data?.ethereum?.dexTrades[0];
 
   //If the paired tokens address is weth or dai (so not a stablecoin)
   if (
@@ -74,10 +73,12 @@ export const getTokenPrice = async (
   ) {
     const baseQuotePrice = basePrice;
     const baseCurrency = pairedTokenAddress;
+
     const quoteCurrency =
       pairedTokenAddress === process.env.WETH_ADDR
         ? process.env.USDC_ADDR
         : process.env.USDT_ADDR;
+
     const baseQuotePriceResponse = await G_QUERY_GetQuotePrice(
       baseCurrency,
       quoteCurrency as string,
