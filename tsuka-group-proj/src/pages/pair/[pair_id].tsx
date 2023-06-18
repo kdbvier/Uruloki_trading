@@ -50,17 +50,17 @@ interface InputToken {
 }
 
 export default function Pair({
-  orders,
+  initialOrders,
   token_price,
   oldTokenPrice,
   historicalDexTrades,
   tokenPairInfo,
 }: {
-  orders: Order[];
+  initialOrders: Order[];
   token_price: TokenPriceInPair;
   oldTokenPrice: number;
   historicalDexTrades: Array<HistoricalDexTrades>;
-  tokenPairInfo: TokenPairInfo
+  tokenPairInfo: TokenPairInfo;
 }) {
   interface Trade {
     side: string;
@@ -111,6 +111,7 @@ export default function Pair({
   };
 
   const router = useRouter();
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(-1);
   const [showDeletedAlert, setShowDeletedAlert] = useState<boolean>(false);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
@@ -137,6 +138,9 @@ export default function Pair({
   }, [strategies]);
 
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
+  const onOrderAdded = (newOrder: Order) => {
+    setOrders([...orders, newOrder]);
+  };
   useEffect(() => {
     const fetchTokenPairInfo_ActiveOrders = async () => {
       try {
@@ -251,17 +255,20 @@ export default function Pair({
     let unsubscribe = () => {};
     (async () => {
       await new Promise<void>((resolve, reject) => {
-        unsubscribe = client.subscribe(getLiveDexTrades(tokenPairInfo.baseToken?.address ?? ""), {
-          next: onNext,
-          error: (err: any) => {
-            console.log("Subscription error:", err);
-            reject(err);
-          },
-          complete: () => {
-            console.log("Subscription complete");
-            resolve();
-          },
-        });
+        unsubscribe = client.subscribe(
+          getLiveDexTrades(tokenPairInfo.baseToken?.address ?? ""),
+          {
+            next: onNext,
+            error: (err: any) => {
+              console.log("Subscription error:", err);
+              reject(err);
+            },
+            complete: () => {
+              console.log("Subscription complete");
+              resolve();
+            },
+          }
+        );
       });
     })();
 
@@ -285,7 +292,7 @@ export default function Pair({
       <div className=" grid grid-cols-11 gap-4 ">
         <div className="col-span-12 md:col-span-8">
           {/*<LiveGraphToken token={token.chain?.code} />*/}
-          <LiveGraphToken tokenPairInfo={tokenPairInfo}/>
+          <LiveGraphToken tokenPairInfo={tokenPairInfo} />
           <div className="hidden md:grid grid-cols-8 gap-4">
             <div className="col-span-12">
               <OrderBookToken
@@ -293,7 +300,7 @@ export default function Pair({
                 tokens={[
                   {
                     //value: "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
-                    value: orders[0]?.pair_address ?? "" as string,
+                    value: orders[0]?.pair_address ?? ("" as string),
                     label:
                       orders[0]?.baseTokenShortName == "USDT" ||
                       orders[0]?.baseTokenShortName == "USDC" ||
@@ -361,11 +368,9 @@ export default function Pair({
               setShowDeletedAlert={setShowDeletedAlert}
             />
           )}
-          
         </div>
       </div>
       <div className="block lg:hidden">
-        {/* <LiveGraphToken tokenPairInfo={tokenPairInfo}/> */}
         <OrderWidgetToken
           name1={tokenPairInfo?.baseToken?.name as string}
           code1={tokenPairInfo?.baseToken?.symbol as string}
@@ -401,6 +406,7 @@ export default function Pair({
           setShowEditOrderModal={setShowEditOrderModal}
           selectedOrderId={selectedOrderId}
           isEdit={isEdit}
+          onOrderAdded={onOrderAdded}
           closeHandler={() => {
             setShowEditOrderModal(false);
             setSelectedOrderId(-1);
@@ -426,7 +432,7 @@ async function getOrdersByPairSafe(pair_id: string): Promise<Order[]> {
   try {
     return await getOrdersByPair(pair_id as string, "", "Active");
   } catch (e) {
-    console.log("Error getting orders by pair", e)
+    console.log("Error getting orders by pair", e);
     return [];
   }
 }
@@ -435,7 +441,7 @@ async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   try {
     return await getTokenPrice(pair_id as string);
   } catch (e) {
-    console.log("Error getting token price", e)
+    console.log("Error getting token price", e);
     return {
       base_price: 0,
       quote_price: 0,
@@ -443,20 +449,25 @@ async function getTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
   }
 }
 
-async function getOldTokenPriceSafe(pair_id: string): Promise<TokenPriceInPair> {
+async function getOldTokenPriceSafe(
+  pair_id: string
+): Promise<TokenPriceInPair> {
   try {
     const result = await getTokenPrice(pair_id as string, true);
-    return result
+    return result;
   } catch (err) {
-    console.log("[pair_id].tsx: Error getting old token price", err)
+    console.log("[pair_id].tsx: Error getting old token price", err);
     return {
       base_price: 0,
       quote_price: 0,
-    }
+    };
   }
 }
 
-async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{tokenPairInfo: TokenPairInfo, historicalDexTrades: Array<HistoricalDexTrades>}> {
+async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{
+  tokenPairInfo: TokenPairInfo;
+  historicalDexTrades: Array<HistoricalDexTrades>;
+}> {
   try {
     const tokenPairNamesResult = await getTokenNamesFromPair(pair_id as string);
     var tokenPairInfo: TokenPairInfo;
@@ -484,8 +495,8 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
 
       return {
         tokenPairInfo,
-        historicalDexTrades
-      }
+        historicalDexTrades,
+      };
     } else {
       return {
         tokenPairInfo: {
@@ -496,10 +507,10 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
           },
         },
         historicalDexTrades: [],
-      }
+      };
     }
   } catch (error) {
-    console.log("Error getting token pair names", error)
+    console.log("Error getting token pair names", error);
     return {
       tokenPairInfo: {
         baseToken: {
@@ -509,21 +520,26 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{toke
         },
       },
       historicalDexTrades: [],
-    }
+    };
   }
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const [orders, token_price, oldTokenPrice, {historicalDexTrades, tokenPairInfo}] = await Promise.all([
+  const [
+    orders,
+    token_price,
+    oldTokenPrice,
+    { historicalDexTrades, tokenPairInfo },
+  ] = await Promise.all([
     getOrdersByPairSafe(context.query.pair_id as string),
     getTokenPriceSafe(context.query.pair_id as string),
     getOldTokenPriceSafe(context.query.pair_id as string),
-    getNameAndHistoricalDexTradesSafe(context.query.pair_id as string)
-  ])
-  
+    getNameAndHistoricalDexTradesSafe(context.query.pair_id as string),
+  ]);
+
   return {
     props: {
-      orders,
+      initialOrders: orders,
       token_price,
       oldTokenPrice: oldTokenPrice.base_price,
       tokenPairInfo,

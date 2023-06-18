@@ -1,4 +1,8 @@
-import { OrderToken, Strategy, StrategyStatusEnum } from "@/types/strategy.type";
+import {
+  OrderToken,
+  Strategy,
+  StrategyStatusEnum,
+} from "@/types/strategy.type";
 import Link from "next/link";
 import { useState } from "react";
 import { MdArrowForward } from "react-icons/md";
@@ -10,13 +14,15 @@ import Table from "./table/table";
 
 export interface StrategiesPageComponentProps {
   strategies: Array<Strategy>;
+  onLoad: () => void;
 }
 
-export const StrategiesPageComponent: React.FC<StrategiesPageComponentProps> = ({
-  strategies,
-}) => {
+export const StrategiesPageComponent: React.FC<
+  StrategiesPageComponentProps
+> = ({ strategies, onLoad }) => {
   const [selectedPath, setSelectedPath] = useState("strategies-list");
-  const [showCreateSetupModal, setShowCreateSetupModal] = useState<boolean>(false);
+  const [showCreateSetupModal, setShowCreateSetupModal] =
+    useState<boolean>(false);
 
   const options = [
     {
@@ -24,6 +30,8 @@ export const StrategiesPageComponent: React.FC<StrategiesPageComponentProps> = (
       path: "strategies-list",
     },
   ];
+
+  console.log(strategies)
 
   return (
     <div className="bg-tsuka-500 mt-4 rounded-xl text-tsuka-100 mb-16">
@@ -40,25 +48,29 @@ export const StrategiesPageComponent: React.FC<StrategiesPageComponentProps> = (
         <div className="ml-auto p-4">
           <DefaultButton
             label="Create Setup"
-            callback={() => {setShowCreateSetupModal(true)}}
+            callback={() => {
+              setShowCreateSetupModal(true);
+            }}
             filled={true}
             Icon={FiPlusCircle}
           />
         </div>
         {showCreateSetupModal && (
-          <CreateSetupModal 
-            onClose={()=>{setShowCreateSetupModal(false)}}
+          <CreateSetupModal
+            onClose={({ success }: { success: boolean }) => {
+              if (success) {
+                onLoad();
+              }
+              setShowCreateSetupModal(false);
+            }}
           />
         )}
-        
       </div>
       <div>
         {strategies && (
           <div className="p-4 flex">
             <div className="flex-1 overflow-x-scroll scrollable">
-              <Table 
-                strategies={strategies}
-              />
+              <Table strategies={strategies} />
             </div>
           </div>
         )}

@@ -5,7 +5,7 @@ import Joi from "joi";
 
 const reqBodySchema = Joi.object({
   pair_address: Joi.string().required(),
-  status: Joi.string().optional().default('Active'),
+  status: Joi.string().optional().default("Active"),
   is_continuous: Joi.boolean().required().default(false),
   single_price: Joi.number().optional(),
   from_price: Joi.number().optional(),
@@ -14,6 +14,7 @@ const reqBodySchema = Joi.object({
   order_type: Joi.string().valid("buy", "sell").required(),
   price_type: Joi.string().valid("range", "single").required(),
   user_id: Joi.number().required(),
+  creator_address: Joi.string().required(),
   baseTokenShortName: Joi.string().optional(),
   baseTokenLongName: Joi.string().optional(),
   pairTokenShortName: Joi.string().optional(),
@@ -31,7 +32,6 @@ export default async function orderHandler(
   const { method, body } = req;
   switch (method) {
     case "POST":
-        
       try {
         const { value, error } = reqBodySchema.validate(body);
         if (error) {

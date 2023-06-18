@@ -202,13 +202,14 @@ export const addMarkers = (activeOrdersByTokenpair: Array<Order>, candlestickSer
  export  const updateChartSize = async (chartRef: HTMLDivElement, chart: IChartApi): Promise<void> => {
 
     const newHeight = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetHeight;
-  const newWidth = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetWidth;
-    chart.applyOptions({ height: newHeight, width: newWidth });
-  //  new ResizeObserver(async (entries) => {
-  //    console.log("updateChartSize", entries);
-  //    if (entries.length === 0 || entries[0].target !== chartRef) { return; }
-  //    const newRect = entries[0].contentRect;
-  //   chart.applyOptions({ height: newRect.height, width: newRect.width });
-  //   }).observe(chartRef);
+    const newWidth = chartRef.parentElement === null ? NaN : chartRef.parentElement.offsetWidth;
+      chart.applyOptions({ height: newHeight, width: newWidth });
+    //  new ResizeObserver(async (entries) => {
+    //    console.log("updateChartSize", entries);
+    //    if (entries.length === 0 || entries[0].target !== chartRef) { return; }
+    //    const newRect = entries[0].contentRect;
+    //   chart.applyOptions({ height: newRect.height, width: newRect.width });
+    //   }).observe(chartRef);
+  };
+    }).observe(chartRef);
 };
-
