@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { updateTopGainers } from "@/lib/server/tokens/update/topGainers";
-import { Etherscan } from "@/lib/etherscan/etherscan";
 import { updateTokenCacheMarketCap } from "@/lib/server/tokens/update/marketCap";
 import { purgeTokenCache } from "@/lib/server/tokens/update/purgeTokenCache";
 import { G_QUERY_GetTopGainersAndMovers } from "../tokens/g_queries";
@@ -26,7 +25,7 @@ export default async function NotificationByUserHandler(
 
         console.log("Getting token data from bitquery...")
         const result = await G_QUERY_GetTopGainersAndMovers("ethereum", new Date(yesterday), new Date())
-            
+        
         //Handle any errors with the query
         if(!result.success || !result.topGainers) {
             return {
