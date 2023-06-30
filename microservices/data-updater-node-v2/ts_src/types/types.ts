@@ -1,25 +1,3 @@
-export type ApiResponse<T> = {
-  payload: Array<T> | T | undefined;
-  message: string;
-};
-
-export type OrderBookResponse<T> = {
-  payload:
-    | {
-        sell: Array<T> | T | undefined;
-        buy: Array<T> | T | undefined;
-      }
-    | undefined;
-  message: string;
-};
-
-export type Notification = {
-  notification_id: number;
-  user_id: number;
-  text: string | null;
-  date: Date | null;
-};
-
 export type TopGainerItem = {
   id: number;
   rank: number | null;
@@ -50,7 +28,7 @@ export type TopMoverItem = {
     volume: number | null;
     market_cap: number | null;
   };
-} & OrderDetails;
+};
 
 export type MostBuyOrder = {
   id: number;
@@ -79,12 +57,6 @@ export type MostSellOrder = {
   sell_orders: number;
   total_orders: number;
 }
-
-type OrderDetails = {
-  buy_orders: number;
-  sell_orders: number;
-  total_orders: number;
-};
 
 export type Tokens = {
   topGainers: TopGainerItem[];

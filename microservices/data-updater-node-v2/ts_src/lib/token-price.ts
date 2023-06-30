@@ -1,8 +1,8 @@
 import {
   G_QUERY_GetQuotePrice,
   G_QUERY_GetTokenPair,
-} from "@/pages/api/tokens/g_queries";
-import { TokenPriceInPair } from "@/types";
+} from "../g_queries";
+import { TokenPriceInPair } from "../types";
 
 export const getTokenPrice = async ( 
   pair_address: string,

@@ -76,3 +76,7 @@ export function fixedDecimal(x: number, d: number) {
   const p = Math.pow(10, d);
   return Number((x * p).toFixed(0)) / p;
 }
+
+export function percentChange(initial: number, final: number): number {
+  return 100 * ((final - initial) / initial)
+}
