@@ -211,5 +211,5 @@ export const addMarkers = (activeOrdersByTokenpair: Array<Order>, candlestickSer
     //   chart.applyOptions({ height: newRect.height, width: newRect.width });
     //   }).observe(chartRef);
   };
-    }).observe(chartRef);
-};
+    // }).observe(chartRef);
+// };
