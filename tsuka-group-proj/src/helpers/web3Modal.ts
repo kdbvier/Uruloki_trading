@@ -24,8 +24,6 @@ export const getWeb3Modal = async () => {
     // Get wallet address connected
     try {
       if (typeof window !== 'undefined') {
-        console.log('startstartstartstartstartstartstartstartstartstartstart')
-        console.log(window.ethereum?._state?.accounts)
         const accounts = window.ethereum?._state?.accounts
         // const {isConnected, address} = useAccount();
         // console.log('-----------------------------------', isConnected, address);
@@ -34,17 +32,6 @@ export const getWeb3Modal = async () => {
         } else {
           return '';
         }
-        // console.log("------------------------------alert")
-        //   const web3Mo = await getWeb3Modal();
-        //   const provider = await web3Mo.connect();
-        //   const signer = new ethers.providers.Web3Provider(provider).getSigner();
-        //   const address = await signer.getAddress();
-        //   console.log("Connected address:", address);
-        //   if (address) {
-        //     return address;
-        //   } else {
-        //     return '';
-        //   }
       }
       return "";
     } catch(err) {
