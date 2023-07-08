@@ -1,4 +1,5 @@
 import Web3Modal from "web3modal";
+import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 export const getWeb3Modal = async () => {
@@ -22,14 +23,12 @@ export const getWeb3Modal = async () => {
   export const getConnectedAddress = async () => {
     // Get wallet address connected
     try {
-    if (typeof window !== 'undefined') {
-        const web3Mo = await getWeb3Modal();
-        const provider = await web3Mo.connect();
-        const signer = new ethers.providers.Web3Provider(provider).getSigner();
-        const address = await signer.getAddress();
-        console.log("Connected address:", address);
-        if (address) {
-          return address;
+      if (typeof window !== 'undefined') {
+        const accounts = window.ethereum?._state?.accounts
+        // const {isConnected, address} = useAccount();
+        // console.log('-----------------------------------', isConnected, address);
+        if(accounts && accounts.length>0){
+          return accounts[0];
         } else {
           return '';
         }
