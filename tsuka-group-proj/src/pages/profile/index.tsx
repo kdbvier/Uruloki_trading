@@ -14,17 +14,25 @@ import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { filterTokens } from "@/lib/token-filter";
 import "react-toastify/dist/ReactToastify.css";
+import { getAllOrders, getOrderByWalletAddress, getOrdersByWalletAddress } from "@/lib/orders";
+import { orders } from "@prisma/client";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
   chartData: ChartType;
+  userOrders: orders[];
 };
-export default function Profile({ tokenBalances, chartData }: PageProps) {
+
+export default function Profile({ tokenBalances, chartData, userOrders }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [walletBalances, setWalletBalances] = useState<Array<CardType>>([]);
+  const [chartDatas, setChartDatas] = useState<ChartType>({
+    active: 0,
+    out: 0
+  });
 
   const { addFunds, withdrawFunds } = useUrulokiAPI();
 
@@ -37,8 +45,29 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
     setIsDeposit(true);
     setShowModal(true);
   };
+
+  const setChartData = () => {
+    let active = 0;
+    let out = 0;
+    userOrders && userOrders.map((ele, id) => {
+      if(ele.status === 'Active') {
+        active++;
+      } else if(ele.status === 'OutOfFunds') {
+        out++;
+      }
+    })
+    setChartDatas({
+      active: active,
+      out: out
+    })
+  }
+
   useEffect(() => {
     console.log("useEffect");
+    console.log(userOrders);
+
+    setChartData();
+    
     const tokensInWallet = async (address: string) => {
       try {
         const res = await fetch(
@@ -67,7 +96,6 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
 
     getAddress();
   }, []);
-  const Cards = tokenBalances;
 
   const backgroundInfo = [
     {
@@ -202,7 +230,7 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
             >
               Withdraw
             </button>
-            <Chart data={chartData} />
+            <Chart data={chartDatas} />
           </div>
           <div className="w-full flex flex-col items-center">
             <div className="w-full grid gap-3 lg:grid-cols-3 mb-[40px] xl:grid-cols-4 md:grid-cols-2">
@@ -252,10 +280,12 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
 
 export async function getServerSideProps() {
   // Fetch data from external API
+  const address = await getConnectedAddress();
   const getCardsData = await getCards();
   const chartData = await getChartData();
+  const userOrders = await getOrderByWalletAddress(address); //change real address
   //const tokensInWallet = await getTokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef")
 
   // Pass data to the page via props
-  return { props: { tokenBalances: getCardsData, chartData: chartData } };
+  return { props: { tokenBalances: getCardsData, chartData: chartData, userOrders: userOrders } };
 }
