@@ -12,6 +12,7 @@ import { getTokensInWallet } from "@/lib/bitquery/getTokensInWallet";
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
+import { filterTokens } from "@/lib/token-filter";
 import "react-toastify/dist/ReactToastify.css";
 
 type PageProps = {
@@ -55,10 +56,10 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
       try {
         const address = await getConnectedAddress();
         if(address) setWalletAddress(address as string);
-        // const data = await tokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef");
+        
         var data;
         if(address) data = await tokensInWallet(address);
-        setWalletBalances(data.payload?.walletBalances ?? []);
+        setWalletBalances(filterTokens(data.payload?.walletBalances) ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -205,7 +206,7 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
           </div>
           <div className="w-full flex flex-col items-center">
             <div className="w-full grid gap-3 lg:grid-cols-3 mb-[40px] xl:grid-cols-4 md:grid-cols-2">
-              {Cards?.map((card: CardType, key: number) => (
+              {walletBalances?.map((card: CardType, key: number) => (
                 <div
                   key={card.id}
                   className="flex justify-between py-[16px] px-[16px] rounded-md items-center gap-[27px] bg-no-repeat bg-cover	"
@@ -239,7 +240,7 @@ export default function Profile({ tokenBalances, chartData }: PageProps) {
           open={showModal}
           handleClose={() => setShowModal(false)}
           callback={handleDepositWithdraw}
-          Cards={Cards}
+          Cards={walletBalances}
           walletBalances={walletBalances}
           isDeposit={isDeposit}
           backgroundInfo={backgroundInfo}
