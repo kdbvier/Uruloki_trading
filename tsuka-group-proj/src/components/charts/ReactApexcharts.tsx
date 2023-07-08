@@ -36,7 +36,7 @@ const Chart = (props: ChartProps) => {
     },
     plotOptions: {
       pie: {
-        startAngle: 50,
+        startAngle: 0,
         donut: {
           size: "85%",
           labels: {

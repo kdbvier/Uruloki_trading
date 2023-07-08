@@ -1,6 +1,6 @@
 import type { Order, OrdersBook, OrdersBookType } from "@/types";
 import { OrderBookData } from "@/types/orderbook.type";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, orders } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -64,6 +64,16 @@ export async function getOrdersByWalletAddress(wallet_address: string): Promise<
   })
 
   return groupedOrdersArr
+}
+
+export async function getOrderByWalletAddress(wallet_address: string): Promise<orders[]> {
+  const orders = await prisma.orders.findMany({
+    where: {
+      creator_address: wallet_address,
+    }
+  })
+
+  return orders;
 }
 
 export async function configureSetups(order_id: number, setup_ids: number[]) {
