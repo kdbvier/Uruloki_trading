@@ -283,7 +283,7 @@ export async function getServerSideProps() {
   const address = await getConnectedAddress();
   const getCardsData = await getCards();
   const chartData = await getChartData();
-  const userOrders = await getOrderByWalletAddress('0xtest'); //change real address
+  const userOrders = await getOrderByWalletAddress(address); //change real address
   //const tokensInWallet = await getTokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef")
 
   // Pass data to the page via props
