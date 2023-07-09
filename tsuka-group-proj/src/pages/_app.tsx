@@ -11,21 +11,22 @@ import type { AppProps } from "next/app";
 import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
-import { WagmiConfig, configureChains, createClient } from "wagmi";
+import { configureChains, createConfig, WagmiConfig } from 'wagmi'
+
 import { arbitrum, mainnet, polygon } from "wagmi/chains";
 import { store } from "../store";
 import ToastProvider from "@/components/ToastProvider";
 
 const chains = [arbitrum, mainnet, polygon];
 const projectId = process.env.NEXT_PUBLIC_YOUR_PROJECT_ID as string;
-
-const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiClient = createClient({
+const version = 1;
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
+const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  provider,
-});
-const ethereumClient = new EthereumClient(wagmiClient, chains);
+  connectors: w3mConnectors({ version, projectId, chains }),
+  publicClient
+})
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -47,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <ToastProvider>
-        <WagmiConfig client={wagmiClient}>
+        <WagmiConfig config={wagmiConfig}>
           <Provider store={store}>
             {isLoading && (
               <div className="w-screen h-screen">
