@@ -131,7 +131,7 @@ export default function Pair({
       } catch (err) {
         console.error(err);
       }
-    };
+    }; 
     if (strategies.length === 0) {
       fetchStrategies();
     }
