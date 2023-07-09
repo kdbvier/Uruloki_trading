@@ -225,7 +225,8 @@ export default function MyOrder({ initialPairOrders }: MyOrdersProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const pairOrders = await getOrdersByWalletAddress("0xtest");
+  const address = await getConnectedAddress()
+  const pairOrders = await getOrdersByWalletAddress(address);
 
   return {
     props: {
