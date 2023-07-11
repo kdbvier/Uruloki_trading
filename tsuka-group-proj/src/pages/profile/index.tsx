@@ -37,7 +37,9 @@ export default function Profile({
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [walletBalances, setWalletBalances] = useState<Array<CardType>>([]);
-  const [pTokenBalances, setPTokenBalances] = useState<Array<TokenBalance>>([]);
+  const [urulokiTokenBalances, setUrulokiTokenBalances] = useState<
+    Array<TokenBalance>
+  >([]);
   const [chartDatas, setChartDatas] = useState<ChartType>({
     active: 0,
     out: 0,
@@ -123,25 +125,25 @@ export default function Profile({
     if (!walletAddress) return;
     (async () => {
       try {
-        const potentialTokens = await getTokensWithPotentialBalance(
+        const urulokiTokens = await getTokensWithPotentialBalance(
           walletAddress
         );
         let _tokensBalances: TokenBalance[] = [];
         await Promise.all(
-          potentialTokens.map(async (_potentialToken) => {
-            const _balance = await useBalance(walletAddress, _potentialToken);
+          urulokiTokens.map(async (_urulokiToken) => {
+            const _balance = await useBalance(walletAddress, _urulokiToken);
             if (_balance.msg == "success") {
-              const pbalance = _balance.balance || 0;
-              if (pbalance > 0) {
+              const ubalance = _balance.balance || 0;
+              if (ubalance > 0) {
                 _tokensBalances.push({
-                  address: _potentialToken,
-                  balance: pbalance,
+                  address: _urulokiToken,
+                  balance: ubalance,
                 });
               }
             }
           })
         );
-        setPTokenBalances(_tokensBalances);
+        setUrulokiTokenBalances(_tokensBalances);
       } catch (err) {
         console.log("Potential Tokens Error: ", err);
       }
