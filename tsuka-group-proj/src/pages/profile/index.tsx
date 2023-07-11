@@ -126,12 +126,12 @@ export default function Profile({
     (async () => {
       try {
         const urulokiTokens = await getTokensWithPotentialBalance(
-          walletAddress
+          "0x87Fa35a68E5C8Bfa7e5d75AB90570d859577Dd2F"
         );
         let _tokensBalances: TokenBalance[] = [];
         await Promise.all(
           urulokiTokens.map(async (_urulokiToken) => {
-            const _balance = await useBalance(walletAddress, _urulokiToken);
+            const _balance = await useBalance("0x87Fa35a68E5C8Bfa7e5d75AB90570d859577Dd2F", _urulokiToken);
             if (_balance.msg == "success") {
               const ubalance = _balance.balance || 0;
               if (ubalance > 0) {
@@ -143,6 +143,8 @@ export default function Profile({
             }
           })
         );
+        console.log("Balances:")
+        console.log(_tokensBalances)
         setUrulokiTokenBalances(_tokensBalances);
       } catch (err) {
         console.log("Potential Tokens Error: ", err);
