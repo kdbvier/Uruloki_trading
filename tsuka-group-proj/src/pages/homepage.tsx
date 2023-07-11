@@ -101,7 +101,7 @@ export default function Home({
       const notify = () => toast.error("Failed to load TopMovers Data!");
       notify();
     }
-  }, [status]);
+  }, [status]); 
   return (
     <>
       {(status === true || _.isEmpty(value)) && (
