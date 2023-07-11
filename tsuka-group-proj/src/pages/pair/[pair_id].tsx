@@ -55,12 +55,14 @@ export default function Pair({
   oldTokenPrice,
   historicalDexTrades,
   tokenPairInfo,
+  setups,
 }: {
   initialOrders: Order[];
   token_price: TokenPriceInPair;
   oldTokenPrice: number;
   historicalDexTrades: Array<HistoricalDexTrades>;
   tokenPairInfo: TokenPairInfo;
+  setups: Array<Strategy>;
 }) {
   interface Trade {
     side: string;
@@ -131,7 +133,7 @@ export default function Pair({
       } catch (err) {
         console.error(err);
       }
-    }; 
+    };
     if (strategies.length === 0) {
       fetchStrategies();
     }
@@ -401,6 +403,7 @@ export default function Pair({
           code1={tokenPairInfo?.baseToken?.symbol as string}
           name2={tokenPairInfo?.pairedToken?.name as string}
           code2={tokenPairInfo?.pairedToken?.symbol as string}
+          setups={setups}
           pair_price_info={token_price}
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
@@ -537,6 +540,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     getNameAndHistoricalDexTradesSafe(context.query.pair_id as string),
   ]);
 
+  const address = await getConnectedAddress();
+  const setups = await Strategies.getStrategiesData(address);
+
   return {
     props: {
       initialOrders: orders,
@@ -544,6 +550,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       oldTokenPrice: oldTokenPrice.base_price,
       tokenPairInfo,
       historicalDexTrades,
+      setups: setups,
     },
   };
 };
