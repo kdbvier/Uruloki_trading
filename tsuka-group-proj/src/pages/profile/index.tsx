@@ -22,7 +22,7 @@ type PageProps = {
   userOrders: orders[];
 };
 
-type PotentialTokenType = {
+type TokenBalance = {
   address: string;
   balance: number;
 };
@@ -37,9 +37,7 @@ export default function Profile({
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [walletBalances, setWalletBalances] = useState<Array<CardType>>([]);
-  const [potentialTokenBalance, setPotentialTokenBalance] = useState<
-    Array<PotentialTokenType>
-  >([]);
+  const [pTokenBalances, setPTokenBalances] = useState<Array<TokenBalance>>([]);
   const [chartDatas, setChartDatas] = useState<ChartType>({
     active: 0,
     out: 0,
@@ -128,20 +126,22 @@ export default function Profile({
         const potentialTokens = await getTokensWithPotentialBalance(
           walletAddress
         );
-        const _tokensBalances: PotentialTokenType[] = await Promise.all(
+        let _tokensBalances: TokenBalance[] = [];
+        await Promise.all(
           potentialTokens.map(async (_potentialToken) => {
             const _balance = await useBalance(walletAddress, _potentialToken);
-            let result: PotentialTokenType = {
-              address: _potentialToken,
-              balance: 0,
-            };
             if (_balance.msg == "success") {
-              result.balance = _balance.balance || 0;
+              const pbalance = _balance.balance || 0;
+              if (pbalance > 0) {
+                _tokensBalances.push({
+                  address: _potentialToken,
+                  balance: pbalance,
+                });
+              }
             }
-            return result;
           })
         );
-        setPotentialTokenBalance(_tokensBalances);
+        setPTokenBalances(_tokensBalances);
       } catch (err) {
         console.log("Potential Tokens Error: ", err);
       }
