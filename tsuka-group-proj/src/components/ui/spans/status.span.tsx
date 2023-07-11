@@ -23,10 +23,7 @@ export const StatusSpan: React.FC<StatusSpanProps> = ({ status }) => {
   };
 
   return (
-    <div className="flex items-center font-medium py-1">
-      <div
-        className={`w-1 h-1 mr-1 rounded-full ${getStatusColors().bg}`}
-      ></div>
+    <div className="flex my-auto font-medium py-1">
       <span className={getStatusColors().text}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
