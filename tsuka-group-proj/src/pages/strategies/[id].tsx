@@ -26,6 +26,7 @@ import {
   getHistoricalDexTrades,
 } from "@/lib/token-activity-feed";
 import moment from "moment";
+import Strategies from "@/lib/api/strategies";
 
 export const mapModifiedOrderToOrder = (modifiedOrder: ModifiedOrder) =>
   ({
@@ -38,11 +39,13 @@ export default function StrategyDetails({
   orders,
   currentSetup,
   historicalDexTrades,
+  setups
 }: {
   id: string;
   orders: Array<TokenPairOrders>;
   currentSetup: Setup;
   historicalDexTrades: Array<HistoricalDexTrades>;
+  setups: Array<Strategy>
 }) {
   const [showIndex, setShowIndex] = useState(0);
   const [showEditOrderModal, setShowEditOrderModal] = useState<boolean>(false);
@@ -183,6 +186,7 @@ export default function StrategyDetails({
                 setShowEditOrderModal(false);
                 setSelectedOrderId(-1);
               }}
+              setups={setups}
             />
           )}
           <OrderBookToken
@@ -260,6 +264,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     moment(a.timestamp).isBefore(b.timestamp) ? 1 : -1
   );
 
+  const address = await getConnectedAddress();
+  const setups = await Strategies.getStrategiesData(address);
+
   //Get activity feed & order book info for each pair
 
   return {
@@ -268,6 +275,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       orders,
       currentSetup,
       historicalDexTrades,
+      setups
     },
   };
 };

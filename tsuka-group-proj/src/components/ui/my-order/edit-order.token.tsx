@@ -1,6 +1,7 @@
 import {
   Order,
   PostOrder,
+  Strategy,
   TokenCache,
   TokenPairInfo,
   TokenPriceInPair,
@@ -9,7 +10,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { fetchBalance } from "@wagmi/core";
 import Dropdown from "../buttons/dropdown";
-
+import Select from "react-select";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 import HomePageTokens from "@/lib/api/tokens";
 import { FaClock, FaSync } from "react-icons/fa";
@@ -41,6 +42,8 @@ import {
   editOrderInContract,
   editOrderInDb,
 } from "@/lib/edit-order-token/submit-order";
+import { GetServerSideProps } from "next";
+import Strategies from "@/lib/api/strategies";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -56,6 +59,7 @@ export interface EditOrderTokenProp {
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
   onOrderAdded?: (newOrder: Order) => void;
+  setups: Array<Strategy>;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
@@ -72,6 +76,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   pair_price_info,
   pair_address,
   pairInfo,
+  setups,
 }) => {
   const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
   const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
@@ -110,6 +115,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
 
   const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
+  const [setupOptions, setSetupOptions] = useState<any>([]);
 
   const {
     editContinuousPriceRangeOrder,
@@ -147,6 +153,11 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setTokenPairInfo(pairInfo);
     }
     getWalletAddress();
+    console.log(setups);
+    
+    setSetupOptions([
+      ...setups.map((ele) => ({ value: ele.title, label: ele.title })),
+    ]);
   }, []);
 
   useEffect(() => {
@@ -421,6 +432,17 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 {baseShortName} FOR {pairShortName}
               </p>
             </button>
+          </div>
+
+          <div className="w-full mt-4 flex gap-2 text-sm">
+            <Select
+              defaultValue={[setupOptions[2], setupOptions[3]]}
+              isMulti
+              name="colors"
+              options={setupOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+            />
           </div>
 
           <div className="w-full mt-4 flex gap-2 text-sm">
