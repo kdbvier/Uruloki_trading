@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ethers } from 'ethers';
-import { prepareWriteContract, writeContract, getContract, getWalletClient } from '@wagmi/core'
-
+import { prepareWriteContract, writeContract, getContract, getWalletClient, readContract } from '@wagmi/core'
 import Uruloki from './abi/Uruloki.json';
 import ERC20 from './abi/ERC20.json';
-
-/* TODO
-   1. Create order
-   2. Edit order
-   3. Delete order
-   4. Add funds
-   5. Withdraw funds
-*/
 
 export const useUrulokiAPI = () => {
   const chainId = 5;     // Goerli network
@@ -53,6 +44,42 @@ export const useUrulokiAPI = () => {
       console.error('addFunds = ', err);
       return { msg: 'failure' };
     }
+  }
+
+  type UseBalanceResponse = {
+    msg: string,
+    balance?: number
+  }
+
+  /**
+   * Returns the users balance for the provided token address
+   * @param walletAddress 
+   * @param tokenAddress 
+   * @returns 
+   */
+  const useBalance = async (walletAddress: string, tokenAddress: string): Promise<UseBalanceResponse> => {
+    try {
+      const signer = await getWalletClient();
+
+      if (signer) {
+        const data = await readContract({
+          address: `0x${Uruloki.address}`,
+          abi: Uruloki.abi,
+          functionName: 'balances',
+          args: [walletAddress, tokenAddress],
+        })
+
+        console.log("Reading balance:")
+        console.log(data)
+
+        return { msg: 'success', balance: data as number };
+      }
+    } catch (err) {
+      console.error('getBalance = ', err);
+      return { msg: 'failure' };
+    }
+
+    return {msg: 'failure'}
   }
 
   const withdrawFunds = async (tokenAddress: string, amount: number) => {
@@ -425,6 +452,7 @@ export const useUrulokiAPI = () => {
   return {
     isRunning,
     addFunds,
+    useBalance,
     withdrawFunds,
     createContinuousPriceRangeOrder,
     createContinuousTargetPriceOrder,

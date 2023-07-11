@@ -1,6 +1,5 @@
 import {
   Order,
-  PostOrder,
   TokenCache,
   TokenPairInfo,
   TokenPriceInPair,
@@ -15,15 +14,12 @@ import HomePageTokens from "@/lib/api/tokens";
 import { FaClock, FaSync } from "react-icons/fa";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import ToggleButton from "../buttons/toggle.button";
-import Orders from "@/lib/api/orders";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import {
   handleNumberFormat,
   convertLawPrice,
-  toNumber,
-  fixedDecimal,
   commafyOrHtmlTag,
 } from "@/lib/number-helpers";
 import { handleIsEditLoad } from "@/lib/edit-order-token/onLoad";

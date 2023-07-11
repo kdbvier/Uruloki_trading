@@ -13,11 +13,11 @@ import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 
-import { arbitrum, mainnet, polygon } from "wagmi/chains";
+import { goerli } from "wagmi/chains"; //Change this when deployed to mainnet
 import { store } from "../store";
 import ToastProvider from "@/components/ToastProvider";
 
-const chains = [arbitrum, mainnet, polygon];
+const chains = [goerli];
 const projectId = process.env.NEXT_PUBLIC_YOUR_PROJECT_ID as string;
 const version = 1;
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])

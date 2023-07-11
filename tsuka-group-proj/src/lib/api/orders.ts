@@ -2,6 +2,7 @@ import { Order, PatchOrder, PostOrder } from "@/types";
 import { UserOrder } from "@/types/token-order.type";
 import { httpRequest } from "./http";
 import { TokenPriceInPair } from "@/types";
+import axios from "axios";
 
 export default class Orders {
   static getOrders = async (): Promise<Order> => {
@@ -75,4 +76,9 @@ export default class Orders {
       yesterday: true,
     });
   };
+
+  static getOrdersByWalletAddress = async (wallet_address: string): Promise<Array<Order>> => {
+    const res = await axios.get(`/api/orders/user/${wallet_address}`)
+    return res.data.payload ?? []
+  }
 }

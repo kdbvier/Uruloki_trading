@@ -1,4 +1,3 @@
-import { FiFilter, FiSearch } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
@@ -7,15 +6,15 @@ import Chart from "@/components/charts/ReactApexcharts";
 import { WithdrawAndDepositModal } from "@/components/ui/profile/modal";
 import { getChartData } from "@/@fake-data/chart.fake-data";
 import { ChartType } from "@/types/chart.type";
-import { getTokensInWallet } from "@/lib/bitquery/getTokensInWallet";
 
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { filterTokens } from "@/lib/token-filter";
 import "react-toastify/dist/ReactToastify.css";
-import { getAllOrders, getOrderByWalletAddress, getOrdersByWalletAddress } from "@/lib/orders";
+import { getOrderByWalletAddress } from "@/lib/orders";
 import { orders } from "@prisma/client";
+import { getTokensWithPotentialBalance } from "@/lib/api/balances";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
@@ -34,7 +33,7 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
     out: 0
   });
 
-  const { addFunds, withdrawFunds } = useUrulokiAPI();
+  const { addFunds, withdrawFunds, useBalance } = useUrulokiAPI();
 
   const handleOpenWidrawModal = () => {
     setShowModal(true);
@@ -95,6 +94,15 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
     };
 
     getAddress();
+
+    console.log("Getting balance")
+    const getBalanceRes = useBalance("0x8727FAe8Ffd4f8D23D7231232Bb830517bE35e07", "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")
+    const wait = async () => {
+      console.log(await getBalanceRes)
+    }
+    wait()
+
+    getTokensWithPotentialBalance("0xtest")
   }, []);
 
   const backgroundInfo = [
