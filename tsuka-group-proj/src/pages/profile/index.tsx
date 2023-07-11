@@ -22,15 +22,27 @@ type PageProps = {
   userOrders: orders[];
 };
 
-export default function Profile({ tokenBalances, chartData, userOrders }: PageProps) {
+type PotentialTokenType = {
+  address: string;
+  balance: number;
+};
+
+export default function Profile({
+  tokenBalances,
+  chartData,
+  userOrders,
+}: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [walletBalances, setWalletBalances] = useState<Array<CardType>>([]);
+  const [potentialTokenBalance, setPotentialTokenBalance] = useState<
+    Array<PotentialTokenType>
+  >([]);
   const [chartDatas, setChartDatas] = useState<ChartType>({
     active: 0,
-    out: 0
+    out: 0,
   });
 
   const { addFunds, withdrawFunds, useBalance } = useUrulokiAPI();
@@ -48,25 +60,26 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
   const setChartData = () => {
     let active = 0;
     let out = 0;
-    userOrders && userOrders.map((ele, id) => {
-      if(ele.status === 'Active') {
-        active++;
-      } else if(ele.status === 'OutOfFunds') {
-        out++;
-      }
-    })
+    userOrders &&
+      userOrders.map((ele, id) => {
+        if (ele.status === "Active") {
+          active++;
+        } else if (ele.status === "OutOfFunds") {
+          out++;
+        }
+      });
     setChartDatas({
       active: active,
-      out: out
-    })
-  }
+      out: out,
+    });
+  };
 
   useEffect(() => {
     console.log("useEffect");
     console.log(userOrders);
 
     setChartData();
-    
+
     const tokensInWallet = async (address: string) => {
       try {
         const res = await fetch(
@@ -83,10 +96,10 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
     const getAddress = async () => {
       try {
         const address = await getConnectedAddress();
-        if(address) setWalletAddress(address as string);
-        
+        if (address) setWalletAddress(address as string);
+
         var data;
-        if(address) data = await tokensInWallet(address);
+        if (address) data = await tokensInWallet(address);
         setWalletBalances(filterTokens(data.payload?.walletBalances) ?? []);
       } catch (error) {
         console.log(error);
@@ -95,15 +108,45 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
 
     getAddress();
 
-    console.log("Getting balance")
-    const getBalanceRes = useBalance("0x8727FAe8Ffd4f8D23D7231232Bb830517bE35e07", "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")
-    const wait = async () => {
-      console.log(await getBalanceRes)
-    }
-    wait()
+    // console.log("Getting balance");
+    // const getBalanceRes = useBalance(
+    //   "0x8727FAe8Ffd4f8D23D7231232Bb830517bE35e07",
+    //   "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    // );
+    // const wait = async () => {
+    //   console.log(await getBalanceRes);
+    // };
+    // wait();
 
-    getTokensWithPotentialBalance("0xtest")
+    // getTokensWithPotentialBalance("0xtest");
   }, []);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    (async () => {
+      try {
+        const potentialTokens = await getTokensWithPotentialBalance(
+          walletAddress
+        );
+        const _tokensBalances: PotentialTokenType[] = await Promise.all(
+          potentialTokens.map(async (_potentialToken) => {
+            const _balance = await useBalance(walletAddress, _potentialToken);
+            let result: PotentialTokenType = {
+              address: _potentialToken,
+              balance: 0,
+            };
+            if (_balance.msg == "success") {
+              result.balance = _balance.balance || 0;
+            }
+            return result;
+          })
+        );
+        setPotentialTokenBalance(_tokensBalances);
+      } catch (err) {
+        console.log("Potential Tokens Error: ", err);
+      }
+    })();
+  }, [walletAddress]);
 
   const backgroundInfo = [
     {
@@ -295,5 +338,11 @@ export async function getServerSideProps() {
   //const tokensInWallet = await getTokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef")
 
   // Pass data to the page via props
-  return { props: { tokenBalances: getCardsData, chartData: chartData, userOrders: userOrders } };
+  return {
+    props: {
+      tokenBalances: getCardsData,
+      chartData: chartData,
+      userOrders: userOrders,
+    },
+  };
 }
