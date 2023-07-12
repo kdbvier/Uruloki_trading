@@ -33,6 +33,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
   const [status, setStatus] = useState<"ok"|"loading"|"failed">("ok")
 
   async function onLoad() {
+    /*
     setStatus("loading");
     const walletAddress = await getConnectedAddress();
     const tempStrategies = await Strategies.Client.getStrategiesData(walletAddress as string)
@@ -44,6 +45,7 @@ export const SidebarStrategies: React.FC<SidebarStrategiesProps> = ({
       setStrategies(tempStrategies)
       setStatus("ok")
     }
+    */
   }
 
   useEffect(() => {
