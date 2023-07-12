@@ -62,6 +62,12 @@ export interface EditOrderTokenProp {
   setups: Array<Strategy>;
 }
 
+export interface Stratege {
+  id: number;
+  orderId: number;
+  strategyId: number;
+}
+
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   isEdit = true,
   setShowEditOrderModal,
@@ -89,6 +95,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
   const [token1Symbol, settoken1Symbol] = useState("");
   const [token2Symbol, settoken2Symbol] = useState("");
+  let selectedSetup: Stratege = { id: 0, orderId: 0, strategyId: 0};
   const [isBuy, setIsBuy] = useState(
     isEdit ? selectedOrder.order_type === OrderTypeEnum.BUY : true
   );
@@ -153,8 +160,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setTokenPairInfo(pairInfo);
     }
     getWalletAddress();
-    console.log(setups);
-    
+
     setSetupOptions([
       ...setups.map((ele) => ({ value: ele.title, label: ele.title })),
     ]);
@@ -240,6 +246,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         return;
       }
     }
+
     if (tokenPairInfo) {
       if (isEdit) {
         const newOrderPriceInfo: CreateOrderPriceInfo = {
@@ -258,7 +265,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             token1Symbol,
             token2Symbol,
             isContinuous,
-            walletAddress
+            walletAddress,
+            selectedSetup
           );
 
           toast.success("Successfully edited an order");
@@ -304,7 +312,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               token1Symbol,
               token2Symbol,
               isContinuous,
-              walletAddress
+              walletAddress,
+              selectedSetup
             );
             if (onOrderAdded) {
               onOrderAdded(newOrder);
@@ -338,6 +347,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   const applyMaxAmount = (amount: number) => {
     setAmount(amount.toString());
+  };
+
+  const handleSelected = async (e: any) => {
+    let ind:number = 0;
+    setups.map((ele) => {
+      if (ele.title === e.value) {
+        ind = Number(ele.id);
+      }
+    });
+    let selectedSetup = await Strategies.getOrderStrategy(ind);
   };
 
   return (
@@ -436,12 +455,13 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
           <div className="w-full mt-4 flex gap-2 text-sm">
             <Select
-              defaultValue={[setupOptions[2], setupOptions[3]]}
+              onChange={handleSelected}
               isMulti
-              name="colors"
+              name="setup"
               options={setupOptions}
               className="basic-multi-select"
-              classNamePrefix="select"
+              placeholder="Setup"
+              classNamePrefix="Setup"
             />
           </div>
 

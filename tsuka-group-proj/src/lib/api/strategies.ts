@@ -6,15 +6,20 @@ export default class Strategies {
     walletAddress: string
   ): Promise<Array<Strategy>> => {
     try {
+      console.log("-----", walletAddress);
       let data = await axios.get("api/strategies", {
         params: {
           wallet_address: walletAddress,
         },
       });
+
       return data.data.payload;
-    } catch(err) {
+    } catch (err) {
       return [];
     }
+  };
+  static getOrderStrategy = async (id: number): Promise<Strategy> => {
+    return await axios.patch(`api/strategies`, { id });
   };
   static getStrategyData = async (id: string): Promise<Strategy> => {
     return await axios.get(`api/strategies/${id}`);
