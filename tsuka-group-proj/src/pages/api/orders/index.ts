@@ -19,6 +19,7 @@ const reqBodySchema = Joi.object({
   baseTokenLongName: Joi.string().optional(),
   pairTokenShortName: Joi.string().optional(),
   pairTokenLongName: Joi.string().optional(),
+  order_strategy: Joi.any()
 })
   .max(14)
   .min(7);
@@ -46,9 +47,24 @@ export default async function orderHandler(
           data: value,
         });
         console.log("sus", order);
+        let order_update;
+        if (value.order_strategy) {
+          order_update = await prisma.orders.update({
+            where: {
+              order_id: order.order_id
+            },
+            data: {
+              ...value,
+              order_strategy: [{
+                orderId: order.order_id,
+                ...value.order_strategy
+              }]
+            },
+          });
+        }
         res
           .status(200)
-          .json({ payload: order, message: `Successfully created order` });
+          .json({ payload: order_update ? order : order_update, message: `Successfully created order` });
       } catch (err) {
         res.status(400).json({
           payload: undefined,

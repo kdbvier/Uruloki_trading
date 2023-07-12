@@ -233,7 +233,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const pairOrders = await getOrdersByWalletAddress(address);
   const setups = await Strategies.getStrategiesData(address);
 
-
   return {
     props: {
       initialPairOrders: pairOrders,

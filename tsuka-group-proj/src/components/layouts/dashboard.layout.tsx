@@ -83,7 +83,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
       const address = await getConnectedAddress();
       if (address) {
         const setups = await Strategies.getStrategiesData(address);
-        
         setSetup(setups);
       }
     };

@@ -86,6 +86,17 @@ export namespace Strategies {
 
       return payload
     }
+    static async getStrategyData(id: number): Promise<Array<any>> {
+      const prisma = new PrismaClient()
+      //Read strategies from db
+      const allStrategies = await prisma.order_strategy.findMany({
+        where: {
+          strategyId: id,
+        }
+      });
+
+      return allStrategies;
+    }
   }
     
   export class Client {
@@ -98,7 +109,7 @@ export namespace Strategies {
           title: strategy.title ?? "",
           status: strategy.status ?? StrategyStatusEnum.ACTIVE,
           createdAt: strategy.createdAt ?? Math.round((new Date().getTime() ?? 0)).toString(),
-          orderTokens: strategy.orderTokens ?? []
+          orderTokens: strategy.order_strategy ?? []
         }
       })
       // return data.payload
