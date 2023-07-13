@@ -82,6 +82,49 @@ export const useUrulokiAPI = () => {
     return {msg: 'failure'}
   }
 
+  type TokenInfo = {
+    name: string,
+    shortName: string
+  }
+  type UseTokenInfoResponse = {
+    msg: string,
+    info?: TokenInfo
+  }
+  /**
+   * Returns the ERC20 token info
+   * @param tokenAddress 
+   * @returns 
+   */
+  const useTokenInfo = async(tokenAddress: string): Promise<UseTokenInfoResponse> => {
+    try {
+      const signer = await getWalletClient();
+      console.log('tokenAddress: ', tokenAddress)
+      if (signer) {
+        const name = await readContract({
+          address: `0x${tokenAddress.substring(2)}`,
+          abi: ERC20.abi,
+          functionName: "name",
+        })
+        const symbol = await readContract({
+          address: `0x${tokenAddress.substring(2)}`,
+          abi: ERC20.abi,
+          functionName: "symbol",
+        })
+        const result : UseTokenInfoResponse = {
+          msg: 'success', 
+          info: {
+            name:name as string, shortName: symbol as string
+          }
+        }
+        setIsRunning(false);
+        return result
+      }
+    } catch (err) {
+      console.log('useTokenInfoError: ', err)
+      return { msg: 'failure' }
+    }
+    return {msg: 'failure'}
+  }
   const withdrawFunds = async (tokenAddress: string, amount: number) => {
     try {
       const signer = await getWalletClient();
@@ -451,6 +494,7 @@ export const useUrulokiAPI = () => {
 
   return {
     isRunning,
+    useTokenInfo,
     addFunds,
     useBalance,
     withdrawFunds,

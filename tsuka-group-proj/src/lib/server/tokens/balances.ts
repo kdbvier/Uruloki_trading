@@ -18,7 +18,7 @@ export async function getTokensWithPotentialBalance(walletAddress: string): Prom
     let tokenAddresses: Array<string> = []
     //Convert this to a list of token addresses
     for(let address of pairAddresses) {
-        const tokenPairInfo = await getTokenNamesFromPair(address)
+        const tokenPairInfo = await getTokenNamesFromPair("address")
         if(tokenPairInfo.success) {
             const baseAddress = tokenPairInfo.tokenPairInfo?.baseToken?.address
             if(baseAddress && !tokenAddresses.includes(baseAddress) && baseAddress != "-") tokenAddresses.push(baseAddress)

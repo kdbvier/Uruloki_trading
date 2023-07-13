@@ -22,11 +22,6 @@ type PageProps = {
   userOrders: orders[];
 };
 
-type TokenBalance = {
-  address: string;
-  balance: number;
-};
-
 export default function Profile({
   tokenBalances,
   chartData,
@@ -38,14 +33,14 @@ export default function Profile({
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [walletBalances, setWalletBalances] = useState<Array<CardType>>([]);
   const [urulokiTokenBalances, setUrulokiTokenBalances] = useState<
-    Array<TokenBalance>
+    Array<CardType>
   >([]);
   const [chartDatas, setChartDatas] = useState<ChartType>({
     active: 0,
     out: 0,
   });
 
-  const { addFunds, withdrawFunds, useBalance } = useUrulokiAPI();
+  const { addFunds, withdrawFunds, useBalance, useTokenInfo } = useUrulokiAPI();
 
   const handleOpenWidrawModal = () => {
     setShowModal(true);
@@ -128,16 +123,23 @@ export default function Profile({
         const urulokiTokens = await getTokensWithPotentialBalance(
           "0x87Fa35a68E5C8Bfa7e5d75AB90570d859577Dd2F"
         );
-        let _tokensBalances: TokenBalance[] = [];
+        console.log('urulokiTokens: ', urulokiTokens)
+        let _tokensBalances: CardType[] = [];
         await Promise.all(
-          urulokiTokens.map(async (_urulokiToken) => {
+          urulokiTokens.map(async (_urulokiToken, index) => {
             const _balance = await useBalance("0x87Fa35a68E5C8Bfa7e5d75AB90570d859577Dd2F", _urulokiToken);
-            if (_balance.msg == "success") {
+            const tokenInfo = await useTokenInfo(_urulokiToken);
+            console.log('tokenInfo: ', tokenInfo)
+            if (_balance.msg == "success" && tokenInfo.msg == "success") {
               const ubalance = _balance.balance || 0;
               if (ubalance > 0) {
                 _tokensBalances.push({
+                  id: index,
                   address: _urulokiToken,
-                  balance: ubalance,
+                  amount: ubalance,
+                  value: ubalance.toLocaleString(),
+                  name: tokenInfo.info?.name||"",
+                  shortName: tokenInfo.info?.shortName||""
                 });
               }
             }
@@ -323,8 +325,8 @@ export default function Profile({
           open={showModal}
           handleClose={() => setShowModal(false)}
           callback={handleDepositWithdraw}
-          Cards={walletBalances}
-          walletBalances={walletBalances}
+          Cards={urulokiTokenBalances}
+          walletBalances={urulokiTokenBalances}
           isDeposit={isDeposit}
           backgroundInfo={backgroundInfo}
         />
