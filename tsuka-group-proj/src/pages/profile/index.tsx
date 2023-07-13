@@ -121,13 +121,13 @@ export default function Profile({
     (async () => {
       try {
         const urulokiTokens = await getTokensWithPotentialBalance(
-          "0x87Fa35a68E5C8Bfa7e5d75AB90570d859577Dd2F"
+          walletAddress
         );
         console.log('urulokiTokens: ', urulokiTokens)
         let _tokensBalances: CardType[] = [];
         await Promise.all(
           urulokiTokens.map(async (_urulokiToken, index) => {
-            const _balance = await useBalance("0x87Fa35a68E5C8Bfa7e5d75AB90570d859577Dd2F", _urulokiToken);
+            const _balance = await useBalance(walletAddress, _urulokiToken);
             const tokenInfo = await useTokenInfo(_urulokiToken);
             console.log('tokenInfo: ', tokenInfo)
             if (_balance.msg == "success" && tokenInfo.msg == "success") {
