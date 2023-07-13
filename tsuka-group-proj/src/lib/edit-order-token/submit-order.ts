@@ -1,4 +1,4 @@
-import { Order, PatchOrder, Stratege, TokenPairInfo } from "@/types";
+import { Order, PatchOrder, order_strategy, TokenPairInfo } from "@/types";
 import { toNumber } from "../number-helpers";
 import Orders from "../api/orders";
 import { useUrulokiAPI } from "@/blockchain";
@@ -10,7 +10,7 @@ export type CreateOrderPriceInfo = {
 }
 
 export const editOrderInDb = async (selectedOrder: Order, amount: string, isBuy: boolean, isRange: boolean, 
-    newOrderPriceInfo: CreateOrderPriceInfo, token1Symbol: string, token2Symbol: string, isContinuous: boolean, walletAddress: string, selectedSetupId: Stratege[],
+    newOrderPriceInfo: CreateOrderPriceInfo, token1Symbol: string, token2Symbol: string, isContinuous: boolean, walletAddress: string, selectedSetupId: order_strategy[],
     ): Promise<Order> => {
 
     const patchData = {} as PatchOrder;
@@ -31,7 +31,7 @@ export const editOrderInDb = async (selectedOrder: Order, amount: string, isBuy:
         : (selectedOrder.baseTokenShortName as string);
       patchData.is_continuous = isContinuous;
       patchData.creator_address = walletAddress as string;
-      patchData.order_strategy = selectedSetupId as Stratege[];
+      patchData.order_strategy = selectedSetupId as order_strategy[];
       return await Orders.editOrder(selectedOrder.order_id ?? 0, patchData)
 }
 

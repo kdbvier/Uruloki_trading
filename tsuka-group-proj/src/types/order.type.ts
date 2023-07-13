@@ -1,4 +1,4 @@
-export type Stratege = {
+export type order_strategy = {
   id: number;
   orderId: number;
   strategyId: number;
@@ -38,7 +38,7 @@ export type PostOrder = {
   pairTokenShortName: string;
   pairTokenLongName: string;
   creator_address: string;
-  order_strategy ?: Stratege[];
+  order_strategy ?: order_strategy[];
 };
 
 export type PatchOrder = {
@@ -54,7 +54,7 @@ export type PatchOrder = {
   baseTokenShortName: string;
   pairTokenShortName: string;
   creator_address: string;
-  order_strategy ?: Stratege[];
+  order_strategy ?: order_strategy[];
 };
 
 export type OrdersBook = {
