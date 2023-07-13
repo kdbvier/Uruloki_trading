@@ -131,7 +131,8 @@ export default function Profile({
             const tokenInfo = await useTokenInfo(_urulokiToken);
             console.log('tokenInfo: ', tokenInfo)
             if (_balance.msg == "success" && tokenInfo.msg == "success") {
-              const ubalance = _balance.balance || 0;
+              const ubalance = (Number(_balance.balance) || 0)/10**(tokenInfo.info?.decimals || 18);
+              console.log('ubalance: ', ubalance)
               if (ubalance > 0) {
                 _tokensBalances.push({
                   id: index,

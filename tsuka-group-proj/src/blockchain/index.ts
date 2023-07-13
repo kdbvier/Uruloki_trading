@@ -84,7 +84,8 @@ export const useUrulokiAPI = () => {
 
   type TokenInfo = {
     name: string,
-    shortName: string
+    shortName: string,
+    decimals: number
   }
   type UseTokenInfoResponse = {
     msg: string,
@@ -110,10 +111,15 @@ export const useUrulokiAPI = () => {
           abi: ERC20.abi,
           functionName: "symbol",
         })
+        const decimals = await readContract({
+          address: `0x${tokenAddress.substring(2)}`,
+          abi: ERC20.abi,
+          functionName: "decimals",
+        })
         const result : UseTokenInfoResponse = {
           msg: 'success', 
           info: {
-            name:name as string, shortName: symbol as string
+            name:name as string, shortName: symbol as string, decimals: Number(decimals)
           }
         }
         setIsRunning(false);
