@@ -42,7 +42,6 @@ import {
   editOrderInContract,
   editOrderInDb,
 } from "@/lib/edit-order-token/submit-order";
-import { GetServerSideProps } from "next";
 import Strategies from "@/lib/api/strategies";
 
 export interface EditOrderTokenProp {
@@ -59,10 +58,10 @@ export interface EditOrderTokenProp {
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
   onOrderAdded?: (newOrder: Order) => void;
-  setups: Array<Stratege>;
+  setups: Array<Strategy>;
 }
 
-export interface Stratege {
+export type Stratege = {
   id: number;
   orderId: number;
   strategyId: number;
