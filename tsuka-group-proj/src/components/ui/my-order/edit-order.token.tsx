@@ -355,7 +355,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         ind = Number(ele.id);
       }
     });
-    let selectedSetup = await Strategies.getOrderStrategy(ind);
+    let selectedSetup = await Strategies.getOrderStrategyData(ind);
   };
 
   return (
