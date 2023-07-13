@@ -2,7 +2,6 @@ import { Order, PatchOrder, PostOrder, TokenPairInfo } from "@/types";
 import { toNumber } from "../number-helpers";
 import Orders from "../api/orders";
 import { useUrulokiAPI } from "@/blockchain";
-import { Stratege } from "@/components/ui/my-order/edit-order.token";
 
 export type CreateOrderPriceInfoProps = {
   minPrice: string;
@@ -29,7 +28,7 @@ export const createOrderInDb = async (
   token2Symbol: string,
   isContinuous: boolean,
   walletAddress: string,
-  selectedSetupId: Stratege
+  selectedSetupId: Stratege[]
 ): Promise<Order> => {
   const postData = {} as PostOrder;
   postData.budget = toNumber(amount);
@@ -53,7 +52,7 @@ export const createOrderInDb = async (
   postData.user_id = 1; ////TODO:get it from server
   postData.pair_address = newOrderPriceInfo.pair_address as string;
   postData.creator_address = walletAddress as string;
-  postData.order_strategy = selectedSetupId as Stratege;
+  postData.order_strategy = selectedSetupId as Stratege[];
   return await Orders.createOrder(postData);
 };
 

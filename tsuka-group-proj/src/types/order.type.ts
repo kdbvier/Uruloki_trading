@@ -38,7 +38,7 @@ export type PostOrder = {
   pairTokenShortName: string;
   pairTokenLongName: string;
   creator_address: string;
-  order_strategy ?: Stratege;
+  order_strategy ?: Stratege[];
 };
 
 export type PatchOrder = {
@@ -54,7 +54,7 @@ export type PatchOrder = {
   baseTokenShortName: string;
   pairTokenShortName: string;
   creator_address: string;
-  order_strategy ?: Stratege;
+  order_strategy ?: Stratege[];
 };
 
 export type OrdersBook = {

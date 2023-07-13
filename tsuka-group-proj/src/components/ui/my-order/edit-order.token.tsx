@@ -94,7 +94,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
   const [token1Symbol, settoken1Symbol] = useState("");
   const [token2Symbol, settoken2Symbol] = useState("");
-  let selectedSetup: Stratege = { id: 0, orderId: 0, strategyId: 0};
+  let selectedSetup: Stratege[] = [{ id: 0, orderId: 0, strategyId: 0}];
   const [isBuy, setIsBuy] = useState(
     isEdit ? selectedOrder.order_type === OrderTypeEnum.BUY : true
   );
@@ -355,7 +355,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         ind = Number(ele.id);
       }
     });
-    let selectedSetup = await Strategies.getOrderStrategyData(ind);
+    selectedSetup = await Strategies.getOrderStrategyData(ind);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { Strategy } from "@/types";
+import { Stratege, Strategy } from "@/types";
 import axios from "axios";
 
 export default class Strategies {
@@ -17,8 +17,14 @@ export default class Strategies {
       return [];
     }
   };
-  static getOrderStrategyData = async (id: number): Promise<Strategy> => {
-    return await axios.post(`/api/strategy`, { id });
+  static getOrderStrategyData = async (id: number): Promise<Stratege[]> => {
+    try {
+      let data = await axios.post(`/api/strategy`, { id });
+
+      return data.data.payload;
+    } catch (err) {
+      return [];
+    }
   };
   static getStrategyData = async (id: string): Promise<Strategy> => {
     return await axios.get(`/api/strategies/${id}`);
