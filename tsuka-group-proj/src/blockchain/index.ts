@@ -58,7 +58,7 @@ export const useUrulokiAPI = () => {
    * @param tokenAddress 
    * @returns 
    */
-  const useBalance = async (walletAddress: string, tokenAddress: string): Promise<UseBalanceResponse> => {
+  const getBalance = async (walletAddress: string, tokenAddress: string): Promise<UseBalanceResponse> => {
     try {
       const signer = await getWalletClient();
 
@@ -97,7 +97,7 @@ export const useUrulokiAPI = () => {
    * @param tokenAddress 
    * @returns 
    */
-  const useTokenInfo = async(tokenAddress: string): Promise<UseTokenInfoResponse> => {
+  const getTokenInfo = async(tokenAddress: string): Promise<UseTokenInfoResponse> => {
     try {
       const signer = await getWalletClient();
       console.log('tokenAddress: ', tokenAddress)
@@ -505,9 +505,9 @@ export const useUrulokiAPI = () => {
 
   return {
     isRunning,
-    useTokenInfo,
+    getTokenInfo,
     addFunds,
-    useBalance,
+    getBalance,
     withdrawFunds,
     createContinuousPriceRangeOrder,
     createContinuousTargetPriceOrder,

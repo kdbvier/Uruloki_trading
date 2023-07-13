@@ -40,7 +40,7 @@ export default function Profile({
     out: 0,
   });
 
-  const { addFunds, withdrawFunds, useBalance, useTokenInfo } = useUrulokiAPI();
+  const { addFunds, withdrawFunds, getBalance, getTokenInfo } = useUrulokiAPI();
 
   const handleOpenWidrawModal = () => {
     setShowModal(true);
@@ -123,12 +123,11 @@ export default function Profile({
         const urulokiTokens = await HomepageTokens.getTokensWithPotentialBalance(
           walletAddress
         );
-        console.log('urulokiTokens: ', urulokiTokens)
         let _tokensBalances: CardType[] = [];
         await Promise.all(
           urulokiTokens.map(async (_urulokiToken, index) => {
-            const _balance = await useBalance(walletAddress, _urulokiToken);
-            const tokenInfo = await useTokenInfo(_urulokiToken);
+            const _balance = await getBalance(walletAddress, _urulokiToken);
+            const tokenInfo = await getTokenInfo(_urulokiToken);
             console.log('tokenInfo: ', tokenInfo)
             if (_balance.msg == "success" && tokenInfo.msg == "success") {
               const ubalance = (Number(_balance.balance) || 0)/10**(tokenInfo.info?.decimals || 18);
