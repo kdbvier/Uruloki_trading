@@ -4,6 +4,7 @@ import { prepareWriteContract, writeContract, getContract, getWalletClient } fro
 
 import Uruloki from './abi/Uruloki.json';
 import ERC20 from './abi/ERC20.json';
+import { FaCommentsDollar } from 'react-icons/fa';
 
 /* TODO
    1. Create order
@@ -97,26 +98,30 @@ export const useUrulokiAPI = () => {
   ) => {
     try {
       const signer = await getWalletClient();
-
+      console.log('tokenAddress', tokenAddress);
+      
       if (signer) {
         const ERC20Contract: any = getContract({
-          address: `0x${tokenAddress}`,
+          address: tokenAddress as `0x${string}` ,
           abi: ERC20.abi,
           walletClient: signer
         })
-        setIsRunning(true);
-        const decimals = await ERC20Contract.decimals();
 
+        // console.log('ERC20Contact', ERC20Contract);
+        setIsRunning(true);
+        console.log(typeof ERC20Contract);
+        const decimals = await ERC20Contract.decimals();
+  
         const config = await prepareWriteContract({
           address: `0x${Uruloki.address}`,
           abi: Uruloki.abi,
           functionName: 'createNonContinuousPriceRangeOrder',
           args: [pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, parseUnits(amount, decimals)],
         })
-
+  
         const { hash } = await writeContract(config);
         setIsRunning(false);
-
+  
         return { msg: 'success', hash: hash };
       }
     } catch (err) {
@@ -134,7 +139,7 @@ export const useUrulokiAPI = () => {
   ) => {
     try {
       const signer = await getWalletClient();
-
+      
       if (signer) {
         const ERC20Contract: any = getContract({
           address: `0x${tokenAddress}`,

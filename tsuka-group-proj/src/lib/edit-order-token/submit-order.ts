@@ -35,10 +35,12 @@ export const editOrderInDb = async (selectedOrder: Order, amount: string, isBuy:
 }
 
 const validatePriceRangeOrder = (order: Order): boolean => {
+    console.log("here is Validation")
     return !order.from_price || !order.to_price || !order.budget
 }
 
 const validateTargetPriceOrder = (order: Order): boolean => {
+    console.log("here is Validation")
     return !order.single_price || !order.budget
 }
 

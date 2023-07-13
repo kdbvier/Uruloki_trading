@@ -2,6 +2,7 @@ import { Order, PatchOrder, PostOrder, TokenPairInfo } from "@/types";
 import { toNumber } from "../number-helpers";
 import Orders from "../api/orders";
 import { useUrulokiAPI } from "@/blockchain";
+import { setUncaughtExceptionCaptureCallback } from "process";
 
 export type CreateOrderPriceInfoProps = {
   minPrice: string;
@@ -49,11 +50,13 @@ export const createOrderInDb = async (
 };
 
 const validatePriceRangeOrder = (order: Order): boolean => {
-  return !order.from_price || !order.to_price || !order.budget;
+  if( order.from_price == null || order.to_price == null || order.budget == null)   return false;
+  return true;
 };
 
 const validateTargetPriceOrder = (order: Order): boolean => {
-  return !order.single_price || !order.budget;
+  if( order.single_price == null || order.budget == null) return false;
+  return true;
 };
 
 type EditOrderResult = {
@@ -67,6 +70,7 @@ const createPriceRangeOrderInContract = async (
   order: Order,
   tokenPairInfo: TokenPairInfo
 ): Promise<EditOrderResult> => {
+  console.log("Prices", order.single_price,order.from_price,order.to_price);
   if (!validatePriceRangeOrder(order)) {
     return {
       success: false,
@@ -122,6 +126,7 @@ const createTargetPriceOrderInContract = async (
   order: Order,
   tokenPairInfo: TokenPairInfo
 ): Promise<EditOrderResult> => {
+  console.log("Prices", order.single_price,order.from_price,order.to_price);
   if (!validateTargetPriceOrder(order)) {
     return {
       success: false,
