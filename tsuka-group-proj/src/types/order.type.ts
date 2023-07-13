@@ -20,7 +20,7 @@ export type PostOrder = {
   user_id: number;
   pair_address: string;
   status: string;
-  single_price?: number;
+  single_price?: number | null;
   from_price?: number | null;
   to_price?: number | null;
   budget: number;
@@ -37,7 +37,7 @@ export type PostOrder = {
 export type PatchOrder = {
   pair_address?: string;
   status?: string;
-  single_price?: number;
+  single_price?: number | null;
   from_price?: number | null;
   to_price?: number | null;
   budget?: number;
