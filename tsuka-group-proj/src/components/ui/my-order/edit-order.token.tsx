@@ -1,6 +1,7 @@
 import {
   Order,
   PostOrder,
+  Stratege,
   Strategy,
   TokenCache,
   TokenPairInfo,
@@ -59,12 +60,6 @@ export interface EditOrderTokenProp {
   fetchOrders?: () => void;
   onOrderAdded?: (newOrder: Order) => void;
   setups: Array<Strategy>;
-}
-
-export type Stratege = {
-  id: number;
-  orderId: number;
-  strategyId: number;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
