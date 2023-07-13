@@ -18,11 +18,14 @@ import {
 } from "@/types/token-order.type";
 import { UserOrder } from "@/types/token-order.type";
 import Orders from "@/lib/api/orders";
+import Strategies from "@/lib/api/strategies";
+import { Strategy } from "@/types";
 
 type MyOrdersProps = {
   initialPairOrders: Array<PairOrders>;
+  setups: Array<Strategy>;
 };
-export default function MyOrder({ initialPairOrders }: MyOrdersProps) {
+export default function MyOrder({ initialPairOrders, setups }: MyOrdersProps) {
   const [pairOrders, setPairOrders] = useState<PairOrders[]>(initialPairOrders);
   const [openToggle, setOpenToggle] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -210,6 +213,7 @@ export default function MyOrder({ initialPairOrders }: MyOrdersProps) {
           <EditOrderToken
             setShowEditOrderModal={setShowEditOrderModal}
             selectedOrderId={selectedOrderId}
+            setups={setups}
             closeHandler={() => {
               setShowEditOrderModal(false);
               setSelectedOrderId(-1);
@@ -225,11 +229,14 @@ export default function MyOrder({ initialPairOrders }: MyOrdersProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const pairOrders = await getOrdersByWalletAddress("0xtest");
+  const address = await getConnectedAddress()
+  const pairOrders = await getOrdersByWalletAddress(address);
+  const setups = await Strategies.getStrategiesData(address);
 
   return {
     props: {
       initialPairOrders: pairOrders,
+      setups
     },
   };
 };

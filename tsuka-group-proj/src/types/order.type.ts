@@ -1,3 +1,5 @@
+import { OrderStrategy } from "./order_strategy.type";
+
 export type Order = {
   baseTokenShortName: string | null;
   pairTokenShortName: string | null;
@@ -32,6 +34,7 @@ export type PostOrder = {
   pairTokenShortName: string;
   pairTokenLongName: string;
   creator_address: string;
+  order_strategy ?: OrderStrategy[];
 };
 
 export type PatchOrder = {
@@ -47,6 +50,7 @@ export type PatchOrder = {
   baseTokenShortName: string;
   pairTokenShortName: string;
   creator_address: string;
+  order_strategy ?: OrderStrategy[];
 };
 
 export type OrdersBook = {
