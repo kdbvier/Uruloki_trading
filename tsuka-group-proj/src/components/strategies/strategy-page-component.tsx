@@ -70,7 +70,7 @@ export const StrategiesPageComponent: React.FC<
         {strategies && (
           <div className="p-4 flex">
             <div className="flex-1 overflow-x-scroll scrollable">
-              <Table strategies={strategies} />
+              <Table strategies={strategies} onLoad={onLoad}/>
             </div>
           </div>
         )}

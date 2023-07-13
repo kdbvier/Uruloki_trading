@@ -38,7 +38,11 @@ export const formatCurrencyFixed2 = (x: number, suffix0 = false): string => {
  */
 export function formatNumberToHtmlTag(num: number): {integerPart: string, leadingZerosCount: number, remainingDecimal: string} {
   
-  let numStr = num ? num.toString() : '';
+
+  let numStr = '';
+  if (num !== null && num !== undefined) {
+    numStr = num.toString();
+  }
   
   if (numStr.indexOf('e') !== -1) {
     const exponent = parseInt(numStr.split('e')[1]);
