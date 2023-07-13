@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, Strategy } from "@/types";
 import { createSetup } from "@/lib/server/setups";
 import { Strategies } from "@/lib/strategies/strategies";
+import { log } from "console";
 
 export default async function strategyHandler(
   req: NextApiRequest,

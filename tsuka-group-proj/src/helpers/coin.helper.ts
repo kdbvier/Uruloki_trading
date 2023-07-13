@@ -38,6 +38,7 @@ export const formatCurrencyFixed2 = (x: number, suffix0 = false): string => {
  */
 export function formatNumberToHtmlTag(num: number): {integerPart: string, leadingZerosCount: number, remainingDecimal: string} {
   
+
   let numStr = '';
   if (num !== null && num !== undefined) {
     numStr = num.toString();

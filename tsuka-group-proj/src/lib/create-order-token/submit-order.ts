@@ -2,6 +2,7 @@ import { Order, PatchOrder, PostOrder, TokenPairInfo } from "@/types";
 import { toNumber } from "../number-helpers";
 import Orders from "../api/orders";
 import { useUrulokiAPI } from "@/blockchain";
+import { Stratege } from "@/components/ui/my-order/edit-order.token";
 
 export type CreateOrderPriceInfoProps = {
   minPrice: string;
