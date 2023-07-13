@@ -59,7 +59,7 @@ export interface EditOrderTokenProp {
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
   onOrderAdded?: (newOrder: Order) => void;
-  setups: Array<Strategy>;
+  setups: Array<Stratege>;
 }
 
 export interface Stratege {

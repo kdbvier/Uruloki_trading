@@ -1,4 +1,8 @@
-import { Stratege } from "@/components/ui/my-order/edit-order.token";
+export type Stratege = {
+  id: number;
+  orderId: number;
+  strategyId: number;
+}
 
 export type Order = {
   baseTokenShortName: string | null;

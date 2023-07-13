@@ -17,7 +17,11 @@ const reqBodySchema = Joi.object({
   baseTokenShortName: Joi.string().optional(),
   pairTokenShortName: Joi.string().optional(),
   creator_address: Joi.string().optional(),
-  order_strategy: Joi.any()
+  order_strategy: Joi.object({
+    id: Joi.number().required(),
+    orderId: Joi.number().required(),
+    strategyId: Joi.number().required()
+  }).optional()
 })
   .max(9)
   .min(1);

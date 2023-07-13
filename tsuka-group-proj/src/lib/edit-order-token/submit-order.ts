@@ -2,12 +2,17 @@ import { Order, PatchOrder, TokenPairInfo } from "@/types";
 import { toNumber } from "../number-helpers";
 import Orders from "../api/orders";
 import { useUrulokiAPI } from "@/blockchain";
-import { Stratege } from "@/components/ui/my-order/edit-order.token";
 
 export type CreateOrderPriceInfo = {
     minPrice: string;
     maxPrice: string;
     targetPrice: string;
+}
+
+type Stratege = {
+  id: number;
+  orderId: number;
+  strategyId: number;
 }
 
 export const editOrderInDb = async (selectedOrder: Order, amount: string, isBuy: boolean, isRange: boolean, 

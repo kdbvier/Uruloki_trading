@@ -30,7 +30,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   );
 
   const [network, setNetwork] = useState("");
-  const [setup, setSetup] = useState<Array<Strategy>>([]);
+  const [setups, setSetups] = useState<Array<Strategy>>([]);
 
   const handleChainChanged = async (chainId: any) => {
     setNetwork(chainId);
@@ -82,8 +82,8 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
     const load = async () => {
       const address = await getConnectedAddress();
       if (address) {
-        const setups = await Strategies.getStrategiesData(address);
-        setSetup(setups);
+        const tempSetups = await Strategies.getStrategiesData(address);
+        setSetups(tempSetups);
       }
     };
     load();
@@ -233,7 +233,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   {showEditOrderModal && (
                     <EditOrderToken
                       isEdit={false}
-                      setups={setup}
+                      setups={setups}
                       setShowEditOrderModal={setShowEditOrderModal}
                       selectedOrderId={0} //TODO: Fix this
                       closeHandler={() => {}} //TODO: Fix this
