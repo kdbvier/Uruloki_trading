@@ -42,12 +42,14 @@ export default function Pair({
   oldTokenPrice,
   historicalDexTrades,
   tokenPairInfo,
+  setups,
 }: {
   initialOrders: Order[];
   token_price: TokenPriceInPair;
   oldTokenPrice: number;
   historicalDexTrades: Array<HistoricalDexTrades>;
   tokenPairInfo: TokenPairInfo;
+  setups: Array<Strategy>;
 }) {
   let WebSocketImpl: typeof WebSocket;
 
@@ -97,20 +99,9 @@ export default function Pair({
   const [isLoading, setIsLoading] = useState(true);
   const [dexTrades, setDexTrades] =
     useState<HistoricalDexTrades[]>(historicalDexTrades);
-  useEffect(() => {
-    const fetchStrategies = async () => {
-      try {
-        const walletAddress = await getConnectedAddress();
-        const res = await Strategies.getStrategiesData(walletAddress as string);
-        setStrategies(res);
-      } catch (err) {
-        console.error(err);
-      }
-    }; 
-    if (strategies.length === 0) {
-      fetchStrategies();
-    }
-  }, [strategies]);
+    useEffect(() => {
+      setStrategies(setups);
+    }, [strategies]);
 
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const onOrderAdded = (newOrder: Order) => {
@@ -376,6 +367,7 @@ export default function Pair({
           code1={tokenPairInfo?.baseToken?.symbol as string}
           name2={tokenPairInfo?.pairedToken?.name as string}
           code2={tokenPairInfo?.pairedToken?.symbol as string}
+          setups={setups}
           pair_price_info={token_price}
           pair_address={pairAddress}
           setShowEditOrderModal={setShowEditOrderModal}
@@ -500,17 +492,25 @@ async function getNameAndHistoricalDexTradesSafe(pair_id: string): Promise<{
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+
+  const address = await getConnectedAddress();
+
   const [
     orders,
     token_price,
     oldTokenPrice,
     { historicalDexTrades, tokenPairInfo },
+    setups
   ] = await Promise.all([
     getOrdersByPairSafe(context.query.pair_id as string),
     getTokenPriceSafe(context.query.pair_id as string),
     getOldTokenPriceSafe(context.query.pair_id as string),
     getNameAndHistoricalDexTradesSafe(context.query.pair_id as string),
+    Strategies.getStrategiesData(address)
   ]);
+
+  console.log("------------------", setups);
+  
 
   return {
     props: {
@@ -519,6 +519,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       oldTokenPrice: oldTokenPrice.base_price,
       tokenPairInfo,
       historicalDexTrades,
+      setups,
     },
   };
 };

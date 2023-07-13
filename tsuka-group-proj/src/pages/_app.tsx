@@ -17,7 +17,8 @@ import { goerli } from "wagmi/chains"; //Change this when deployed to mainnet
 import { store } from "../store";
 import ToastProvider from "@/components/ToastProvider";
 
-const chains = [goerli];
+/*
+const chains = [arbitrum, mainnet, polygon];
 const projectId = process.env.NEXT_PUBLIC_YOUR_PROJECT_ID as string;
 const version = 1;
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
@@ -27,6 +28,7 @@ const wagmiConfig = createConfig({
   publicClient
 })
 const ethereumClient = new EthereumClient(wagmiConfig, chains);
+*/
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -48,7 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <ToastProvider>
-        <WagmiConfig config={wagmiConfig}>
+        {/*<WagmiConfig config={wagmiConfig}>*/}
           <Provider store={store}>
             {isLoading && (
               <div className="w-screen h-screen">
@@ -66,9 +68,10 @@ export default function App({ Component, pageProps }: AppProps) {
               </DashboardLayout>
             )}
           </Provider>
-        </WagmiConfig>
+        {/*</WagmiConfig>*/}
       </ToastProvider>
 
+      {/*
       <Web3Modal
         projectId={projectId}
         explorerExcludedWalletIds={"ALL"}
@@ -78,6 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
         ]}
         ethereumClient={ethereumClient}
       />
+      */}
     </>
   );
 }

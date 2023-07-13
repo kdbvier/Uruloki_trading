@@ -1,5 +1,8 @@
 import {
   Order,
+  PostOrder,
+  OrderStrategy,
+  Strategy,
   TokenCache,
   TokenPairInfo,
   TokenPriceInPair,
@@ -8,7 +11,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { fetchBalance } from "@wagmi/core";
 import Dropdown from "../buttons/dropdown";
-
+import Select from "react-select";
 import { OrderTypeEnum, PriceTypeEnum } from "@/types/token-order.type";
 import HomePageTokens from "@/lib/api/tokens";
 import { FaClock, FaSync } from "react-icons/fa";
@@ -37,6 +40,7 @@ import {
   editOrderInContract,
   editOrderInDb,
 } from "@/lib/edit-order-token/submit-order";
+import Strategies from "@/lib/api/strategies";
 
 export interface EditOrderTokenProp {
   isEdit?: boolean;
@@ -52,6 +56,7 @@ export interface EditOrderTokenProp {
   pairInfo?: TokenPairInfo;
   fetchOrders?: () => void;
   onOrderAdded?: (newOrder: Order) => void;
+  setups: Array<Strategy>;
 }
 
 export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
@@ -68,6 +73,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   pair_price_info,
   pair_address,
   pairInfo,
+  setups,
 }) => {
   const [selectedOrder, setSelectedOrder_L] = useState<Order>({} as Order);
   const [tokenCache, setTokenCache] = useState<TokenCache[]>([]);
@@ -80,6 +86,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const [allTokenName, setAllTokenName] = useState<TokenCache[]>([]);
   const [token1Symbol, settoken1Symbol] = useState("");
   const [token2Symbol, settoken2Symbol] = useState("");
+  let selectedSetup: OrderStrategy[] = [{ id: 0, orderId: 0, strategyId: 0}];
   const [isBuy, setIsBuy] = useState(
     isEdit ? selectedOrder.order_type === OrderTypeEnum.BUY : true
   );
@@ -106,6 +113,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
   const pairShortName = isEdit ? selectedOrder.pairTokenShortName : code2;
 
   const [tokenPairInfo, setTokenPairInfo] = useState<TokenPairInfo>();
+  const [setupOptions, setSetupOptions] = useState<any>([]);
 
   const {
     editContinuousPriceRangeOrder,
@@ -143,6 +151,10 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
       setTokenPairInfo(pairInfo);
     }
     getWalletAddress();
+
+    setSetupOptions([
+      ...setups.map((ele) => ({ value: ele.title, label: ele.title })),
+    ]);
   }, []);
 
   useEffect(() => {
@@ -225,6 +237,7 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
         return;
       }
     }
+
     if (tokenPairInfo) {
       if (isEdit) {
         const newOrderPriceInfo: CreateOrderPriceInfo = {
@@ -243,7 +256,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
             token1Symbol,
             token2Symbol,
             isContinuous,
-            walletAddress
+            walletAddress,
+            selectedSetup
           );
 
           toast.success("Successfully edited an order");
@@ -289,7 +303,8 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
               token1Symbol,
               token2Symbol,
               isContinuous,
-              walletAddress
+              walletAddress,
+              selectedSetup
             );
             if (onOrderAdded) {
               onOrderAdded(newOrder);
@@ -323,6 +338,16 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
 
   const applyMaxAmount = (amount: number) => {
     setAmount(amount.toString());
+  };
+
+  const handleSelected = async (e: any) => {
+    let ind:number = 0;
+    setups.map((ele) => {
+      if (ele.title === e.value) {
+        ind = Number(ele.id);
+      }
+    });
+    selectedSetup = await Strategies.getOrderStrategyData(ind);
   };
 
   return (
@@ -417,6 +442,18 @@ export const EditOrderToken: React.FC<EditOrderTokenProp> = ({
                 {baseShortName} FOR {pairShortName}
               </p>
             </button>
+          </div>
+
+          <div className="w-full mt-4 flex gap-2 text-sm">
+            <Select
+              onChange={handleSelected}
+              isMulti
+              name="setup"
+              options={setupOptions}
+              className="basic-multi-select"
+              placeholder="Setup"
+              classNamePrefix="Setup"
+            />
           </div>
 
           <div className="w-full mt-4 flex gap-2 text-sm">

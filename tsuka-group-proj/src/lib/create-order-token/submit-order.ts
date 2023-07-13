@@ -1,7 +1,8 @@
-import { Order, PatchOrder, PostOrder, TokenPairInfo } from "@/types";
+import { Order, PatchOrder, PostOrder, OrderStrategy, TokenPairInfo } from "@/types";
 import { toNumber } from "../number-helpers";
 import Orders from "../api/orders";
 import { useUrulokiAPI } from "@/blockchain";
+import { setUncaughtExceptionCaptureCallback } from "process";
 
 export type CreateOrderPriceInfoProps = {
   minPrice: string;
@@ -21,7 +22,8 @@ export const createOrderInDb = async (
   token1Symbol: string,
   token2Symbol: string,
   isContinuous: boolean,
-  walletAddress: string
+  walletAddress: string,
+  selectedSetup: OrderStrategy[]
 ): Promise<Order> => {
   const postData = {} as PostOrder;
   postData.budget = toNumber(amount);
@@ -45,15 +47,18 @@ export const createOrderInDb = async (
   postData.user_id = 1; ////TODO:get it from server
   postData.pair_address = newOrderPriceInfo.pair_address as string;
   postData.creator_address = walletAddress as string;
+  postData.order_strategy = selectedSetup as OrderStrategy[];
   return await Orders.createOrder(postData);
 };
 
 const validatePriceRangeOrder = (order: Order): boolean => {
-  return !order.from_price || !order.to_price || !order.budget;
+  if( order.from_price == null || order.to_price == null || order.budget == null)   return false;
+  return true;
 };
 
 const validateTargetPriceOrder = (order: Order): boolean => {
-  return !order.single_price || !order.budget;
+  if( order.single_price == null || order.budget == null) return false;
+  return true;
 };
 
 type EditOrderResult = {
@@ -67,6 +72,7 @@ const createPriceRangeOrderInContract = async (
   order: Order,
   tokenPairInfo: TokenPairInfo
 ): Promise<EditOrderResult> => {
+  console.log("Prices", order.single_price,order.from_price,order.to_price);
   if (!validatePriceRangeOrder(order)) {
     return {
       success: false,
@@ -122,6 +128,7 @@ const createTargetPriceOrderInContract = async (
   order: Order,
   tokenPairInfo: TokenPairInfo
 ): Promise<EditOrderResult> => {
+  console.log("Prices", order.single_price,order.from_price,order.to_price);
   if (!validateTargetPriceOrder(order)) {
     return {
       success: false,
