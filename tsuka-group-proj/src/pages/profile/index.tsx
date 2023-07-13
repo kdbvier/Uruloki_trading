@@ -14,7 +14,7 @@ import { filterTokens } from "@/lib/token-filter";
 import "react-toastify/dist/ReactToastify.css";
 import { getOrderByWalletAddress } from "@/lib/orders";
 import { orders } from "@prisma/client";
-import { getTokensWithPotentialBalance } from "@/lib/api/balances";
+import HomepageTokens from "@/lib/api/tokens";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
@@ -120,7 +120,7 @@ export default function Profile({
     if (!walletAddress) return;
     (async () => {
       try {
-        const urulokiTokens = await getTokensWithPotentialBalance(
+        const urulokiTokens = await HomepageTokens.getTokensWithPotentialBalance(
           walletAddress
         );
         console.log('urulokiTokens: ', urulokiTokens)
