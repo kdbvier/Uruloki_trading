@@ -10,6 +10,11 @@ export default class HomePageTokens {
     const res = await axios.get(`/api/search/addresses?name=${name}`);
     return res.data;
   };
+  static getTokensWithPotentialBalance = async (walletAddress: string): Promise<Array<string>> => {
+    const res = await axios.get(`/api/tokens/balances/${walletAddress}`)
+    console.log(res.data.payload)
+    return res.data.payload
+  }
   static getTokenPairInfo = async (
     pair_address: string
   ): Promise<TokenPairInfo> => {

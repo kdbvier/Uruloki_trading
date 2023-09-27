@@ -1,4 +1,3 @@
-import { FiFilter, FiSearch } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { TokenIconsToken } from "@/components/ui/tokens/token-icons.token";
 import { getCards } from "@/@fake-data/card.fake-data";
@@ -7,15 +6,15 @@ import Chart from "@/components/charts/ReactApexcharts";
 import { WithdrawAndDepositModal } from "@/components/ui/profile/modal";
 import { getChartData } from "@/@fake-data/chart.fake-data";
 import { ChartType } from "@/types/chart.type";
-import { getTokensInWallet } from "@/lib/bitquery/getTokensInWallet";
 
 import { getConnectedAddress } from "@/helpers/web3Modal";
 import { useUrulokiAPI } from "@/blockchain";
 import { toast } from "react-toastify";
 import { filterTokens } from "@/lib/token-filter";
 import "react-toastify/dist/ReactToastify.css";
-import { getAllOrders, getOrderByWalletAddress, getOrdersByWalletAddress } from "@/lib/orders";
+import { getOrderByWalletAddress } from "@/lib/orders";
 import { orders } from "@prisma/client";
+import HomepageTokens from "@/lib/api/tokens";
 
 type PageProps = {
   tokenBalances: Array<CardType>;
@@ -23,18 +22,25 @@ type PageProps = {
   userOrders: orders[];
 };
 
-export default function Profile({ tokenBalances, chartData, userOrders }: PageProps) {
+export default function Profile({
+  tokenBalances,
+  chartData,
+  userOrders,
+}: PageProps) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeposit, setIsDeposit] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [walletBalances, setWalletBalances] = useState<Array<CardType>>([]);
+  const [urulokiTokenBalances, setUrulokiTokenBalances] = useState<
+    Array<CardType>
+  >([]);
   const [chartDatas, setChartDatas] = useState<ChartType>({
     active: 0,
-    out: 0
+    out: 0,
   });
 
-  const { addFunds, withdrawFunds } = useUrulokiAPI();
+  const { addFunds, withdrawFunds, getBalance, getTokenInfo } = useUrulokiAPI();
 
   const handleOpenWidrawModal = () => {
     setShowModal(true);
@@ -49,25 +55,26 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
   const setChartData = () => {
     let active = 0;
     let out = 0;
-    userOrders && userOrders.map((ele, id) => {
-      if(ele.status === 'Active') {
-        active++;
-      } else if(ele.status === 'OutOfFunds') {
-        out++;
-      }
-    })
+    userOrders &&
+      userOrders.map((ele, id) => {
+        if (ele.status === "Active") {
+          active++;
+        } else if (ele.status === "OutOfFunds") {
+          out++;
+        }
+      });
     setChartDatas({
       active: active,
-      out: out
-    })
-  }
+      out: out,
+    });
+  };
 
   useEffect(() => {
     console.log("useEffect");
     console.log(userOrders);
 
     setChartData();
-    
+
     const tokensInWallet = async (address: string) => {
       try {
         const res = await fetch(
@@ -84,10 +91,10 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
     const getAddress = async () => {
       try {
         const address = await getConnectedAddress();
-        if(address) setWalletAddress(address as string);
-        
+        if (address) setWalletAddress(address as string);
+
         var data;
-        if(address) data = await tokensInWallet(address);
+        if (address) data = await tokensInWallet(address);
         setWalletBalances(filterTokens(data.payload?.walletBalances) ?? []);
       } catch (error) {
         console.log(error);
@@ -95,7 +102,57 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
     };
 
     getAddress();
+
+    // console.log("Getting balance");
+    // const getBalanceRes = useBalance(
+    //   "0x8727FAe8Ffd4f8D23D7231232Bb830517bE35e07",
+    //   "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    // );
+    // const wait = async () => {
+    //   console.log(await getBalanceRes);
+    // };
+    // wait();
+
+    // getTokensWithPotentialBalance("0xtest");
   }, []);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    (async () => {
+      try {
+        const urulokiTokens = await HomepageTokens.getTokensWithPotentialBalance(
+          walletAddress
+        );
+        let _tokensBalances: CardType[] = [];
+        await Promise.all(
+          urulokiTokens.map(async (_urulokiToken, index) => {
+            const _balance = await getBalance(walletAddress, _urulokiToken);
+            const tokenInfo = await getTokenInfo(_urulokiToken);
+            console.log('tokenInfo: ', tokenInfo)
+            if (_balance.msg == "success" && tokenInfo.msg == "success") {
+              const ubalance = (Number(_balance.balance) || 0)/10**(tokenInfo.info?.decimals || 18);
+              console.log('ubalance: ', ubalance)
+              if (ubalance > 0) {
+                _tokensBalances.push({
+                  id: index,
+                  address: _urulokiToken,
+                  amount: ubalance,
+                  value: ubalance.toLocaleString(),
+                  name: tokenInfo.info?.name||"",
+                  shortName: tokenInfo.info?.shortName||""
+                });
+              }
+            }
+          })
+        );
+        console.log("Balances:")
+        console.log(_tokensBalances)
+        setUrulokiTokenBalances(_tokensBalances);
+      } catch (err) {
+        console.log("Potential Tokens Error: ", err);
+      }
+    })();
+  }, [walletAddress]);
 
   const backgroundInfo = [
     {
@@ -268,8 +325,8 @@ export default function Profile({ tokenBalances, chartData, userOrders }: PagePr
           open={showModal}
           handleClose={() => setShowModal(false)}
           callback={handleDepositWithdraw}
-          Cards={walletBalances}
-          walletBalances={walletBalances}
+          Cards={urulokiTokenBalances}
+          walletBalances={urulokiTokenBalances}
           isDeposit={isDeposit}
           backgroundInfo={backgroundInfo}
         />
@@ -287,5 +344,11 @@ export async function getServerSideProps() {
   //const tokensInWallet = await getTokensInWallet("0x28Dc1b43ebCd1A0A0B5AB1E25Fac0b82551207ef")
 
   // Pass data to the page via props
-  return { props: { tokenBalances: getCardsData, chartData: chartData, userOrders: userOrders } };
+  return {
+    props: {
+      tokenBalances: getCardsData,
+      chartData: chartData,
+      userOrders: userOrders,
+    },
+  };
 }

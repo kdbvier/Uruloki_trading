@@ -95,24 +95,24 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                     style={{
                       color: "#FFFFFF",
                       backgroundColor:
-                        backgroundInfo[getBackgroundIndex(Cards[index].name)]
+                        backgroundInfo[getBackgroundIndex(Cards[index]?.name)]
                           .color,
                       backgroundImage:
-                        backgroundInfo[getBackgroundIndex(Cards[index].name)]
+                        backgroundInfo[getBackgroundIndex(Cards[index]?.name)]
                           ?.backgroundImage,
                     }}
                   >
                     <TokenIconsToken
-                      name={Cards[index].name}
-                      shortName={Cards[index].shortName}
+                      name={Cards[index]?.name}
+                      shortName={Cards[index]?.shortName}
                       width={24}
                       height={24}
                     ></TokenIconsToken>
                     <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
-                      <span>{Cards[index].value}</span>
+                      <span>{Cards[index]?.value}</span>
                     </div>
                     <div className="flex  font-medium text-[10px] landing-[13px] font-['DM Sans'] ">
-                      <span>{Cards[index].shortName}</span>
+                      <span>{Cards[index]?.shortName}</span>
                     </div>
                   </div>
                 </div>
@@ -191,16 +191,16 @@ export const WithdrawAndDepositModal: React.FC<ModalProps> = ({
                   id={"amount"}
                   currentAmount={(isDeposit
                     ? walletBalances[index]?.amount
-                    : Cards[index].amount
+                    : Cards[index]?.amount
                   ).toString()}
                   maxAmount={(isDeposit
                     ? walletBalances[index]?.amount
-                    : Cards[index].amount
+                    : Cards[index]?.amount
                   ).toString()}
                   currentShortName={
                     isDeposit
                       ? walletBalances[index]?.shortName
-                      : Cards[index].shortName
+                      : Cards[index]?.shortName
                   }
                 />
               )}

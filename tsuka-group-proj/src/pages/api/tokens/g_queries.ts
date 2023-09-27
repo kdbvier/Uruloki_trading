@@ -1,5 +1,5 @@
 import axios from "axios";
-import https from "https"
+import https from "https";
 
 axios.defaults.timeout = 60000;
 axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
@@ -11,7 +11,7 @@ export const G_QUERY_GetTokenPair = (pair_address: string) => {
       query: `
     query getPairTokenPrice($pair_address: String)
     {
-      ethereum(network: ethereum) {
+      ethereum(network: goerli) {
         dexTrades(
           smartContractAddress: {is: $pair_address}
           options: {limit: 1}
@@ -130,42 +130,42 @@ export const G_QUERY_GetQuotePrice = async (
 };
 
 export type GetTopGainersResponse = {
-  success: boolean,
-  topGainers?: Array<TopGainer>
-}
+  success: boolean;
+  topGainers?: Array<TopGainer>;
+};
 
 export type TopGainer = {
-  sellCurrency: Currency,
-  buyCurrency: Currency,
-  count: number,
-  latest_price: number,
-  earliest_price: number,
-  volumeUSD: number,
-  smartContract: Contract,
-  percentChange?: number
-}
+  sellCurrency: Currency;
+  buyCurrency: Currency;
+  count: number;
+  latest_price: number;
+  earliest_price: number;
+  volumeUSD: number;
+  smartContract: Contract;
+  percentChange?: number;
+};
 
 export type Currency = {
-  symbol: string,
-  name: string,
-  address: string
-}
+  symbol: string;
+  name: string;
+  address: string;
+};
 
 export type Contract = {
   address: {
-    address: string
-  }
-}
+    address: string;
+  };
+};
 
 export const G_QUERY_GetTopGainersAndMovers = async (
   network: string,
   start: Date,
   end: Date
 ): Promise<GetTopGainersResponse> => {
-  const startIsoString = start.toISOString().split(".")[0]
-  const endIsoString = end.toISOString().split(".")[0]
+  const startIsoString = start.toISOString().split(".")[0];
+  const endIsoString = end.toISOString().split(".")[0];
 
-  const {data} = await axios.post(
+  const { data } = await axios.post(
     "https://graphql.bitquery.io",
     {
       query: `
@@ -220,12 +220,12 @@ export const G_QUERY_GetTopGainersAndMovers = async (
         }
       }`,
       variables: {
-        "limit": 10000,
-        "offset": 0,
-        "network": network,
-        "start": startIsoString,
-        "end": endIsoString,
-        "dateFormat": "%Y-%m-%dT%H:%M:%S"
+        limit: 10000,
+        offset: 0,
+        network: network,
+        start: startIsoString,
+        end: endIsoString,
+        dateFormat: "%Y-%m-%dT%H:%M:%S",
       },
     },
     {
@@ -235,22 +235,22 @@ export const G_QUERY_GetTopGainersAndMovers = async (
     }
   );
 
-  if(data.error) {
+  if (data.error) {
     return {
-      success: false
-    }
+      success: false,
+    };
   } else {
-    const dexTrades = data.data.ethereum.dexTrades
+    const dexTrades = data.data.ethereum.dexTrades;
     const topGainers = dexTrades.map((item: any) => {
       return {
         ...item,
         latest_price: Number.parseFloat(item.latest_price),
-        earliest_price: Number.parseFloat(item.earliest_price)
-      }
-    })
+        earliest_price: Number.parseFloat(item.earliest_price),
+      };
+    });
     return {
       success: true,
-      topGainers
-    }
+      topGainers,
+    };
   }
 };

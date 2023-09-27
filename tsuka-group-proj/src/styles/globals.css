@@ -170,6 +170,10 @@ body {
   border-bottom: 1px dotted rgb(20, 20, 20);
 }
 
+.basic-multi-select {
+  width: 100%;
+}
+
 .create-order-button .tooltiptext {
   visibility: hidden;
   width: 120px;

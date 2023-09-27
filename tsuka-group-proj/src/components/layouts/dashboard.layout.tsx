@@ -16,6 +16,9 @@ import { fetchTestnet } from "@/helpers/fetch-testnet";
 import { Web3Button } from "@web3modal/react";
 import { HiOutlineArrowLongLeft } from "react-icons/hi2";
 import { SidebarStrategies } from "../strategies/sidebar.strategies";
+import Strategies from "@/lib/api/strategies";
+import { Strategy } from "@/types";
+import { getConnectedAddress } from "@/helpers/web3Modal";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
@@ -27,6 +30,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   );
 
   const [network, setNetwork] = useState("");
+  const [setups, setSetups] = useState<Array<Strategy>>([]);
 
   const handleChainChanged = async (chainId: any) => {
     setNetwork(chainId);
@@ -74,6 +78,15 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
     if (window.ethereum !== undefined) {
       window?.ethereum?.on?.("chainChanged", handleChainChanged);
     }
+
+    const load = async () => {
+      const address = await getConnectedAddress();
+      if (address) {
+        const tempSetups = await Strategies.getStrategiesData(address);
+        setSetups(tempSetups);
+      }
+    };
+    load();
   }, []);
 
   const router = useRouter();
@@ -220,6 +233,7 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   {showEditOrderModal && (
                     <EditOrderToken
                       isEdit={false}
+                      setups={setups}
                       setShowEditOrderModal={setShowEditOrderModal}
                       selectedOrderId={0} //TODO: Fix this
                       closeHandler={() => {}} //TODO: Fix this
@@ -243,7 +257,6 @@ export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
                   <Web3Button />
                 </div>
               </div>
-              
             </div>
           </div>
           {/* Mobile menu, show/hide based on menu state. */}

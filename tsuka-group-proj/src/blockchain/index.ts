@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ethers } from 'ethers';
-import { prepareWriteContract, writeContract, getContract, getWalletClient } from '@wagmi/core'
-
+import { prepareWriteContract, writeContract, getContract, getWalletClient, readContract } from '@wagmi/core'
 import Uruloki from './abi/Uruloki.json';
 import ERC20 from './abi/ERC20.json';
-
-/* TODO
-   1. Create order
-   2. Edit order
-   3. Delete order
-   4. Add funds
-   5. Withdraw funds
-*/
+import { FaCommentsDollar } from 'react-icons/fa';
 
 export const useUrulokiAPI = () => {
   const chainId = 5;     // Goerli network
@@ -55,6 +47,91 @@ export const useUrulokiAPI = () => {
     }
   }
 
+  type UseBalanceResponse = {
+    msg: string,
+    balance?: number
+  }
+
+  /**
+   * Returns the users balance for the provided token address
+   * @param walletAddress 
+   * @param tokenAddress 
+   * @returns 
+   */
+  const getBalance = async (walletAddress: string, tokenAddress: string): Promise<UseBalanceResponse> => {
+    try {
+      const signer = await getWalletClient();
+
+      if (signer) {
+        const data = await readContract({
+          address: `0x${Uruloki.address}`,
+          abi: Uruloki.abi,
+          functionName: 'balances',
+          args: [walletAddress, tokenAddress],
+        })
+
+        console.log("Reading balance:")
+        console.log(data)
+
+        return { msg: 'success', balance: data as number };
+      }
+    } catch (err) {
+      console.error('getBalance = ', err);
+      return { msg: 'failure' };
+    }
+
+    return {msg: 'failure'}
+  }
+
+  type TokenInfo = {
+    name: string,
+    shortName: string,
+    decimals: number
+  }
+  type UseTokenInfoResponse = {
+    msg: string,
+    info?: TokenInfo
+  }
+  /**
+   * Returns the ERC20 token info
+   * @param tokenAddress 
+   * @returns 
+   */
+  const getTokenInfo = async(tokenAddress: string): Promise<UseTokenInfoResponse> => {
+    try {
+      const signer = await getWalletClient();
+      console.log('tokenAddress: ', tokenAddress)
+      if (signer) {
+        const name = await readContract({
+          address: `0x${tokenAddress.substring(2)}`,
+          abi: ERC20.abi,
+          functionName: "name",
+        })
+        const symbol = await readContract({
+          address: `0x${tokenAddress.substring(2)}`,
+          abi: ERC20.abi,
+          functionName: "symbol",
+        })
+        const decimals = await readContract({
+          address: `0x${tokenAddress.substring(2)}`,
+          abi: ERC20.abi,
+          functionName: "decimals",
+        })
+        const result : UseTokenInfoResponse = {
+          msg: 'success', 
+          info: {
+            name:name as string, shortName: symbol as string, decimals: Number(decimals)
+          }
+        }
+        setIsRunning(false);
+        return result
+      }
+    } catch (err) {
+      console.log('useTokenInfoError: ', err)
+      return { msg: 'failure' }
+    }
+    return {msg: 'failure'}
+  }
   const withdrawFunds = async (tokenAddress: string, amount: number) => {
     try {
       const signer = await getWalletClient();
@@ -97,26 +174,30 @@ export const useUrulokiAPI = () => {
   ) => {
     try {
       const signer = await getWalletClient();
-
+      console.log('tokenAddress', tokenAddress);
+      
       if (signer) {
         const ERC20Contract: any = getContract({
-          address: `0x${tokenAddress}`,
+          address: tokenAddress as `0x${string}` ,
           abi: ERC20.abi,
           walletClient: signer
         })
-        setIsRunning(true);
-        const decimals = await ERC20Contract.decimals();
 
+        // console.log('ERC20Contact', ERC20Contract);
+        setIsRunning(true);
+        console.log(typeof ERC20Contract);
+        const decimals = await ERC20Contract.decimals();
+  
         const config = await prepareWriteContract({
           address: `0x${Uruloki.address}`,
           abi: Uruloki.abi,
           functionName: 'createNonContinuousPriceRangeOrder',
           args: [pairedTokenAddress, tokenAddress, isBuy, minPrice, maxPrice, parseUnits(amount, decimals)],
         })
-
+  
         const { hash } = await writeContract(config);
         setIsRunning(false);
-
+  
         return { msg: 'success', hash: hash };
       }
     } catch (err) {
@@ -134,7 +215,7 @@ export const useUrulokiAPI = () => {
   ) => {
     try {
       const signer = await getWalletClient();
-
+      
       if (signer) {
         const ERC20Contract: any = getContract({
           address: `0x${tokenAddress}`,
@@ -424,7 +505,9 @@ export const useUrulokiAPI = () => {
 
   return {
     isRunning,
+    getTokenInfo,
     addFunds,
+    getBalance,
     withdrawFunds,
     createContinuousPriceRangeOrder,
     createContinuousTargetPriceOrder,
